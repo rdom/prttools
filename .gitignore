@@ -1,6 +1,7 @@
 /build
 /data
 /macro/rdata
+/macro/data
 *.so
 *.d
 AutoDict*
