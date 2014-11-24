@@ -1,0 +1,8 @@
+/build
+/data
+/macro/rdata
+*.so
+*.d
+AutoDict*
+*.root
+*~
