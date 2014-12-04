@@ -25,6 +25,7 @@
 #include "TRandom2.h"
 #include "TError.h"
 #include "TPaveStats.h"
+#include "TProfile.h"
 
 #include <iostream>
 #include <fstream>

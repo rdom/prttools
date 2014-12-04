@@ -44,6 +44,11 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 { 
   G4double x,y,z;
   PrtManager::Instance()->AddEvent(PrtEvent());
+
+  if(PrtManager::Instance()->GetBeamDinsion() == 5){ // random momentum
+    fParticleGun->SetParticleMomentum(4*GeV*G4UniformRand());
+  }
+
   if(PrtManager::Instance()->GetBeamDinsion() == 1){ // smearing and divergence
     G4double sigma = 1*cm;
     z = fParticleGun->GetParticlePosition().z();
@@ -80,6 +85,7 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ThreeVector dir = fParticleGun->GetParticleMomentumDirection();
   dir *= fParticleGun->GetParticleMomentum();
   PrtManager::Instance()->SetMomentum(TVector3(dir.x(),dir.y(),dir.z()));
+  PrtManager::Instance()->GetMomentum().Print();
 }
 
 void PrtPrimaryGeneratorAction::SetOptPhotonPolar()
