@@ -37,7 +37,6 @@ void PrtSteppingAction::UserSteppingAction(const G4Step* step)
   }
 
   G4Track* track = step->GetTrack();
-  
   int parentId = track->GetParentID();
 
   // std::cout<<"parentId   "<<parentId <<std::endl;

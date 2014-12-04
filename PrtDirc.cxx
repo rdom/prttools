@@ -159,6 +159,7 @@ int main(int argc,char** argv)
     if(particle=="pi+") pdgid = 211;
     if(particle=="pi0") pdgid = 111;
     if(particle=="kaon+") pdgid = 321;
+    if(particle=="kaon-") pdgid = -321;
     if(particle=="mu-") pdgid = 13;
     if(particle=="e-") pdgid = 11;
 

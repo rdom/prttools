@@ -8,7 +8,7 @@ tseed=$(($(date +%s%N)/1000000-1393400000000))
 echo $tseed
 
 #for i in {0..5}; do prt -o h_b$i.root -a 130 -l 1 -x "pi+" -p 2.7 -w 0 -g 0 -s 0 -e 5000 -b 1 -r $tseed$i > l_b$i.log & done
-for i in {0..5}; do prt -o h_b$i.root -a 126 -l 2 -x "proton" -p 1.7 -w 0 -g 3 -h 2 -c 2014 -s 0 -e 100 -b 1 -t 30.6 -z 1 -r $tseed$i > l_b$i.log & done
+for i in {0..5}; do prtdirc -o h_b$i.root -a 120 -l 2 -x "proton" -p 1.7 -w 0 -g 3 -h 2 -c 2014 -s 0 -e 100 -b 1 -t 30.6 -z 1 -r $tseed$i > l_b$i.log & done
 sleep 1
 
 while : 

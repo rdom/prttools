@@ -55,7 +55,7 @@ G4ClassificationOfNewTrack PrtStackingAction::ClassifyNewTrack(const G4Track * a
         fCerenkovCounter++;
     }
   }
-
+  
   if(PrtManager::Instance()->GetRunType() == 0){ // for the simulation run
 
     if(aTrack->GetDefinition()->GetParticleName()=="opticalphoton" 

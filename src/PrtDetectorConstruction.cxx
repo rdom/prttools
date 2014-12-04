@@ -122,7 +122,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   // The Bar
   G4Box* gBar = new G4Box("gBar",fBar[0]/2.,fBar[1]/2.,fBar[2]/2.);
   lBar = new G4LogicalVolume(gBar,BarMaterial,"lBar",0,0,0);
-  G4double xshift = (fBar[1]-fPrizm[0])/2.; //gx
+  G4double xshift = 0;//(fBar[1]-fPrizm[3])/2.; //gx
   wBar =  new G4PVPlacement(0,G4ThreeVector(fPrismRadiatorStep,xshift,0),lBar,"wBar", lDirc,false,0);
 
   // The Mirror
