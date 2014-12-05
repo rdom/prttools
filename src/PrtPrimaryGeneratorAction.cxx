@@ -85,7 +85,6 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ThreeVector dir = fParticleGun->GetParticleMomentumDirection();
   dir *= fParticleGun->GetParticleMomentum();
   PrtManager::Instance()->SetMomentum(TVector3(dir.x(),dir.y(),dir.z()));
-  PrtManager::Instance()->GetMomentum().Print();
 }
 
 void PrtPrimaryGeneratorAction::SetOptPhotonPolar()
