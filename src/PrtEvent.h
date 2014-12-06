@@ -19,6 +19,7 @@ class PrtEvent: public TObject  {
 public:
 
   PrtEvent(); 	//the default constructor
+  ~PrtEvent(){}; 
 
   void AddHit(PrtHit hit);
   PrtHit GetHit(Int_t ind) { return fHitArray[ind]; }

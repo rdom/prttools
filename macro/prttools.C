@@ -26,6 +26,7 @@
 #include "TError.h"
 #include "TPaveStats.h"
 #include "TProfile.h"
+#include "TLegend.h"
 
 #include <iostream>
 #include <fstream>
