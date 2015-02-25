@@ -50,6 +50,7 @@ public:
   void SetLens(int val){ fLens = val; }
   void SetMcpLayout(int val){ fMcpLayout = val; }
   void SetAngle(double val){ fAngle = val; }
+  void SetRadiatorL(double val){ fRadiatorL = val; }
   void SetParticle(int val){ fParticle = val; }
   void SetMomentum(TVector3 val){ fMomentum = val; }
   void SetCurrentCherenkov(double val){ fCurrentCherenkov = val; }
@@ -65,6 +66,7 @@ public:
   int GetLens(){ return fLens; }
   int GetMcpLayout(){ return fMcpLayout; }
   double GetAngle(){ return fAngle; }
+  double GetRadiatorL(){ return fRadiatorL; }
   int GetParticle(){ return fParticle; }
   TVector3 GetMomentum(){ return fMomentum; }
   double GetCurrentCherenkov(){ return fCurrentCherenkov; }
@@ -79,6 +81,7 @@ private:
   int fLens;
   int fMcpLayout;
   double fAngle;
+  double fRadiatorL;
   int fParticle;
   int fBeamDimension;
   TVector3 fMomentum;

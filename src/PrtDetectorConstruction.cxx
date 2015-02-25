@@ -41,7 +41,7 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   fHall[0] = 1000; fHall[1] = 500; fHall[2] = 2000;
   fBar[0] = 17; fBar[1] = 32; fBar[2] =1250;
   fMirror[0] = 20; fMirror[1] = 40; fMirror[2] =1;
-  fPrizm[0] = 170; fPrizm[1] = 300; fPrizm[2] = 50+300*tan(45*deg); fPrizm[3] = 50;
+  fPrizm[0] = 170; fPrizm[1] = 30; fPrizm[2] = 300 /*50+fPrizm[1]*tan(45*deg)*/; fPrizm[3] = 50;
   fMcpTotal[0] = fMcpTotal[1] = 53+6; fMcpTotal[2]=1;
   fMcpActive[0] = fMcpActive[1] = 53; fMcpActive[2]=1;
   fLens[0] = fLens[1] = 40; fLens[2]=10;
@@ -51,7 +51,7 @@ PrtDetectorConstruction::PrtDetectorConstruction()
 
   if(fMcpLayout == 2012){
     fNCol = 3;
-    fPrizm[2] = 30+300*tan(30*deg); fPrizm[3] = 30;
+    fPrizm[2] = 30+fPrizm[1]*tan(30*deg); fPrizm[3] = 30;
   }
 
   if(PrtManager::Instance()->GetRadiator()==2){
@@ -69,7 +69,8 @@ PrtDetectorConstruction::PrtDetectorConstruction()
     fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2. + PrtManager::Instance()->GetTest() ;// +30.6; //gx
     fCenterShift =  G4ThreeVector(fBar[2]/2.-334,0,-40.3);
   }
-  			  
+  
+  PrtManager::Instance()->SetRadiatorL(fBar[2]);			  
   fPrtRot = new G4RotationMatrix();
   //create a messenger for this class
   fGeomMessenger = new PrtDetectorConstructionMessenger(this);
@@ -190,7 +191,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   // Scaning plain
   if(false){
     G4double shift = PrtManager::Instance()->GetShift();
-    if(shift < 935-300){
+    if(shift < 935-fPrizm[1]){
       G4Box* gScan = new G4Box("gScan",350,100,0.01);
       G4LogicalVolume *lScan = new G4LogicalVolume(gScan, BarMaterial ,"lScan",0,0,0);
       new G4PVPlacement(0,G4ThreeVector(0,0,shift),lScan,"wScan",lBar,false,0);

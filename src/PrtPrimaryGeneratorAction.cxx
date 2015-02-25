@@ -58,7 +58,7 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     PrtManager::Instance()->Event()->SetPosition(TVector3(x,y,z));
   }
   if(PrtManager::Instance()->GetRunType() == 1){ // LUT generation
-    fParticleGun->SetParticlePosition(G4ThreeVector(-1224.9/2.+0.1,0,0));
+    fParticleGun->SetParticlePosition(G4ThreeVector(-1250/2.+0.1,0,0));
     G4double angle = -G4UniformRand()*M_PI;
     G4ThreeVector vec(0,0,1);
     vec.setTheta(acos(G4UniformRand()));
@@ -79,6 +79,20 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     vec.rotateY(-M_PI/2.);
     fParticleGun->SetParticleMomentumDirection(vec);
   }
+  if(PrtManager::Instance()->GetRunType() == 6){ // for determining focal plane of the lens
+    fParticleGun->SetParticlePosition(G4ThreeVector(-1250/2.+0.1,0,1));
+    G4double angle = -G4UniformRand()*M_PI;
+    G4ThreeVector vec(0,0,1);
+    vec.setTheta(acos(G4UniformRand()));
+    vec.setPhi(0);
+    
+    vec.rotateY(-M_PI/2.);
+    fParticleGun->SetParticleMomentumDirection(vec);
+
+    fParticleGun->GeneratePrimaryVertex(anEvent);
+    fParticleGun->SetParticlePosition(G4ThreeVector(-1250/2.+0.1,0,-1));
+  }
+
   fParticleGun->GeneratePrimaryVertex(anEvent);
 
   G4ThreeVector dir = fParticleGun->GetParticleMomentumDirection();
