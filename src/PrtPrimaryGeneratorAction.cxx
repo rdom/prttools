@@ -43,6 +43,7 @@ PrtPrimaryGeneratorAction::~PrtPrimaryGeneratorAction()
 void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 { 
   G4double x,y,z;
+  G4double radiatorL = PrtManager::Instance()->GetRadiatorL();
 
   if(PrtManager::Instance()->GetBeamDinsion() == 5){ // random momentum
     fParticleGun->SetParticleMomentum(G4ThreeVector(0, 0, 4.0*GeV*G4UniformRand()));
@@ -58,7 +59,7 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     PrtManager::Instance()->Event()->SetPosition(TVector3(x,y,z));
   }
   if(PrtManager::Instance()->GetRunType() == 1){ // LUT generation
-    fParticleGun->SetParticlePosition(G4ThreeVector(-1250/2.+0.1,0,0));
+    fParticleGun->SetParticlePosition(G4ThreeVector(-radiatorL/2.+0.1,0,0));
     G4double angle = -G4UniformRand()*M_PI;
     G4ThreeVector vec(0,0,1);
     vec.setTheta(acos(G4UniformRand()));
@@ -70,7 +71,7 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   if(PrtManager::Instance()->GetRunType() == 5){ // calibration light
     G4double shift = PrtManager::Instance()->GetShift();
     
-    fParticleGun->SetParticlePosition(G4ThreeVector(-1250/2.+0.1-shift,0,5+tan(45*M_PI/180.)*shift+25));
+    fParticleGun->SetParticlePosition(G4ThreeVector(-radiatorL/2.+0.1-shift,0,5+tan(45*M_PI/180.)*shift+25));
     G4double angle = -G4UniformRand()*M_PI;
     G4ThreeVector vec(0,0,1);
     vec.setTheta(acos(G4UniformRand()));
@@ -80,17 +81,17 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     fParticleGun->SetParticleMomentumDirection(vec);
   }
   if(PrtManager::Instance()->GetRunType() == 6){ // for determining focal plane of the lens
-    fParticleGun->SetParticlePosition(G4ThreeVector(-1250/2.+0.1,0,1));
+    fParticleGun->SetParticlePosition(G4ThreeVector(-radiatorL/2.+0.1,0,5.0));
     G4double angle = -G4UniformRand()*M_PI;
     G4ThreeVector vec(0,0,1);
-    vec.setTheta(acos(G4UniformRand()));
+    vec.setTheta(M_PI/2.+angle);
     vec.setPhi(0);
     
     vec.rotateY(-M_PI/2.);
     fParticleGun->SetParticleMomentumDirection(vec);
 
     fParticleGun->GeneratePrimaryVertex(anEvent);
-    fParticleGun->SetParticlePosition(G4ThreeVector(-1250/2.+0.1,0,-1));
+    fParticleGun->SetParticlePosition(G4ThreeVector(-radiatorL/2.+0.1,0,-5.0));
   }
 
   fParticleGun->GeneratePrimaryVertex(anEvent);

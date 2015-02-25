@@ -14,7 +14,7 @@ PrtManager::PrtManager(G4String outfile, G4int runtype)
   fRunType = runtype;
   fRootFile = new TFile(filename,"RECREATE");
 
-  if(fRunType==0){
+  if(fRunType==0 || fRunType==6){
     fTree = new TTree("data","Prototype hits tree");
     fEvent = new PrtEvent();
     fTree->Branch("PrtEvent", "PrtEvent", &fEvent, 64000, 2);
@@ -63,7 +63,7 @@ PrtManager* PrtManager::Instance(G4String outfile, G4int runtype){
 }
 
 void PrtManager::AddEvent(PrtEvent event){
-  if(fRunType==0){
+  if(fRunType==0 || fRunType==6){
     fEvent = new PrtEvent(event);
     fEvent->SetPhysList(fPhysList);
     fEvent->SetAngle((180*deg-fAngle)/deg);
@@ -77,7 +77,7 @@ void PrtManager::AddEvent(PrtEvent event){
 
 
 void PrtManager::AddHit(PrtHit hit){
-  if(fRunType==0){
+  if(fRunType==0 || fRunType==6){
     if ( fEvent ){
       fEvent->AddHit(hit);
     }else{
@@ -100,7 +100,7 @@ void PrtManager::AddTrackInfo(PrtTrackInfo trackinfo){
 
 
 void PrtManager::Fill(){
-  if(fRunType==0){
+  if(fRunType==0 || fRunType==6){
     fTree->Fill();
     fEvent->Clear();
   }
