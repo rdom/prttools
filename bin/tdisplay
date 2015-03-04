@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# . rootlogin 534-12
+
+show_help(){
+  help="  NAME
+    tdisplay - tool to display T tree related plots
+
+  SYNOPSIS
+    tdisplay [OPTION]... [FILE]
+
+  DESCRIPTION 
+     -r
+        reference channel id
+     -l
+        use latest *hld.root file in current folder"
+    echo "$help" 
+}
+
+OPTIND=1 
+while getopts "h?r:la:" opt; do
+    case "$opt" in
+	h|\?)
+            show_help
+            exit 0
+            ;;
+	r)  refChannel=$OPTARG
+	    ;;
+	l)  latestFile=1
+	    ;;
+	a)  mode=$OPTARG
+	    ;;
+    esac
+done
+refChannel=${refChannel:-0}
+mode=${mode:-0}
+shift $((OPTIND-1))
+
+fileName=$1
+if [ $latestFile ]; then
+    fileName=$(ls -t *hld.root | head -1);
+fi
+
+if [ ! -f $fileName ] && [[ $fileName != *"*"* ]]; then
+    echo "File $fileName not found. Exit"
+    exit 0
+fi
+
+if [ ! $fileName ]; then
+    show_help
+    exit 0
+fi
+
+inFile=$(readlink -f $fileName)
+
+if [ -z $1 ] && [ ! $latestFile  ]
+then
+    show_help
+else
+    if [ -d $HOME/dirc/unpacker/macro ]; then
+	cd $HOME/dirc/unpacker/macro
+    fi
+
+    root -l loadprtlibs.C tdisplay.C+"(\"$inFile\",$refChannel,$mode)"
+    cd -
+fi
