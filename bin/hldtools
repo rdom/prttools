@@ -68,6 +68,7 @@ done
 option=${option:-0}
 startEvent=${startEvent:-0}
 endEvent=${endEvent:-100000000} 
+threads=${threads:-1}
 
 shift $((OPTIND-1))
 

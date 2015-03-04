@@ -141,6 +141,26 @@ void TTSelector::Begin(TTree *){
   
 }
 
+
+Bool_t badcannel(Int_t ch){
+
+  // bad pixels july14
+  if(ch ==  379) return true;
+  if(ch ==  381) return true;
+  if(ch == 1397) return true;
+  if(ch == 1869) return true;
+
+  if(ch == 1405) return true;
+  if(ch == 1403) return true;
+  if(ch == 1385) return true;
+  if(ch == 1381) return true;
+  if(ch == 1383) return true;
+  if(ch == 1387) return true;
+
+  return false;
+}
+
+
 Bool_t TTSelector::Process(Long64_t entry){
   Int_t trbSeqId,ch,mcp,pix,col,row;;
   Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime;
@@ -154,7 +174,8 @@ Bool_t TTSelector::Process(Long64_t entry){
   for(Int_t i=0; i<Hits_; i++){
     trbSeqId = tdcmap[Hits_nTrbAddress[i]];
     ch = 32*trbSeqId+Hits_nTdcChannel[i];
-    
+    if(badcannel(ch)) continue; 
+
     if(++mult[ch]>50) continue;
     coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
     time[i] = coarseTime-gGr[ch]->Eval(Hits_nFineTime[i]);
@@ -173,6 +194,8 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(Hits_nTrbAddress[i]==0) continue;
       trbSeqId = tdcmap[Hits_nTrbAddress[i]];
       ch = 32*trbSeqId+Hits_nTdcChannel[i];
+      if(badcannel(ch)) continue; 
+
       mcp = ch/128;
       pix = (ch%128)/2;	
       col = pix/2 - 8*(pix/16);
