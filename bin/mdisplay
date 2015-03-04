@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# . rootlogin 534-12
+
+show_help(){
+  help="  NAME
+    mdisplay - tool to display M tree related plots
+
+  SYNOPSIS
+    mdisplay [OPTION]... [FILE]
+
+  DESCRIPTION 
+     -r
+        reference channel id
+     -l
+        use latest *M.root file in current folder
+     -a
+        advanced mode (more plots but needs more RAM)"
+    echo "$help" 
+}
+
+OPTIND=1 
+while getopts "h?r:la:" opt; do
+    case "$opt" in
+	h|\?)
+            show_help
+            exit 0
+            ;;
+	r)  refChannel=$OPTARG
+	    ;;
+	l)  latestFile=1
+	    ;;
+	a)  mode=$OPTARG
+	    ;;
+    esac
+done
+refChannel=${refChannel:-0}
+mode=${mode:-0}
+shift $((OPTIND-1))
+
+fileName=$1
+if [ $latestFile ]; then
+    fileName=$(ls -t *M.root | head -1);
+fi
+
+if [ ! -f $fileName ] && [[ $fileName != *"*"* ]]; then
+    echo "File $fileName not found. Exit"
+    exit 0
+fi
+
+if [ ! $fileName ]; then
+    show_help
+    exit 0
+fi
+
+inFile=$(readlink -f $fileName)
+
+if [ -z $1 ] && [ ! $latestFile  ]
+then
+    show_help
+else
+    if [ -d $HOME/dirc/prttools ]; then
+	cd $HOME/dirc/prttools
+    fi
+    root -l loadprtlibs.C mdisplay.C+"(\"$inFile\",$refChannel,$mode)"
+    cd -
+fi

@@ -1,0 +1,158 @@
+#!/bin/bash
+
+# . rootlogin 534-12
+
+show_help(){
+  help="  NAME
+    tcalibration - calibration tool of the .hld data 
+
+  SYNOPSIS
+    tcalibration [OPTION]... [FILE]
+
+  DESCRIPTION 
+     -r
+        reference channel id
+     -l
+        use latest *hld.root file in current folder
+     -c 
+        path to the file with calibration curves
+     -t 
+        path to the file with time offsets from pilas
+     -j
+        number of threads "
+
+    echo "$help" 
+}
+
+OPTIND=1 
+while getopts "h?r:la:c:t:j:" opt; do
+    case "$opt" in
+	h|\?)
+            show_help
+            exit 0
+            ;;
+	r)  refChannel=$OPTARG
+	    ;;
+	l)  latestFile=1
+	    ;;
+	a)  mode=$OPTARG
+	    ;;
+	c)  cFile=$OPTARG
+	    ;;
+	t)  tFile=$OPTARG
+	    ;;
+	j)  threads=$OPTARG
+            ;;
+    esac
+done
+refChannel=${refChannel:-0}
+mode=${mode:-0}
+threads=${threads:-0}
+tFile=${tFile:-""}
+
+shift $((OPTIND-1))
+
+fileName=$1
+if [ $latestFile ]; then
+    fileName=$(ls -t *M.root | head -1);
+fi
+
+if [ ! -f $fileName ] && [[ $fileName != *"*"* ]]; then
+    echo "File $fileName not found. Exit"
+    exit 0
+fi
+
+if [ ! -f $cFile ] && [[ $cFile != *"*"* ]]; then
+    echo "File $cFile not found. Exit"
+    exit 0
+fi
+
+if [[ $tFile  != "" ]] && [ ! -f $tFile ] && [[ $tFile != *"*"* ]]; then
+    echo "File $tFile not found. Exit"
+    exit 0
+else
+    tFile=$(readlink -f $tFile) 
+fi
+
+suf="C"
+if [[ $tFile  == "" ]]; then
+    suf="C0"
+fi
+
+if [ ! $fileName ]; then
+    show_help
+    exit 0
+fi
+
+inFile=$(readlink -f $fileName)
+inName=$(basename $inFile)
+inDir=$(dirname $inFile)/
+fileId="${inName%.*.*}"
+
+cFile=$(readlink -f $cFile)
+
+waitForMe (){
+    spin='-\|/'
+    i=0    
+    while : 
+    do
+	activth=$(ps aux | grep "[r]oot" | grep "tcalibration.C" | wc -l)
+	diffth=$(($maxnthr-$activth))
+
+	i=$(( (i+1) %4 ))
+	printf "\r$statusline ${spin:$i:1}"
+	sleep .1
+	
+      	#echo "We have $activth active RunMonitorM jobs " 
+	if [ "$activth" -lt 1 ]; then 
+	    break  
+	fi
+    done
+} 
+
+if [ -z $1 ] && [ ! $latestFile  ]
+then
+    show_help
+else
+    if [ -d $HOME/dirc/prttools ]; then
+	cd $HOME/dirc/prttools
+    fi
+
+    if [ "$threads" -gt 0 ]; then
+	str=$(root -l -q -b loadprtlibs.C nentries.C"(\"$inFile\")")
+	echo $str
+	str=$(echo $str |tr -d '\040\n\r')
+	total=$(echo $str | sed -r 's/.*[^0-9]([0-9]+)$/\1/')
+	step=$(echo "$total/$threads" |bc)
+	echo "######  $total triggers in $fileName  #######"
+
+	statusline="Calibration hld.root data .."
+	printf "\r$statusline .."
+	start_time=$(date +%s)
+	
+	root -l -q loadprtlibs.C tcalibration.C++'("","","","", 0,0,0,1)' 
+	# > /dev/null 2>/dev/null
+	
+	for ((i=0;i<$threads;i++)); do
+	    startEvent=$(echo "$step*$i" |bc)
+	    endEvent=$(echo "$step*($i+1)-1" |bc)
+	    if (( $i == $threads-1 )); then 
+		endEvent=$total 
+	    fi
+	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$inDir${fileId}${suf}j$i.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent)" > /dev/null  2>/dev/null &
+	done
+	
+	waitForMe
+	statusline="$statusline merging .."
+	printf "\r$statusline"
+	rm -f "${inDir}${fileId}${suf}".root
+	list="${inDir}${fileId}${suf}j"*.root
+	hadd  "${inDir}${fileId}${suf}.root" $list >/dev/null 2>/dev/null
+	rm $list
+	finish_time=$(date +%s)
+	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
+    else
+	root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"${inDir}${fileId}${suf}.root\",\"$cFile\", \"$tFile\", $refChannel)"
+    fi
+    cd -> /dev/null
+fi

@@ -1,0 +1,215 @@
+#!/bin/bash
+
+show_help(){
+  help="  NAME
+    hldtools - script to convet .hld files into .root
+
+  SYNOPSIS
+    hldtools [OPTION]... [FILE]
+
+  DESCRIPTION 
+     -a 
+        run decoding, calibration, GSI and M tree creation
+     -d 
+        run decoding
+     -c 
+        run calibration
+     -g 
+        run GSI tree creation
+     -m 
+        run conversion, calibration and M tree creation
+     -o 
+        make it all smart (do not run conversion and calibration if it is already done) 
+     -b 
+        build libs
+     -j
+        number of threads 
+     -q 
+        run -a option on claster for all unconverted .hld files. output will be in data folder.
+        one needs to be logged in on hera  
+     -s 
+        start event
+     -e 
+        end event"
+    echo "$help" 
+}
+
+OPTIND=1 
+while getopts "h?adcgmobj:qs:e:f:" opt; do
+    case "$opt" in
+	h|\?)
+            show_help
+            exit 0
+            ;;
+	a)  option=0
+            ;;
+	d)  option=1
+            ;;
+	c)  option=2
+            ;;
+	g)  option=3 
+            ;;
+	m)  option=4
+            ;;
+	o)  option=11
+            ;;
+	b)  option=10
+            ;;
+	j)  threads=$OPTARG
+            ;;
+	q)  clastermode=1
+            ;;
+	s)  startEvent=$OPTARG
+            ;;
+	e)  endEvent=$OPTARG
+            ;;
+    esac
+done
+option=${option:-0}
+startEvent=${startEvent:-0}
+endEvent=${endEvent:-100000000} 
+
+shift $((OPTIND-1))
+
+if [ ! $1 ] && [ ! $clastermode ]; then
+    show_help
+    exit 0
+fi
+
+if [ $clastermode ]; then
+    for x in $(find `pwd` -name '*.hld'); do
+	if [ ! -f "${x%.*}M.root" ]; then
+	    qsub qconverthld.sge $x
+	fi
+    done
+    exit 0
+fi
+
+inFile=$(readlink -f $1)
+inName=$(basename $inFile)
+inDir=$(dirname $inFile)/
+
+cd $HOME/dirc/unpacker/mz-unpacker-BarrelDirc/
+
+waitForMe (){
+    spin='-\|/'
+    i=0    
+    while : 
+    do
+	activth=$(ps aux | grep "[r]oot" | grep "RunMonitorM" | wc -l)
+	diffth=$(($maxnthr-$activth))
+
+	i=$(( (i+1) %4 ))
+	printf "\r$statusline ${spin:$i:1}"
+	sleep .1
+	
+      	#echo "We have $activth active RunMonitorM jobs " 
+	if [ "$activth" -lt 1 ]; then 
+	    break  
+	fi
+    done
+}  
+
+
+if [ "$threads" -gt -1 ]; then
+
+    total=50000
+    fileId="${inName%.*}"
+    step=$(echo "$total/$threads" |bc)
+
+    if (( $option == 1 || $option == 0 )); then  ####################################
+	statusline="Decoding .."      
+	start_time=$(date +%s)
+	statusline="$statusline"
+	for ((i=0;i<$threads;i++)); do
+	    startEvent=$(echo "$step*$i" |bc)
+	    endEvent=$(echo "$step*($i+1)-1" |bc)
+	    if (( $i == $threads-1 )); then 
+		endEvent=$total 
+	    fi
+	    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${inName}j$i.root\",${startEvent},${endEvent},${option})" > /dev/null & 
+	done
+
+	waitForMe
+	statusline="$statusline merging .."
+	printf "\r$statusline"
+	rm -f "$inDir$inName.root"
+	list="$inDir$inName"j*.root
+	hadd "$inDir$inName.root" $list >/dev/null 2>/dev/null
+	rm $list
+	finish_time=$(date +%s)
+	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
+    fi
+
+    if (( $option == 2 || $option == 0 )); then  ####################################
+	statusline="Calibrating .."
+	printf "$statusline"
+	start_time=$(date +%s)
+	root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"$inName$i.root\",${startEvent},${endEvent},2)" > /dev/null & 
+	waitForMe
+	finish_time=$(date +%s)
+	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
+    fi
+
+    if (( $option == 3 || $option == 0 )); then  ####################################
+	statusline="Creating K tree .."
+	printf "\r$statusline .."
+	start_time=$(date +%s)
+
+	for ((i=0;i<$threads;i++)); do
+	    startEvent=$(echo "$step*$i" |bc)
+	    endEvent=$(echo "$step*($i+1)-1" |bc)
+	    if (( $i == $threads-1 )); then 
+		endEvent=$total 
+	    fi
+	    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${fileId}Kj$i.root\",${startEvent},${endEvent},3)" > /dev/null & 
+	done
+	
+	waitForMe
+	statusline="$statusline merging .."
+	printf "\r$statusline"
+	rm -f "$inDir$fileId"K.root
+	list="$inDir$fileId"Kj*.root
+	hadd "$inDir${fileId}K.root" $list >/dev/null 2>/dev/null
+	rm $list
+	finish_time=$(date +%s)
+	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
+    fi
+
+    if (( $option == 4 || $option == 0 )); then  ####################################
+	statusline="Creating M tree .."
+	printf "\r$statusline .."
+	start_time=$(date +%s)
+
+	for ((i=0;i<$threads;i++)); do
+	    startEvent=$(echo "$step*$i" |bc)
+	    endEvent=$(echo "$step*($i+1)-1" |bc)
+	    if (( $i == $threads-1 )); then 
+		endEvent=$total 
+	    fi
+	    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${fileId}Mj$i.root\",${startEvent},${endEvent},4)" > /dev/null & 
+	done
+	
+	waitForMe
+	statusline="$statusline merging .."
+	printf "\r$statusline"
+	rm -f "$inDir$fileId"M.root
+	list="$inDir$fileId"Mj*.root
+	hadd "$inDir${fileId}M.root" $list >/dev/null 2>/dev/null
+	rm $list
+	finish_time=$(date +%s)
+	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
+    fi
+else
+    echo "ONE JOB"
+    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"$inName\",${startEvent},${endEvent},${option})"
+fi
+
+
+#mv $1.root data/
+#mv $1M.root data/
+#mv $1.log data/
+#mv $1.root_calibrated.root data/
+#mv $1.root_CalibrationData.root data/
+
+
