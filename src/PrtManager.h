@@ -51,11 +51,14 @@ public:
   void SetMcpLayout(int val){ fMcpLayout = val; }
   void SetAngle(double val){ fAngle = val; }
   void SetRadiatorL(double val){ fRadiatorL = val; }
+  void SetRadiatorW(double val){ fRadiatorW = val; }
+  void SetRadiatorH(double val){ fRadiatorH = val; }
   void SetParticle(int val){ fParticle = val; }
   void SetMomentum(TVector3 val){ fMomentum = val; }
   void SetCurrentCherenkov(double val){ fCurrentCherenkov = val; }
   void SetShift(double val){ fShift = val; }
-  void SetTest(double val){ fTest = val; }
+  void SetTest1(double val){ fTest1 = val; }
+  void SetTest2(double val){ fTest2 = val; }
 
   // Accessors
   int GetRunType(){ return fRunType; }
@@ -71,7 +74,8 @@ public:
   TVector3 GetMomentum(){ return fMomentum; }
   double GetCurrentCherenkov(){ return fCurrentCherenkov; }
   double GetShift(){ return fShift; }
-  double GetTest(){ return fTest; }
+  double GetTest1(){ return fTest1; }
+  double GetTest2(){ return fTest2; }
   
 private: 
   int fRunType;
@@ -82,6 +86,8 @@ private:
   int fMcpLayout;
   double fAngle;
   double fRadiatorL;
+  double fRadiatorW;
+  double fRadiatorH;
   int fParticle;
   int fBeamDimension;
   TVector3 fMomentum;
@@ -89,7 +95,8 @@ private:
   TClonesArray *fTrackInfoArray;
   double fCurrentCherenkov;
   double fShift;
-  double fTest;
+  double fTest1;
+  double fTest2;
 };
 
 #endif

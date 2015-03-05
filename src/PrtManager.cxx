@@ -46,7 +46,8 @@ PrtManager::PrtManager(G4String outfile, G4int runtype)
   fGeometry = 3;
   fAngle = 0;
   fShift = 150;
-  fTest = 0;
+  fTest1 = 0;
+  fTest2 = 0;
   fLens = 0;
   fMcpLayout = 2014;
   fBeamDimension = 0;
@@ -71,7 +72,8 @@ void PrtManager::AddEvent(PrtEvent event){
     fEvent->SetMomentum(fMomentum);
     fEvent->SetGeometry(fGeometry);
     fEvent->SetLens(fLens);
-    fEvent->SetTest(fTest);
+    fEvent->SetTest1(fTest1);
+    fEvent->SetTest2(fTest2);
   }
 }
 
