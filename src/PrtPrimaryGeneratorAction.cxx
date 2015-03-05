@@ -44,6 +44,8 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 { 
   G4double x,y,z;
   G4double radiatorL = PrtManager::Instance()->GetRadiatorL();
+  G4double radiatorW = PrtManager::Instance()->GetRadiatorW();
+  G4double radiatorH = PrtManager::Instance()->GetRadiatorH();
 
   if(PrtManager::Instance()->GetBeamDinsion() == 5){ // random momentum
     fParticleGun->SetParticleMomentum(G4ThreeVector(0, 0, 4.0*GeV*G4UniformRand()));
@@ -81,17 +83,25 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     fParticleGun->SetParticleMomentumDirection(vec);
   }
   if(PrtManager::Instance()->GetRunType() == 6){ // for determining focal plane of the lens
-    fParticleGun->SetParticlePosition(G4ThreeVector(-radiatorL/2.+0.1,0,5.0));
+    G4double shiftx = -radiatorL/2.+200; //0.1;
+    G4double shifty = radiatorW/2. - G4UniformRand()*radiatorW;
+    G4double shiftz = radiatorH/2. - G4UniformRand()*radiatorH;
+
+    fParticleGun->SetParticlePosition(G4ThreeVector(shiftx,shifty,shiftz));
     G4double angle = -G4UniformRand()*M_PI;
     G4ThreeVector vec(0,0,1);
-    vec.setTheta(M_PI/2.+angle);
-    vec.setPhi(0);
+    //    vec.setTheta(M_PI/2.+angle);
+    vec.setTheta(acos(G4UniformRand()));
+    vec.setPhi(2*M_PI*G4UniformRand());
     
     vec.rotateY(-M_PI/2.);
     fParticleGun->SetParticleMomentumDirection(vec);
 
     fParticleGun->GeneratePrimaryVertex(anEvent);
-    fParticleGun->SetParticlePosition(G4ThreeVector(-radiatorL/2.+0.1,0,-5.0));
+    shiftx = -radiatorL/2.+200;// 0.1;
+    shifty = radiatorW/2. - G4UniformRand()*radiatorW;
+    shiftz = radiatorH/2. - G4UniformRand()*radiatorH;
+    fParticleGun->SetParticlePosition(G4ThreeVector(shiftx,shifty,shiftz));
   }
 
   fParticleGun->GeneratePrimaryVertex(anEvent);

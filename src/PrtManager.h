@@ -70,6 +70,8 @@ public:
   int GetMcpLayout(){ return fMcpLayout; }
   double GetAngle(){ return fAngle; }
   double GetRadiatorL(){ return fRadiatorL; }
+  double GetRadiatorW(){ return fRadiatorW; }
+  double GetRadiatorH(){ return fRadiatorH; }
   int GetParticle(){ return fParticle; }
   TVector3 GetMomentum(){ return fMomentum; }
   double GetCurrentCherenkov(){ return fCurrentCherenkov; }

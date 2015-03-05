@@ -457,13 +457,19 @@ void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", 
   Int_t w = 800, h = 500;
   if(c) {
     gROOT->SetBatch(1);
-    if(style == 1) {w = 800; h = 600;}    
+    if(style == 1) {w = 800; h = 500;}
+    if(style == 5) {w = 800; h = 900;} 
+    if(style == 0){ 
+      w = ((TCanvas*)c)->GetWindowWidth();
+      h = ((TCanvas*)c)->GetWindowHeight();
+    }
+
     TCanvas *cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
     cc = (TCanvas*) c->DrawClone();
     cc->SetCanvasSize(w,h);
     cc->Modified();
     cc->Update();
-
+    
     cc->Print(path+"/"+name+".png");
     if(bfiles==0) cc->Print(path+"/"+name+".pdf");
     if(bfiles==0) cc->Print(path+"/"+name+".root");
@@ -486,9 +492,9 @@ TString createDir(TString dir="rdata", TString info = "", Int_t flag=1){
       path = dir+"/"+stime+"/"+Form("arid-%d",i);
       if(gSystem->mkdir(path)==0) break;
     }
+    gSystem->Unlink(dir+"/last");
+    gSystem->Symlink(path, dir+"/last");
   }
-  gSystem->Unlink(dir+"/last");
-  gSystem->Symlink(path, dir+"/last");
   gg_path = path;
   writeInfo("readme", info);
   return path;
@@ -501,7 +507,6 @@ TString createSubDir(TString dir="dir", Int_t flag=1){
   return dir;
 }
 
-
 TList *gg_canvasList;
 void canvasAdd(TString name="c",Int_t w=800, Int_t h=600){
   if(!gg_canvasList) gg_canvasList = new TList();
@@ -512,8 +517,6 @@ void canvasAdd(TCanvas *c){
   if(!gg_canvasList) gg_canvasList = new TList();
   gg_canvasList->Add(c);
 }
-
-
 void canvasCd(TString name="c"){
   
 }
@@ -522,12 +525,15 @@ void canvasCd(TString name="c"){
 // style = 1 - for talk 
 // what = 0 - save in png, pdf, root formats
 // what = 1 - save in png format
-void canvasSave(Int_t style=0, TString info="", Int_t what=0){
-  TString path = createDir("rdata", info);
+void canvasSave(Int_t style=0, TString info="", Int_t what=0, TString spath=""){
+  TString path = spath;
+  if(path!="") createDir(spath, info,2);
+  
   TIter next(gg_canvasList);
   TCanvas *c=0;
    while((c = (TCanvas*) next())){
-     save(c, path,c->GetName(), "", 1,what,style);
+     if(path!="") save(c, path,c->GetName(), "", 2,what,style);
+     else  save(c, path,c->GetName(), "", 1,what,style);
   }
 }  
 
