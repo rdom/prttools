@@ -86,8 +86,9 @@ void PrtStackingAction::NewStage()
 {
   // G4cout << "Number of Scintillation photons produced in this event : "
   //        << fScintillationCounter << G4endl;
-  G4cout << "Number of Cerenkov photons produced in this event : "
-         << fCerenkovCounter << G4endl;
+  if(PrtManager::Instance()->GetRunType() == 0)
+    G4cout << "Number of Cerenkov photons produced in this event : "
+	   << fCerenkovCounter << G4endl;
 }
 
 void PrtStackingAction::PrepareNewEvent()
