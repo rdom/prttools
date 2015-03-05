@@ -17,7 +17,8 @@ PrtEvent::PrtEvent(){
   fGeometry = 0;
   fLens = -1;
   fTrigger = 0;
-  fTest = 0;
+  fTest1 = 0;
+  fTest2 = 0;
 }
 
 void PrtEvent::AddHit(PrtHit hit){

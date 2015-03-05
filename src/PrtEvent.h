@@ -39,8 +39,9 @@ public:
   Int_t GetHitSize()       const { return fHitSize; }
   Int_t GetGeometry()      const { return fGeometry; }
   Int_t GetLens()      const { return fLens; }
-  Int_t GetTrigger()      const { return fTrigger; }
-  Double_t GetTest()      const { return fTest; }
+  Int_t GetTrigger()      const { return fTrigger; } 
+  Double_t GetTest1()      const { return fTest1; }
+  Double_t GetTest2()      const { return fTest2; }
   
   // Mutators
   void SetDecoderId(Int_t val)  { fDecoderId=val; }
@@ -56,7 +57,8 @@ public:
   void SetGeometry(Int_t val) { fGeometry = val; }
   void SetLens(Int_t val) { fLens = val; }
   void SetTrigger(Int_t val) { fTrigger = val; }
-  void SetTest(Double_t val) { fTest = val; }
+  void SetTest1(Double_t val) { fTest1 = val; }
+  void SetTest2(Double_t val) { fTest2 = val; }
 
 private: 
   Int_t fDecoderId;
@@ -76,7 +78,8 @@ private:
   Int_t fGeometry;
   Int_t fLens;
   Int_t fTrigger; 
-  Double_t fTest;
+  Double_t fTest1;
+  Double_t fTest2;
 
   ClassDef(PrtEvent, 1);
 };
