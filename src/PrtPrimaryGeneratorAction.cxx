@@ -83,7 +83,7 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     fParticleGun->SetParticleMomentumDirection(vec);
   }
   if(PrtManager::Instance()->GetRunType() == 6){ // for determining focal plane of the lens
-    G4double shiftx = -radiatorL/2.+200; //0.1;
+    G4double shiftx = -radiatorL/2.+0.1;
     G4double shifty = radiatorW/2. - G4UniformRand()*radiatorW;
     G4double shiftz = radiatorH/2. - G4UniformRand()*radiatorH;
 
@@ -98,7 +98,7 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     fParticleGun->SetParticleMomentumDirection(vec);
 
     fParticleGun->GeneratePrimaryVertex(anEvent);
-    shiftx = -radiatorL/2.+200;// 0.1;
+    shiftx = -radiatorL/2.+0.1;
     shifty = radiatorW/2. - G4UniformRand()*radiatorW;
     shiftz = radiatorH/2. - G4UniformRand()*radiatorH;
     fParticleGun->SetParticlePosition(G4ThreeVector(shiftx,shifty,shiftz));
