@@ -54,7 +54,7 @@ MSelector            *fSelector;
 const Int_t maxch =2000;
 TGraph *gGrDiff[maxch];
 Int_t chmap[nmcp][npix];
-Int_t mult[maxch]={0};
+Int_t mult[3000]={0};
 
 const Int_t maxMult = 30;
 TH1F *hTotM[maxMult];
@@ -103,8 +103,9 @@ void init(){
   gProof->Exec("gSystem->Load(\""+ dir+"/../prtdirc/src/PrtEvent_cxx.so\")");
   proof->Load("cdisplay.C+");
 
-  //proof->SetPrintProgress(&PrintStressProgress);
-  //fCh->SetProof();
+  proof->SetPrintProgress(&PrintStressProgress);
+  fCh->SetProof();
+
   fSelector = new MSelector();
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit(1111);
@@ -264,6 +265,8 @@ Bool_t MSelector::Process(Long64_t entry){
   PrtHit hit;
   Int_t mcp,pix,col,row,ch,chMultiplicity;
   Int_t thitCount1=0, thitCount2=0, hitCount1=0, hitCount2=0;
+  memset(mult, 0, sizeof(mult));
+
   Int_t nhits = fEvent->GetHitSize();
   if(gTrigger>0){
     for(UInt_t h=0; h<nhits; h++){
@@ -281,7 +284,7 @@ Bool_t MSelector::Process(Long64_t entry){
   }else{
     refLe=0;
   }
-  
+
   for(UInt_t h=0; h<nhits; h++){
     hit = fEvent->GetHit(h);
     ch  = hit.GetChannel();
@@ -341,7 +344,6 @@ Bool_t MSelector::Process(Long64_t entry){
     hTot->Fill(tot);
     hLe->Fill(le);
   }
-  memset(mult, 0, sizeof(mult));
  
   if(hitCount1+hitCount2 !=0) hEMult[0]->Fill(hitCount1+hitCount2);
   if(hitCount1!=0) hEMult[1]->Fill(hitCount1);

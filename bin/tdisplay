@@ -57,10 +57,10 @@ if [ -z $1 ] && [ ! $latestFile  ]
 then
     show_help
 else
-    if [ -d $HOME/dirc/unpacker/macro ]; then
-	cd $HOME/dirc/unpacker/macro
+    if [ -d $HOME/dirc/prttools ]; then
+	cd $HOME/dirc/prttools
     fi
 
-    root -l loadprtlibs.C tdisplay.C+"(\"$inFile\",$refChannel,$mode)"
+    root -l tdisplay.C+"(\"$inFile\",$refChannel,$mode)"
     cd -
 fi
