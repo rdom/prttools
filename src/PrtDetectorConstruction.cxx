@@ -73,7 +73,9 @@ PrtDetectorConstruction::PrtDetectorConstruction()
     fCenterShift =  G4ThreeVector(fBar[2]/2.-334,0,-40.3);
   }
   
-  PrtManager::Instance()->SetRadiatorL(fBar[2]);			  
+  PrtManager::Instance()->SetRadiatorL(fBar[2]);
+  PrtManager::Instance()->SetRadiatorW(fBar[1]);
+  PrtManager::Instance()->SetRadiatorH(fBar[0]);			  
   fPrtRot = new G4RotationMatrix();
   //create a messenger for this class
   fGeomMessenger = new PrtDetectorConstructionMessenger(this);
