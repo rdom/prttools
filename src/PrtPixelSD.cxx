@@ -132,7 +132,11 @@ G4bool PrtPixelSD::ProcessHits(G4Step* step, G4TouchableHistory* hist)
   hit.SetPathInPrizm(pathId);
   hit.SetCherenkovMC(PrtManager::Instance()->GetCurrentCherenkov());
   // time since track created
-  hit.SetLeadTime(step->GetPreStepPoint()->GetLocalTime());
+
+  G4double time = step->GetPreStepPoint()->GetLocalTime();
+  G4double resolution = 0.3; //ns
+  time = G4RandGauss::shoot(time,resolution);
+  hit.SetLeadTime(time);
   hit.SetTotTime(1);
   // time since event created
   //hit.SetTrailTime(0,step->GetPreStepPoint()->GetGlobalTime()*1000); 

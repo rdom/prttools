@@ -41,7 +41,7 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   fHall[0] = 1000; fHall[1] = 500; fHall[2] = 2000;
   fBar[0] = 17; fBar[1] = 32; fBar[2] =1250;
   fMirror[0] = 20; fMirror[1] = 40; fMirror[2] =1;
-  fPrizm[0] = 170; fPrizm[1] = 30; fPrizm[2] = 300 /*50+fPrizm[1]*tan(45*deg)*/; fPrizm[3] = 50;
+  fPrizm[0] = 170; fPrizm[1] = 300; fPrizm[2] = 50+fPrizm[1]*tan(45*deg); fPrizm[3] = 50;
   fMcpTotal[0] = fMcpTotal[1] = 53+6; fMcpTotal[2]=1;
   fMcpActive[0] = fMcpActive[1] = 53; fMcpActive[2]=1;
   fLens[0] = fLens[1] = 40; fLens[2]=10;
@@ -67,10 +67,11 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   // X configuration
   fPrismRadiatorStep = 0;
   fCenterShift =  G4ThreeVector(0., 0., 0.);
-  if(false){
+  if(true){
     // fPrismRadiatorStep = fPrizm[3]/2.-fBar[0]/2.; 
-    fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2. + PrtManager::Instance()->GetTest1() ;// +30.6; //gx
-    fCenterShift =  G4ThreeVector(fBar[2]/2.-334,0,-40.3);
+    //  fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2.   +30.6; //gx PrtManager::Instance()->GetTest1() ;//
+    //fCenterShift =  G4ThreeVector(fBar[2]/2.-334,0,-40.3);
+    fCenterShift =  G4ThreeVector(fBar[2]/2.-420,0,-1);
   }
   
   PrtManager::Instance()->SetRadiatorL(fBar[2]);
@@ -195,7 +196,6 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
     lLens3 = new G4LogicalVolume(gLens3,BarMaterial,"lLens3",0,0,0);
   }
 
-
   if(PrtManager::Instance()->GetLens() != 0 && PrtManager::Instance()->GetLens() != 10){
     new G4PVPlacement(0,G4ThreeVector(0,0,fBar[2]/2.+fLens[2]/2.),lLens1,"wLens1", lDirc,false,0);
     new G4PVPlacement(0,G4ThreeVector(0,0,fBar[2]/2.+fLens[2]/2.),lLens2,"wLens2", lDirc,false,0);
@@ -261,17 +261,16 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
 
     int pixelId = 0;
     for(int i=0; i<mcpDimx; i++){
-      for(int j=0; j<mcpDimy; j++){
+      for(int j=mcpDimy-1; j>=0; j--){
 	double shiftx = i*(fMcpActive[0]/(double)mcpDimx)-fMcpActive[0]/2.+fMcpActive[0]/(2*(double)mcpDimx);
 	double shifty = j*(fMcpActive[0]/(double)mcpDimy)-fMcpActive[0]/2.+fMcpActive[0]/(2*(double)mcpDimy);
-	new G4PVPlacement(0,G4ThreeVector(shiftx,shifty,0),lPixel,"wPixel", lMcp,false,pixelId++);      
+	new G4PVPlacement(0,G4ThreeVector(shiftx,shifty,0),lPixel,"wPixel", lMcp,false,64-pixelId++);      
       }
     }
  
     int mcpId = 0;
-    for(int i=0; i<fNCol; i++){
-      for(int j=0; j<fNRow; j++){
-
+    for(int j=0; j<fNRow; j++){
+      for(int i=0; i<fNCol; i++){
 	double shiftx = i*(fMcpTotal[0]+14)-fPrizm[3]/2+fMcpActive[0]/2.+2.5; // +2.5 adjustment to the prt2014 
 	if(j!=1) shiftx -= 14; //(3/2.)*fMcpActive[0]/8.;
 	double shifty = j*fMcpTotal[0]-fMcpTotal[0]+3*(j-1); 
@@ -640,12 +639,14 @@ void PrtDetectorConstruction::SetVisualization(){
   waMirror->SetVisibility(true);
   lMirror->SetVisAttributes(waMirror);
 
-  G4VisAttributes * vaLens = new G4VisAttributes(G4Colour(0.,1.,1.));
-  vaLens->SetForceWireframe(true);
-  //vaLens->SetForceAuxEdgeVisible(true);
-  lLens1->SetVisAttributes(vaLens);
-  lLens2->SetVisAttributes(vaLens);
-  lLens3->SetVisAttributes(vaLens);
+  if(PrtManager::Instance()->GetLens()!=0){
+    G4VisAttributes * vaLens = new G4VisAttributes(G4Colour(0.,1.,1.));
+    vaLens->SetForceWireframe(true);
+    //vaLens->SetForceAuxEdgeVisible(true);
+    lLens1->SetVisAttributes(vaLens);
+    lLens2->SetVisAttributes(vaLens);
+    lLens3->SetVisAttributes(vaLens);
+  }
 
   G4VisAttributes *waPrizm = new G4VisAttributes(G4Colour(0.,0.9,0.9));
   //waPrizm->SetForceAuxEdgeVisible(true);

@@ -1,5 +1,5 @@
 #define prt__sim
-#include "prttools.C"
+#include "../../prttools/prttools.C"
 
 void drawTest(TString infile="../build/hits.root", Int_t flag = 0){
   std::cout<<"new scan"<<std::endl;
