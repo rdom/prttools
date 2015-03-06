@@ -78,6 +78,9 @@ void PrtManager::AddEvent(PrtEvent event){
     fEvent->SetLens(fLens);
     fEvent->SetTest1(fTest1);
     fEvent->SetTest2(fTest2);
+    fEvent->SetPrismStep(fPrismStep);
+    fEvent->SetBeamX(fBeamX);
+    fEvent->SetBeamZ(fBeamZ);
   }
 }
 

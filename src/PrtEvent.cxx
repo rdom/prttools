@@ -19,6 +19,9 @@ PrtEvent::PrtEvent(){
   fTrigger = 0;
   fTest1 = 0;
   fTest2 = 0;
+  fPrismStep = 0;
+  fBeamX = 0;
+  fBeamZ = 0;
 }
 
 void PrtEvent::AddHit(PrtHit hit){
