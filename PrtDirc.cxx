@@ -51,6 +51,7 @@ int main(int argc,char** argv)
 
   G4String macro, events, geometry, radiator, physlist, outfile, 
     session,geomAng,batchmode,lensId,particle,momentum,testVal1,testVal2,
+    prismStep,beamZ,beamX,
     beamDimension, mcpLayout, infile = "hits.root", lutfile = "../data/lut.root";
   G4int runtype = 0;
 
@@ -76,6 +77,9 @@ int main(int argc,char** argv)
     else if ( G4String(argv[i]) == "-c" ) mcpLayout = argv[i+1];
     else if ( G4String(argv[i]) == "-t1" ) testVal1   = argv[i+1];
     else if ( G4String(argv[i]) == "-t2" ) testVal2   = argv[i+1];
+    else if ( G4String(argv[i]) == "-gs" ) prismStep   = argv[i+1];
+    else if ( G4String(argv[i]) == "-gz" ) beamZ   = argv[i+1];
+    else if ( G4String(argv[i]) == "-gx" ) beamX   = argv[i+1];
     else {
       PrintUsage();
       return 1;
@@ -116,6 +120,10 @@ int main(int argc,char** argv)
   if(testVal1.size())   PrtManager::Instance()->SetTest1(atof(testVal1));
   if(testVal2.size())   PrtManager::Instance()->SetTest2(atof(testVal2));
   if(geomAng.size())   PrtManager::Instance()->SetAngle(atof(geomAng));
+  if(prismStep.size())   PrtManager::Instance()->SetPrismStep(atof(prismStep));
+  if(beamX.size())   PrtManager::Instance()->SetBeamX(atof(beamX));
+  if(beamZ.size())   PrtManager::Instance()->SetBeamZ(atof(beamZ));
+
 
  
   // Detector construction

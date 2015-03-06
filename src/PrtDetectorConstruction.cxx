@@ -65,13 +65,14 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   }
   
   // X configuration
-  fPrismRadiatorStep = 0;
+  fPrismRadiatorStep = PrtManager::Instance()->GetPrismStep();
+  if(fPrismRadiatorStep !=0 ) fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2.+fPrismRadiatorStep;
   fCenterShift =  G4ThreeVector(0., 0., 0.);
   if(true){
     // fPrismRadiatorStep = fPrizm[3]/2.-fBar[0]/2.; 
     //  fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2.   +30.6; //gx PrtManager::Instance()->GetTest1() ;//
     //fCenterShift =  G4ThreeVector(fBar[2]/2.-334,0,-40.3);
-    fCenterShift =  G4ThreeVector(fBar[2]/2.-420,0,-1);
+    fCenterShift =  G4ThreeVector(fBar[2]/2.-PrtManager::Instance()->GetBeamZ(),-PrtManager::Instance()->GetBeamX(),0);
   }
   
   PrtManager::Instance()->SetRadiatorL(fBar[2]);

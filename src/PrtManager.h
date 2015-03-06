@@ -59,6 +59,9 @@ public:
   void SetShift(double val){ fShift = val; }
   void SetTest1(double val){ fTest1 = val; }
   void SetTest2(double val){ fTest2 = val; }
+  void SetPrismStep(double val){ fPrismStep = val; }
+  void SetBeamX(double val){ fBeamX = val; }
+  void SetBeamZ(double val){ fBeamZ = val; }
 
   // Accessors
   int GetRunType(){ return fRunType; }
@@ -78,6 +81,9 @@ public:
   double GetShift(){ return fShift; }
   double GetTest1(){ return fTest1; }
   double GetTest2(){ return fTest2; }
+  double GetPrismStep(){ return fPrismStep; }
+  double GetBeamX(){ return fBeamX; }
+  double GetBeamZ(){ return fBeamZ; }
   
 private: 
   int fRunType;
@@ -99,6 +105,9 @@ private:
   double fShift;
   double fTest1;
   double fTest2;
+  double fPrismStep;
+  double fBeamX;
+  double fBeamZ;
 };
 
 #endif
