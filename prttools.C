@@ -332,7 +332,10 @@ void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
   SetRootPalette(1);
   gSystem->Load("../build/libprtdirclib.so");
   delete fCh;
-  fCh = new TChain("data");
+
+  fCh = new TChain("M");
+  if(!fCh)fCh = new TChain("data");
+
   fCh->Add(inFile);
   fCh->SetBranchAddress("PrtEvent", &fEvent);
   fNEntries = fCh->GetEntries();

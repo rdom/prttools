@@ -89,7 +89,7 @@ void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
 void init(){
   SetRootPalette(1);
   fCh = new TChain("M");
-  fCh = new TChain("data");
+  if(!fCh) fCh = new TChain("data");
   fCh->Add(ginFile);
   fNEntries = fCh->GetEntries();
   std::cout<<"Entries in chain:  "<< fNEntries<<std::endl;
