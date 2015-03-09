@@ -62,7 +62,10 @@ else
     if [ -d $HOME/dirc/prttools ]; then
 	cd $HOME/dirc/prttools
     fi
-
-    root -l loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode)"
+    flags="-l"
+    if [ $mode == 10 ]; then
+	flags="-l -q"
+    fi
+    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode)"
     cd -
 fi

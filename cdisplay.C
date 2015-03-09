@@ -607,6 +607,11 @@ void MyMainFrame::DoDraw(){
 
   drawDigi("m,p,v\n",1);
   updatePlot(gComboId);
+
+  if(gMode==10) {
+    gComboId=7;
+    DoExport();
+  }
 }
 
 TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
@@ -766,7 +771,27 @@ void MyMainFrame::DoExport(){
   }
   //  cExport = (TCanvas *) cDigi->DrawClone();
   //  cExport->SetCanvasSize(800,400);
-  save(cDigi,path,"digi","cdisplay",saveFlag,1,2);
+
+  if(gMode==10){
+    TString tf = ginFile;
+    tf.Remove(0,tf.Last('/'));
+    std::cout<<"tf   "<<tf <<std::endl;
+    
+    TObjArray *sarr = tf.Tokenize("_");
+    std::cout<<"sarr->GetEntries()  "<<sarr->GetEntries() <<std::endl;
+    
+    if(sarr->GetEntries()==5){
+      std::cout<<"((TObjString *) sarr->At(1))->GetName()   "<<((TObjString *) sarr->At(1))->GetName() <<std::endl;
+ 
+      // if(((TObjString *) sarr->At(0))->GetName()=="th");
+      // TString soffset = ((TObjString *) sarr->At(1))->GetName();
+      // offset = soffset.Atof();
+    }
+
+    save(cDigi,filedir+"/export",Form("digi_%d_%d",1,2),"cdisplay",2,1,2);
+  }else{
+    save(cDigi,path,"digi","cdisplay",saveFlag,1,2);
+  }
   gROOT->SetBatch(0);
   std::cout<<"Exporting .. Done"<<std::endl;
   
