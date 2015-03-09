@@ -88,9 +88,11 @@ void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
 
 void init(){
   SetRootPalette(1);
-  fCh = new TChain("M");
-  if(!fCh) fCh = new TChain("data");
+  TFile *f = new TFile(ginFile);
+
+  fCh = new TChain("data");
   fCh->Add(ginFile);
+
   fNEntries = fCh->GetEntries();
   std::cout<<"Entries in chain:  "<< fNEntries<<std::endl;
 
@@ -774,21 +776,22 @@ void MyMainFrame::DoExport(){
 
   if(gMode==10){
     TString tf = ginFile;
-    tf.Remove(0,tf.Last('/'));
+    tf.Remove(0,tf.Last('/')+1);
     std::cout<<"tf   "<<tf <<std::endl;
     
-    TObjArray *sarr = tf.Tokenize("_");
+    TObjArray *sarr = tf.Tokenize("c");
     std::cout<<"sarr->GetEntries()  "<<sarr->GetEntries() <<std::endl;
-    
-    if(sarr->GetEntries()==5){
-      std::cout<<"((TObjString *) sarr->At(1))->GetName()   "<<((TObjString *) sarr->At(1))->GetName() <<std::endl;
- 
-      // if(((TObjString *) sarr->At(0))->GetName()=="th");
-      // TString soffset = ((TObjString *) sarr->At(1))->GetName();
-      // offset = soffset.Atof();
+    TString expName="digi";
+    if(sarr->GetEntries()==7){
+      TString lens =((TObjString *) sarr->At(1))->GetName();
+      TString angle =((TObjString *) sarr->At(2))->GetName();
+      TString z =((TObjString *) sarr->At(3))->GetName();
+      TString x =((TObjString *) sarr->At(4))->GetName();
+      TString s =((TObjString *) sarr->At(5))->GetName();
+      expName ="digi_"+lens+"_"+angle+"_"+z+"_"+x+"_"+s;
     }
 
-    save(cDigi,filedir+"/export",Form("digi_%d_%d",1,2),"cdisplay",2,1,2);
+    save(cDigi,filedir+"/export",expName,"cdisplay",2,1,2);
   }else{
     save(cDigi,path,"digi","cdisplay",saveFlag,1,2);
   }

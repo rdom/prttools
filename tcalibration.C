@@ -106,7 +106,7 @@ void TTSelector::Begin(TTree *){
   TString filedir=ginFile;
   filedir.Remove(filedir.Last('.')-4);
   fFile = new TFile(goutFile,"RECREATE");
-  fTree = new TTree("M","Tree for GSI Prt Analysis");  
+  fTree = new TTree("data","Tree for GSI Prt Analysis");  
   fEvent = new PrtEvent();
   fTree->Branch("PrtEvent", "PrtEvent", &fEvent, 64000, 2);
 
