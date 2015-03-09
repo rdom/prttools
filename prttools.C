@@ -55,11 +55,11 @@ TPad * fhPglobal;
 TCanvas* cDigi;
 
 TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
-  if(!cDigi) cDigi = new TCanvas("cDigi","cDigi",0,0,800,500);
+  if(!cDigi) cDigi = new TCanvas("cDigi","cDigi",0,0,800,400);
   cDigi->cd();
   // TPad * pp = new TPad("P","T",0.06,0.135,0.93,0.865);
   if(!fhPglobal){
-    fhPglobal = new TPad("P","T",0.01,0.01,0.99,0.99);
+    fhPglobal = new TPad("P","T",0.05,0.02,0.95,0.98);
     fhPglobal->SetFillStyle(0);
     fhPglobal->Draw();
   }
@@ -330,7 +330,7 @@ void SetRootPalette(Int_t pal = 0){
 #ifdef prt__sim
 void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
   SetRootPalette(1);
-  gSystem->Load("../build/libprtlib.so");
+  gSystem->Load("../build/libprtdirclib.so");
   delete fCh;
   fCh = new TChain("data");
   fCh->Add(inFile);
@@ -439,7 +439,7 @@ void writeInfo(TString filename, TString info,Int_t flag=1){
 // flag < 0 - do not save anything
 // flag = 0 - save in a new folder based on date
 // flag = 2 - save in a folder dir (second argument)  
-void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", Int_t flag=1, Int_t bfiles=0){
+void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", Int_t flag=1, Int_t bfiles=0, Int_t style=0){
   if(flag<1) return;
   TString path = "";
   if(flag == 0 && flag!=2){
@@ -453,14 +453,34 @@ void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", 
     writeInfo("readme", info);
   }else{
     path = dir;
+    gSystem->mkdir(path);
   }
-  
+  Int_t w = 800, h = 400;
   if(c) {
-    c->Modified();
-    c->Update();
-    c->Print(path+"/"+name+".png");
-    if(bfiles==0) c->Print(path+"/"+name+".pdf");
-    if(bfiles==0) c->Print(path+"/"+name+".root");
+    gROOT->SetBatch(1);
+    if(style != -1){
+      if(style == 1) {w = 800; h = 500;}
+      if(style == 5) {w = 800; h = 900;} 
+      if(style == 0){ 
+	w = ((TCanvas*)c)->GetWindowWidth();
+	h = ((TCanvas*)c)->GetWindowHeight();
+      }
+      
+      TCanvas *cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
+      cc = (TCanvas*) c->DrawClone();
+      cc->SetCanvasSize(w,h);
+      cc->Modified();
+      cc->Update();
+    
+      cc->Print(path+"/"+name+".png");
+      if(bfiles==0) cc->Print(path+"/"+name+".pdf");
+      if(bfiles==0) cc->Print(path+"/"+name+".root");
+    }else{
+      c->Print(path+"/"+name+".png");
+      if(bfiles==0) c->Print(path+"/"+name+".pdf");
+      if(bfiles==0) c->Print(path+"/"+name+".root");
+    }		    
+    gROOT->SetBatch(0);
   }
 }
 
@@ -479,9 +499,9 @@ TString createDir(TString dir="rdata", TString info = "", Int_t flag=1){
       path = dir+"/"+stime+"/"+Form("arid-%d",i);
       if(gSystem->mkdir(path)==0) break;
     }
+    gSystem->Unlink(dir+"/last");
+    gSystem->Symlink(path, dir+"/last");
   }
-  gSystem->Unlink(dir+"/last");
-  gSystem->Symlink(path, dir+"/last");
   gg_path = path;
   writeInfo("readme", info);
   return path;
@@ -493,4 +513,50 @@ TString createSubDir(TString dir="dir", Int_t flag=1){
   gSystem->mkdir(dir);
   return dir;
 }
+
+TList *gg_canvasList;
+void canvasAdd(TString name="c",Int_t w=800, Int_t h=600){
+  if(!gg_canvasList) gg_canvasList = new TList();
+  TCanvas *c = new TCanvas(name,name,0,0,w,h); 
+  gg_canvasList->Add(c);
+}
+void canvasAdd(TCanvas *c){
+  if(!gg_canvasList) gg_canvasList = new TList();
+  gg_canvasList->Add(c);
+}
+void canvasCd(TString name="c"){
+  
+}
+
+// style = 0 - for web blog
+// style = 1 - for talk 
+// what = 0 - save in png, pdf, root formats
+// what = 1 - save in png format
+void canvasSave(Int_t style=0, TString info="", Int_t what=0, TString spath=""){
+  TString path = spath;
+  if(path!="") createDir(spath, info,2);
+  
+  TIter next(gg_canvasList);
+  TCanvas *c=0;
+   while((c = (TCanvas*) next())){
+     if(path!="") save(c, path,c->GetName(), "", 2,what,style);
+     else  save(c, path,c->GetName(), "", 1,what,style);
+  }
+}  
+
+void normalize(TH1F* hists[],Int_t size){
+  Double_t max = 0;
+  Double_t min = 0;
+  for(Int_t i=0; i<size; i++){
+    Double_t tmax = hists[i]->GetMaximum();
+    Double_t tmin = hists[i]->GetMinimum();
+    if(tmax>max) max = tmax;
+    if(tmin<min) min = tmin;
+  }
+  max += 0.05*max;
+  for(Int_t i=0; i<size; i++){
+    hists[i]->GetYaxis()->SetRangeUser(min,max);
+  }
+}
+
 

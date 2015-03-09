@@ -89,6 +89,7 @@ void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
 void init(){
   SetRootPalette(1);
   fCh = new TChain("M");
+  fCh = new TChain("data");
   fCh->Add(ginFile);
   fNEntries = fCh->GetEntries();
   std::cout<<"Entries in chain:  "<< fNEntries<<std::endl;
@@ -153,7 +154,7 @@ void MSelector::SlaveBegin(TTree *){
   
   for(Int_t i=0; i<maxMult; i++){
     hTotM[i]=new TH1F(Form("hTot%d",i),Form("hTot%d",i),500,min2,max2);
-    hLeM[i]=new TH1F(Form("hLe%d",i),Form("hLe%d",i),500,-600,600);
+    hLeM[i]=new TH1F(Form("hLe%d",i),Form("hLe%d",i),5000,-600,600);
     fOutput->Add(hTotM[i]);
     fOutput->Add(hLeM[i]);
   }
@@ -211,7 +212,7 @@ void MSelector::SlaveBegin(TTree *){
   }
 
   hTot=new TH1F("hTotA","",500,min2,max2);
-  hLe=new TH1F("hLeA","",500,-600,600);
+  hLe=new TH1F("hLeA","",5000,-600,600);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",3000,0,3000);
 
@@ -242,6 +243,7 @@ Bool_t badcannel(Int_t ch){
   if(ch == 1381) return true;
   if(ch == 1383) return true;
   if(ch == 1387) return true;
+  if(ch == 1395) return true;
 
   return false;
 }
@@ -1065,7 +1067,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   else if(gTrigger==1920 || gTrigger==1921) fEdit1->SetText("400 -100 -50");
   else if(gTrigger==2560 || gTrigger==2561) fEdit1->SetText("400 150 200");
   else fEdit1->SetText("300 0 60");
-  if(ginFile.Contains("C.root"))  fEdit1->SetText("400 50 100");;
+  if(ginFile.Contains("C.root"))  fEdit1->SetText("400 50 100");
+  if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
 
   fEdit2->SetText("200 -2 5");
   if(gTrigger==1952 || gTrigger==1956) fEdit2->SetText("200 -2 5");
