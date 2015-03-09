@@ -59,7 +59,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   cDigi->cd();
   // TPad * pp = new TPad("P","T",0.06,0.135,0.93,0.865);
   if(!fhPglobal){
-    fhPglobal = new TPad("P","T",0.05,0.02,0.95,0.98);
+    fhPglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
     fhPglobal->SetFillStyle(0);
     fhPglobal->Draw();
   }
@@ -463,6 +463,7 @@ void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", 
     gROOT->SetBatch(1);
     if(style != -1){
       if(style == 1) {w = 800; h = 500;}
+      if(style == 2) {w = 800; h = 400;}
       if(style == 5) {w = 800; h = 900;} 
       if(style == 0){ 
 	w = ((TCanvas*)c)->GetWindowWidth();

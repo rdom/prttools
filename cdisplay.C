@@ -764,9 +764,9 @@ void MyMainFrame::DoExport(){
     histname = updatePlot(gComboId,cExport);
     save(cExport,path,histname,"cdisplay",saveFlag,1);
   }
-  cExport = (TCanvas *) cDigi->DrawClone();
-  cExport->SetCanvasSize(800,400);
-  save(cExport,path,"digi","cdisplay",saveFlag,1);
+  //  cExport = (TCanvas *) cDigi->DrawClone();
+  //  cExport->SetCanvasSize(800,400);
+  save(cDigi,path,"digi","cdisplay",saveFlag,1,2);
   gROOT->SetBatch(0);
   std::cout<<"Exporting .. Done"<<std::endl;
   
