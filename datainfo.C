@@ -40,8 +40,8 @@ public:
   }
 
   bool operator < (const DataInfo& d) const{
-    if(_studyId==1 && _angle<d._angle) return true; //angle
-    if(_studyId==2 && _z<d._z) return true; //z
+    if(_studyId==0 && _angle<d._angle) return true; //angle
+    if(_studyId==1 && _z<d._z) return true; //z
     if(_studyId==4 && _angle<d._angle) return true; //angle
     if(_studyId==5 && _z>d._z) return true; //x
     return false; 
