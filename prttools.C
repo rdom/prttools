@@ -455,7 +455,9 @@ void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", 
     writeInfo("readme", info);
   }else{
     path = dir;
-    gSystem->mkdir(path);
+    gSystem->mkdir(path,true);
+    gg_path=path;
+    writeInfo("readme", info);
   }
   Int_t w = 800, h = 400;
   if(c) {

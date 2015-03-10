@@ -15,12 +15,17 @@ show_help(){
      -l
         use latest *M.root file in current folder
      -a
-        advanced mode (more plots but needs more RAM)"
-    echo "$help" 
+        advanced mode (more plots but needs more RAM)
+     -p
+        path for export (for -a 10)
+     -i
+        information string (for -a 10)
+"
+  echo "$help" 
 }
 
 OPTIND=1 
-while getopts "h?r:la:" opt; do
+while getopts "h?r:la:p:i:" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -32,10 +37,16 @@ while getopts "h?r:la:" opt; do
 	    ;;
 	a)  mode=$OPTARG
 	    ;;
+	p)  path=$OPTARG
+	    ;;
+	i)  info=$OPTARG
+	    ;;
     esac
 done
 refChannel=${refChannel:-0}
 mode=${mode:-0}
+path=${path:-0}
+info=${info:-0}
 shift $((OPTIND-1))
 
 fileName=$1
@@ -66,6 +77,6 @@ else
     if [ $mode == 10 ]; then
 	flags="-l -q"
     fi
-    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode)"
+    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\")"
     cd -
 fi

@@ -65,6 +65,7 @@ TH1F *hMultEvtNum1,*hMultEvtNum2;
 
 TCanvas *cTime;
 Int_t gComboId=0, gTrigger = 0, gMode=0;
+TString gPath="", gInfo="";
 TGHProgressBar *pbar;
 TString ginFile; 
 
@@ -775,23 +776,7 @@ void MyMainFrame::DoExport(){
   //  cExport->SetCanvasSize(800,400);
 
   if(gMode==10){
-    TString tf = ginFile;
-    tf.Remove(0,tf.Last('/')+1);
-    std::cout<<"tf   "<<tf <<std::endl;
-    
-    TObjArray *sarr = tf.Tokenize("c");
-    std::cout<<"sarr->GetEntries()  "<<sarr->GetEntries() <<std::endl;
-    TString expName="digi";
-    if(sarr->GetEntries()==7){
-      TString lens =((TObjString *) sarr->At(1))->GetName();
-      TString angle =((TObjString *) sarr->At(2))->GetName();
-      TString z =((TObjString *) sarr->At(3))->GetName();
-      TString x =((TObjString *) sarr->At(4))->GetName();
-      TString s =((TObjString *) sarr->At(5))->GetName();
-      expName ="digi_"+lens+"_"+angle+"_"+z+"_"+x+"_"+s;
-    }
-
-    save(cDigi,filedir+"/export",expName,"cdisplay",2,1,2);
+    save(cDigi,filedir+"/"+gPath,"digi","cdisplay "+gInfo,2,1,2);
   }else{
     save(cDigi,path,"digi","cdisplay",saveFlag,1,2);
   }
@@ -1120,9 +1105,11 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0){
+void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TString path="", TString info="0"){
   ginFile = inFile;
   gTrigger= trigger;
   gMode=mode;
+  gPath=path;
+  gInfo=info;
   gMain = new MyMainFrame(gClient->GetRoot(), 800, 800);
 }
