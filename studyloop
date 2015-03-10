@@ -8,7 +8,7 @@ for ((i=0;i<6;i++)); do
     path=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,1)" 2>/dev/null))
     info=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,2)" 2>/dev/null))
     for ((k=1;k<${#file[@]};k++)); do
-	cdisplay -a10  "-p \"${path[k]}\" -i \"${info[k]}\" \"${file[k]}\""
+	cdisplay -a10  -p "j14/${path[k]}" -i "${info[k]}" ${file[k]}
     done
 done
 IFS="$OIFS"

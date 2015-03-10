@@ -42,6 +42,8 @@ public:
   bool operator < (const DataInfo& d) const{
     if(_studyId==1 && _angle<d._angle) return true; //angle
     if(_studyId==2 && _z<d._z) return true; //z
+    if(_studyId==4 && _angle<d._angle) return true; //angle
+    if(_studyId==5 && _z>d._z) return true; //x
     return false; 
   }
 
@@ -64,6 +66,7 @@ public:
       info += Form("Child[%d] Id = ",i)+_childRuns[i] +";";
     }
     info += Form("Lens Id = %d;",_lensId);
+    info += Form("Angle = %f;",_angle);
     info += Form("X = %f [mm];",_x);
     info += Form("Z = %f [mm];",_z);
     info += Form("Step = %f [mm];",_step);
@@ -286,12 +289,12 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   p_print(newset, format);
 
 
-
+  // std::cout<<"ST"<<studyId<<std::endl;
   // for(UInt_t i = 0; i != newset.size(); i++) {
-  //   std::cout<<"ID 1  "<<newset[i].getAliasId() << "  "<< newset[i].getAngle() <<"  " <<newset[i].getZ()<<std::endl;
+  //   std::cout<< newset[i].getAngle()<<" ";
   // }  
 
-  // for(UInt_t i = 0; i != aliasArray.size(); i++) {
+  //for(UInt_t i = 0; i != aliasArray.size(); i++) {
   //   std::cout<<"A  "<<aliasArray[i].getAliasId()<< "  "<< aliasArray[i].getStudyId() << "  "<< aliasArray[i].getAngle() <<std::endl;
   // }
   // p_hadd();
