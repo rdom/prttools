@@ -1,14 +1,12 @@
 #!/bin/bash
 
-cd $HOME/dirc/prttools
-
 OIFS="$IFS"
 IFS=$'\n'
 
 for ((i=0;i<6;i++)); do
-    file=($(root -l -q -b datainfo.C+"($i,0)" 2>/dev/null))
-    path=($(root -l -q -b datainfo.C+"($i,1)" 2>/dev/null))
-    info=($(root -l -q -b datainfo.C+"($i,2)" 2>/dev/null))
+    file=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,0)" 2>/dev/null))
+    path=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,1)" 2>/dev/null))
+    info=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,2)" 2>/dev/null))
     for ((k=1;k<${#file[@]};k++)); do
 	cdisplay -a10  "-p \"${path[k]}\" -i \"${info[k]}\" \"${file[k]}\""
     done

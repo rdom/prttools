@@ -58,17 +58,17 @@ public:
   }
 
   TString info(){
-    TString info = Form("Study Id = %d \\n",_studyId);
-    info += "Alias Id = "+_aliasId+" \\n";
+    TString info = Form("Study Id = %d;",_studyId);
+    info += "Alias Id = "+_aliasId+";";
     for(Int_t i=0; i<_nchildren;i++){
-      info += Form("Child[%d] Id = ",i)+_childRuns[i] +" \\n";
+      info += Form("Child[%d] Id = ",i)+_childRuns[i] +";";
     }
-    info += Form("Lens Id = %d \\n",_lensId);
-    info += Form("X = %f [mm] \\n",_x);
-    info += Form("Z = %f [mm] \\n",_z);
-    info += Form("Step = %f [mm] \\n",_step);
-    info += Form("Uniq file id for current study = %d \\n",_fileId);
-    info += Form("Folder path = %d/%d \\n",_studyId,_fileId);
+    info += Form("Lens Id = %d;",_lensId);
+    info += Form("X = %f [mm];",_x);
+    info += Form("Z = %f [mm];",_z);
+    info += Form("Step = %f [mm];",_step);
+    info += Form("Uniq file id for current study = %d;",_fileId);
+    info += Form("Folder path = %d/%d;",_studyId,_fileId);
     return info;
   }
 
@@ -219,12 +219,17 @@ void createAliases(){
   }
   std::sort(aliasArray.begin(), aliasArray.end());
 
-  // for(Int_t i=0; i<gg_nstudies; i++){
-  //   // std::vector<DataInfo> newset= getStudy(i);
-  //   // for(UInt_t i = 0; i != newset.size(); i++) {
-  //   //   // newset[i].setFileId(i);
-  //   // }
-  // }
+  for(Int_t i=0; i<gg_nstudies; i++){
+    std::vector<DataInfo> newset= getStudy(i);
+    for(UInt_t j = 0; j != newset.size(); j++) {
+      for(UInt_t k = 0; k != aliasArray.size(); k++) {
+	if(aliasArray[k].getAliasId()==newset[j].getAliasId()){
+	  aliasArray[k].setFileId(j);
+	  break;
+	}
+      }
+    }
+  }
 
 
 }
@@ -241,17 +246,30 @@ void p_hadd(){
 
 void p_print(std::vector<DataInfo> newset, Int_t format){
 
-  if(format==0){ // cdisplay
+  if(format==0){ // file name 
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"cc"<<newset[i].getAliasId()<< "C.root  " <<newset[i].getStudyId()<<"/"<<i<<" "<<newset[i].info()<<std::endl;
+      std::cout<<"cc"<<newset[i].getAliasId()<< "C.root"<<std::endl;
     }
   }
-  if(format==1){ // prtdirc
+
+  if(format==1){ // path 
+    for(UInt_t i = 0; i != newset.size(); i++) {
+      std::cout<< newset[i].getStudyId()<<"/"<<i<<std::endl; 
+   }
+  }
+
+  if(format==2){ // info 
+    for(UInt_t i = 0; i != newset.size(); i++) {
+      std::cout<<newset[i].info()<<std::endl;
+    }
+  }
+
+  if(format==3){ // prtdirc
     for(UInt_t i = 0; i != newset.size(); i++) {
       std::cout<<"cc"<<newset[i].getAliasId()<< "S.root  " <<newset[i].getStudyId()<<"/"<<i<<std::endl;
     }
   }
-  if(format==2){ // cp
+  if(format==10){ // cp
     for(UInt_t i = 0; i != dataArray.size(); i++) {
       std::cout<<"cc"<<dataArray[i].getRunId()<< ".hld  ";
     }
