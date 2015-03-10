@@ -269,9 +269,16 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
   if(format==3){ // prtdirc
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"cc"<<newset[i].getAliasId()<< "S.root  " <<newset[i].getStudyId()<<"/"<<i<<std::endl;
+      std::cout<<" -l "<<newset[i].getLensId()<<" -a "<<newset[i].getAngle()<<" -gz "<<newset[i].getZ()<<" -gx "<<newset[i].getX()<<" -gs "<<newset[i].getStep()<<" "<<std::endl;
     }
   }
+
+  if(format==4){ //sim out name  
+    for(UInt_t i = 0; i != newset.size(); i++) {
+      std::cout<<"cc"<<newset[i].getAliasId()<< "S.root"<<std::endl;
+    }
+  }
+
   if(format==10){ // cp
     for(UInt_t i = 0; i != dataArray.size(); i++) {
       std::cout<<"cc"<<dataArray[i].getRunId()<< ".hld  ";
@@ -291,7 +298,7 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
 
   // std::cout<<"ST"<<studyId<<std::endl;
   // for(UInt_t i = 0; i != newset.size(); i++) {
-  //   std::cout<< newset[i].getAngle()<<" ";
+  //   std::cout<< newset[i].getX()<<" ";
   // }  
 
   //for(UInt_t i = 0; i != aliasArray.size(); i++) {
