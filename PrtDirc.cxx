@@ -124,7 +124,7 @@ int main(int argc,char** argv)
   if(beamX.size())   PrtManager::Instance()->SetBeamX(atof(beamX));
   if(beamZ.size())   PrtManager::Instance()->SetBeamZ(atof(beamZ));
 
-  if(beamDimension.size())PrtManager::Instance()->SetTest1(atoi(beamDimension));
+  //if(beamDimension.size())PrtManager::Instance()->SetTest1(atoi(beamDimension));
  
   // Detector construction
   runManager-> SetUserInitialization(new PrtDetectorConstruction());

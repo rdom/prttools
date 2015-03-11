@@ -116,7 +116,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
     dircpos = fCenterShift; // G4ThreeVector(fCenterShift, 0., 0.);
     dircpos.rotateY((PrtManager::Instance()->GetAngle()-90)*deg);
   }
-  
+  fPrtRot->rotateX(PrtManager::Instance()->GetTest1()*deg);
   wDirc  = new G4PVPlacement(fPrtRot,dircpos,lDirc,"wDirc",lExpHall,false,0);
 
   // The DIRC cover box

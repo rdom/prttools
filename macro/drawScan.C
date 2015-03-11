@@ -4,7 +4,7 @@
 #include "../../prttools/prttools.C"
 
 void drawScan(TString infile="../build/hits.root"){
-  fSaveFlag(2);
+  fSaveFlag = 2;
   fInfo = "drawScan.C \n";
   PrtInit(infile,1); //digi
   
@@ -30,5 +30,5 @@ void drawScan(TString infile="../build/hits.root"){
   }
   
   drawDigi("m,p,v\n",1);
-  save(cDigi,"scan",Form("sc_%d_%d",angle,step),fInfo,fSaveFlag,1,-1);
+  save(cDigi,"beamsigma",Form("sc_%d_%d",angle,test),fInfo,fSaveFlag,1,2);
 }
