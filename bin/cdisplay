@@ -79,7 +79,7 @@ else
 	cd $HOME/dirc/prttools
     fi
     flags="-l"
-    if if [ $quite ]; then
+    if [ $quite ]; then
 	flags="-l -q"
     fi
     root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\")"
