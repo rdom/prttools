@@ -21,12 +21,14 @@ show_help(){
         path for export (for -a 10)
      -i
         information string (for -a 10)
+     -q
+        quite mode
 "
   echo "$help" 
 }
 
 OPTIND=1 
-while getopts "h?r:la:p:i:" opt; do
+while getopts "h?r:la:p:i:q" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -41,6 +43,8 @@ while getopts "h?r:la:p:i:" opt; do
 	p)  path=$OPTARG
 	    ;;
 	i)  info=$OPTARG
+	    ;;
+	q)  quite=1
 	    ;;
     esac
 done
@@ -75,7 +79,7 @@ else
 	cd $HOME/dirc/prttools
     fi
     flags="-l"
-    if [ $mode == 10 ]; then
+    if if [ $quite ]; then
 	flags="-l -q"
     fi
     root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\")"
