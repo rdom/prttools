@@ -865,7 +865,6 @@ void MyMainFrame::DoExport(){
   //  cExport->SetCanvasSize(800,400);
 
   if(gMode==10 || gMode==100){
-
     for(Int_t m=0; m<nmcp; m++){
       for(Int_t p=0; p<npix; p++){
 	cExport->cd();
@@ -880,6 +879,8 @@ void MyMainFrame::DoExport(){
     }
 
     save(cDigi,filedir+"/"+gPath,"digi","cdisplay "+gInfo,2,1,2);
+    writeInfo("digi.csv", drawDigi("m,p,v\n",1), saveFlag);
+
   }else{
     save(cDigi,path,"digi","cdisplay",saveFlag,1,2);
   }
