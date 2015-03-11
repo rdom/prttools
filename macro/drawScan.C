@@ -4,18 +4,19 @@
 #include "../../prttools/prttools.C"
 
 void drawScan(TString infile="../build/hits.root"){
-  fSaveFlag = 2;
+  fSaveFlag(2);
   fInfo = "drawScan.C \n";
   PrtInit(infile,1); //digi
   
-  Int_t angle = 0;
-  Int_t step = 0;
+  Int_t angle(0);
+  Int_t test(0),step(0);
   PrtHit fHit;
   for (Int_t ievent=0; ievent<fCh->GetEntries(); ievent++){
     PrtNextEvent(ievent,1000);
     if(ievent==0){
       angle = fEvent->GetAngle() + 0.01;
       step = fEvent->GetPrismStep()*2;
+      test = fEvent->GetTest1();
       fInfo +=  fEvent->PrintInfo();
     }
     for(Int_t h=0; h<fEvent->GetHitSize(); h++){

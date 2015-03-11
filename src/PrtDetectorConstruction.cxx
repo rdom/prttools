@@ -143,8 +143,8 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   G4Box* gfbox = new G4Box("Fbox",fLens[0]/2.,fLens[1]/2.,fLens[2]/2.);
   
   if(PrtManager::Instance()->GetLens() == 1){ // Spherical lens
-    G4double r1 = PrtManager::Instance()->GetTest1(); 
-    G4double lensrad1 = (r1==0)? 100: r1;
+    G4double r1 = 0; // PrtManager::Instance()->GetTest1(); 
+    G4double lensrad1 = (r1==0)? 73: r1;
     G4double lensMinThikness = 2; 
 
     G4ThreeVector zTrans1(0, 0, -lensrad1+fLens[2]/2.-lensMinThikness);
@@ -172,11 +172,11 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   if(PrtManager::Instance()->GetLens() == 3){ // 3-component spherical lens
     G4double lensMinThikness = 2; 
   
-    G4double r1 = PrtManager::Instance()->GetTest1();
-    G4double r2 = PrtManager::Instance()->GetTest2();
+    G4double r1 = 0; //PrtManager::Instance()->GetTest1();
+    G4double r2 = 0; //PrtManager::Instance()->GetTest2();
   
-    G4double lensrad1 = (r1==0)? 100: r1;
-    G4double lensrad2 = (r2==0)? 50: r2;
+    G4double lensrad1 = (r1==0)? 47.8: r1;
+    G4double lensrad2 = (r2==0)? 29.1: r2;
     
  
     G4ThreeVector zTrans1(0, 0, -lensrad1-fLens[2]/2.+lensrad1-sqrt(lensrad1*lensrad1-fLens[0]/2.*fLens[0]/2.)+lensMinThikness);
