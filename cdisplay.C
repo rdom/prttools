@@ -281,10 +281,12 @@ Bool_t MSelector::Process(Long64_t entry){
     }
   }
   
-  bool data(false);
-  TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
-  if(current_file_name.Contains("C.root")) data = true;
- 
+  bool bsim(false);
+  if(gMode==100){
+    TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
+    if(current_file_name.Contains("S.root")) bsim = true;
+  } 
+
   Double_t le,tot, refLe=-1;
   PrtHit hit;
   Int_t mcp,pix,col,row,ch,chMultiplicity;
@@ -314,7 +316,7 @@ Bool_t MSelector::Process(Long64_t entry){
     ch  = hit.GetChannel();
     mcp = hit.GetMcpId();
 
-    if(data){
+    if(!bsim){
       hCh->Fill(ch);
       chMultiplicity = mult[ch];
       hMult->Fill(chMultiplicity);
@@ -345,7 +347,7 @@ Bool_t MSelector::Process(Long64_t entry){
     }
 
     if(refLe!=-1 || gTrigger==0) {
-      if(!data){
+      if(bsim){
 	hSTime[mcp][pix]->Fill(timeDiff+72);
 	continue;
       }
@@ -373,7 +375,7 @@ Bool_t MSelector::Process(Long64_t entry){
     hLe->Fill(le);
   }
 
-  if(data){
+  if(!bsim){
     if(hitCount1+hitCount2 !=0) hEMult[0]->Fill(hitCount1+hitCount2);
     if(hitCount1!=0) hEMult[1]->Fill(hitCount1);
     if(hitCount2!=0) hEMult[2]->Fill(hitCount2);
