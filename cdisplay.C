@@ -280,6 +280,10 @@ Bool_t MSelector::Process(Long64_t entry){
       offset = soffset.Atof();
     }
   }
+  
+  bool data(false);
+  TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
+  if(current_file_name.Contains("C.root")) data = true;
  
   Double_t le,tot, refLe=-1;
   PrtHit hit;
@@ -310,10 +314,11 @@ Bool_t MSelector::Process(Long64_t entry){
     ch  = hit.GetChannel();
     mcp = hit.GetMcpId();
 
-    hCh->Fill(ch);
-    chMultiplicity = mult[ch];
-    hMult->Fill(chMultiplicity);
-
+    if(data){
+      hCh->Fill(ch);
+      chMultiplicity = mult[ch];
+      hMult->Fill(chMultiplicity);
+    }
     if(mcp>14){
       hitCount1++;
       continue;
@@ -340,18 +345,20 @@ Bool_t MSelector::Process(Long64_t entry){
     }
 
     if(refLe!=-1 || gTrigger==0) {
-      fhDigi[mcp]->Fill(col, row);
+      if(!data){
+	hSTime[mcp][pix]->Fill(timeDiff+72);
+	continue;
+      }
       if(gMode==1){
 	hLeTot[mcp][pix]->SetTitle(Form("ch %d",ch));
 	hLeTot[mcp][pix]->Fill(timeDiff,tot);
 	hShape[mcp][pix]->Fill(timeDiff,offset);
 	hShape[mcp][pix]->Fill(timeDiff + tot,offset);
       }
+      fhDigi[mcp]->Fill(col, row);
       hPTime[mcp][pix]->Fill(timeDiff);
       hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
-      hSTime[mcp][pix]->Fill(timeDiff+72);
     }
-
     hPTot[mcp][pix]->Fill(tot);
     hPTot[mcp][pix]->SetTitle(Form("mcp %d, pixel %d, channel %d",mcp, pix, ch));
       
@@ -365,13 +372,14 @@ Bool_t MSelector::Process(Long64_t entry){
     hTot->Fill(tot);
     hLe->Fill(le);
   }
- 
-  if(hitCount1+hitCount2 !=0) hEMult[0]->Fill(hitCount1+hitCount2);
-  if(hitCount1!=0) hEMult[1]->Fill(hitCount1);
-  if(hitCount2!=0) hEMult[2]->Fill(hitCount2);
-  hMultEvtNum1->Fill(entry,hitCount1);
-  hMultEvtNum2->Fill(entry,hitCount2);
 
+  if(data){
+    if(hitCount1+hitCount2 !=0) hEMult[0]->Fill(hitCount1+hitCount2);
+    if(hitCount1!=0) hEMult[1]->Fill(hitCount1);
+    if(hitCount2!=0) hEMult[2]->Fill(hitCount2);
+    hMultEvtNum1->Fill(entry,hitCount1);
+    hMultEvtNum2->Fill(entry,hitCount2);
+  }
   return kTRUE;
 }
 
