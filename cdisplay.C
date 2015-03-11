@@ -393,6 +393,7 @@ TVector3 fit(TH1F *h, Double_t range = 3){
   int binmax = h->GetMaximumBin();
   double xmax = h->GetXaxis()->GetBinCenter(binmax);
   gaust = new TF1("gaust","gaus(0)",xmax-range,xmax+range);
+  gaust->SetLineColor(1);
   Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-0.6),h->GetXaxis()->FindBin(xmax+0.6));
   Double_t xxmin, xxmax, sigma1=0, mean1=0, sigma2, mean2;
   xxmax = xmax;
