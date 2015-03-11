@@ -658,7 +658,7 @@ void MyMainFrame::DoDraw(){
     TString dirid = ginFile;
     fileid.Remove(0,fileid.Last('/')+1);
     dirid.Remove(dirid.Last('/'));
-    TString line = Form("if(\"%s\" == fileid) offset = %f;", fileid.Data(), xmax1-xmax2);
+    TString line = Form("if(\"%s\" == fileid) offset = %f;\n", fileid.Data(), xmax1-xmax2);
     std::cout<<"line  "<<line <<std::endl;
 
     std::ofstream out;
