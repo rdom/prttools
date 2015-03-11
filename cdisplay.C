@@ -44,6 +44,7 @@ class PrtEvent;
 MyMainFrame *gMain;
 const int nmcp = 15, npix = 64;
 TH1F *hPTime[nmcp][npix];
+TH1F *hSTime[nmcp][npix];
 TH1F *hPTot[nmcp][npix];
 TH1F *hPMult[nmcp][npix];
 TH1F *hEMult[nmcp+1];
@@ -191,6 +192,7 @@ void MSelector::SlaveBegin(TTree *){
 
     for(Int_t p=0; p<npix; p++){     
       hPTime[m][p]   = new TH1F(Form("le_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
+      hSTime[m][p]   = new TH1F(Form("les_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
       hPTot[m][p]   = new TH1F(Form("tot_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins2,min2,max2);
       hPMult[m][p]   = new TH1F(Form("mult_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  50,0,50);
       
@@ -209,6 +211,7 @@ void MSelector::SlaveBegin(TTree *){
       axisTime800x500(hPMult[m][p],"multiplicity, [#]");
   
       fOutput->Add(hPTime[m][p]);
+      fOutput->Add(hSTime[m][p]);
       fOutput->Add(hPTot[m][p]);
       fOutput->Add(hPMult[m][p]);
     }
@@ -334,6 +337,7 @@ Bool_t MSelector::Process(Long64_t entry){
       }
       hPTime[mcp][pix]->Fill(timeDiff);
       hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
+      hSTime[mcp][pix]->Fill(timeDiff+70);
     }
 
     hPTot[mcp][pix]->Fill(tot);
@@ -512,6 +516,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	hPTime[mcp][pix]->Draw();
 	fit(hPTime[mcp][pix],1);
 	hPTime[mcp][pix]->Draw("same");
+	hSTime[mcp][pix]->Draw("same");
       }
       if(gComboId==2) hPTot[mcp][pix]->Draw();   
       if(gComboId==5) hPMult[mcp][pix]->Draw();      
@@ -542,6 +547,7 @@ void MSelector::Terminate(){
     hEMult[m] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("emult_m%d",m), fOutput)); 
     for(Int_t p=0; p<npix; p++){
       hPTime[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("le_mcp%dpix%d",m,p), fOutput)); 
+      hSTime[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("les_mcp%dpix%d",m,p), fOutput)); 
       hPTot[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("tot_mcp%dpix%d",m,p), fOutput)); 
       hPMult[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("mult_mcp%dpix%d",m,p), fOutput)); 
       if(gMode==1){
@@ -577,6 +583,7 @@ void MyMainFrame::DoDraw(){
     if(hEMult[m]) hEMult[m]->Reset();
     for(Int_t p=0; p<npix; p++){
       if(hPTime[m][p]) hPTime[m][p]->Reset();
+      if(hSTime[m][p]) hSTime[m][p]->Reset();
       if(hPTot[m][p]) hPTot[m][p]->Reset();
       if(hPMult[m][p]) hPMult[m][p]->Reset();
     }
@@ -745,6 +752,7 @@ void MyMainFrame::DoExport(){
 	  hPTime[m][p]->Draw();
 	  fit(hPTime[m][p]);
 	  hPTime[m][p]->Draw("same");
+	  hSTime[m][p]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
 	}
 	if(gComboId==2){

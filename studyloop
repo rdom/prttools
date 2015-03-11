@@ -1,9 +1,9 @@
 #!/bin/bash
 
-OIFS="$IFS"
-IFS=$'\n'
-
 for ((i=0;i<6;i++)); do
+    OIFS="$IFS"
+    IFS=$'\n'
+
     file=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,0)" 2>/dev/null))
     path=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,1)" 2>/dev/null))
     info=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,2)" 2>/dev/null))
@@ -11,10 +11,12 @@ for ((i=0;i<6;i++)); do
     args=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,3)" 2>/dev/null))
     outs=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,4)" 2>/dev/null))
 
+    IFS="$OIFS"
+
     for ((k=1;k<${#file[@]};k++)); do
 	#cdisplay -a10  -p "j14/${path[k]}" -i "${info[k]}" ${file[k]}
-	prtdirc -o ${outs[k]} -s 0 -e 500 -x "pi+" -p 1.7 -z 0 -g 3 -h 2  "${args[k]}"  -b 1 -r $tseed$i > l_b$i.log
+	echo -o ${outs[k]} -s 0 -e 500 -x "pi+" -p 1.7 -z 0 -g 3 -h 2  ${args[k]}  -b 1
+	prtdirc -o ${outs[k]} -s 0 -e 500 -x "pi+" -p 1.7 -z 0 -g 3 -h 2  ${args[k]}  -b 1 > ${outs[k]}.log  &
     done
 done
-IFS="$OIFS"
 
