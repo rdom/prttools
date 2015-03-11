@@ -681,11 +681,11 @@ void MyMainFrame::DoDraw(){
   drawDigi("m,p,v\n",1);
   updatePlot(gComboId);
 
-  if(gMode==10) {
+  if(gMode==10 || gMode==100) {
     gComboId=7;
     DoExport();
   }
-  if(gMode==100){
+  if(gMode==101){
     double xmax1 = hLe->GetXaxis()->GetBinCenter(hLe->GetMaximumBin());
     double xmax2 = hLes->GetXaxis()->GetBinCenter(hLes->GetMaximumBin());
     
@@ -864,11 +864,26 @@ void MyMainFrame::DoExport(){
   //  cExport = (TCanvas *) cDigi->DrawClone();
   //  cExport->SetCanvasSize(800,400);
 
-  if(gMode==10){
+  if(gMode==10 || gMode==100){
+
+    for(Int_t m=0; m<nmcp; m++){
+      for(Int_t p=0; p<npix; p++){
+	cExport->cd();
+	
+	hPTime[m][p]->Draw();
+	fit(hPTime[m][p]);
+	hPTime[m][p]->Draw("same");
+	if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
+	histname=hPTime[m][p]->GetName();
+	save(cExport,filedir+"/"+gPath,histname,"cdisplay"+gInfo,2,1,2);	
+      }
+    }
+
     save(cDigi,filedir+"/"+gPath,"digi","cdisplay "+gInfo,2,1,2);
   }else{
     save(cDigi,path,"digi","cdisplay",saveFlag,1,2);
   }
+
   gROOT->SetBatch(0);
   std::cout<<"Exporting .. Done"<<std::endl;
   
