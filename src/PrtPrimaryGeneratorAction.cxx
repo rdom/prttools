@@ -47,12 +47,12 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double radiatorW = PrtManager::Instance()->GetRadiatorW();
   G4double radiatorH = PrtManager::Instance()->GetRadiatorH();
 
-  if(PrtManager::Instance()->GetBeamDinsion() == 5){ // random momentum
+  if(PrtManager::Instance()->GetBeamDinsion() == -1){ // random momentum
     fParticleGun->SetParticleMomentum(G4ThreeVector(0, 0, 4.0*GeV*G4UniformRand()));
   }
 
-  if(PrtManager::Instance()->GetBeamDinsion() == 1){ // smearing and divergence
-    G4double sigma = 1*cm;
+  if(PrtManager::Instance()->GetBeamDinsion() > 0){ // smearing and divergence
+    G4double sigma = PrtManager::Instance()->GetBeamDinsion()*mm;
     z = fParticleGun->GetParticlePosition().z();
     x = G4RandGauss::shoot(0,sigma);
     y = G4RandGauss::shoot(0,sigma);
