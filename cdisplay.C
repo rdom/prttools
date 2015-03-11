@@ -61,7 +61,7 @@ const Int_t maxMult = 30;
 TH1F *hTotM[maxMult];
 TH1F *hLeM[maxMult];
 
-TH1F *hTot,*hLe,*hMult,*hCh;
+TH1F *hTot,*hLe,*hLes,*hMult,*hCh;
 TH1F *hMultEvtNum1,*hMultEvtNum2;
 
 TCanvas *cTime;
@@ -169,7 +169,7 @@ void MSelector::SlaveBegin(TTree *){
   
   for(Int_t i=0; i<maxMult; i++){
     hTotM[i]=new TH1F(Form("hTot%d",i),Form("hTot%d",i),500,min2,max2);
-    hLeM[i]=new TH1F(Form("hLe%d",i),Form("hLe%d",i),5000,-600,600);
+    hLeM[i]=new TH1F(Form("hLe%d",i),Form("hLe%d",i),5000,-100,100);
     fOutput->Add(hTotM[i]);
     fOutput->Add(hLeM[i]);
   }
@@ -230,7 +230,8 @@ void MSelector::SlaveBegin(TTree *){
   }
 
   hTot=new TH1F("hTotA","",500,min2,max2);
-  hLe=new TH1F("hLeA","",5000,-600,600);
+  hLe=new TH1F("hLeA","",5000,-100,100);
+  hLes=new TH1F("hLeAs","",5000,-100,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",3000,0,3000);
 
@@ -241,6 +242,7 @@ void MSelector::SlaveBegin(TTree *){
   gStyle->SetOptStat(1001111);
   
   fOutput->Add(hLe);
+  fOutput->Add(hLes);
   fOutput->Add(hTot);
   fOutput->Add(hMult);
   fOutput->Add(hEMult[nmcp]);
@@ -348,7 +350,8 @@ Bool_t MSelector::Process(Long64_t entry){
 
     if(refLe!=-1 || gTrigger==0) {
       if(bsim){
-	hSTime[mcp][pix]->Fill(timeDiff+72);
+	hSTime[mcp][pix]->Fill(timeDiff+72.2);
+	hLes->Fill(le);
 	continue;
       }
       if(gMode==1){
@@ -538,7 +541,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	hPTime[mcp][pix]->Draw();
 	fit(hPTime[mcp][pix],1);
 	hPTime[mcp][pix]->Draw("same");
-	hSTime[mcp][pix]->Draw("same");
+	if(hPTime[mcp][pix]->GetEntries()>10) hSTime[mcp][pix]->Draw("same");
       }
       if(gComboId==2) hPTot[mcp][pix]->Draw();   
       if(gComboId==5) hPMult[mcp][pix]->Draw();      
@@ -584,6 +587,7 @@ void MSelector::Terminate(){
   }
 
   hLe = dynamic_cast<TH1F *>(TProof::GetOutput("hLeA", fOutput));   
+  hLes = dynamic_cast<TH1F *>(TProof::GetOutput("hLeAs", fOutput));   
   hTot = dynamic_cast<TH1F *>(TProof::GetOutput("hTotA", fOutput)); 
   hMult = dynamic_cast<TH1F *>(TProof::GetOutput("hMultA", fOutput)); 
   hEMult[nmcp] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("emult_m%d",nmcp), fOutput)); 
@@ -611,6 +615,7 @@ void MyMainFrame::DoDraw(){
     }
   }
   if(hLe) hLe->Reset();
+  if(hLes) hLes->Reset();
   if(hTot) hTot->Reset();
   if(hMult) hMult->Reset();
   if(hCh) hCh->Reset(); 
@@ -660,6 +665,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
   case 1: // LE All
     cT->SetLogy(1);
     hLe->Draw();
+    hLes->Draw("same");
     for(Int_t i=0; i<maxMult; i++){
       Int_t colorid = i+1;
       if(colorid ==5) colorid=9;
@@ -774,7 +780,7 @@ void MyMainFrame::DoExport(){
 	  hPTime[m][p]->Draw();
 	  fit(hPTime[m][p]);
 	  hPTime[m][p]->Draw("same");
-	  hSTime[m][p]->Draw("same");
+	  if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
 	}
 	if(gComboId==2){

@@ -16,6 +16,7 @@ show_help(){
         use latest *M.root file in current folder
      -a
         advanced mode (more plots but needs more RAM)
+        100 plot data (*C.root) and sim(*S.root) together 
      -p
         path for export (for -a 10)
      -i
