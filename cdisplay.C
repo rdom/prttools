@@ -91,9 +91,20 @@ void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
 void init(){
   SetRootPalette(1);
   TFile *f = new TFile(ginFile);
-
   fCh = new TChain("data");
   fCh->Add(ginFile);
+  
+  TString insim =  ginFile;
+  insim.ReplaceAll("C.root","S.root");
+  
+  Long_t* id;
+  Long_t* size;
+  Long_t* flags;
+  Long_t* modtime;
+  if(!gSystem->GetPathInfo(insim,id,size,flags,modtime)){
+    std::cout<<"Add Sim file: "<<insim <<std::endl;
+    fCh->Add(insim);
+  }
 
   fNEntries = fCh->GetEntries();
   std::cout<<"Entries in chain:  "<< fNEntries<<std::endl;
@@ -209,7 +220,8 @@ void MSelector::SlaveBegin(TTree *){
       axisTime800x500(hPTime[m][p]);
       axisTime800x500(hPTot[m][p],"TOT time, [ns]");
       axisTime800x500(hPMult[m][p],"multiplicity, [#]");
-  
+      hSTime[m][p]->SetLineColor(2);
+
       fOutput->Add(hPTime[m][p]);
       fOutput->Add(hSTime[m][p]);
       fOutput->Add(hPTot[m][p]);
@@ -337,7 +349,7 @@ Bool_t MSelector::Process(Long64_t entry){
       }
       hPTime[mcp][pix]->Fill(timeDiff);
       hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
-      hSTime[mcp][pix]->Fill(timeDiff+70);
+      hSTime[mcp][pix]->Fill(timeDiff+72);
     }
 
     hPTot[mcp][pix]->Fill(tot);
