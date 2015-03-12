@@ -72,7 +72,10 @@ PrtDetectorConstruction::PrtDetectorConstruction()
     // fPrismRadiatorStep = fPrizm[3]/2.-fBar[0]/2.; 
     //  fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2.   +30.6; //gx PrtManager::Instance()->GetTest1() ;//
     //fCenterShift =  G4ThreeVector(fBar[2]/2.-334,0,-40.3);
-    fCenterShift =  G4ThreeVector(fBar[2]/2.-PrtManager::Instance()->GetBeamZ(),-PrtManager::Instance()->GetBeamX(),0);
+    Double_t zshift = (PrtManager::Instance()->GetBeamZ()==-1)? 0: fBar[2]/2.-PrtManager::Instance()->GetBeamZ();
+    std::cout<<"zshift  "<<zshift <<std::endl;
+    
+    fCenterShift =  G4ThreeVector(zshift,-PrtManager::Instance()->GetBeamX(),0);
   }
   
   PrtManager::Instance()->SetRadiatorL(fBar[2]);
@@ -116,7 +119,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
     dircpos = fCenterShift; // G4ThreeVector(fCenterShift, 0., 0.);
     dircpos.rotateY((PrtManager::Instance()->GetAngle()-90)*deg);
   }
-  fPrtRot->rotateX(PrtManager::Instance()->GetTest1()*deg);
+  //tilt scan  fPrtRot->rotateX(PrtManager::Instance()->GetTest1()*deg);
   wDirc  = new G4PVPlacement(fPrtRot,dircpos,lDirc,"wDirc",lExpHall,false,0);
 
   // The DIRC cover box

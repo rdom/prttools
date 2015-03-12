@@ -9,7 +9,8 @@ void drawScan(TString infile="../build/hits.root"){
   PrtInit(infile,1); //digi
   
   Int_t angle(0);
-  Int_t test(0),step(0);
+  Double_t test(0);
+  Int_t itest(0), step(0);
   PrtHit fHit;
   for (Int_t ievent=0; ievent<fCh->GetEntries(); ievent++){
     PrtNextEvent(ievent,1000);
@@ -28,7 +29,7 @@ void drawScan(TString infile="../build/hits.root"){
       fhDigi[mcpid]->Fill(7-pixid/8, pixid%8);
     }
   }
-  
+  itest = test+50;
   drawDigi("m,p,v\n",1);
-  save(cDigi,"beamsigma",Form("sc_%d_%d",angle,test),fInfo,fSaveFlag,1,2);
+  save(cDigi,"tiltdirc",Form("sc_%d_%d",angle,itest),fInfo,fSaveFlag,1,2);
 }
