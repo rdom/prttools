@@ -534,7 +534,7 @@ void normalize(TH1F* hists[],Int_t size){
   Double_t max = 0;
   Double_t min = 0;
   for(Int_t i=0; i<size; i++){
-    Double_t tmax = hists[i]->GetMaximum();
+    Double_t tmax =  hists[i]->GetBinContent(hists[i]->GetMaximumBin());
     Double_t tmin = hists[i]->GetMinimum();
     if(tmax>max) max = tmax;
     if(tmin<min) min = tmin;

@@ -574,6 +574,8 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       //    printf("Canvas %s: event=%d, x=%d, y=%d, p=%d, selected=%d\n", smcp.Data(), event, binx, biny, pix,smcp.Atoi());
       cTime->cd();
       if(gComboId==0) {
+	TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
+	normalize(hh,2);
 	hPTime[mcp][pix]->Draw();
 	fit(hPTime[mcp][pix],1);
 	hPTime[mcp][pix]->Draw("same");
@@ -681,10 +683,15 @@ void MyMainFrame::DoDraw(){
   drawDigi("m,p,v\n",1);
   updatePlot(gComboId);
 
-  if(gMode==10 || gMode==100) {
+  if(gMode==10) {
     gComboId=7;
     DoExport();
   }
+
+  if(gROOT->IsBatch() && gMode==100) {
+    DoExport();
+  }
+
   if(gMode==101){
     double xmax1 = hLe->GetXaxis()->GetBinCenter(hLe->GetMaximumBin());
     double xmax2 = hLes->GetXaxis()->GetBinCenter(hLes->GetMaximumBin());
@@ -865,16 +872,19 @@ void MyMainFrame::DoExport(){
   //  cExport->SetCanvasSize(800,400);
 
   if(gMode==10 || gMode==100){
-    for(Int_t m=0; m<nmcp; m++){
-      for(Int_t p=0; p<npix; p++){
-	cExport->cd();
-	
-	hPTime[m][p]->Draw();
-	fit(hPTime[m][p]);
-	hPTime[m][p]->Draw("same");
-	if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
-	histname=hPTime[m][p]->GetName();
-	save(cExport,filedir+"/"+gPath,histname,"cdisplay"+gInfo,2,1,2);	
+    if( gMode==100){
+      for(Int_t m=0; m<nmcp; m++){
+	for(Int_t p=0; p<npix; p++){
+	  cExport->cd();
+	  TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
+	  normalize(hh,2);
+	  hPTime[m][p]->Draw();
+	  fit(hPTime[m][p]);
+	  hPTime[m][p]->Draw("same");
+	  if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
+	  histname=hPTime[m][p]->GetName();
+	  save(cExport,filedir+"/"+gPath,histname,"cdisplay"+gInfo,2,1,2);	
+	}
       }
     }
 

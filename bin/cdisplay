@@ -17,6 +17,7 @@ show_help(){
      -a
         advanced mode (more plots but needs more RAM)
         100 plot data (*C.root) and sim(*S.root) together 
+        101 print sim-data time offsets (see 100)
      -p
         path for export (for -a 10)
      -i
