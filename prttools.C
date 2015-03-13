@@ -438,27 +438,34 @@ void writeInfo(TString filename, TString info,Int_t flag=1){
   myfile.close();
 }
 
-// flag < 0 - do not save anything
-// flag = 0 - save in a new folder based on date
-// flag = 2 - save in a folder dir (second argument)  
-void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", Int_t flag=1, Int_t bfiles=0, Int_t style=0){
-  if(flag<1) return;
-  TString path = "";
-  if(flag == 0 && flag!=2){
+TString createDir(TString dir="rdata", TString info = "", Int_t flag=1){
+  if(flag==0) return "";
+  if(flag==2) {
+    gSystem->mkdir(dir,kTRUE);
+    gg_path = dir;
+  }else{
+    gSystem->mkdir(dir);
     TDatime *time = new TDatime();
-    TString stime = Form("%d.%d.%d", time->GetDay(),time->GetMonth(),time->GetYear()); 
+    TString path(""), stime = Form("%d.%d.%d", time->GetDay(),time->GetMonth(),time->GetYear()); 
     gSystem->mkdir(dir+"/"+stime);
     for(Int_t i=0; i<1000; i++){
-      path = dir+"/"+stime+"/"+Form("arid-%d",i);
-      if(gSystem->mkdir(path)==0) break;
+      path = stime+"/"+Form("arid-%d",i);
+      if(gSystem->mkdir(dir+"/"+path)==0) break;
     }
-    writeInfo("readme", info);
-  }else{
-    path = dir;
-    gSystem->mkdir(path,true);
-    gg_path=path;
-    writeInfo("readme", info);
+    gSystem->Unlink(dir+"/last");
+    gSystem->Symlink(path, dir+"/last");
+    gg_path = dir+"/"+path;
   }
+  writeInfo("readme", info);
+  return gg_path;
+}
+
+// flag = 0 - do not save anything
+// flag = 1 - save in a new folder based on date
+// flag = 2 - save in a folder dir (second argument)  
+void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", Int_t flag=0, Int_t bfiles=0, Int_t style=0){
+  if(flag==0) return;
+  TString path = createDir(dir,info,flag);
   Int_t w = 800, h = 400;
   if(c) {
     gROOT->SetBatch(1);
@@ -489,29 +496,6 @@ void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", 
   }
 }
 
-TString createDir(TString dir="rdata", TString info = "", Int_t flag=1){
-  if(flag<1) return "";
-  TString path = "";
-  if(flag==2) {
-    gSystem->mkdir(dir,kTRUE);
-    path = dir;
-  }else{
-    gSystem->mkdir(dir);
-    TDatime *time = new TDatime();
-    TString stime = Form("%d.%d.%d", time->GetDay(),time->GetMonth(),time->GetYear()); 
-    gSystem->mkdir(dir+"/"+stime);
-    for(Int_t i=0; i<1000; i++){
-      path = dir+"/"+stime+"/"+Form("arid-%d",i);
-      if(gSystem->mkdir(path)==0) break;
-    }
-    gSystem->Unlink(dir+"/last");
-    gSystem->Symlink(path, dir+"/last");
-  }
-  gg_path = path;
-  writeInfo("readme", info);
-  return path;
-}
-
 TString createSubDir(TString dir="dir", Int_t flag=1){
   if(flag<1) return "";
   TString path = "";
@@ -537,15 +521,12 @@ void canvasCd(TString name="c"){
 // style = 1 - for talk 
 // what = 0 - save in png, pdf, root formats
 // what = 1 - save in png format
-void canvasSave(Int_t style=0, TString info="", Int_t what=0, TString spath=""){
-  TString path = spath;
-  if(path!="") createDir(spath, info,2);
-  
+void canvasSave(Int_t style=0, TString info="", Int_t what=0, TString path=""){
   TIter next(gg_canvasList);
   TCanvas *c=0;
-   while((c = (TCanvas*) next())){
-     if(path!="") save(c, path,c->GetName(), "", 2,what,style);
-     else  save(c, path,c->GetName(), "", 1,what,style);
+  while((c = (TCanvas*) next())){
+    if(path=="")  save(c, "data",c->GetName(), info, 1,what,style);
+    else save(c, path,c->GetName(), "", 2,what,style);
   }
 }  
 

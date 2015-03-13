@@ -13,6 +13,7 @@ class DataInfo {
   Double_t _z;
   Double_t _x;
   Double_t _step;
+  Double_t _simToffset;
 
   Int_t _fileId;
   Int_t _zId;
@@ -87,11 +88,13 @@ public:
   Int_t getFileId(){return _fileId;}
   TString getChildRunId(Int_t ind){return _childRuns[ind];}
   Int_t getNChildren(){return _nchildren;}
+  Double_t getSimTO() const { return _simToffset; }
   
   /* Mutators */
   void setRunId(TString var) { _runId = var; }
   void setAliasId(TString var) { _aliasId = var; }
   void setFileId(Int_t var) { _fileId = var; }
+  void setSimTO(Double_t var) { _simToffset = var; }
   
 };	// end of class DataInfo
 
@@ -234,15 +237,56 @@ void createAliases(){
     }
   }
 
+  for(UInt_t k = 0; k != aliasArray.size(); k++) {
+    Double_t offset =0;
+    if("00000000001" == aliasArray[k].getAliasId()) offset = 72.080000;
+    if("00000000002" == aliasArray[k].getAliasId()) offset = 72.240000;
+    if("00000000003" == aliasArray[k].getAliasId()) offset = 72.240000;
+    if("00000000004" == aliasArray[k].getAliasId()) offset = 72.360000;
+    if("00000000005" == aliasArray[k].getAliasId()) offset = 72.400000;
+    if("00000000006" == aliasArray[k].getAliasId()) offset = 72.480000;
+    if("00000000007" == aliasArray[k].getAliasId()) offset = 72.200000;
+    if("00000000008" == aliasArray[k].getAliasId()) offset = 72.240000;
+    if("00000000009" == aliasArray[k].getAliasId()) offset = 72.160000;
+    if("00000000010" == aliasArray[k].getAliasId()) offset = 72.160000;
+    if("00000000011" == aliasArray[k].getAliasId()) offset = 73.560000;
+    if("00000000012" == aliasArray[k].getAliasId()) offset = 73.560000;
+    if("00000000013" == aliasArray[k].getAliasId()) offset = 72.960000;
+    if("00000000014" == aliasArray[k].getAliasId()) offset = 72.480000;
+    if("00000000015" == aliasArray[k].getAliasId()) offset = 72.120000;
+    if("00000000016" == aliasArray[k].getAliasId()) offset = 72.680000;
+    if("00000000017" == aliasArray[k].getAliasId()) offset = 72.040000;
+    if("00000000018" == aliasArray[k].getAliasId()) offset = 72.120000;
+    if("00000000019" == aliasArray[k].getAliasId()) offset = 72.040000;
+    if("00000000020" == aliasArray[k].getAliasId()) offset = 72.080000;
+    if("00000000021" == aliasArray[k].getAliasId()) offset = 72.040000;
+    if("00000000022" == aliasArray[k].getAliasId()) offset = 72.080000;
+    if("00000000023" == aliasArray[k].getAliasId()) offset = 72.080000;
+    if("00000000024" == aliasArray[k].getAliasId()) offset = 72.040000;
+    if("00000000025" == aliasArray[k].getAliasId()) offset = 72.080000;
+    if("00000000026" == aliasArray[k].getAliasId()) offset = 72.000000;
+    if("00000000027" == aliasArray[k].getAliasId()) offset = 72.040000;
+    if("00000000028" == aliasArray[k].getAliasId()) offset = 71.960000;
+    if("00000000029" == aliasArray[k].getAliasId()) offset = 71.920000;
+    if("00000000030" == aliasArray[k].getAliasId()) offset = 71.920000;
+    if("00000000031" == aliasArray[k].getAliasId()) offset = 71.960000;
+    if("00000000014" == aliasArray[k].getAliasId()) offset = 72.480000;
+    if("00000000002" == aliasArray[k].getAliasId()) offset = 72.240000;
+    if("00000000022" == aliasArray[k].getAliasId()) offset = 72.080000;
+    aliasArray[k].setSimTO(offset);
+
+  }
+
+  
 
 }
 
 void p_hadd(){
   for(UInt_t i = 0; i != aliasArray.size(); i++) {
     std::cout<<"hadd  cc"<<aliasArray[i].getAliasId()<< ".hld.root  ";
-     for(Int_t j=0; j<aliasArray[i].getNChildren();j++ ){
-       cout<<"cc"<<aliasArray[i].getChildRunId(j)<<".hld.root ";
-     }
+    for(Int_t j=0; j<aliasArray[i].getNChildren();j++ ){
+      cout<<"cc"<<aliasArray[i].getChildRunId(j)<<".hld.root ";
+    }
     std::cout<<std::endl;
   }
 }
@@ -258,7 +302,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   if(format==1){ // path 
     for(UInt_t i = 0; i != newset.size(); i++) {
       std::cout<< newset[i].getStudyId()<<"/"<<i<<std::endl; 
-   }
+    }
   }
 
   if(format==2){ // info 
@@ -287,6 +331,85 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
 }
 
+void p_exportinfo(TString name="alias.info"){
+  ofstream out;
+  out.open(name);
+
+  for(Int_t i=0; i<gg_nstudies; i++){
+    std::vector<DataInfo> newset= getStudy(i);
+    out<<"<h3>Study id # "<<i<< "  "<<study[i] <<"</h3>\n";
+
+    out<<"<table style=\"width:100%\">\n";
+    out<<"<tr>\n";
+    out<<"<td>Files alias </td>"; 
+    out<<"<td>Files       </td>";
+    out<<"<td>Study Id  </td>";
+    out<<"<td>Lens      </td>";
+    out<<"<td>Andle     </td>";
+    out<<"<td>Z         </td>";
+    out<<"<td>X         </td>";
+    out<<"<td>Step      </td>";
+    out<<"<td>File Id   </td>";
+    out<<"<td>Sim offset</td>";
+    out<<"</tr>";
+
+    for(UInt_t k = 0; k != newset.size(); k++) {  
+      out<<"<tr>\n";
+      out<<"<td>"<<newset[k].getAliasId()<<"</td>\n"; 
+      out<<"<td>\n";
+      for(Int_t j=0; j<newset[k].getNChildren();j++ ){
+	out<<"cc"<<newset[k].getChildRunId(j)<<".hld<br>";
+      }
+      out<<"</td>";
+
+      out<<"<td>"<<newset[k].getStudyId()<<"</td>";
+      out<<"<td>"<<newset[k].getLensId()<<"</td>";
+      out<<"<td>"<<newset[k].getAngle()<<"</td>";
+      out<<"<td>"<<newset[k].getZ()<<"</td>";
+      out<<"<td>"<<newset[k].getX()<<"</td>";
+      out<<"<td>"<<newset[k].getStep()<<"</td>";
+      out<<"<td>"<<newset[k].getFileId()<<"</td>";
+      out<<"<td>"<<newset[k].getSimTO()<<"</td>";
+      out<<"</tr>";
+    }
+    out<<"</table>\n";
+  }
+
+  out.close();
+  std::cout<<"p_exportinfo  done  " <<std::endl;
+  
+}
+
+void p_export(TString name="data.info"){
+  ofstream out;
+  out.open(name);
+
+  for(UInt_t k = 0; k != dataArray.size(); k++) {  
+
+    out<<dataArray[k].getRunId()<<"  "
+       <<dataArray[k].getAliasId()<<"  "
+       <<dataArray[k].getStudyId()<<"  "
+       <<dataArray[k].getLensId()<<"  "
+       <<dataArray[k].getAngle()<<"  "
+       <<dataArray[k].getZ()<<"  "
+       <<dataArray[k].getX()<<"  "
+       <<dataArray[k].getStep()<<"  "
+       <<dataArray[k].getFileId()<<"  "
+       <<dataArray[k].getSimTO()<<"\n";
+  }
+  out.close();
+}
+
+void p_import(TString name="data.info"){
+  // ifstream in;
+  // in.open(name);
+  // while (1) {
+  //   //      in >> x >> y >> z;
+  //   if (!in.good()) break;
+      
+  // }
+}
+
 void datainfo(Int_t studyId=0, Int_t format = 0){
   init();
   createAliases();
@@ -294,7 +417,8 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   std::vector<DataInfo> newset= getStudy(studyId);
 
   p_print(newset, format);
-
+  p_exportinfo();
+  p_export();
 
   // std::cout<<"ST"<<studyId<<std::endl;
   // for(UInt_t i = 0; i != newset.size(); i++) {
