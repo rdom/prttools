@@ -417,8 +417,8 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   std::vector<DataInfo> newset= getStudy(studyId);
 
   p_print(newset, format);
-  p_exportinfo();
-  p_export();
+  //p_exportinfo();
+  //p_export();
 
   // std::cout<<"ST"<<studyId<<std::endl;
   // for(UInt_t i = 0; i != newset.size(); i++) {
