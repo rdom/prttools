@@ -694,7 +694,7 @@ void PrtDetectorConstruction::SetVisualization(){
   lMirror->SetVisAttributes(waMirror);
 
   G4double transp = 0.5;
-  if(PrtManager::Instance()->GetLens()!=0){
+  if(PrtManager::Instance()->GetLens()!=0 && PrtManager::Instance()->GetLens()!=10){
     G4VisAttributes * vaLens = new G4VisAttributes(G4Colour(0.,1.,1.,transp));
     //vaLens->SetForceWireframe(true);
     //vaLens->SetForceAuxEdgeVisible(true);
