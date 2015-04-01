@@ -87,12 +87,13 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4double shifty = radiatorW/2. - G4UniformRand()*radiatorW;
     G4double shiftz = radiatorH/2. - G4UniformRand()*radiatorH;
 
-    fParticleGun->SetParticlePosition(G4ThreeVector(shiftx,shifty,shiftz));
+    //fParticleGun->SetParticlePosition(G4ThreeVector(shiftx,shifty,shiftz));
+    fParticleGun->SetParticlePosition(G4ThreeVector(-radiatorL/2. +0.1, 0,-5));
     G4double angle = -G4UniformRand()*M_PI;
     G4ThreeVector vec(0,0,1);
-    //    vec.setTheta(M_PI/2.+angle);
+    //vec.setTheta(M_PI/2.+angle);
     vec.setTheta(acos(G4UniformRand()));
-    vec.setPhi(2*M_PI*G4UniformRand());
+    //vec.setPhi(2*M_PI*G4UniformRand());
     
     vec.rotateY(-M_PI/2.);
     fParticleGun->SetParticleMomentumDirection(vec);
@@ -101,7 +102,8 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     shiftx = -radiatorL/2.+0.1;
     shifty = radiatorW/2. - G4UniformRand()*radiatorW;
     shiftz = radiatorH/2. - G4UniformRand()*radiatorH;
-    fParticleGun->SetParticlePosition(G4ThreeVector(shiftx,shifty,shiftz));
+    //fParticleGun->SetParticlePosition(G4ThreeVector(shiftx,shifty,shiftz));
+    fParticleGun->SetParticlePosition(G4ThreeVector(-radiatorL/2. +0.1,0,5));
   }
 
   fParticleGun->GeneratePrimaryVertex(anEvent);

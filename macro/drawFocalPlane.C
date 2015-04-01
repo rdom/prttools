@@ -3,7 +3,7 @@
 #include "../src/PrtEvent.h"
 #include "../src/PrtHit.h"
 
-#include "prttools.C"
+#include "../../prttools/prttools.C"
 
 double findVertex(TVector3 v1,TVector3 m1, TVector3 v2,TVector3 m2, TVector3* newvertex){
   TVector3 head0 = v1;
@@ -50,7 +50,7 @@ void drawFocalPlane(TString infile="../build/hits.root", Double_t r1 = 48.8, Dou
   Double_t radiatorL(1250); //bar
   // Double_t radiatorL(1224.9); //plate
   TVector3 res;
-  TH2F *hFp1 = new TH2F("hFp1",Form("r_{1}=%2.2f    r_{2}=%2.2f;x, [cm];y, [cm]",r1,r2),500,0,50,500,-30,30 );
+  TH2F *hFp1 = new TH2F("hFp1",Form("r_{1}=%2.2f    r_{2}=%2.2f;x, [cm];y, [cm]",r1,r2),500,0,50,500,0,30 );
   TH2F *hFp2 = new TH2F("hFp2",Form("r_{1}=%2.2f    r_{2}=%2.2f;z, [cm];y, [cm]",r1,r2),500,-30,30,500,-30,50 );
 
   PrtHit hit[2];
