@@ -12,12 +12,13 @@ waitForMe (){
     done
 }  
 threads=${1:-4}
-
-tseed=$(($(date +%s%N)/1000000-1393400000000))
+start_time=$(date +%s)
 mkdir -p hdata
 
+tseed=$(($(date +%s%N)/1000000-1393400000000))
+
 for ((i=22;i<=140;i++)); do
-	../build/prtdirc -r $tseed$i -o hdata/h_b$i.root -e 500 -s 0 -x "pi+" -p "10 GeV" -a $i -h 1 -c 0 -l 3  -b 1 > /dev/null &
+	../build/prtdirc -r $tseed$i -o hdata/h_b$i.root -e 10 -s 0 -x "pi+" -p 10 -a $i -h 1 -c 0 -l 3  -b 1 > /dev/null &
 	waitForMe $threads
 done
 waitForMe "1"
