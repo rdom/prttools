@@ -3,7 +3,7 @@
 waitForMe (){
     while : 
     do 
-	activth=$(ps aux | grep "[e]icdirc" | grep "h_b" | wc -l)
+	activth=$(ps aux | grep "[p]rtdirc" | grep "h_b" | wc -l)
 	printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
 	sleep .1
 	if [ "$activth" -lt "$1" ]; then 
@@ -17,7 +17,7 @@ tseed=$(($(date +%s%N)/1000000-1393400000000))
 mkdir -p hdata
 
 for ((i=22;i<=140;i++)); do
-	../build/prtdirc -r $tseed$i -o hdata/h_b$i.root -e 500 -s 0 -x "pi+" -p "10 GeV" -a $i -h 1 -c 0 -l 3  -b 1 &
+	../build/prtdirc -r $tseed$i -o hdata/h_b$i.root -e 500 -s 0 -x "pi+" -p "10 GeV" -a $i -h 1 -c 0 -l 3  -b 1 > /dev/null &
 	waitForMe $threads
 done
 waitForMe "1"
