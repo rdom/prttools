@@ -11,6 +11,8 @@ waitForMe (){
 	fi
     done
 }  
+threads=${1:-4}
+
 tseed=$(($(date +%s%N)/1000000-1393400000000))
 mkdir -p hdata
 
