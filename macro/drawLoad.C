@@ -49,6 +49,7 @@ void drawLoad(TString infile="../build/hits.root"){
   hHits->GetYaxis()->SetTitleOffset(0.85);
   hHits->GetXaxis()->SetTitleSize(0.05);
   hHits->GetYaxis()->SetTitleSize(0.05);
+  hHits->SetTitle(Form("#theta_{track} = %d#circ",angle));
   hHits->Draw("colz");
   drawPrism(prismShift,0);
   canvasSave(0,"drawLoad.C",1,"data/load");
