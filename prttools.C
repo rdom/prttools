@@ -471,16 +471,20 @@ void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", 
     gROOT->SetBatch(1);
     if(style != -1){
       if(style == 1) {w = 800; h = 500;}
-      if(style == 2) {w = 800; h = 400;}
+      if(style == 2) {w = 800; h = 600;}
+      if(style == 3) {w = 800; h = 400;}
       if(style == 5) {w = 800; h = 900;} 
       if(style == 0){ 
 	w = ((TCanvas*)c)->GetWindowWidth();
 	h = ((TCanvas*)c)->GetWindowHeight();
       }
-      
+      	std::cout<<"w "<<w <<std::endl;
+	std::cout<<"h "<<h <<std::endl;
+
       TCanvas *cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
       cc = (TCanvas*) c->DrawClone();
       cc->SetCanvasSize(w,h);
+      if(style == 0) cc->SetBottomMargin(0.12);
       cc->Modified();
       cc->Update();
     
@@ -515,6 +519,14 @@ void canvasAdd(TCanvas *c){
 }
 void canvasCd(TString name="c"){
   
+}
+
+void canvasDel(TString name="c"){
+  TIter next(gg_canvasList);
+  TCanvas *c=0;
+  while((c = (TCanvas*) next())){
+    if(c->GetName()==name) gg_canvasList->Remove(c);
+  }
 }
 
 // style = 0 - for web blog
