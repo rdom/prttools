@@ -167,15 +167,13 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	evtime = node->GetTime(i);
 	for(int u=0; u<4; u++){
 	  if(u == 0) dir = dird;
-	  if(u == 1) dir.SetXYZ( dird.X(),-dird.Y(), dird.Z());
-	  if(u == 2) dir.SetXYZ(-dird.X(), dird.Y(), dird.Z());
-	  if(u == 3) dir.SetXYZ(-dird.X(),-dird.Y(), dird.Z());
-	  if(reflected) dir.SetXYZ( dir.X(), dir.Y(),-dir.Z());
-
-	  //if(reflected) dir.RotateY(-2./180.*TMath::Pi());
-	
+	  if(u == 1) dir.SetXYZ( dird.X(),-dird.Y(),  dird.Z());
+	  if(u == 2) dir.SetXYZ( dird.X(), dird.Y(), -dird.Z());
+	  if(u == 3) dir.SetXYZ( dird.X(),-dird.Y(), -dird.Z());
+	  if(reflected) dir.SetXYZ( -dir.X(), dir.Y(), dir.Z());
+	  
 	  double criticalAngle = asin(1.00028/1.47125); // n_quarzt = 1.47125; //(1.47125 <==> 390nm)
-	  if(dir.Angle(fnX1) < criticalAngle || dir.Angle(fnY1) < criticalAngle) continue;
+	  //if(dir.Angle(fnX1) < criticalAngle || dir.Angle(fnY1) < criticalAngle) continue;
 
 	  luttheta = dir.Theta();	
 	  if(luttheta > TMath::Pi()/2.) luttheta = TMath::Pi()-luttheta;
@@ -185,14 +183,11 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	
 	  fHist1->Fill(hitTime);
 	  fHist2->Fill(bartime + evtime);
-	  
+
 	  if(fabs((bartime + evtime)-hitTime)>test1) continue;
 	  fHist3->Fill(fabs((bartime + evtime)),hitTime);
 	  tangle = rotatedmom.Angle(dir);
 	  if(  tangle>TMath::Pi()/2.) tangle = TMath::Pi()-tangle;
-
-	  // std::cout<<"tangle  "<<tangle <<std::endl;
-	  
 	 
 	  PrtAmbiguityInfo ambinfo;
 	  ambinfo.SetBarTime(bartime);

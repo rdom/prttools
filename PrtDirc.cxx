@@ -96,20 +96,6 @@ int main(int argc,char** argv)
   if(!events.size()) events = "1";
   PrtManager::Instance(outfile,runtype);
 
-  if(runtype == 2){
-    PrtLutReco * reco = new PrtLutReco(infile,lutfile,verbose); 
-    reco->Run(0);
-    return 0;
-  }
-
-  // Choose the Random engine
-  G4Random::setTheEngine(new CLHEP::RanecuEngine);
-  std::cout<<"SEED "<<myseed <<std::endl;
-  G4Random::setTheSeed(myseed);
-  // Seed the random number generator manually
-  // if(myseed==345354) myseed = time(NULL);
-
-  G4RunManager * runManager = new G4RunManager;
 
   if(physlist.size()) PrtManager::Instance()->SetPhysList(atoi(physlist));
   if(geometry.size()) PrtManager::Instance()->SetGeometry(atoi(geometry));
@@ -126,6 +112,21 @@ int main(int argc,char** argv)
   if(beamZ.size())   PrtManager::Instance()->SetBeamZ(atof(beamZ));
 
   //if(beamDimension.size())PrtManager::Instance()->SetTest1(atoi(beamDimension));
+
+  if(runtype == 2){
+    PrtLutReco * reco = new PrtLutReco(infile,lutfile,verbose); 
+    reco->Run(0);
+    return 0;
+  }
+
+  // Choose the Random engine
+  G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  std::cout<<"SEED "<<myseed <<std::endl;
+  G4Random::setTheSeed(myseed);
+  // Seed the random number generator manually
+  // if(myseed==345354) myseed = time(NULL);
+
+  G4RunManager * runManager = new G4RunManager;
  
   // Detector construction
   runManager-> SetUserInitialization(new PrtDetectorConstruction());

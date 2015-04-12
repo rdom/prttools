@@ -71,7 +71,7 @@ shift $((OPTIND-1))
 tseed=$(($(date +%s%N)/1000000-1393400000000))
 printf "====== Run PRTDIRC with $tseed seed base ======\n"
 
-#./prtdirc -s 1 -a 90 -x "opticalphoton" -p "3.18 eV" -w 0 -g 1 -h 1 -e 500000 -c 3 -l 3 -b 1
+#./prtdirc -s 1 -a 90 -x "opticalphoton" -p "3.18 eV" -w 0 -g 1 -h 1 -e 500000 -c 2015 -l 3 -b 1
 
 waitForMe (){
     while : 
@@ -90,7 +90,7 @@ if [ ${run} != "2" ]; then
     start_time=$(date +%s)
     statusline="GSim"
     for i in $(eval echo {30..150..${astep}}); do 
-	../build/prtdirc -r $tseed$i -o hdata/h_b$i.root -s 0 -a $i -x "pi+" -p 6  -w 0 -g 1 -h 11 -e $nevents -c 3 -l 3 -v $verbose -b 1  > /dev/null  &
+	../build/prtdirc -r $tseed$i -o hdata/h_b$i.root -s 0 -a $i -x "pi+" -p 6  -w 0 -g 3 -h 1 -e $nevents -c 2015 -l 3 -v $verbose -b 1  > /dev/null  &
 	waitForMe $threads
     done
     waitForMe "1"
