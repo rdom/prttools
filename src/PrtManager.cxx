@@ -11,6 +11,8 @@ PrtManager * PrtManager::fInstance= NULL;
 PrtManager::PrtManager(G4String outfile, G4int runtype)
 {
   TString filename = outfile;
+  fOutName = filename; 
+  fOutName = fOutName.Remove(fOutName.Last('.'));
   fRunType = runtype;
   fRootFile = new TFile(filename,"RECREATE");
 
@@ -28,7 +30,7 @@ PrtManager::PrtManager(G4String outfile, G4int runtype)
     
     TClonesArray &fLuta = *fLut; 
     for (Long64_t n=0; n<Nnodes; n++) {
-      new((fLuta)[n]) PrtLutNode(-1);
+      new((fLuta)[n]) PrtLutNode(n);
     }    
   }
 

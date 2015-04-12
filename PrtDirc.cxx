@@ -53,7 +53,7 @@ int main(int argc,char** argv)
     session,geomAng,batchmode,lensId,particle,momentum,testVal1,testVal2,
     prismStep,beamZ,beamX,
     beamDimension, mcpLayout, infile = "hits.root", lutfile = "../data/lut.root";
-  G4int runtype = 0;
+  G4int runtype = 0, verbose(0);
 
   G4long myseed = 345354;
   for ( G4int i=1; i<argc; i=i+2 ) {
@@ -80,6 +80,7 @@ int main(int argc,char** argv)
     else if ( G4String(argv[i]) == "-gs" ) prismStep   = argv[i+1];
     else if ( G4String(argv[i]) == "-gz" ) beamZ   = argv[i+1];
     else if ( G4String(argv[i]) == "-gx" ) beamX   = argv[i+1];
+    else if ( G4String(argv[i]) == "-v" ) verbose   = atoi(argv[i+1]);
     else {
       PrintUsage();
       return 1;
@@ -96,7 +97,7 @@ int main(int argc,char** argv)
   PrtManager::Instance(outfile,runtype);
 
   if(runtype == 2){
-    PrtLutReco * reco = new PrtLutReco(infile,lutfile); 
+    PrtLutReco * reco = new PrtLutReco(infile,lutfile,verbose); 
     reco->Run(0);
     return 0;
   }

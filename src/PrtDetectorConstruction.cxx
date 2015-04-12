@@ -29,7 +29,6 @@
 #include "PrtPrizmSD.h"
 #include "PrtPixelSD.h"
 
-
 PrtDetectorConstruction::PrtDetectorConstruction()
   : G4VUserDetectorConstruction(){
 
@@ -321,7 +320,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
       for(int i=0; i<fNCol; i++){
 	double shiftx = i*(fMcpTotal[0]+14)-fPrizm[3]/2+fMcpActive[0]/2.+2.5; // +2.5 adjustment to the prt2014 
 	if(j!=1) shiftx -= 14; //(3/2.)*fMcpActive[0]/8.;
-	double shifty = j*fMcpTotal[0]-fMcpTotal[0]+3*(j-1); 
+	double shifty = (fMcpTotal[0]+3)*(j-1); 
 
 	// // cad version
 	// double shiftx = i*(fMcpTotal[0]+14)-fPrizm[3]/2+fMcpActive[0]/2.; 
@@ -335,9 +334,11 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
 	}
 
 	if(fMcpLayout==2015){
-	  shiftx = i*(fMcpTotal[0]+14)-fPrizm[3]/2+fMcpActive[0]/2.; // +2.5 adjustment to the prt2014 
-	  if(j!=1) shiftx -= (3)*fMcpActive[0]/8.;
-	  shifty = j*fMcpTotal[0]-fMcpTotal[0]+3*(j-1); 
+	  Double_t ms = (fPrizm[2]-5*fMcpTotal[0])/4.;
+	  shiftx = 3+i*(fMcpTotal[0]+ms)-fPrizm[3]/2+fMcpActive[0]/2.;
+	  //if(j==1) shiftx -= 3*fMcpActive[0]/8.;
+	  if(j==1) shiftx = 3+i*(fMcpTotal[0]+3)-fPrizm[3]/2+fMcpActive[0]/2.+2*fMcpActive[0]/8.;
+	  shifty = (fMcpTotal[0]+3)*(j-1);
 	}
 	new G4PVPlacement(0,G4ThreeVector(shiftx,shifty,fBar[2]/2.+fPrizm[1]+fMcpActive[2]/2.+fLens[2]),lMcp,"wMcp", lDirc,false,mcpId++);
       }
@@ -685,7 +686,7 @@ void PrtDetectorConstruction::SetVisualization(){
   waDirc->SetVisibility(false);
   lDirc->SetVisAttributes(waDirc);
 
-  G4VisAttributes *waBar = new G4VisAttributes(G4Colour(0.,1.,0.9,0.6));
+  G4VisAttributes *waBar = new G4VisAttributes(G4Colour(0.,1.,0.9,0.2));
   waBar->SetVisibility(true);
   lBar->SetVisAttributes(waBar);
 
@@ -693,7 +694,7 @@ void PrtDetectorConstruction::SetVisualization(){
   waMirror->SetVisibility(true);
   lMirror->SetVisAttributes(waMirror);
 
-  G4double transp = 0.5;
+  G4double transp = 0.15;
   if(PrtManager::Instance()->GetLens()!=0 && PrtManager::Instance()->GetLens()!=10){
     G4VisAttributes * vaLens = new G4VisAttributes(G4Colour(0.,1.,1.,transp));
     //vaLens->SetForceWireframe(true);
@@ -704,7 +705,7 @@ void PrtDetectorConstruction::SetVisualization(){
     if(lLens3) lLens3->SetVisAttributes(vaLens);
   }
 
-  G4VisAttributes *waPrizm = new G4VisAttributes(G4Colour(0.,0.9,0.9,0.6));
+  G4VisAttributes *waPrizm = new G4VisAttributes(G4Colour(0.,0.9,0.9,0.2));
   waPrizm->SetVisibility(true);
   //waPrizm->SetForceAuxEdgeVisible(true);
   //waPrizm->SetForceSolid(true);

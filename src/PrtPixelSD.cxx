@@ -170,6 +170,5 @@ void PrtPixelSD::EndOfEvent(G4HCofThisEvent*)
   if(eventNumber%1==0 && PrtManager::Instance()->GetRunType()==0) std::cout<<"Event # "<<eventNumber <<std::endl;
   if(eventNumber%1000==0 && PrtManager::Instance()->GetRunType()!=0) std::cout<<"Event # "<<eventNumber <<std::endl;
   PrtManager::Instance()->Fill();
-  
 }
 

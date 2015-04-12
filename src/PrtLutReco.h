@@ -16,6 +16,7 @@
 #include "TFile.h"
 #include "TChain.h"
 #include "TH1.h"
+#include "TH2.h"
 #include "TF1.h"
 #include "TSpectrum.h"
 
@@ -24,15 +25,16 @@ class PrtLutReco{
 public:
 
   // Standard constructors
-  PrtLutReco(TString infile, TString lutfile);
+  PrtLutReco(TString infile, TString lutfile, Int_t verbose=0);
 
   // Destructor
   ~PrtLutReco();
   void Run(Int_t start=0, Int_t end=0);
 
 private:
-  Double_t FindPeak();
+  Bool_t FindPeak(Double_t& cherenkovreco, Double_t& spr,Int_t a);
   Int_t FindPdg(Double_t mom, Double_t cangle);
+  void FitRing(Double_t& x0, Double_t& y0, Double_t& theta);
   Int_t fDetectorID;  
   Double_t fBboxNum,fPipehAngle,fDphi,fBarPhi;
 

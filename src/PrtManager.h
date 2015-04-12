@@ -84,7 +84,8 @@ public:
   double GetPrismStep(){ return fPrismStep; }
   double GetBeamX(){ return fBeamX; }
   double GetBeamZ(){ return fBeamZ; }
-  
+  TString GetOutName(){return fOutName;}
+
 private: 
   int fRunType;
   int fPhysList;
@@ -108,6 +109,7 @@ private:
   double fPrismStep;
   double fBeamX;
   double fBeamZ;
+  TString fOutName;
 };
 
 #endif

@@ -10,7 +10,6 @@ class PrtTrackingAction : public G4UserTrackingAction
 public:
   PrtTrackingAction();
   void PreUserTrackingAction(const G4Track* aTrack);
-
 private:
   TRandom* fRand;
   TGraph* fDetEff;
