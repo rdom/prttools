@@ -28,6 +28,7 @@
 #include "TRandom2.h"
 #include "TError.h"
 #include "TPaveStats.h"
+#include "TObjString.h"
 
 #include <iostream>
 #include <fstream>
@@ -45,13 +46,13 @@
 #endif  
 
 
-TChain *fCh = 0;
-Int_t fNEntries=0;
-Int_t fSaveFlag = 1;
-TString fInfo = "", fPath;
-TH2F *fhDigi[15];
-TPad* fhPads[15];
-TPad * fhPglobal;
+TChain*  fCh = 0;
+Int_t    fNEntries=0;
+TString  fSavePath = "";
+TString  fInfo = "", fPath;
+TH2F*    fhDigi[15];
+TPad*    fhPads[15];
+TPad*    fhPglobal;
 TCanvas* cDigi;
 
 TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
@@ -329,6 +330,7 @@ void SetRootPalette(Int_t pal = 0){
 
 #ifdef prt__sim
 void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
+
   SetRootPalette(1);
   gSystem->Load("../build/libprtdirclib.so");
   delete fCh;
@@ -346,6 +348,12 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
   fCh->GetEntry(ievent);
   if(ievent%printstep==0 && ievent!=0) cout<<"Event # "<<ievent<< " # hits "<<fEvent->GetHitSize()<<endl;
   if(ievent == 0){
+    TIter next(gROOT->GetApplication()->InputFiles());
+    TObjString *os=0;
+    while(os = (TObjString*)next()){
+      fInfo += os->GetString()+" ";
+    }
+    fInfo += "\n";
     fInfo += fEvent->PrintInfo();
   }
 }
@@ -372,7 +380,6 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
   }
 }
 #endif  
-
 
 TString randstr(Int_t len = 10){
   gSystem->Sleep(1500);
@@ -428,22 +435,20 @@ Int_t shiftHist(TH1F *hist, Double_t double_shift){
   return 1;
 } 
 
-TString gg_path = "";
-
-void writeInfo(TString filename, TString info,Int_t flag=1){
-  if(flag<1) return;
+void writeInfo(TString filename){
   ofstream myfile;
-  myfile.open (gg_path+"/"+filename);
-  myfile << info+"\n";
+  myfile.open (filename);
+  myfile << fInfo+"\n";
   myfile.close();
 }
 
-TString createDir(TString dir="rdata", TString info = "", Int_t flag=1){
-  if(flag==0) return "";
-  if(flag==2) {
-    gSystem->mkdir(dir,kTRUE);
-    gg_path = dir;
-  }else{
+TString createDir(){
+  TString finalpath = fSavePath;
+
+  if(finalpath =="") return "";
+  
+  if(fSavePath == "auto") {
+    TString dir = "data";
     gSystem->mkdir(dir);
     TDatime *time = new TDatime();
     TString path(""), stime = Form("%d.%d.%d", time->GetDay(),time->GetMonth(),time->GetYear()); 
@@ -454,21 +459,19 @@ TString createDir(TString dir="rdata", TString info = "", Int_t flag=1){
     }
     gSystem->Unlink(dir+"/last");
     gSystem->Symlink(path, dir+"/last");
-    gg_path = dir+"/"+path;
+    finalpath = dir+"/"+path;
+  }else{
+    gSystem->mkdir(fSavePath,kTRUE);
   }
-  writeInfo("readme", info);
-  return gg_path;
+  writeInfo(finalpath+"/readme");
+  return finalpath;
 }
 
-// flag = 0 - do not save anything
-// flag = 1 - save in a new folder based on date
-// flag = 2 - save in a folder dir (second argument)  
-void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", Int_t flag=0, Int_t bfiles=0, Int_t style=0){
-  if(flag==0) return;
-  TString path = createDir(dir,info,flag);
-  Int_t w = 800, h = 400;
-  if(c) {
+void save(TPad *c= NULL, TString name="", Int_t what=0, Int_t style=0){
+  TString path = createDir();
+  if(c && path != "") {
     gROOT->SetBatch(1);
+    Int_t w = 800, h = 400;
     if(style != -1){
       if(style == 1) {w = 800; h = 500;}
       if(style == 2) {w = 800; h = 600;}
@@ -489,20 +492,18 @@ void save(TPad *c= NULL, TString dir="rdata", TString name="", TString info="", 
       cc->Update();
     
       cc->Print(path+"/"+name+".png");
-      if(bfiles==0) cc->Print(path+"/"+name+".pdf");
-      if(bfiles==0) cc->Print(path+"/"+name+".root");
+      if(what==0) cc->Print(path+"/"+name+".pdf");
+      if(what==0) cc->Print(path+"/"+name+".root");
     }else{
       c->Print(path+"/"+name+".png");
-      if(bfiles==0) c->Print(path+"/"+name+".pdf");
-      if(bfiles==0) c->Print(path+"/"+name+".root");
+      if(what==0) c->Print(path+"/"+name+".pdf");
+      if(what==0) c->Print(path+"/"+name+".root");
     }		    
     gROOT->SetBatch(0);
   }
 }
 
-TString createSubDir(TString dir="dir", Int_t flag=1){
-  if(flag<1) return "";
-  TString path = "";
+TString createSubDir(TString dir="dir"){
   gSystem->mkdir(dir);
   return dir;
 }
@@ -513,10 +514,12 @@ void canvasAdd(TString name="c",Int_t w=800, Int_t h=600){
   TCanvas *c = new TCanvas(name,name,0,0,w,h); 
   gg_canvasList->Add(c);
 }
+
 void canvasAdd(TCanvas *c){
   if(!gg_canvasList) gg_canvasList = new TList();
   gg_canvasList->Add(c);
 }
+
 void canvasCd(TString name="c"){
   
 }
@@ -533,12 +536,11 @@ void canvasDel(TString name="c"){
 // style = 1 - for talk 
 // what = 0 - save in png, pdf, root formats
 // what = 1 - save in png format
-void canvasSave(Int_t style=0, TString info="", Int_t what=0, TString path=""){
+void canvasSave(Int_t what=0, Int_t style=0){
   TIter next(gg_canvasList);
   TCanvas *c=0;
   while((c = (TCanvas*) next())){
-    if(path=="")  save(c, "data",c->GetName(), info, 1,what,style);
-    else save(c, path,c->GetName(), "", 2,what,style);
+    save(c, c->GetName(), what,style);
   }
 }  
 
@@ -556,5 +558,3 @@ void normalize(TH1F* hists[],Int_t size){
     hists[i]->GetYaxis()->SetRangeUser(min,max);
   }
 }
-
-
