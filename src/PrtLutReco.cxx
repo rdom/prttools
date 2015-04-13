@@ -111,85 +111,82 @@ void PrtLutReco::Run(Int_t start, Int_t end){
     trackinfo.AddInfo(Form("Cerenkov angle selection: (%f,%f) \n",minChangle,maxChangle));
     
     //    TVector3 rotatedmom = fEvent->GetMomentum().Unit();
-    Double_t fAngle =  fEvent->GetAngle()-90;
+    Double_t fAngle =  180-fEvent->GetAngle();
+    std::cout<<"fAngle  "<<fAngle  <<std::endl;
+    
     TVector3 rotatedmom = momInBar;
-    rotatedmom.RotateY(-fAngle/180.*TMath::Pi());
-    rotatedmom.Print();
+    rotatedmom.RotateY(fAngle/180.*TMath::Pi());
+    //rotatedmom.Print();
     
     for(Int_t h=0; h<nHits; h++) {
       PrtPhotonInfo photoninfo;
       fHit = fEvent->GetHit(h);
       hitTime = fHit.GetLeadTime();
-      lenz = 2100-fHit.GetPosition().Z();
-      dirz = fHit.GetMomentum().Z();
+      Double_t radiatorL = 1250; //bar
+      lenz = radiatorL/2.-fHit.GetPosition().X();
+      
+      TVector3 vv = fHit.GetMomentum();
+      vv.RotateY(fAngle/180.*TMath::Pi());
+      dirz = vv.Z();
 
       TVector3 dir0 = fHit.GetMomentum().Unit();
+      // TVector3 cz = TVector3(momInBar.X(),momInBar.Y(),momInBar.Z());
+      // TVector3 cd = TVector3(dir0.X(),dir0.Y(),dir0.Z());
+      TVector3 unitdir1 = momInBar.Unit();
+      // cd.RotateUz(unitdir1);
       
-      TVector3 cz = TVector3(-rotatedmom.X(),rotatedmom.Y(),rotatedmom.Z());
-      TVector3 cd = TVector3(-dir0.X(),dir0.Y(),dir0.Z());
-    
+      Double_t phi0 =  dir0.Phi();        
+      Double_t theta0 = momInBar.Angle(dir0);
+      fHist5->Fill(theta0*TMath::Sin(phi0),theta0*TMath::Cos(phi0));
+      std::cout<<" dirz "<<dirz << " lenz "<<lenz <<std::endl;
       
-      TVector3 unitdir1 = rotatedmom.Unit();
-      TVector3 unitdir2 = rotatedmom.Unit();
-      cz.RotateUz(unitdir1);
-      cd.RotateUz(unitdir2);
-      
-      // rotatedmom.Print();
-      // cz.Print();
-      // dir0.Print();
-      // cd.Print();
-      // std::cout<<"c  "<< cz.Phi() << "  d   "<< cd.Phi() << " a0 "<< rotatedmom.Angle(dir0)  <<"  a1 "<<cd.Theta()<<std::endl;
-      
-      Double_t phi0 =  cd.Phi();
-
-
       if(dirz<0) reflected = kTRUE;
       else reflected = kFALSE;
- 
-      // if(reflected) continue;
-      // if(phi0<TMath::Pi()) phi0+=TMath::Pi();
-      Double_t theta0 = rotatedmom.Angle(dir0);
-      fHist5->Fill(theta0*TMath::Sin(phi0),theta0*TMath::Cos(phi0));
       
-
       Int_t sensorId = 100*fHit.GetMcpId()+fHit.GetPixelId();
    
       PrtLutNode *node = (PrtLutNode*) fLut->At(sensorId);
       Int_t size = node->Entries();
-
-      // Double_t fAngle =  fEvent->GetAngle()-90;
-      // TVector3 rotatedmom = momInBar;
-      // rotatedmom.RotateY(-fAngle/180.*TMath::Pi());
-      // std::cout<<"fAngle   "<<fAngle <<std::endl;
-      // rotatedmom.Print();
     
       for(int i=0; i<size; i++){
 	dird = node->GetEntry(i);
 	evtime = node->GetTime(i);
+	
+       	//dird.RotateY(fAngle/180.*TMath::Pi());
+	
 	for(int u=0; u<4; u++){
+
 	  if(u == 0) dir = dird;
+	  
+	  // if(u == 1) dir.SetXYZ( dird.X(),-dird.Y(),  dird.Z());
+	  // if(u == 2) dir.SetXYZ( dird.X(), dird.Y(), -dird.Z());
+	  // if(u == 3) dir.SetXYZ( dird.X(),-dird.Y(), -dird.Z());
+	  // if(reflected) dir.SetXYZ( -dir.X(), dir.Y(), dir.Z());
+
 	  if(u == 1) dir.SetXYZ( dird.X(),-dird.Y(),  dird.Z());
-	  if(u == 2) dir.SetXYZ( dird.X(), dird.Y(), -dird.Z());
-	  if(u == 3) dir.SetXYZ( dird.X(),-dird.Y(), -dird.Z());
-	  if(reflected) dir.SetXYZ( -dir.X(), dir.Y(), dir.Z());
+	  if(u == 2) dir.SetXYZ( -dird.X(), dird.Y(), dird.Z());
+	  if(u == 3) dir.SetXYZ( -dird.X(),-dird.Y(), dird.Z());
+	  if(reflected) dir.SetXYZ( dir.X(), dir.Y(), -dir.Z());
 	  
 	  //double criticalAngle = asin(1.00028/1.47125); // n_quarzt = 1.47125; //(1.47125 <==> 390nm)
 	  //if(dir.Angle(fnX1) < criticalAngle || dir.Angle(fnY1) < criticalAngle) continue;
 
+	  
 	  luttheta = dir.Theta();	
-	  if(luttheta > TMath::Pi()/2.) luttheta = TMath::Pi()-luttheta;
+	  if(luttheta > TMath::PiOver2()) luttheta = TMath::Pi()-luttheta;
 	  
 	  if(!reflected) bartime = lenz/cos(luttheta)/198.; 
-	  else bartime = (2*4200 - lenz)/cos(luttheta)/198.; 
+	  else bartime = (2*radiatorL - lenz)/cos(luttheta)/198.; 
 	
 	  fHist1->Fill(hitTime);
 	  fHist2->Fill(bartime + evtime);
-
-	  // if(fabs((bartime + evtime)-hitTime)>test1) continue;
+ 
+	  
+	  if(fabs((bartime + evtime)-hitTime)>test1) continue;
 	  fHist3->Fill(fabs((bartime + evtime)),hitTime);
 	  tangle = rotatedmom.Angle(dir);
-	  //if(  tangle>TMath::Pi()/2.) tangle = TMath::Pi()-tangle;
-	 
+	  if(  tangle>TMath::Pi()/2.) tangle = TMath::Pi()-tangle;
+	  
 	  PrtAmbiguityInfo ambinfo;
 	  ambinfo.SetBarTime(bartime);
 	  ambinfo.SetEvTime(evtime);
@@ -198,17 +195,17 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	  
 	  if(tangle > minChangle && tangle < maxChangle){
 	    fHist->Fill(tangle);
-
-
 	    // Double_t phi = rotatedmom.Phi()-dir.Phi();
-
 	    // if(TMath::Abs(tangle-0.82)<0.1)
-
 	   
-	    TVector3 rdir = TVector3(-dir.X(),dir.Y(),dir.Z());
+	    TVector3 rdir = TVector3(dir.X(),dir.Y(),-dir.Z());
 	    TVector3 unitdir3 = rotatedmom.Unit();
 	    rdir.RotateUz(unitdir3);
+	 
 	    Double_t phi =  rdir.Phi();
+	    Double_t tt =  rdir.Theta();
+	    //std::cout<<"tt  "<<tt << " phi  "<< phi <<std::endl;
+	    
 	    fHist4->Fill(tangle*TMath::Sin(phi),tangle*TMath::Cos(phi));
 	    gg_gr.SetPoint(gg_i,tangle*TMath::Sin(phi),tangle*TMath::Cos(phi));
 	    gg_i++;
@@ -304,9 +301,9 @@ Bool_t PrtLutReco::FindPeak(Double_t& cherenkovreco, Double_t& spr, Int_t a){
       c->Print(Form("spr/tangle_%d.png", a));
       c->WaitPrimitive();
 
-      TCanvas* c2 = new TCanvas("c2","c2",0,0,600,600);
-      // c2->Divide(2,1);
-      //c2->cd(1);
+      TCanvas* c2 = new TCanvas("c2","c2",0,0,1200,600);
+      c2->Divide(2,1);
+      c2->cd(1);
       fHist3->GetXaxis()->SetTitle("calculated time [ns]");
       fHist3->GetYaxis()->SetTitle("measured time [ns]");
       fHist3->SetTitle(Form("theta %d", a));
@@ -324,8 +321,8 @@ Bool_t PrtLutReco::FindPeak(Double_t& cherenkovreco, Double_t& spr, Int_t a){
       TLegend *leg = new TLegend(0.5,0.7,0.85,0.87);
       //      leg->SetFillColor(0);
       leg->SetFillColorAlpha(0,0.8);
-      //leg->SetFillStyle(0);
-      leg->SetFillStyle(4000); 
+      leg->SetFillStyle(0);
+      //leg->SetFillStyle(4000); 
       leg->SetBorderSize(0);
       leg->AddEntry((TObject*)0,Form("Entries %0.0f",fHist4->GetEntries()),"");
       leg->AddEntry((TObject*)0,Form("#Delta#theta_{c} %f [mrad]",corr.Theta()*1000),"");
@@ -340,12 +337,12 @@ Bool_t PrtLutReco::FindPeak(Double_t& cherenkovreco, Double_t& spr, Int_t a){
       gg_i=0;
       gg_gr.Set(0);
 
-      // c2->cd(2);
-      // gStyle->SetOptStat(1110); 
-      // fHist5->GetXaxis()->SetTitle("#theta_{c}sin(#varphi_{c})");
-      // fHist5->GetYaxis()->SetTitle("#theta_{c}cos(#varphi_{c})");
-      // fHist5->SetTitle(Form("True from MC, #theta = %d#circ", a));
-      // fHist5->Draw("colz");
+      c2->cd(2);
+      gStyle->SetOptStat(1110); 
+      fHist5->GetXaxis()->SetTitle("#theta_{c}sin(#varphi_{c})");
+      fHist5->GetYaxis()->SetTitle("#theta_{c}cos(#varphi_{c})");
+      fHist5->SetTitle(Form("True from MC, #theta = %d#circ", a));
+      fHist5->Draw("colz");
 
       c2->Print(Form("spr/tcorr_%d.png", a));
       c2->Modified();

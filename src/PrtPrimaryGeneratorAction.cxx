@@ -62,13 +62,13 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     PrtManager::Instance()->Event()->SetPosition(TVector3(x,y,z));
   }
   if(PrtManager::Instance()->GetRunType() == 1){ // LUT generation
-    fParticleGun->SetParticlePosition(G4ThreeVector(-radiatorL/2.+0.1,0,0));
+    fParticleGun->SetParticlePosition(G4ThreeVector(0,0,radiatorL/2.-0.1));
     G4double angle = -G4UniformRand()*M_PI;
     G4ThreeVector vec(0,0,1);
     vec.setTheta(acos(G4UniformRand()));
     vec.setPhi(2*M_PI*G4UniformRand());
     
-    vec.rotateY(-M_PI/2.);
+    //    vec.rotateY(-M_PI/2.);
     fParticleGun->SetParticleMomentumDirection(vec);
   }
   if(PrtManager::Instance()->GetRunType() == 5){ // calibration light

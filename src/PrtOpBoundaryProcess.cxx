@@ -43,7 +43,7 @@ G4VParticleChange* PrtOpBoundaryProcess::PostStepDoIt(const G4Track& aTrack, con
     }
   }
 
-  if(PrtManager::Instance()->GetRunType() == 1 && pPostStepPoint->GetPosition().x()>pPreStepPoint->GetPosition().x()){
+  if(PrtManager::Instance()->GetRunType() == 1 && pPostStepPoint->GetPosition().z()<pPreStepPoint->GetPosition().z()){
     particleChange->ProposeTrackStatus(fStopAndKill);
   }
 

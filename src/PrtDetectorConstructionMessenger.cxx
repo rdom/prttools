@@ -18,7 +18,7 @@ PrtDetectorConstructionMessenger::PrtDetectorConstructionMessenger
   fAngleCmd = new G4UIcmdWithADoubleAndUnit("/Prt/geom/prtRotation",this);
   fAngleCmd->SetGuidance("Rotation angle of the prototype");
   fAngleCmd->SetParameterName("angle",true);
-  fAngleCmd->SetRange("angle>=0. && angle<180.");
+  fAngleCmd->SetRange("angle>=0. && angle<=180.");
   fAngleCmd->SetDefaultValue(0.);
   fAngleCmd->SetDefaultUnit("deg");
 
