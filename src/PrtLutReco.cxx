@@ -110,11 +110,12 @@ void PrtLutReco::Run(Int_t start, Int_t end){
     Double_t maxChangle = 0.9;
     trackinfo.AddInfo(Form("Cerenkov angle selection: (%f,%f) \n",minChangle,maxChangle));
     
-    TVector3 rotatedmom = fEvent->GetMomentum().Unit();
+    //    TVector3 rotatedmom = fEvent->GetMomentum().Unit();
+    Double_t fAngle =  fEvent->GetAngle()-90;
+    TVector3 rotatedmom = momInBar;
+    rotatedmom.RotateY(-fAngle/180.*TMath::Pi());
+    rotatedmom.Print();
     
-    // lenz= 4200/2. - 1000/tan((180-fEvent->GetAngle())/180.*TMath::Pi());
-    // std::cout<<"lenz "<<lenz <<std::endl;
- 
     for(Int_t h=0; h<nHits; h++) {
       PrtPhotonInfo photoninfo;
       fHit = fEvent->GetHit(h);
@@ -144,7 +145,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 
       if(dirz<0) reflected = kTRUE;
       else reflected = kFALSE;
-
+ 
       // if(reflected) continue;
       // if(phi0<TMath::Pi()) phi0+=TMath::Pi();
       Double_t theta0 = rotatedmom.Angle(dir0);
@@ -172,7 +173,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	  if(u == 3) dir.SetXYZ( dird.X(),-dird.Y(), -dird.Z());
 	  if(reflected) dir.SetXYZ( -dir.X(), dir.Y(), dir.Z());
 	  
-	  double criticalAngle = asin(1.00028/1.47125); // n_quarzt = 1.47125; //(1.47125 <==> 390nm)
+	  //double criticalAngle = asin(1.00028/1.47125); // n_quarzt = 1.47125; //(1.47125 <==> 390nm)
 	  //if(dir.Angle(fnX1) < criticalAngle || dir.Angle(fnY1) < criticalAngle) continue;
 
 	  luttheta = dir.Theta();	
@@ -184,10 +185,10 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	  fHist1->Fill(hitTime);
 	  fHist2->Fill(bartime + evtime);
 
-	  if(fabs((bartime + evtime)-hitTime)>test1) continue;
+	  // if(fabs((bartime + evtime)-hitTime)>test1) continue;
 	  fHist3->Fill(fabs((bartime + evtime)),hitTime);
 	  tangle = rotatedmom.Angle(dir);
-	  if(  tangle>TMath::Pi()/2.) tangle = TMath::Pi()-tangle;
+	  //if(  tangle>TMath::Pi()/2.) tangle = TMath::Pi()-tangle;
 	 
 	  PrtAmbiguityInfo ambinfo;
 	  ambinfo.SetBarTime(bartime);

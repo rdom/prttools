@@ -54,7 +54,7 @@ public:
   void SetRadiatorW(double val){ fRadiatorW = val; }
   void SetRadiatorH(double val){ fRadiatorH = val; }
   void SetParticle(int val){ fParticle = val; }
-  void SetMomentum(TVector3 val){ fMomentum = val; }
+  void SetMomentum(TVector3 val){ fMomentum = val; if(fRunType==0) fEvent->SetMomentum(fMomentum);}
   void SetCurrentCherenkov(double val){ fCurrentCherenkov = val; }
   void SetShift(double val){ fShift = val; }
   void SetTest1(double val){ fTest1 = val; }

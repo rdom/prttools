@@ -47,6 +47,7 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double radiatorW = PrtManager::Instance()->GetRadiatorW();
   G4double radiatorH = PrtManager::Instance()->GetRadiatorH();
 
+  PrtManager::Instance()->AddEvent(PrtEvent());
   if(PrtManager::Instance()->GetBeamDinsion() == -1){ // random momentum
     fParticleGun->SetParticleMomentum(G4ThreeVector(0, 0, 4.0*GeV*G4UniformRand()));
   }
@@ -111,7 +112,6 @@ void PrtPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ThreeVector dir = fParticleGun->GetParticleMomentumDirection();
   dir *= fParticleGun->GetParticleMomentum();
   PrtManager::Instance()->SetMomentum(TVector3(dir.x(),dir.y(),dir.z()));
-  PrtManager::Instance()->AddEvent(PrtEvent());
 }
 
 void PrtPrimaryGeneratorAction::SetOptPhotonPolar()
