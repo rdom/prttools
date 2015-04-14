@@ -296,7 +296,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   if(fMcpLayout!=0){
     // The MCP
     gMcp = new G4Box("gMcp",fMcpTotal[0]/2.,fMcpTotal[1]/2.,fMcpTotal[2]/2.);
-    lMcp = new G4LogicalVolume(gMcp,defaultMaterial,"lMcp",0,0,0);// BarMaterial
+    lMcp = new G4LogicalVolume(gMcp,BarMaterial,"lMcp",0,0,0);// BarMaterial
   
     // The MCP Pixel
     int mcpDimx = 8;
