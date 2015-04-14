@@ -22,6 +22,7 @@ PrtEvent::PrtEvent(){
   fPrismStep = 0;
   fBeamX = 0;
   fBeamZ = 0;
+  fInfo="";
 }
 
 void PrtEvent::AddHit(PrtHit hit){
@@ -31,6 +32,7 @@ void PrtEvent::AddHit(PrtHit hit){
 
 TString PrtEvent::PrintInfo(){
   TString info="Basic sim information: \n";
+  info += fInfo + "\n";
   info += Form("Physics list %d \n",fPhysList);
   info += Form("Particle  id %d \n",fParticle);
   info += Form("Particle momentum %f \n", fMomentum.Mag());

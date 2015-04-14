@@ -76,7 +76,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
   TString outFile = PrtManager::Instance()->GetOutName()+"_spr.root";
   Double_t theta(0),phi(0), trr(0),  nph(0),
     par1(0), par2(0), par3(0), par4(0), par5(0), par6(0), test1(0), test2(0);
-
+  
   TFile f(outFile,"recreate");
   TTree tree("dirc","SPR");
   tree.Branch("spr", &spr,"spr/D");
@@ -92,7 +92,6 @@ void PrtLutReco::Run(Int_t start, Int_t end){
   tree.Branch("theta",&theta,"theta/D");
   tree.Branch("phi",&phi,"phi/D");
 
-
   test1 = PrtManager::Instance()->GetTest1();
   
   std::cout<<"Run started " <<std::endl;
@@ -105,7 +104,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
     std::cout<<"Event # "<< ievent << " has "<< nHits <<" hits"<<std::endl;
     PrtTrackInfo trackinfo;
     trackinfo.AddInfo(fEvent->PrintInfo()+"\n Basic reco informaion: \n");
-    
+    tree.SetTitle(fEvent->PrintInfo());
     Double_t minChangle = 0.35;
     Double_t maxChangle = 0.9;
     trackinfo.AddInfo(Form("Cerenkov angle selection: (%f,%f) \n",minChangle,maxChangle));
@@ -138,7 +137,6 @@ void PrtLutReco::Run(Int_t start, Int_t end){
       Double_t phi0 =  dir0.Phi();        
       Double_t theta0 = momInBar.Angle(dir0);
       fHist5->Fill(theta0*TMath::Sin(phi0),theta0*TMath::Cos(phi0));
-      std::cout<<" dirz "<<dirz << " lenz "<<lenz <<std::endl;
       
       if(dirz<0) reflected = kTRUE;
       else reflected = kFALSE;

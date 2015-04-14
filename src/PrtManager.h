@@ -62,6 +62,8 @@ public:
   void SetPrismStep(double val){ fPrismStep = val; }
   void SetBeamX(double val){ fBeamX = val; }
   void SetBeamZ(double val){ fBeamZ = val; }
+  void SetInfo(TString val){ fInfo = val; }
+  void AddInfo(TString val){ fInfo += val + "\n"; }
 
   // Accessors
   int GetRunType(){ return fRunType; }
@@ -85,6 +87,7 @@ public:
   double GetBeamX(){ return fBeamX; }
   double GetBeamZ(){ return fBeamZ; }
   TString GetOutName(){return fOutName;}
+  TString GetInfo() { return fInfo; }
 
 private: 
   int fRunType;
@@ -110,6 +113,7 @@ private:
   double fBeamX;
   double fBeamZ;
   TString fOutName;
+  TString fInfo;
 };
 
 #endif

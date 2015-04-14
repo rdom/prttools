@@ -88,6 +88,8 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   fPrtRot = new G4RotationMatrix();
   //create a messenger for this class
   fGeomMessenger = new PrtDetectorConstructionMessenger(this);
+
+  PrtManager::Instance()->AddInfo("Initialization done");
 }
 
 

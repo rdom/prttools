@@ -60,7 +60,8 @@ PrtManager::PrtManager(G4String outfile, G4int runtype)
   fPrismStep=0;
   fBeamX=0;
   fBeamZ=-1;
-
+  fInfo="";
+  
   std::cout<<"PrtManager has been successfully initialized. " <<std::endl;
 }
 
@@ -89,6 +90,7 @@ void PrtManager::AddEvent(PrtEvent event){
     fEvent->SetPrismStep(fPrismStep);
     fEvent->SetBeamX(fBeamX);
     fEvent->SetBeamZ(fBeamZ);
+    fEvent->SetInfo(fInfo);
   }
 }
 

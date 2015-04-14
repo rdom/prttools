@@ -45,6 +45,7 @@ public:
   Double_t GetPrismStep(){ return fPrismStep; }
   Double_t GetBeamX(){ return fBeamX; }
   Double_t GetBeamZ(){ return fBeamZ; }
+  TString  GetInfo() { return fInfo; }
   
   // Mutators
   void SetDecoderId(Int_t val)  { fDecoderId=val; }
@@ -65,6 +66,7 @@ public:
   void SetPrismStep(Double_t val){ fPrismStep = val; }
   void SetBeamX(Double_t val){ fBeamX = val; }
   void SetBeamZ(Double_t val){ fBeamZ = val; }
+  void SetInfo(TString val){ fInfo = val; }
 
 private: 
   Int_t fDecoderId;
@@ -89,7 +91,8 @@ private:
   Double_t fPrismStep;
   Double_t fBeamX;
   Double_t fBeamZ;
-
-  ClassDef(PrtEvent, 1);
+  TString  fInfo;
+  
+  ClassDef(PrtEvent, 2);
 };
 #endif
