@@ -296,7 +296,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   if(fMcpLayout!=0){
     // The MCP
     gMcp = new G4Box("gMcp",fMcpTotal[0]/2.,fMcpTotal[1]/2.,fMcpTotal[2]/2.);
-    lMcp = new G4LogicalVolume(gMcp,BarMaterial,"lMcp",0,0,0);
+    lMcp = new G4LogicalVolume(gMcp,defaultMaterial,"lMcp",0,0,0);// BarMaterial
   
     // The MCP Pixel
     int mcpDimx = 8;
@@ -336,10 +336,10 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
 	}
 
 	if(fMcpLayout==2015){
-	  Double_t ms = (fPrizm[2]-5*fMcpTotal[0])/4.;
-	  shiftx = 3+i*(fMcpTotal[0]+ms)-fPrizm[3]/2+fMcpActive[0]/2.;
+	  Double_t ms = 9;//(fPrizm[2]-5*fMcpTotal[0])/4.;
+	  shiftx = i*(fMcpTotal[0]+ms)-fPrizm[3]/2+fMcpActive[0]/2.;
 	  //if(j==1) shiftx -= 3*fMcpActive[0]/8.;
-	  if(j==1) shiftx = 3+i*(fMcpTotal[0]+3)-fPrizm[3]/2+fMcpActive[0]/2.+2*fMcpActive[0]/8.;
+	  if(j==1) shiftx -= (3/2.)*fMcpActive[0]/8.; //i*(fMcpTotal[0]+3)-fPrizm[3]/2+fMcpActive[0]/2.+2*fMcpActive[0]/8.;
 	  shifty = (fMcpTotal[0]+3)*(j-1);
 	}
 	new G4PVPlacement(0,G4ThreeVector(shiftx,shifty,fBar[2]/2.+fPrizm[1]+fMcpActive[2]/2.+fLens[2]),lMcp,"wMcp", lDirc,false,mcpId++);
