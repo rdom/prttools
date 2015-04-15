@@ -293,7 +293,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   G4Box* gMcp;
   G4Box* gPixel;
 
-  if(fMcpLayout!=0){
+  if(fMcpLayout>1){
     // The MCP
     gMcp = new G4Box("gMcp",fMcpTotal[0]/2.,fMcpTotal[1]/2.,fMcpTotal[2]/2.);
     lMcp = new G4LogicalVolume(gMcp,BarMaterial,"lMcp",0,0,0);// BarMaterial
@@ -352,10 +352,31 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
     lMcp = new G4LogicalVolume(gMcp,BarMaterial,"lMcp",0,0,0);
   
     // The MCP Pixel
-    gPixel = new G4Box("gPixel",fPrizm[2]/2.,fPrizm[0]/2.,fMcpActive[2]/16.);
-    lPixel = new G4LogicalVolume(gPixel,BarMaterial,"lPixel",0,0,0);
-    new G4PVPlacement(0,G4ThreeVector(0,0,0),lPixel,"wPixel", lMcp,false,1); 
+    if(fMcpLayout==0){ //one prism-size mcp with one pixel
+      gPixel = new G4Box("gPixel",fPrizm[2]/2.,fPrizm[0]/2.,fMcpActive[2]/16.);
+      lPixel = new G4LogicalVolume(gPixel,BarMaterial,"lPixel",0,0,0);
+      new G4PVPlacement(0,G4ThreeVector(0,0,0),lPixel,"wPixel", lMcp,false,1);
+    }
+    
+    if(fMcpLayout==1){ //one prism-size mcp with many pixels
+      int pixelId = 0;
+      int mcpDimx = 80;
+      int mcpDimy = 40;
+      
+      gPixel = new G4Box("gPixel",fPrizm[2]/(2*(double)mcpDimx),fPrizm[0]/(2*(double)mcpDimy),fMcpActive[2]/20.);
+      lPixel = new G4LogicalVolume(gPixel,BarMaterial,"lPixel",0,0,0);
+      for(int i=0; i<mcpDimx; i++){
+	for(int j=0; j<mcpDimy; j++){
+	  double shiftx = i*(fPrizm[2]/(double)mcpDimx)-fPrizm[2]/2.+fPrizm[2]/(2*(double)mcpDimx);
+	  double shifty = j*(fPrizm[0]/(double)mcpDimy)-fPrizm[0]/2.+fPrizm[0]/(2*(double)mcpDimy);
+	  new G4PVPlacement(0,G4ThreeVector(shiftx,shifty,0),lPixel,"wPixel", lMcp,false,pixelId++);      
+	}
+      }
+    }
+    
     new G4PVPlacement(0,G4ThreeVector(fPrizm[2]/2.-fPrizm[3]/2.,0,fBar[2]/2.+fPrizm[1]+fMcpActive[2]/2.+fLens[2]),lMcp,"wMcp", lDirc,false,1);
+    
+    
   }
 
   const G4int num = 36; 

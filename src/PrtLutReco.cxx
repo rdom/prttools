@@ -110,13 +110,13 @@ void PrtLutReco::Run(Int_t start, Int_t end){
     trackinfo.AddInfo(Form("Cerenkov angle selection: (%f,%f) \n",minChangle,maxChangle));
     
     //    TVector3 rotatedmom = fEvent->GetMomentum().Unit();
-    Double_t fAngle =  180-fEvent->GetAngle();
+    Double_t fAngle =  180 - fEvent->GetAngle();
     std::cout<<"fAngle  "<<fAngle  <<std::endl;
     
     TVector3 rotatedmom = momInBar;
     rotatedmom.RotateY(fAngle/180.*TMath::Pi());
-    //rotatedmom.Print();
-    
+    TVector3 cz = rotatedmom.Unit();
+    cz = TVector3(-cz.X(),cz.Y(),cz.Z());    
     for(Int_t h=0; h<nHits; h++) {
       PrtPhotonInfo photoninfo;
       fHit = fEvent->GetHit(h);
@@ -128,14 +128,9 @@ void PrtLutReco::Run(Int_t start, Int_t end){
       vv.RotateY(fAngle/180.*TMath::Pi());
       dirz = vv.Z();
 
-      TVector3 dir0 = fHit.GetMomentum().Unit();
-      // TVector3 cz = TVector3(momInBar.X(),momInBar.Y(),momInBar.Z());
-      // TVector3 cd = TVector3(dir0.X(),dir0.Y(),dir0.Z());
-      TVector3 unitdir1 = momInBar.Unit();
-      // cd.RotateUz(unitdir1);
-      
-      Double_t phi0 =  dir0.Phi();        
-      Double_t theta0 = momInBar.Angle(dir0);
+      TVector3 cd = fHit.GetMomentum();
+      Double_t phi0 =  cd.Phi();        
+      Double_t theta0 = cd.Theta();      
       fHist5->Fill(theta0*TMath::Sin(phi0),theta0*TMath::Cos(phi0));
       
       if(dirz<0) reflected = kTRUE;
@@ -149,26 +144,17 @@ void PrtLutReco::Run(Int_t start, Int_t end){
       for(int i=0; i<size; i++){
 	dird = node->GetEntry(i);
 	evtime = node->GetTime(i);
-	
-       	//dird.RotateY(fAngle/180.*TMath::Pi());
-	
+
 	for(int u=0; u<4; u++){
 
 	  if(u == 0) dir = dird;
-	  
-	  // if(u == 1) dir.SetXYZ( dird.X(),-dird.Y(),  dird.Z());
-	  // if(u == 2) dir.SetXYZ( dird.X(), dird.Y(), -dird.Z());
-	  // if(u == 3) dir.SetXYZ( dird.X(),-dird.Y(), -dird.Z());
-	  // if(reflected) dir.SetXYZ( -dir.X(), dir.Y(), dir.Z());
-
 	  if(u == 1) dir.SetXYZ( dird.X(),-dird.Y(),  dird.Z());
 	  if(u == 2) dir.SetXYZ( -dird.X(), dird.Y(), dird.Z());
 	  if(u == 3) dir.SetXYZ( -dird.X(),-dird.Y(), dird.Z());
 	  if(reflected) dir.SetXYZ( dir.X(), dir.Y(), -dir.Z());
 	  
-	  //double criticalAngle = asin(1.00028/1.47125); // n_quarzt = 1.47125; //(1.47125 <==> 390nm)
-	  //if(dir.Angle(fnX1) < criticalAngle || dir.Angle(fnY1) < criticalAngle) continue;
-
+	  double criticalAngle = asin(1.00028/1.47125); // n_quarzt = 1.47125; //(1.47125 <==> 390nm)
+	  if(dir.Angle(fnX1) < criticalAngle || dir.Angle(fnY1) < criticalAngle) continue;
 	  
 	  luttheta = dir.Theta();	
 	  if(luttheta > TMath::PiOver2()) luttheta = TMath::Pi()-luttheta;
@@ -178,12 +164,11 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	
 	  fHist1->Fill(hitTime);
 	  fHist2->Fill(bartime + evtime);
- 
 	  
 	  if(fabs((bartime + evtime)-hitTime)>test1) continue;
 	  fHist3->Fill(fabs((bartime + evtime)),hitTime);
 	  tangle = rotatedmom.Angle(dir);
-	  if(  tangle>TMath::Pi()/2.) tangle = TMath::Pi()-tangle;
+	  //if(  tangle>TMath::Pi()/2.) tangle = TMath::Pi()-tangle;
 	  
 	  PrtAmbiguityInfo ambinfo;
 	  ambinfo.SetBarTime(bartime);
@@ -193,18 +178,14 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	  
 	  if(tangle > minChangle && tangle < maxChangle){
 	    fHist->Fill(tangle);
-	    // Double_t phi = rotatedmom.Phi()-dir.Phi();
-	    // if(TMath::Abs(tangle-0.82)<0.1)
 	   
-	    TVector3 rdir = TVector3(dir.X(),dir.Y(),-dir.Z());
-	    TVector3 unitdir3 = rotatedmom.Unit();
-	    rdir.RotateUz(unitdir3);
+	    TVector3 rdir = TVector3(-dir.X(),dir.Y(),dir.Z());
+	    rdir.RotateUz(cz);
 	 
-	    Double_t phi =  rdir.Phi();
+	    Double_t phi = rdir.Phi();
 	    Double_t tt =  rdir.Theta();
-	    //std::cout<<"tt  "<<tt << " phi  "<< phi <<std::endl;
+	    fHist4->Fill(tt*TMath::Sin(phi),tt*TMath::Cos(phi));
 	    
-	    fHist4->Fill(tangle*TMath::Sin(phi),tangle*TMath::Cos(phi));
 	    gg_gr.SetPoint(gg_i,tangle*TMath::Sin(phi),tangle*TMath::Cos(phi));
 	    gg_i++;
 	  }
