@@ -280,7 +280,7 @@ Bool_t PrtLutReco::FindPeak(Double_t& cherenkovreco, Double_t& spr, Int_t a){
       c->Print(Form("spr/tangle_%d.png", a));
       c->WaitPrimitive();
 
-      TCanvas* c2 = new TCanvas("c2","c2",0,0,1200,600);
+      TCanvas* c2 = new TCanvas("c2","c2",0,0,800,400);
       c2->Divide(2,1);
       c2->cd(1);
       fHist3->GetXaxis()->SetTitle("calculated time [ns]");
