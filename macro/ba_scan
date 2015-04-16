@@ -89,7 +89,7 @@ if [ ${run} != "2" ]; then
     mkdir -p hdata
     start_time=$(date +%s)
     statusline="GSim"
-    for i in $(eval echo {30..150..${astep}}); do 
+    for i in $(eval echo {20..150..${astep}}); do 
 	../build/prtdirc -r $tseed$i -o hdata/h_b$i.root -s 0 -a $i -x "pi+" -p 6  -w 0 -g 3 -h 1 -e $nevents -c 2015 -l 3 -v $verbose -b 1  > /dev/null  &
 	waitForMe $threads
     done
@@ -100,7 +100,7 @@ fi
 
 start_time=$(date +%s)
 statusline="Reco"
-for i in $(eval echo {30..150..$astep}); do 
+for i in $(eval echo {20..150..$astep}); do 
     ../build/prtdirc -i hdata/h_b$i.root -o r_b${tseed}_$i.root -s 2 -t1 $test1 -v $verbose > /dev/null 2> /dev/null &
     waitForMe $threads
 done
