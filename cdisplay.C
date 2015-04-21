@@ -827,9 +827,10 @@ void MyMainFrame::DoExport(){
   Int_t saveFlag = 1;
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
-  TString path = createDir(filedir+"/plots", "beam_data "+ginFile, saveFlag); 
-  std::cout<<"Exporting into  "<<path <<std::endl;
-  writeInfo("digi.csv", drawDigi("m,p,v\n",1), saveFlag);
+  fSavePath = filedir+"/plots";
+  std::cout<<"Exporting into  "<<fSavePath <<std::endl;
+  writeString("digi.csv", drawDigi("m,p,v\n",1));
+  
   pbar->Reset();
   Float_t total = (nmcp-1)*(npix-1);
   if(gComboId==0 || gComboId==2 || gComboId==5 || gComboId==4 || gComboId==10 || gComboId==11){
@@ -859,14 +860,22 @@ void MyMainFrame::DoExport(){
 	  hShape[m][p]->Draw("colz");
 	  histname=hShape[m][p]->GetName();
 	}
-	save(cExport,path,histname,"cdisplay",saveFlag,1);
+	
+	cExport->SetName(histname);
+	canvasAdd(cExport);
+	canvasSave(0,1);
+	canvasDel(cExport->GetName());
+	
 	pbar->SetPosition(100*(m*p)/total);
 	gSystem->ProcessEvents();
       }
     }
   }else{
     histname = updatePlot(gComboId,cExport);
-    save(cExport,path,histname,"cdisplay",saveFlag,1);
+    cExport->SetName(histname);
+    canvasAdd(cExport);
+    canvasSave(0,1);
+    canvasDel(cExport->GetName());
   }
   //  cExport = (TCanvas *) cDigi->DrawClone();
   //  cExport->SetCanvasSize(800,400);
@@ -883,16 +892,25 @@ void MyMainFrame::DoExport(){
 	  hPTime[m][p]->Draw("same");
 	  if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
-	  save(cExport,filedir+"/"+gPath,histname,"cdisplay"+gInfo,2,1,2);	
+
+	  cExport->SetName(histname);
+	  canvasAdd(cExport);
+	  canvasSave(0,1);
+	  canvasDel(cExport->GetName());
 	}
       }
     }
-
-    save(cDigi,filedir+"/"+gPath,"digi","cdisplay "+gInfo,2,1,2);
-    writeInfo("digi.csv", drawDigi("m,p,v\n",1), saveFlag);
+    cDigi->SetName("digi");
+    canvasAdd(cDigi);
+    canvasSave(0,1);
+    canvasDel(cDigi->GetName());
+    writeString("digi.csv", drawDigi("m,p,v\n",1));
 
   }else{
-    save(cDigi,path,"digi","cdisplay",saveFlag,1,2);
+    cDigi->SetName("digi");
+    canvasAdd(cDigi);
+    canvasSave(0,1);
+    canvasDel(cDigi->GetName());
   }
 
   gROOT->SetBatch(0);

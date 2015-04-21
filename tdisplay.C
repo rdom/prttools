@@ -177,16 +177,19 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
   }
   if(gMode==4) if(current_file_name.Contains("cc"))  fileid=1;
-  
+
+  Int_t nch = 32;
   GetEntry(entry);
   for(Int_t i=0; i<Hits_; i++){
     trbSeqId = tdcmap[Hits_nTrbAddress[i]];
-    ch = 32*trbSeqId+Hits_nTdcChannel[i];
+    ch = nch*trbSeqId+Hits_nTdcChannel[i];
+    std::cout<<"trbSeqId  "<<trbSeqId <<"  ch " <<ch <<std::endl;
+    
     if(++mult[ch]>50) continue;
     timeTe0[ch][mult[ch]]=Hits_fTime[i];
     if(Hits_nTdcChannel[i]==0) { //ref channel
       trbRefTime[trbSeqId] = Hits_fTime[i];
-      if((gTrigger-ch)<=32 && (gTrigger-ch)>0) grTime0 = Hits_fTime[i];
+      if((gTrigger-ch)<=nch && (gTrigger-ch)>0) grTime0 = Hits_fTime[i];
     }
     if(ch==gTrigger) grTime1 = Hits_fTime[i];
   }
@@ -194,7 +197,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
       trbSeqId = tdcmap[Hits_nTrbAddress[i]];
-      ch = 32*trbSeqId+Hits_nTdcChannel[i];
+      ch = nch*trbSeqId+Hits_nTdcChannel[i];
    
       hFine[fileid][ch]->Fill(Hits_nFineTime[i]);
 
@@ -236,7 +239,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   for(Int_t i=0; i<Hits_; i++){
     trbSeqId = tdcmap[Hits_nTrbAddress[i]];
-    ch = 32*trbSeqId+Hits_nTdcChannel[i];
+    ch = nch*trbSeqId+Hits_nTdcChannel[i];
     mult[ch]=-1;
     for(Int_t j=0; j<50; j++){
       timeTe0[ch][j]=0; 
@@ -340,7 +343,6 @@ void MyMainFrame::DoExport(){
   gROOT->SetBatch(1);
   TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
   cExport->SetCanvasSize(800,400);
-  Int_t saveFlag = 1;
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
   fSavePath = filedir+"/plots";
@@ -567,10 +569,10 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   TString workers = "workers=4";
   if(gSystem->GetFromPipe("whoami")=="hadaq" && entries>1000000) workers = "workers=12";
 
-  TProof *proof = TProof::Open(workers);
-  proof->SetProgressDialog(0);
-  proof->Load("tdisplay.C+");
-  ch->SetProof();
+  //TProof *proof = TProof::Open(workers);
+  //proof->SetProgressDialog(0);
+  //proof->Load("tdisplay.C+");
+  //ch->SetProof();
   TTSelector *selector = new TTSelector();
   CreateMap();
   ch->Process(selector,option,entries);
