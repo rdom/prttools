@@ -343,28 +343,41 @@ void MyMainFrame::DoExport(){
   Int_t saveFlag = 1;
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
-  TString path = createDir(filedir+"/plots", "beam_data "+ginFile, saveFlag); 
-  std::cout<<"Exporting into  "<<path <<std::endl;
-  writeInfo("digi.csv", drawDigi("m,p,v\n",1), saveFlag);
-  //pbar->Reset();
+  fSavePath = filedir+"/plots";
+  
+  std::cout<<"Exporting into  "<<fSavePath <<std::endl;
+  writeString("digi.csv", drawDigi("m,p,v\n",1));
   Float_t total = (nmcp-1)*(npix-1);
   if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
     for(Int_t m=0; m<nmcp; m++){
       for(Int_t p=0; p<npix; p++){
 	cExport->cd();
 	histname=drawHist(m,p);
-	save(cExport,path,histname,"tdisplay",saveFlag,1);
-	//pbar->SetPosition(100*(m*p)/total);
+
+	cExport->SetName(histname);
+	canvasAdd(cExport);
+	canvasSave(0,1);
+	canvasDel(cExport->GetName());
+    
 	gSystem->ProcessEvents();
       }
     }
   }else{
     histname = updatePlot(gComboId,cExport);
-    save(cExport,path,histname,"tdisplay",saveFlag,1);
+    cExport->SetName(histname);
+    canvasAdd(cExport);
+    canvasSave(0,1);
+    canvasDel(cExport->GetName());
   }
+
   cExport = (TCanvas *) cDigi->DrawClone();
   cExport->SetCanvasSize(800,400);
-  save(cExport,path,"digi","tdisplay",saveFlag,1);
+
+  cExport->SetName("digi");
+  canvasAdd(cExport);
+  canvasSave(0,1);
+  canvasDel(cExport->GetName());
+  
   gROOT->SetBatch(0);
   std::cout<<"Exporting .. Done"<<std::endl;
 }

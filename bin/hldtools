@@ -9,21 +9,23 @@ show_help(){
 
   DESCRIPTION 
      -a 
-        run decoding, calibration, GSI and M tree creation
+        run decoding, calibration, GSI and M tree creation (default)
      -d 
         run decoding
      -c 
         run calibration
-     -g 
-        run GSI tree creation
+     -k 
+        run K tree creation
      -m 
-        run conversion, calibration and M tree creation
+        run M tree creation
      -o 
         make it all smart (do not run conversion and calibration if it is already done) 
      -b 
         build libs
      -j
         number of threads 
+     -l
+        use latest *.hld file in current folder 
      -q 
         run -a option on claster for all unconverted .hld files. output will be in data folder.
         one needs to be logged in on hera  
@@ -35,7 +37,7 @@ show_help(){
 }
 
 OPTIND=1 
-while getopts "h?adcgmobj:qs:e:f:" opt; do
+while getopts "h?adc:kmobj:qs:e:f:l" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -45,9 +47,9 @@ while getopts "h?adcgmobj:qs:e:f:" opt; do
             ;;
 	d)  option=1
             ;;
-	c)  option=2
+	c)  calibrationOpt=$OPTARG
             ;;
-	g)  option=3 
+	k)  option=3 
             ;;
 	m)  option=4
             ;;
@@ -63,16 +65,25 @@ while getopts "h?adcgmobj:qs:e:f:" opt; do
             ;;
 	e)  endEvent=$OPTARG
             ;;
+	l)  latestFile=1
+	    ;;
     esac
 done
 option=${option:-0}
 startEvent=${startEvent:-0}
-endEvent=${endEvent:-100000000} 
-threads=${threads:-1}
+endEvent=${endEvent:-0} 
+threads=${threads:-0}
+calibrationOpt=${calibrationOpt:-1}
 
 shift $((OPTIND-1))
 
-if [ ! $1 ] && [ ! $clastermode ]; then
+
+fileName=$1
+if [ $latestFile ]; then
+    fileName=$(ls -t *.hld | head -1);
+fi
+
+if [ ! $fileName ] && [ ! $clastermode ]; then
     show_help
     exit 0
 fi
@@ -86,11 +97,25 @@ if [ $clastermode ]; then
     exit 0
 fi
 
-inFile=$(readlink -f $1)
+
+if [ ! -f $fileName ]; then
+    echo "File $fileName not found. Exit"
+    exit 0
+fi
+
+inFile=$(readlink -f $fileName)
 inName=$(basename $inFile)
 inDir=$(dirname $inFile)/
 
-cd $HOME/dirc/unpacker/mz-unpacker-BarrelDirc/
+
+
+if [ -d $HOME/Unpacker/mz-unpacker-BarrelDirc ]; then
+    cd $HOME/Unpacker/mz-unpacker-BarrelDirc
+fi
+
+
+#local
+cd $HOME/dirc/unpacker
 
 waitForMe (){
     spin='-\|/'
@@ -109,16 +134,29 @@ waitForMe (){
 	    break  
 	fi
     done
-}  
+} 
 
+if [ "$threads" -gt 0 ]; then
+    total=3256750 #10000
+    # path_daq_anal=$(which daq_anal)
+    # if [ -x "$path_daq_anal" ] ; then
+    # 	totalN0=$(daq_anal -x $inDir$inName 2>&1)
+    # 	totalN0=$(echo $totalN0 |tr -d '\040\n\r')
+    # 	total=$(echo $totalN0 | sed -r 's/.*[^0-9]([0-9]+)eventsprocessed/\1/')
+    # 	total=$(echo "$total-1" | bc) #last event can be damaged
+    # 	#totalN0=$(echo $totalN0 | tr '\n' ' ')
+    # 	#total=$(echo $totalN0 | sed 's/[^0-9]*//g'  | sed 's/49390//g')
+    # fi
+    # if (( $endEvent != 0)); then
+    # 	total=$endEvent	
+    # fi
 
-if [ "$threads" -gt -1 ]; then
+    echo "######  $total triggers in $fileName  #######"
 
-    total=50000
     fileId="${inName%.*}"
     step=$(echo "$total/$threads" |bc)
 
-    if (( $option == 1 || $option == 0 )); then  ####################################
+    if (( $option == 1 || $option == 0 || $option == 4 )); then  ####################################
 	statusline="Decoding .."      
 	start_time=$(date +%s)
 	statusline="$statusline"
@@ -128,7 +166,7 @@ if [ "$threads" -gt -1 ]; then
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${inName}j$i.root\",${startEvent},${endEvent},${option})" > /dev/null & 
+	    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${inName}j$i.root\",${startEvent},${endEvent},1)" > /dev/null &
 	done
 
 	waitForMe
@@ -142,17 +180,17 @@ if [ "$threads" -gt -1 ]; then
 	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
     fi
 
-    if (( $option == 2 || $option == 0 )); then  ####################################
+    if (( ($option == 2 || $option == 0 || $option == 4 ) && calibrationOpt != 0 )); then  ####################################
 	statusline="Calibrating .."
 	printf "$statusline"
 	start_time=$(date +%s)
-	root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"$inName$i.root\",${startEvent},${endEvent},2)" > /dev/null & 
+	root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"${inName}\",\"${inName}$i.root\",0,${total},2,${calibrationOpt})" > /dev/null & 
 	waitForMe
 	finish_time=$(date +%s)
 	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
     fi
 
-    if (( $option == 3 || $option == 0 )); then  ####################################
+    if (( $option == 3 || $option == 0 && $option != 4 )); then  ####################################
 	statusline="Creating K tree .."
 	printf "\r$statusline .."
 	start_time=$(date +%s)
@@ -163,7 +201,7 @@ if [ "$threads" -gt -1 ]; then
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${fileId}Kj$i.root\",${startEvent},${endEvent},3)" > /dev/null & 
+	    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${fileId}Kj$i.root\",${startEvent},${endEvent},3,${calibrationOpt})" > /dev/null & 
 	done
 	
 	waitForMe
@@ -188,7 +226,7 @@ if [ "$threads" -gt -1 ]; then
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${fileId}Mj$i.root\",${startEvent},${endEvent},4)" > /dev/null & 
+	    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${fileId}Mj$i.root\",${startEvent},${endEvent},4,${calibrationOpt})" > /dev/null & 
 	done
 	
 	waitForMe
@@ -203,14 +241,10 @@ if [ "$threads" -gt -1 ]; then
     fi
 else
     echo "ONE JOB"
-    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"$inName\",${startEvent},${endEvent},${option})"
+    if (( $endEvent != 0)); then
+	endEvent=1000	
+    fi
+    root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${inName}.root\",${startEvent},${endEvent},${option})"
 fi
-
-
-#mv $1.root data/
-#mv $1M.root data/
-#mv $1.log data/
-#mv $1.root_calibrated.root data/
-#mv $1.root_CalibrationData.root data/
 
 

@@ -442,6 +442,13 @@ void writeInfo(TString filename){
   myfile.close();
 }
 
+void writeString(TString filename, TString str){
+  ofstream myfile;
+  myfile.open (filename);
+  myfile << str+"\n";
+  myfile.close();
+}
+
 TString createDir(){
   TString finalpath = fSavePath;
 
