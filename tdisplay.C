@@ -29,11 +29,12 @@
 #include <TProof.h>
 #include <TGSplitter.h>
 #include <TChainElement.h>
+#include <TText.h>
 
 #include "tdisplay.h"
 
 Int_t nfiles = 10;
-const Int_t maxfiles = 200;
+const Int_t maxfiles = 100;
 const Int_t maxch =3000;
 const Int_t nmcp = 15, npix = 64;
 TString fileList[maxfiles];
@@ -49,20 +50,25 @@ TH2F *hShape[nmcp][npix];
 TH1F *hCh;
 
 TString ginFile="";
-Int_t gTrigger, gMode=0;;
+Int_t gSetup=2015, gTrigger, gMode=0;;
 
-const Int_t tdcnum=88;
 const Int_t tdcmax=10000;
-TString trbsid[tdcnum] = 
+Int_t tdcnum=20;
+Int_t ctrb = 48;
+
+TString trbsid2014[88] = 
   {"0010","0011","0012","0013","0110","0111","0112","0113","0210","0211","0212","0213","0310","0311","0312","0313","0410","0411","0412","0413"
    ,"0510","0511","0512","0513","0610","0611","0612","0613","0710","0711","0712","0713","0810","0811","0812","0813","0910","0911","0912","0913"
    ,"1010","1011","1012","1013","1110","1111","1112","1113","1210","1211","1212","1213","1310","1311","1312","1313","1410","1411","1412","1413"
    ,"1510","1511","1512","1513","1610","1611","1612","1613","1710","1711","1712","1713","1810","1811","1812","1813","1910","1911","1912","1913"
    ,"2010","2011","2012","2013","2110","2111","2112","2113"};
 
+TString trbsid2015[20] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015",
+			 "2016","2017","2018","2019"};
 
-Int_t tdcid[tdcnum];
-Double_t trbRefTime[tdcnum];
+TString trbsid[100];
+Int_t tdcid[100];
+Double_t trbRefTime[100];
 
 Double_t timeTe0[tdcmax][50];
 Int_t mult[tdcmax];
@@ -86,17 +92,25 @@ void CreateMap(){
       if(i==TString::BaseConvert(trbsid[j],16,10).Atoi()){
 	tdcmap[i]=seqid++;
 	mcpmap[i]=j/4;
-	pixmap[i]=j-j/32;
+	pixmap[i]=j-j/ctrb;
 	break;
       }
     }
   }
- for(Int_t ch=0; ch<maxch; ch++){
+  for(Int_t ch=0; ch<maxch; ch++){
     Int_t mcp = ch/128;
     Int_t pix = (ch - mcp*128)/2;
     Int_t col = pix/2 - 8*(pix/16);
     Int_t row = pix%2 + 2*(pix/16);
     pix = col*8+row;
+    
+    if(gSetup==2015){
+      mcp = ch/64;
+      pix = ch%64;	
+      col = pix/2 - 8*(pix/16);
+      row = pix%2 + 2*(pix/16);
+      pix = 8*col+row;
+    }
     chmap[mcp][pix]=ch;
   }
 }
@@ -122,7 +136,8 @@ void TTSelector::SlaveBegin(TTree *){
     }
   }
 
-  const Int_t lb = 85, hb = 105;
+  //  const Int_t lb = -85, hb = 105;
+    const Long_t lb = -100, hb = 100;
   for(Int_t c=0; c<maxch; c++){
     hLeTot[c] = new TH2F(Form("hLeTot_ch%d",c), Form("hLeTot_ch%d",c) ,200,lb,hb, 100,-2,5);
     fOutput->Add(hLeTot[c]);
@@ -130,7 +145,7 @@ void TTSelector::SlaveBegin(TTree *){
 
   for(Int_t m=0; m<nmcp; m++){
     for(Int_t p=0; p<npix; p++){
-     
+
       hTimeL[m][p] = new TH1F(Form("hTimeL_mcp%dpix%d",m,p), Form("hTimeL_%d_%d",m,p) , 500,lb,hb);
       hTimeT[m][p] = new TH1F(Form("hTimeT_mcp%dpix%d",m,p), Form("hTimeT_%d_%d",m,p) , 500,lb,hb);
       hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d",m,p) , 400,lb,hb,130,-5,35);
@@ -161,7 +176,7 @@ void TTSelector::SlaveBegin(TTree *){
 
 Bool_t TTSelector::Process(Long64_t entry){
   Int_t trbSeqId,ch,mcp,pix,col,row;
-  Double_t grTime0(0), grTime1(0),timeLe(0), timeTe(0), offset(0);
+  Double_t triggerTime(0), grTime0(0), grTime1(0),timeLe(0), timeTe(0), offset(0);
 
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   TObjArray *sarr = current_file_name.Tokenize("_");
@@ -178,18 +193,16 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
   if(gMode==4) if(current_file_name.Contains("cc"))  fileid=1;
 
-  Int_t nch = 32;
   GetEntry(entry);
   for(Int_t i=0; i<Hits_; i++){
     trbSeqId = tdcmap[Hits_nTrbAddress[i]];
-    ch = nch*trbSeqId+Hits_nTdcChannel[i];
-    std::cout<<"trbSeqId  "<<trbSeqId <<"  ch " <<ch <<std::endl;
+    ch = ctrb*trbSeqId+Hits_nTdcChannel[i]-1;
     
     if(++mult[ch]>50) continue;
     timeTe0[ch][mult[ch]]=Hits_fTime[i];
     if(Hits_nTdcChannel[i]==0) { //ref channel
       trbRefTime[trbSeqId] = Hits_fTime[i];
-      if((gTrigger-ch)<=nch && (gTrigger-ch)>0) grTime0 = Hits_fTime[i];
+      if((gTrigger-ch)<=ctrb && (gTrigger-ch)>0) grTime0 = Hits_fTime[i];
     }
     if(ch==gTrigger) grTime1 = Hits_fTime[i];
   }
@@ -197,30 +210,51 @@ Bool_t TTSelector::Process(Long64_t entry){
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
       trbSeqId = tdcmap[Hits_nTrbAddress[i]];
-      ch = nch*trbSeqId+Hits_nTdcChannel[i];
+      ch = ctrb*trbSeqId+Hits_nTdcChannel[i]-1;
    
+      if(gSetup==2014 && (ch%2==0 || Hits_nTdcChannel[i]==0)) continue; // go away trailing edge and ref channel
+      if(gSetup==2015 && Hits_nTdcChannel[i]==0) continue; // go away ref channel
+      
       hFine[fileid][ch]->Fill(Hits_nFineTime[i]);
-
-      if(ch%2==0 || Hits_nTrbAddress[i]==0) continue; // go away trailing edge and ref channel
-      hCh->Fill(ch);
+      
+      //      hCh->Fill(ch);
       if(ch<3000) {
-	mcp = ch/128;
-	pix = (ch%128)/2;	
-	col = pix/2 - 8*(pix/16);
-	row = pix%2 + 2*(pix/16);
-	pix = col+8*row;
+	if(gSetup==2014){
+	  mcp = ch/128;
+	  pix = (ch%128)/2;	
+	  col = pix/2 - 8*(pix/16);
+	  row = pix%2 + 2*(pix/16);
+	  pix = col+8*row;
 
-	if(gMode!=3){
-	  // noisy pixels
-	  if(ch==1397) continue;
-	  if(mcp==2  && pix==55) continue;
-	  if(mcp==2  && pix==62) continue;
-	  if(mcp==14 && pix==35) continue;
+	  if(gMode!=3){
+	    // noisy pixels
+	    if(ch==1397) continue;
+	    if(mcp==2  && pix==55) continue;
+	    if(mcp==2  && pix==62) continue;
+	    if(mcp==14 && pix==35) continue;
+	  }
+	  triggerTime = grTime1-grTime0;
+	}else{ //gSetup == 2015
+	  mcp = ch/64;
+	  pix = ch%64;	
+	  col = pix/2 - 8*(pix/16);
+	  row = pix%2 + 2*(pix/16);
+	  pix = col+8*row;
+	  triggerTime = 0;
+
+	   if(ch==103) continue;
+	   if(ch==373) continue;
+	   if(ch==672) continue;
+	   if(ch==674) continue;
+	   if(ch==677) continue;
+	   if(ch==682) continue;
+	   if(ch==687) continue;
 	}
-       
+
+	hCh->Fill(ch);
 	timeLe = Hits_fTime[i]-trbRefTime[trbSeqId];
 	timeTe = timeTe0[ch][0]-trbRefTime[trbSeqId];
-	Double_t triggerTime = grTime1-grTime0;
+	
 	if(mcp<15){
 	  fhDigi[mcp]->Fill(col,row);
 	  	 
@@ -239,7 +273,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   for(Int_t i=0; i<Hits_; i++){
     trbSeqId = tdcmap[Hits_nTrbAddress[i]];
-    ch = nch*trbSeqId+Hits_nTdcChannel[i];
+    ch = ctrb*trbSeqId+Hits_nTdcChannel[i];
     mult[ch]=-1;
     for(Int_t j=0; j<50; j++){
       timeTe0[ch][j]=0; 
@@ -259,7 +293,11 @@ TString drawHist(Int_t m, Int_t p){
     leg->SetBorderSize(0);
     Int_t num=0;
     for(Int_t j=0; j<nfiles; j++){
-      if(gGr[j][ch]->GetN()<1) continue;
+      if(gGr[j][ch]->GetN()<1){
+	gPad->Clear();
+	(new TText(0.5,0.1,gGr[j][ch]->GetTitle()))->Draw();
+	continue;
+      }
       num++;
       if(j==0) gGr[j][ch]->Draw("AL");  
       else gGr[j][ch]->Draw("L");
@@ -280,7 +318,7 @@ TString drawHist(Int_t m, Int_t p){
   }
   if(gComboId==2){
     hTimeL[m][p]->Draw();
-    hTimeT[m][p]->Draw("same");
+    //hTimeT[m][p]->Draw("same");
     histname=hTimeL[m][p]->GetName();
   } 
   if(gComboId==3){
@@ -299,7 +337,6 @@ TString drawHist(Int_t m, Int_t p){
     histname=hTot[0][ch]->GetName();
     //hTot[0][1953]->Draw();
   }
-
   if(gComboId==6){
     hLeTot[ch]->Draw("colz");
     histname=hLeTot[ch]->GetName();
@@ -348,7 +385,8 @@ void MyMainFrame::DoExport(){
   fSavePath = filedir+"/plots";
   
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  writeString("digi.csv", drawDigi("m,p,v\n",1));
+  Int_t layout =(gSetup==2014)? 1 : 0;
+  writeString("digi.csv", drawDigi("m,p,v\n",layout));
   Float_t total = (nmcp-1)*(npix-1);
   if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
     for(Int_t m=0; m<nmcp; m++){
@@ -575,9 +613,16 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   //ch->SetProof();
   TTSelector *selector = new TTSelector();
   CreateMap();
+  ch->SetCacheSize(10000000);
+  ch->AddBranchToCache("*");
+  entries = 200000;
   ch->Process(selector,option,entries);
-    
-  drawDigi("m,p,v\n",1);
+
+
+  Int_t layout =(gSetup==2014)? 1 : 0;
+  drawDigi("m,p,v\n",layout);
+
+  
   updatePlot(0); //gComboId
 
   cDigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
@@ -591,10 +636,22 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void tdisplay(TString inFile= "file.hld.root", Int_t trigger=1920, Int_t mode =0){ //1952
+void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t setup=2015){ //1952 //1920
   //inFile= "data/dirc/scan1/th_1*.hld.root";
   ginFile = inFile;
   gTrigger = trigger;
   gMode=mode;
+  gSetup = 2015;
+  if(gSetup==2014){
+    ctrb = 32;
+    tdcnum = 88;
+    for(Int_t i=0; i<tdcnum; i++){
+      trbsid[i]=trbsid2014[i];
+    }
+  }else{
+    for(Int_t i=0; i<tdcnum; i++){
+      trbsid[i]=trbsid2015[i];
+    }
+  }
   new MyMainFrame(gClient->GetRoot(), 800, 800);
 }
