@@ -11,7 +11,32 @@
 #include <TH2.h>
 #include <TObject.h>
 
-#include <TObject.h>
+#include "TStyle.h"
+#include <TApplication.h>
+#include <TGClient.h>
+#include <TGButton.h>
+#include <TGFrame.h>
+#include <TFrame.h>
+#include <TRootEmbeddedCanvas.h>
+#include <TGStatusBar.h>
+#include <TCanvas.h>
+#include <TLegend.h>
+#include <TF1.h>
+#include <TRandom.h>
+#include <TGraph.h>
+#include <TAxis.h>
+#include <TGNumberEntry.h>
+#include <TGLabel.h>
+#include <TGListBox.h>
+#include <TGComboBox.h>
+#include <TGButtonGroup.h>
+#include <TGTextEntry.h>
+#include <TGProgressBar.h>
+#include <TThread.h>
+#include <TProof.h>
+#include <TGSplitter.h>
+#include <TChainElement.h>
+#include <TKey.h>
 
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"

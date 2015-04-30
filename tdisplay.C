@@ -109,7 +109,7 @@ void CreateMap(){
       pix = ch%64;	
       col = pix/2 - 8*(pix/16);
       row = pix%2 + 2*(pix/16);
-      pix = 8*col+row;
+      pix = col+8*row;
     }
     chmap[mcp][pix]=ch;
   }
@@ -128,8 +128,8 @@ void TTSelector::SlaveBegin(TTree *){
 
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
-      hFine[j][c] = new TH1F(Form("hFine_%d_ch%d",j,c),Form("hFine_%d_ch%d",j,c) , 600,1,600);
-      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d",j,c) , 500,-2,6);
+      hFine[j][c] = new TH1F(Form("hFine_%d_ch%d",j,c),Form("hFine_%d_ch%d;bin [#];LE entries [#]",j,c) , 600,1,600);
+      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 500,-2,6);
       hTot[j][c]->SetLineColor(j+1);
       fOutput->Add(hFine[j][c]);
       fOutput->Add(hTot[j][c]);
@@ -146,9 +146,9 @@ void TTSelector::SlaveBegin(TTree *){
   for(Int_t m=0; m<nmcp; m++){
     for(Int_t p=0; p<npix; p++){
 
-      hTimeL[m][p] = new TH1F(Form("hTimeL_mcp%dpix%d",m,p), Form("hTimeL_%d_%d",m,p) , 500,lb,hb);
-      hTimeT[m][p] = new TH1F(Form("hTimeT_mcp%dpix%d",m,p), Form("hTimeT_%d_%d",m,p) , 500,lb,hb);
-      hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d",m,p) , 400,lb,hb,130,-5,35);
+      hTimeL[m][p] = new TH1F(Form("hTimeL_mcp%dpix%d",m,p), Form("hTimeL_%d_%d;LE time [ns];entries [#]",m,p) , 500,lb,hb);
+      hTimeT[m][p] = new TH1F(Form("hTimeT_mcp%dpix%d",m,p), Form("hTimeT_%d_%d;TOT [ns];entries [#]",m,p) , 500,lb,hb);
+      hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d;time [ns];offset to the threshold [mV]",m,p) , 400,lb,hb,130,-5,35);
 
       fOutput->Add(hTimeL[m][p]);
       fOutput->Add(hTimeT[m][p]);
@@ -169,7 +169,7 @@ void TTSelector::SlaveBegin(TTree *){
     fOutput->Add(fhDigi[m]);
   }
 
-  hCh = new TH1F("hCh","hCh",3000,0,3000); 
+  hCh = new TH1F("hCh","hCh;channel [#];entries [#]",3000,0,3000); 
   fOutput->Add(hCh);
   CreateMap();
 }
@@ -367,7 +367,8 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       TString smcp = selected->GetName();
       smcp = smcp(3,smcp.Sizeof());
       Int_t mcp = smcp.Atoi();
-      Int_t pix = 8*(binx-1)+biny-1;
+      //      Int_t pix = 8*(binx-1)+biny-1;
+      Int_t pix = 8*(biny-1)+binx-1;
   
       cTime->cd();
       drawHist(mcp,pix);
@@ -615,7 +616,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   CreateMap();
   ch->SetCacheSize(10000000);
   ch->AddBranchToCache("*");
-  entries = 200000;
+  //  entries = 200000;
   ch->Process(selector,option,entries);
 
 

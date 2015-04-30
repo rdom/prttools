@@ -4,41 +4,10 @@
 #define TTSelector_cxx
 #include "prttools.C"
 
-#include "TStyle.h"
-#include <TApplication.h>
-#include <TGClient.h>
-#include <TGButton.h>
-#include <TGFrame.h>
-#include <TFrame.h>
-#include <TRootEmbeddedCanvas.h>
-#include <TGStatusBar.h>
-#include <TCanvas.h>
-#include <TLegend.h>
-#include <TF1.h>
-#include <TRandom.h>
-#include <TGraph.h>
-#include <TAxis.h>
-#include <TGNumberEntry.h>
-#include <TGLabel.h>
-#include <TGListBox.h>
-#include <TGComboBox.h>
-#include <TGButtonGroup.h>
-#include <TGTextEntry.h>
-#include <TGProgressBar.h>
-#include <TThread.h>
-#include <TProof.h>
-#include <TGSplitter.h>
-#include <TChainElement.h>
-#include <TKey.h>
-
 #include "tcalibration.h"
 
-const Int_t maxfiles(200);
 const Int_t maxch =3000;
 const Int_t nmcp(15), npix(64);
-TString fileList[maxfiles];
-
-TH1F *hCh;
 
 TString ginFile(""), goutFile(""), gcFile(""), gtFile("");
 Int_t gTrigger(0), gMode(0);;
@@ -66,8 +35,6 @@ Int_t chmap[nmcp][npix];
 Int_t gComboId=0;
 TGraph *gGr[maxch];
 TGraph *gGrDiff[maxch];
-
-//TH1F  *hL = new TH1F("hL", "hL" , 500,150,200);
 
 void CreateMap(){
   Int_t seqid =0;
@@ -141,7 +108,6 @@ void TTSelector::Begin(TTree *){
   
 }
 
-
 Bool_t badcannel(Int_t ch){
 
   // bad pixels july14
@@ -159,7 +125,6 @@ Bool_t badcannel(Int_t ch){
 
   return false;
 }
-
 
 Bool_t TTSelector::Process(Long64_t entry){
   Int_t trbSeqId,ch,mcp,pix,col,row;;
@@ -216,7 +181,6 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(abs(timeLe)>300) continue; 
       }
 
-      //PrtHit hit(Hits_nTrbAddress[i],Hits_nTdcChannel[i],ch,mcp,pix+1,timeLe,timeTot);
       hit.SetTdc(Hits_nTdcChannel[i]);
       hit.SetChannel(ch);
       hit.SetMcpId(mcp);
@@ -246,8 +210,6 @@ Bool_t TTSelector::Process(Long64_t entry){
 void TTSelector::Terminate(){
   fFile->Write();
   fFile->Close();
-  // hL->Draw();
-  // hL->Fit("gaus","V","E1",175,185);
 }
 
 void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "outFileC.root", TString cFile= "calib.root", TString tFile= "calibOffsets.root", Int_t trigger=2560,  Int_t sEvent =0, Int_t eEvent=0, Int_t build = 0){ //1920

@@ -137,19 +137,20 @@ waitForMe (){
 } 
 
 if [ "$threads" -gt 0 ]; then
-    total=3256750 #10000
-    # path_daq_anal=$(which daq_anal)
-    # if [ -x "$path_daq_anal" ] ; then
-    # 	totalN0=$(daq_anal -x $inDir$inName 2>&1)
-    # 	totalN0=$(echo $totalN0 |tr -d '\040\n\r')
-    # 	total=$(echo $totalN0 | sed -r 's/.*[^0-9]([0-9]+)eventsprocessed/\1/')
-    # 	total=$(echo "$total-1" | bc) #last event can be damaged
-    # 	#totalN0=$(echo $totalN0 | tr '\n' ' ')
-    # 	#total=$(echo $totalN0 | sed 's/[^0-9]*//g'  | sed 's/49390//g')
-    # fi
-    # if (( $endEvent != 0)); then
-    # 	total=$endEvent	
-    # fi
+    #total=3256750 #10000
+
+    path_daq_anal=$(which daq_anal)
+    if [ -x "$path_daq_anal" ] ; then
+    	totalN0=$(daq_anal -x $inDir$inName 2>&1)
+    	totalN0=$(echo $totalN0 |tr -d '\040\n\r')
+    	total=$(echo $totalN0 | sed -r 's/.*[^0-9]([0-9]+)eventsprocessed/\1/')
+    	total=$(echo "$total-1" | bc) #last event can be damaged
+    	#totalN0=$(echo $totalN0 | tr '\n' ' ')
+    	#total=$(echo $totalN0 | sed 's/[^0-9]*//g'  | sed 's/49390//g')
+    fi
+    if (( $endEvent != 0)); then
+    	total=$endEvent	
+    fi
 
     echo "######  $total triggers in $fileName  #######"
 
