@@ -426,7 +426,7 @@ void MyMainFrame::DoExport(){
 void MyMainFrame::DoExportGr(){
   TString filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
-  TFile efile(filedir+"/calib.root","RECREATE");
+  TFile efile(filedir+"/calib_fine.root","RECREATE");
   
   for(Int_t c=0; c<maxch; c++){
       gGr[0][c]->SetName(Form("%d",c));
@@ -608,10 +608,11 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   TString workers = "workers=4";
   if(gSystem->GetFromPipe("whoami")=="hadaq" && entries>1000000) workers = "workers=12";
 
-  //TProof *proof = TProof::Open(workers);
-  //proof->SetProgressDialog(0);
-  //proof->Load("tdisplay.C+");
-  //ch->SetProof();
+  // TProof *proof = TProof::Open(workers);
+  // proof->SetProgressDialog(0);
+  // proof->Load("tdisplay.C+");
+  // ch->SetProof();
+
   TTSelector *selector = new TTSelector();
   CreateMap();
   ch->SetCacheSize(10000000);

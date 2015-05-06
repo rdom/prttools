@@ -60,7 +60,8 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   cDigi->cd();
   // TPad * pp = new TPad("P","T",0.06,0.135,0.93,0.865);
   if(!fhPglobal){
-    fhPglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
+    Double_t tt =(layoutId==3)? 0.88: 0.96; 
+    fhPglobal = new TPad("P","T",0.04,0.04,tt,0.96);
     fhPglobal->SetFillStyle(0);
     fhPglobal->Draw();
   }
@@ -68,22 +69,42 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 
   Int_t nrow = 3, ncol = 5;
 
-  float bw = 0.02, bh = 0.01, shift = 0,shiftw=-0.02;
-  float tbw = bw, tbh = bh;
-  Int_t padi = 0;
-  if(!fhPads[0]){
-    for(int ii=0; ii<ncol; ii++){
-      for(int j=0; j<nrow; j++){
-	if(j==1) shift = 0.04;
-	else shift = 0;
-	
-	fhPads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
-	fhPads[padi]->SetFillColor(kCyan-8);
-	fhPads[padi]->SetMargin(0.04,0.04,0.04,0.04);
-	fhPads[padi]->Draw(); 
-	padi++;
+ 
+  if(layoutId >2){
+    float bw = 0.02, bh = 0.01, shift = 0,shiftw=0.02;
+    float tbw = bw, tbh = bh;
+    Int_t padi = 0;
+    if(!fhPads[0]){
+      for(int ii=0; ii<ncol; ii++){
+	for(int j=0; j<nrow; j++){
+	  if(j==1) shift = -0.028;
+	  else shift = 0;
+	  fhPads[padi] =  new TPad(Form("P%Double_t",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
+	  fhPads[padi]->SetFillColor(kCyan-8);
+	  fhPads[padi]->SetMargin(0.04,0.04,0.04,0.04);
+	  fhPads[padi]->Draw();
+	  padi++;
+	}
       }
     }
+  }else{
+    float bw = 0.02, bh = 0.01, shift = 0,shiftw=-0.02;
+    float tbw = bw, tbh = bh;
+    Int_t padi = 0;
+    if(!fhPads[0]){
+      for(int ii=0; ii<ncol; ii++){
+	for(int j=0; j<nrow; j++){
+	  if(j==1) shift = 0.04;
+	  else shift = 0;
+	  fhPads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
+	  fhPads[padi]->SetFillColor(kCyan-8);
+	  fhPads[padi]->SetMargin(0.04,0.04,0.04,0.04);
+	  fhPads[padi]->Draw(); 
+	  padi++;
+	}
+      }
+    }
+
   }
 
   Int_t np,tmax;
