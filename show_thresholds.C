@@ -25,8 +25,8 @@ void CreateMap(){
 
 
 Double_t min(1000000),max(0);
-TH1F* hLow = new TH1F("hLow",";channel [#];threshold [?]",100,0,1000);
-TH1F* hHigh = new TH1F("hHigh",";channel [#];threshold [?]",100,0,1000);
+TH1F* hLow = new TH1F("hLow",";channel [#];threshold [?]",1000,0,1000);
+TH1F* hHigh = new TH1F("hHigh",";channel [#];threshold [?]",1000,0,1000);
 
 
 void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t range = 0){
