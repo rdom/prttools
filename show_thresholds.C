@@ -57,7 +57,7 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2=""){
     Int_t row = pix%2 + 2*(pix/16);
     fhDigi[mcp]->Fill(col,row,th);
 
-    std::cout<<"mcp  "<<mcp << " tdcSeq  " <<tdcSeq << " col  "<< col << "  row "<< row<<std::endl;
+    //std::cout<<"mcp  "<<mcp << " tdcSeq  " <<tdcSeq << " col  "<< col << "  row "<< row<<std::endl;
   }
   
   drawDigi("m,p,v\n",3,max,min);
