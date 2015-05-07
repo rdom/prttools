@@ -70,7 +70,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   Int_t nrow = 3, ncol = 5;
 
  
-  if(layoutId >2){
+  if(layoutId > 2){
     float bw = 0.02, bh = 0.01, shift = 0,shiftw=0.02;
     float tbw = bw, tbh = bh;
     Int_t padi = 0;
@@ -148,7 +148,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   }
 
   for(Int_t p=0; p<nrow*ncol;p++){
-    if(layoutId == 1)  np =p%3*5 + p/3;
+    if(layoutId > 0 )  np =p%3*5 + p/3;
     else np = p;
     
     fhPads[p]->cd();
