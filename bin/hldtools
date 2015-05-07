@@ -115,7 +115,7 @@ fi
 
 
 #local
-cd $HOME/dirc/unpacker
+cd $HOME/dirc/unpacker_mz
 
 waitForMe (){
     spin='-\|/'
