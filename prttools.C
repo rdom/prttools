@@ -68,7 +68,6 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   fhPglobal->cd();
 
   Int_t nrow = 3, ncol = 5;
-
  
   if(layoutId > 2){
     float bw = 0.02, bh = 0.01, shift = 0,shiftw=0.02;
@@ -106,7 +105,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
     }
 
   }
-
+  
   Int_t np,tmax;
   Double_t max=0;
   if(maxz==0){
