@@ -147,7 +147,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   }
 
   for(Int_t p=0; p<nrow*ncol;p++){
-    if(layoutId > 0 )  np =p%3*5 + p/3;
+    if(layoutId == 1)  np =p%3*5 + p/3;
     else np = p;
     
     fhPads[p]->cd();
