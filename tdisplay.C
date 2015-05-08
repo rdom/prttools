@@ -276,8 +276,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	
 	if(mcp<15){
 	  fhDigi[mcp]->Fill(col,row);
-	  	 
-	  hFine[fileid][ch]->SetTitle(Form("ch %d m%dp%d ",ch, mcp, pix));
+	  TString trbhex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
+	  hFine[fileid][ch]->SetTitle(Form("trb %d (%s), chain %d, lch %d = ch %d, m%dp%d ", Hits_nTrbAddress[i],trbhex.Data() ,(ch/16)%3,ch%16,ch, mcp, pix));
 	  hTimeL[mcp][pix]->Fill(timeLe - triggerTime); 
 	  hTimeT[mcp][pix]->Fill(timeTe - triggerTime);
 	  hShape[mcp][pix]->Fill(timeLe - triggerTime,offset);
@@ -445,7 +445,7 @@ void MyMainFrame::DoExport(){
 void MyMainFrame::DoExportGr(){
   TString filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
-  TFile efile(filedir+"/calib_fine.root","RECREATE");
+  TFile efile(filedir+"/calib1.root","RECREATE");
   
   for(Int_t c=0; c<maxch; c++){
       gGr[0][c]->SetName(Form("%d",c));
