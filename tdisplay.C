@@ -116,14 +116,16 @@ void CreateMap(){
 }
 
 void TTSelector::SlaveBegin(TTree *){
+  std::cout<<"init starts " <<std::endl;
   TString option = GetOption();
   TObjArray *strobj = option.Tokenize(" ");
   nfiles = ((TObjString*)strobj->At(0))->GetString().Atoi();
   gTrigger = ((TObjString*)strobj->At(1))->GetString().Atoi();
   gMode = ((TObjString*)strobj->At(2))->GetString().Atoi();
-  for(Int_t i=3; i<nfiles+2; i++){
-    fileList[i-3]=((TObjString*)strobj->At(i))->GetString();
-    std::cout<<" fileList[i]  "<<fileList[i-3] <<std::endl;
+  gSetup = ((TObjString*)strobj->At(3))->GetString().Atoi();
+  for(Int_t i=4; i<nfiles+2; i++){
+    fileList[i-4]=((TObjString*)strobj->At(i))->GetString();
+    std::cout<<" fileList[i]  "<<fileList[i-4] <<std::endl;
   }
 
   for(Int_t j=0; j<nfiles; j++){
@@ -136,6 +138,19 @@ void TTSelector::SlaveBegin(TTree *){
     }
   }
 
+  if(gSetup==2014){
+    ctrb = 32;
+    tdcnum = 88;
+    for(Int_t i=0; i<tdcnum; i++){
+      trbsid[i]=trbsid2014[i];
+    }
+  }else{
+    ctrb = 48;
+    for(Int_t i=0; i<tdcnum; i++){
+      trbsid[i]=trbsid2015[i];
+    }
+  }
+   
   //  const Int_t lb = -85, hb = 105;
     const Long_t lb = -100, hb = 100;
   for(Int_t c=0; c<maxch; c++){
@@ -172,9 +187,13 @@ void TTSelector::SlaveBegin(TTree *){
   hCh = new TH1F("hCh","hCh;channel [#];entries [#]",3000,0,3000); 
   fOutput->Add(hCh);
   CreateMap();
+  std::cout<<"init done " <<std::endl;
+  
 }
 
 Bool_t TTSelector::Process(Long64_t entry){
+  std::cout<<"entry  "<<entry <<std::endl;
+  
   Int_t trbSeqId,ch,mcp,pix,col,row;
   Double_t triggerTime(0), grTime0(0), grTime1(0),timeLe(0), timeTe(0), offset(0);
 
@@ -206,15 +225,15 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
     if(ch==gTrigger) grTime1 = Hits_fTime[i];
   }
-
+ 
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
       trbSeqId = tdcmap[Hits_nTrbAddress[i]];
       ch = ctrb*trbSeqId+Hits_nTdcChannel[i]-1;
-   
+      
       if(gSetup==2014 && (ch%2==0 || Hits_nTdcChannel[i]==0)) continue; // go away trailing edge and ref channel
       if(gSetup==2015 && Hits_nTdcChannel[i]==0) continue; // go away ref channel
-      
+
       hFine[fileid][ch]->Fill(Hits_nFineTime[i]);
       
       //      hCh->Fill(ch);
@@ -386,7 +405,7 @@ void MyMainFrame::DoExport(){
   fSavePath = filedir+"/plots";
   
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  Int_t layout =(gSetup==2014)? 1 : 0;
+  Int_t layout =(gSetup==2014)? 1 : 2;
   writeString("digi.csv", drawDigi("m,p,v\n",layout));
   Float_t total = (nmcp-1)*(npix-1);
   if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
@@ -482,6 +501,7 @@ void Calibrate(){
 }
 
 void TTSelector::Terminate(){
+  std::cout<<"terminate start "<<std::endl;
   for (Int_t m=0; m < nmcp; m++) {
     for (Int_t p=0; p < npix; p++) {
       hTimeL[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("hTimeL_mcp%dpix%d",m,p), fOutput));
@@ -504,6 +524,8 @@ void TTSelector::Terminate(){
 
   hCh = dynamic_cast<TH1F *>(TProof::GetOutput("hCh", fOutput));
   Calibrate();
+  std::cout<<"terminate done "<<std::endl;
+  
 }
 
 TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
@@ -598,7 +620,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(gMode==3) nfiles=1;
   if(gMode==4) nfiles=2;
   
-  TString option = Form("%d %d %d ",nfiles,gTrigger,gMode)+strfiles;
+  TString option = Form("%d %d %d %d",nfiles,gTrigger,gMode,gSetup)+strfiles;
   
   std::cout<<"nfiles "<<nfiles <<std::endl;
 
@@ -608,10 +630,10 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   TString workers = "workers=4";
   if(gSystem->GetFromPipe("whoami")=="hadaq" && entries>1000000) workers = "workers=12";
 
-  // TProof *proof = TProof::Open(workers);
-  // proof->SetProgressDialog(0);
-  // proof->Load("tdisplay.C+");
-  // ch->SetProof();
+  TProof *proof = TProof::Open(workers);
+  proof->SetProgressDialog(0);
+  proof->Load("tdisplay.C+");
+  ch->SetProof();
 
   TTSelector *selector = new TTSelector();
   CreateMap();
@@ -621,7 +643,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   ch->Process(selector,option,entries);
 
 
-  Int_t layout =(gSetup==2014)? 1 : 0;
+  Int_t layout =(gSetup==2014)? 1 : 2;
   drawDigi("m,p,v\n",layout);
 
   

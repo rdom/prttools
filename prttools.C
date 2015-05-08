@@ -69,7 +69,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 
   Int_t nrow = 3, ncol = 5;
  
-  if(layoutId > 2){
+  if(layoutId > 1){
     float bw = 0.02, bh = 0.01, shift = 0,shiftw=0.02;
     float tbw = bw, tbh = bh;
     Int_t padi = 0;
