@@ -73,7 +73,7 @@ option=${option:-0}
 startEvent=${startEvent:-0}
 endEvent=${endEvent:-0} 
 threads=${threads:-0}
-calibrationOpt=${calibrationOpt:-1}
+calibrationOpt=${calibrationOpt:-0}
 
 shift $((OPTIND-1))
 

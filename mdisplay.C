@@ -33,8 +33,8 @@
 
 #include <sstream>
 
-#include "../mz-unpacker-BarrelDirc/TPrtHit.h"
-#include "../mz-unpacker-BarrelDirc/TPrtEvent.h"
+#include "../unpacker_mz/TPrtHit.h"
+#include "../unpacker_mz/TPrtEvent.h"
 #include "mdisplay.h"
 
 class TPrtHit;
@@ -62,7 +62,7 @@ TH1F *hTot,*hLe,*hMult,*hCh;
 TH1F *hMultEvtNum1,*hMultEvtNum2;
 
 TCanvas *cTime;
-Int_t gComboId=0, gTrigger = 0, gMode=0;
+Int_t gComboId=0,  gSetup=2015, gTrigger = 0, gMode=0;
 TGHProgressBar *pbar;
 TString ginFile; 
 
@@ -82,6 +82,25 @@ void MSelector::Init(TTree *tree){
 
 void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
   pbar->SetPosition(100*processed/(Float_t)total);
+}
+
+void CreateMap(){
+  for(Int_t ch=0; ch<maxch; ch++){
+    Int_t mcp = ch/128;
+    Int_t pix = (ch - mcp*128)/2;
+    Int_t col = pix/2 - 8*(pix/16);
+    Int_t row = pix%2 + 2*(pix/16);
+    pix = col*8+row;
+    
+    if(gSetup==2015){
+      mcp = ch/64;
+      pix = ch%64;	
+      col = pix/2 - 8*(pix/16);
+      row = pix%2 + 2*(pix/16);
+      pix = col+8*row;
+    }
+    chmap[mcp][pix]=ch;
+  }
 }
 
 void init(){
@@ -107,15 +126,19 @@ void init(){
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit(1111);
 
+  
   // create channel - mcp/pixel map
-  for(Int_t ch=0; ch<maxch; ch++){
-    Int_t mcp = ch/128;
-    Int_t pix = (ch - mcp*128)/2;
-    Int_t col = pix/2 - 8*(pix/16);
-    Int_t row = pix%2 + 2*(pix/16);
-    pix = row*8+col;
-    chmap[mcp][pix]=ch;
-  }
+  CreateMap();
+   
+  // for(Int_t ch=0; ch<maxch; ch++){
+  //   Int_t mcp = ch/128;
+  //   Int_t pix = (ch - mcp*128)/2;
+  //   Int_t col = pix/2 - 8*(pix/16);
+  //   Int_t row = pix%2 + 2*(pix/16);
+  //   pix = row*8+col;
+  //   chmap[mcp][pix]=ch;
+  // }
+  
 }
 
 void MSelector::SlaveBegin(TTree *){
