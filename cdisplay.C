@@ -42,7 +42,7 @@ class PrtHit;
 class PrtEvent;
 
 MyMainFrame *gMain;
-const int nmcp = 15, npix = 64;
+const Int_t nmcp = 15, npix = 64;
 TH1F *hPTime[nmcp][npix];
 TH1F *hSTime[nmcp][npix];
 TH1F *hPTot[nmcp][npix];
@@ -65,7 +65,7 @@ TH1F *hTot,*hLe,*hLes,*hMult,*hCh;
 TH1F *hMultEvtNum1,*hMultEvtNum2;
 
 TCanvas *cTime;
-Int_t gComboId=0, gTrigger = 0, gMode=0;
+Int_t gComboId=0, gTrigger = 0, gMode=0, layout = 0;
 TString gPath="", gInfo="";
 TGHProgressBar *pbar;
 TString ginFile; 
@@ -267,7 +267,6 @@ Bool_t badcannel(Int_t ch){
 
   return false;
 }
-
 
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
@@ -680,7 +679,7 @@ void MyMainFrame::DoDraw(){
 
   fCheckBtn1->SetState(kButtonUp);
 
-  drawDigi("m,p,v\n",1);
+  drawDigi("m,p,v\n",layout);
   updatePlot(gComboId);
 
   if(gMode==10) {
@@ -829,7 +828,7 @@ void MyMainFrame::DoExport(){
   filedir.Remove(filedir.Last('/'));
   fSavePath = filedir+"/plots";
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  writeString("digi.csv", drawDigi("m,p,v\n",1));
+  writeString("digi.csv", drawDigi("m,p,v\n",layout));
   
   pbar->Reset();
   Float_t total = (nmcp-1)*(npix-1);
@@ -904,7 +903,7 @@ void MyMainFrame::DoExport(){
     canvasAdd(cDigi);
     canvasSave(0,1);
     canvasDel(cDigi->GetName());
-    writeString("digi.csv", drawDigi("m,p,v\n",1));
+    writeString("digi.csv", drawDigi("m,p,v\n",layout));
 
   }else{
     cDigi->SetName("digi");
@@ -921,7 +920,7 @@ void MyMainFrame::DoExport(){
 TLine *gLine = new TLine(0,0,3000,0);
 void MyMainFrame::DoSlider(Int_t pos){
   if(fCheckBtn1->GetState() != kButtonDown)
-    drawDigi("m,p,v\n",1,pos);
+    drawDigi("m,p,v\n",layout,pos);
 
   if(gComboId==7){
     cTime->cd();  
@@ -942,7 +941,7 @@ void MyMainFrame::DoCheckBtnClecked1(){
   }else{
     gMain->fHslider1->SetEnabled(kFALSE);
   }
-  drawDigi("m,p,v\n",1,state);
+  drawDigi("m,p,v\n",layout,state);
 }
 
 void MyMainFrame::DoCheckBtnClecked2(){
@@ -1003,13 +1002,13 @@ void MyMainFrame::DoCheckBtnClecked4(){
 	fhDigi[m]->Fill(row,col,mean);
       }
     }
-    drawDigi("m,p,v\n",1,-2,-2);
+    drawDigi("m,p,v\n",layout,-2,-2);
   }
   if(fCheckBtn4->GetState() == kButtonUp){
     for(Int_t m=0; m<nmcp; m++){
       fhDigi[m] = fhDigi_temp[m];
     }
-    drawDigi("m,p,v\n",1);
+    drawDigi("m,p,v\n",layout);
   }
 }
 
