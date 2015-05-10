@@ -1207,7 +1207,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   HideFrame(fHm);
 
   //if(gTrigger==0) fEdit1->SetText("400 -200 200");
-  if(gTrigger==0) fEdit1->SetText("400 85 105");
+  if(gTrigger==0) fEdit1->SetText("400 -100 0");
   else if(gTrigger==1952 || gTrigger==1956 || gTrigger==1953 || gTrigger==1957) fEdit1->SetText("400 80 120");
   else if(gTrigger==1920 || gTrigger==1921) fEdit1->SetText("400 -100 -50");
   else if(gTrigger==2560 || gTrigger==2561) fEdit1->SetText("400 150 200");
