@@ -134,7 +134,7 @@ void TTSelector::SlaveBegin(TTree *){
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
       hFine[j][c] = new TH1F(Form("hFine_%d_ch%d",j,c),Form("hFine_%d_ch%d;bin [#];LE entries [#]",j,c) , 600,1,600);
-      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 500,-2,6);
+      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 500,-20,20);
       hTot[j][c]->SetLineColor(j+1);
       fOutput->Add(hFine[j][c]);
       fOutput->Add(hTot[j][c]);
