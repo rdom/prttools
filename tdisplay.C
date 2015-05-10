@@ -198,7 +198,9 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   Int_t tdcSeqId,ch,mcp,pix,col,row;
   Double_t triggerTime(0), grTime0(0), grTime1(0),timeLe(0), timeTe(0), offset(0);
+  Double_t timeT[50000];
 
+ 
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   TObjArray *sarr = current_file_name.Tokenize("_");
   if(sarr->At(1)){
@@ -218,9 +220,12 @@ Bool_t TTSelector::Process(Long64_t entry){
   for(Int_t i=0; i<Hits_; i++){
     tdcSeqId = tdcmap[Hits_nTrbAddress[i]];
     ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
-    
-    if(++mult[ch]>50) continue;
-    timeTe0[ch][mult[ch]]=Hits_fTime[i];
+
+    if(Hits_nSignalEdge[i]==0){
+      timeT[ch]=Hits_fTime[i];
+      continue;
+    }
+
     if(Hits_nTdcChannel[i]==0) { //ref channel
       tdcRefTime[tdcSeqId] = Hits_fTime[i];
       if((gTrigger-ch)<=ctdc && (gTrigger-ch)>0) grTime0 = Hits_fTime[i];
@@ -230,6 +235,8 @@ Bool_t TTSelector::Process(Long64_t entry){
  
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
+      if(Hits_nSignalEdge[i]==0) continue; //tailing edge
+      
       tdcSeqId = tdcmap[Hits_nTrbAddress[i]];
       ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
       
@@ -274,8 +281,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 
 	hCh->Fill(ch);
 	timeLe = Hits_fTime[i]-tdcRefTime[tdcSeqId];
-	timeTe = timeTe0[ch][0]-tdcRefTime[tdcSeqId];
-	
+	timeTe = timeT[ch]-tdcRefTime[tdcSeqId];;
+	  
 	if(mcp<15){
 	  fhDigi[mcp]->Fill(col,row);
 	  TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
@@ -286,20 +293,12 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  hShape[mcp][pix]->Fill(timeTe - triggerTime,offset);
 	}
 	//if(ch==gTrigger) 
-	hTot[fileid][ch]->Fill(timeTe0[ch+1][0] - timeTe0[ch][0]);
-	hLeTot[ch]->Fill(timeLe - triggerTime,timeTe0[ch+1][0] - timeTe0[ch][0]);
+	hTot[fileid][ch]->Fill(timeTe-timeLe);
+	hLeTot[ch]->Fill(timeLe - triggerTime,timeTe-timeLe);
       }
     }
   }
 
-  for(Int_t i=0; i<Hits_; i++){
-    tdcSeqId = tdcmap[Hits_nTrbAddress[i]];
-    ch = ctdc*tdcSeqId+Hits_nTdcChannel[i];
-    mult[ch]=-1;
-    for(Int_t j=0; j<50; j++){
-      timeTe0[ch][j]=0; 
-    }
-  }
   return kTRUE;
 }
 

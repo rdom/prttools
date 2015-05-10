@@ -67,10 +67,16 @@ if [ ! -f $cFile ] && [[ $cFile != *"*"* ]]; then
     exit 0
 fi
 
+if [[ $cFile  != "" ]]; then
+   cFile=$(readlink -f $cFile) 
+fi
+   
 if [[ $tFile  != "" ]] && [ ! -f $tFile ] && [[ $tFile != *"*"* ]]; then
     echo "File $tFile not found. Exit"
     exit 0
-else
+fi
+
+if [[ $tFile  != "" ]]; then
     tFile=$(readlink -f $tFile) 
 fi
 
@@ -88,8 +94,6 @@ inFile=$(readlink -f $fileName)
 inName=$(basename $inFile)
 inDir=$(dirname $inFile)/
 fileId="${inName%.*.*}"
-
-cFile=$(readlink -f $cFile)
 
 waitForMe (){
     spin='-\|/'
@@ -130,8 +134,7 @@ else
 	printf "\r$statusline .."
 	start_time=$(date +%s)
 	
-	root -l -q loadprtlibs.C tcalibration.C++'("","","","", 0,0,0,1)' 
-	# > /dev/null 2>/dev/null
+	root -l -q loadprtlibs.C tcalibration.C++'("","","","", 0,0,0,1)'  > /dev/null 2>/dev/null
 	
 	for ((i=0;i<$threads;i++)); do
 	    startEvent=$(echo "$step*$i" |bc)

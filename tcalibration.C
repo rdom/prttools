@@ -33,9 +33,6 @@ TString tdcsid[100];
 Int_t tdcid[100];
 Double_t trbRefTime[100];
 
-Double_t timeTe0[tdcmax][50];
-Int_t mult[tdcmax];
-
 Int_t tdcmap[tdcmax];
 Int_t map_mpc[nmcp][npix];
 Int_t map_mcp[maxch];
@@ -149,7 +146,7 @@ Bool_t badcannel(Int_t ch){
 Bool_t TTSelector::Process(Long64_t entry){
   Int_t trbSeqId,ch;
   Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime;
-  Double_t time[50000];
+  Double_t time[50000], timeT[50000];
 
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   GetEntry(entry);
@@ -157,16 +154,19 @@ Bool_t TTSelector::Process(Long64_t entry){
   fEvent = new PrtEvent();
   // fEvent->SetReferenceChannel(gTrigger);
   for(Int_t i=0; i<Hits_; i++){
+    
     trbSeqId = tdcmap[Hits_nTrbAddress[i]];
     ch = ctdc*trbSeqId+Hits_nTdcChannel[i]-1;
     if(badcannel(ch)) continue; 
 
-    if(++mult[ch]>50) continue;
     coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
     if(gcFile!="") time[i] = coarseTime-gGr[ch]->Eval(Hits_nFineTime[i]);
     else time[i] = coarseTime-(Hits_nFineTime[i]-31)*0.0102;
-      
-    timeTe0[ch][mult[ch]]=time[i];
+    if(Hits_nSignalEdge[i]==0){
+      timeT[ch]=time[i];
+      continue;
+    }
+
     if(Hits_nTdcChannel[i]==0) {  // is ref channel
       trbRefTime[trbSeqId] = time[i];
       if(gTrigger!=0 && (gTrigger-ch)<=ctdc && (gTrigger-ch)>0) grTime0 = time[i];
@@ -178,19 +178,21 @@ Bool_t TTSelector::Process(Long64_t entry){
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
       if(Hits_nTrbAddress[i]==0) continue;
+      if(Hits_nSignalEdge[i]==0) continue; //tailing edge
+  
       trbSeqId = tdcmap[Hits_nTrbAddress[i]];
       ch = ctdc*trbSeqId+Hits_nTdcChannel[i]-1;
       if(badcannel(ch)) continue; 
-      
+
+      if(ch>3000) continue;
       if(gSetup==2014 && (ch%2==0 || Hits_nTdcChannel[i]==0)) continue; // go away trailing edge
       if(gSetup==2015 && Hits_nTdcChannel[i]==0) continue; // go away ref channel
       
-      if(ch>3000) continue;
-
       timeLe = time[i]-trbRefTime[trbSeqId];
       timeLe = timeLe - (grTime1-grTime0);
-      timeTot = timeTe0[ch+1][1] - timeTe0[ch][1];
-      
+
+      timeTot = time[i] - timeT[ch];
+           
       if(gMode == 1){
 	if(ch>1920) continue;
 	else timeLe -= gGrDiff[ch]->Eval(timeTot);
@@ -209,14 +211,6 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
   }
 
-  for(Int_t i=0; i<Hits_; i++){
-    trbSeqId = tdcmap[Hits_nTrbAddress[i]];
-    ch = ctdc*trbSeqId+Hits_nTdcChannel[i];
-    mult[ch]=0;
-    for(Int_t j=0; j<50; j++){
-      timeTe0[ch][j]=0; 
-    }
-  }
   if(nrhits!=0) fTree->Fill();
   fEvent->Clear();
   delete fEvent;
