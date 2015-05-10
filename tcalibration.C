@@ -182,7 +182,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       ch = ctdc*trbSeqId+Hits_nTdcChannel[i];
       if(badcannel(ch)) continue; 
       
-      if(gSetup==2014 && ch%2==0 || Hits_nTdcChannel[i]==0) continue; // go away trailing edge
+      if(gSetup==2014 && (ch%2==0 || Hits_nTdcChannel[i]==0)) continue; // go away trailing edge
       if(gSetup==2015 && Hits_nTdcChannel[i]==0) continue; // go away ref channel
       
       if(ch>3000) continue;
