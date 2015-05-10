@@ -65,7 +65,7 @@ TH1F *hTot,*hLe,*hLes,*hMult,*hCh;
 TH1F *hMultEvtNum1,*hMultEvtNum2;
 
 TCanvas *cTime;
-Int_t gComboId=0, gTrigger = 0, gMode=0, layout = 0;
+Int_t gComboId=0, gTrigger = 0, gMode=0, layout = 2;
 TString gPath="", gInfo="";
 TGHProgressBar *pbar;
 TString ginFile; 
@@ -331,11 +331,14 @@ Bool_t MSelector::Process(Long64_t entry){
     if(gMultCutMin!=gMultCutMax && (thitCount2<gMultCutMin || thitCount2>gMultCutMax)) continue; 
 
     pix = hit.GetPixelId()-1;
-    col = 7-pix/8;
-    row = pix%8;
+    // col = 7-pix/8;
+    // row = pix%8;
+    row = pix/8;
+    col = pix%8;
+    
     le = hit.GetLeadTime();
     tot = hit.GetTotTime();   
-    pix = col+8*row;
+    //pix = col+8*row;
 
     if(badcannel(ch)) continue;
 

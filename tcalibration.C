@@ -158,7 +158,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   // fEvent->SetReferenceChannel(gTrigger);
   for(Int_t i=0; i<Hits_; i++){
     trbSeqId = tdcmap[Hits_nTrbAddress[i]];
-    ch = ctdc*trbSeqId+Hits_nTdcChannel[i];
+    ch = ctdc*trbSeqId+Hits_nTdcChannel[i]-1;
     if(badcannel(ch)) continue; 
 
     if(++mult[ch]>50) continue;
@@ -179,7 +179,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     for(Int_t i=0; i<Hits_; i++){
       if(Hits_nTrbAddress[i]==0) continue;
       trbSeqId = tdcmap[Hits_nTrbAddress[i]];
-      ch = ctdc*trbSeqId+Hits_nTdcChannel[i];
+      ch = ctdc*trbSeqId+Hits_nTdcChannel[i]-1;
       if(badcannel(ch)) continue; 
       
       if(gSetup==2014 && (ch%2==0 || Hits_nTdcChannel[i]==0)) continue; // go away trailing edge
