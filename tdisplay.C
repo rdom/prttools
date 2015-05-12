@@ -155,7 +155,7 @@ void TTSelector::SlaveBegin(TTree *){
   }
    
   //  const Int_t lb = -85, hb = 105;
-    const Long_t lb = -100, hb = 100;
+    const Long_t lb = -2000, hb = 2000;
   for(Int_t c=0; c<maxch; c++){
     hLeTot[c] = new TH2F(Form("hLeTot_ch%d",c), Form("hLeTot_ch%d",c) ,200,lb,hb, 100,-2,5);
     fOutput->Add(hLeTot[c]);
