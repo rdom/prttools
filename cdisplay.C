@@ -140,7 +140,8 @@ void init(){
 void MSelector::SlaveBegin(TTree *){
   TString option = GetOption();
   std::istringstream source(option.Data());
-  Int_t bins1 =100, bins2 = 100, min1=-5, max1=5, min2=-5, max2=5;
+  Int_t bins1 =100, bins2 = 100;
+  Double_t min1=-5, max1=5, min2=-5, max2=5;
   source>>gMode>>gTrigger>>bins1>>min1>>max1>>bins2>>min2>>max2>>gTimeCutMin>>gTimeCutMax>>gMultCutMin>>gMultCutMax>>gsTimeCuts>>gsTotMean;
 
   TObjArray *sarr = gsTimeCuts.Tokenize(";");
@@ -251,19 +252,23 @@ void MSelector::SlaveBegin(TTree *){
 
 Bool_t badcannel(Int_t ch){
 
-  // bad pixels july14
-  if(ch ==  379) return true;
-  if(ch ==  381) return true;
-  if(ch == 1397) return true;
-  if(ch == 1869) return true;
+  // // bad pixels july14
+  // if(ch ==  379) return true;
+  // if(ch ==  381) return true;
+  // if(ch == 1397) return true;
+  // if(ch == 1869) return true;
 
-  if(ch == 1405) return true;
-  if(ch == 1403) return true;
-  if(ch == 1385) return true;
-  if(ch == 1381) return true;
-  if(ch == 1383) return true;
-  if(ch == 1387) return true;
-  if(ch == 1395) return true;
+  // if(ch == 1405) return true;
+  // if(ch == 1403) return true;
+  // if(ch == 1385) return true;
+  // if(ch == 1381) return true;
+  // if(ch == 1383) return true;
+  // if(ch == 1387) return true;
+  // if(ch == 1395) return true;
+
+  // bad pixels july15
+   if(ch ==  830) return true;
+   if(ch ==  48) return true;
 
   return false;
 }
@@ -290,7 +295,7 @@ Bool_t MSelector::Process(Long64_t entry){
     if(current_file_name.Contains("S.root")) bsim = true;
   } 
 
-  Double_t le,tot, refLe=-1;
+  Double_t le,tot, triggerLe=-1;
   PrtHit hit;
   Int_t mcp,pix,col,row,ch,chMultiplicity;
   Int_t thitCount1=0, thitCount2=0, hitCount1=0, hitCount2=0;
@@ -307,11 +312,11 @@ Bool_t MSelector::Process(Long64_t entry){
       if(hit.GetMcpId()>14) thitCount1++;
       else  thitCount2++;
       if(ch == (UInt_t)gTrigger) {
-	refLe = hit.GetLeadTime();
+	triggerLe = hit.GetLeadTime();
       }
     }
   }else{
-    refLe=0;
+    triggerLe=0;
   }
 
   for(UInt_t h=0; h<nhits; h++){
@@ -324,25 +329,24 @@ Bool_t MSelector::Process(Long64_t entry){
       chMultiplicity = mult[ch];
       hMult->Fill(chMultiplicity);
     }
+
     if(mcp>14){
       hitCount1++;
       continue;
     }
+    
     if(gMultCutMin!=gMultCutMax && (thitCount2<gMultCutMin || thitCount2>gMultCutMax)) continue; 
 
     pix = hit.GetPixelId()-1;
-    // col = 7-pix/8;
-    // row = pix%8;
     row = pix/8;
     col = pix%8;
     
     le = hit.GetLeadTime();
     tot = hit.GetTotTime();   
-    //pix = col+8*row;
 
     if(badcannel(ch)) continue;
 
-    Double_t timeDiff = le-refLe;
+    Double_t timeDiff = le-triggerLe;
       
     if(gsTimeCuts!="0" && (timeDiff<gTimeCuts[mcp][pix][0] || timeDiff>gTimeCuts[mcp][pix][1])) continue;
     else if(gTimeCutMin!=gTimeCutMax &&  (timeDiff<gTimeCutMin || timeDiff>gTimeCutMax)) continue;
@@ -352,7 +356,7 @@ Bool_t MSelector::Process(Long64_t entry){
       timeDiff += 0.3*(tot - gTotMean[mcp][pix]);
     }
 
-    if(refLe!=-1 || gTrigger==0) {
+    if(triggerLe!=-1 || gTrigger==0) {
       if(bsim){
 	Double_t offset = 72.2;
 	if("cc00000000001C.root" == fileid) offset = 72.080000;
@@ -397,6 +401,7 @@ Bool_t MSelector::Process(Long64_t entry){
 	hShape[mcp][pix]->Fill(timeDiff,offset);
 	hShape[mcp][pix]->Fill(timeDiff + tot,offset);
       }
+      
       fhDigi[mcp]->Fill(col, row);
       hPTime[mcp][pix]->Fill(timeDiff);
       hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
