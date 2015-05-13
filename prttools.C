@@ -29,6 +29,8 @@
 #include "TError.h"
 #include "TPaveStats.h"
 #include "TObjString.h"
+#include "TApplication.h"
+
 
 #include <iostream>
 #include <fstream>
@@ -368,12 +370,14 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
   fCh->GetEntry(ievent);
   if(ievent%printstep==0 && ievent!=0) cout<<"Event # "<<ievent<< " # hits "<<fEvent->GetHitSize()<<endl;
   if(ievent == 0){
-    TIter next(gROOT->GetApplication()->InputFiles());
-    TObjString *os=0;
-    while(os = (TObjString*)next()){
-      fInfo += os->GetString()+" ";
+    if(gROOT->GetApplication()){
+      TIter next(gROOT->GetApplication()->InputFiles());
+      TObjString *os=0;
+      while(os = (TObjString*)next()){
+	fInfo += os->GetString()+" ";
+      }
+      fInfo += "\n";
     }
-    fInfo += "\n";
     fInfo += fEvent->PrintInfo();
   }
 }
