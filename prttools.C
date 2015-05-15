@@ -120,16 +120,19 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   }
 
   if(maxz==-2 && minz==-2){ // optimize range
-    max = maxz;
+    for(Int_t p=0; p<nrow*ncol;p++){
+      tmax = fhDigi[p]->GetMaximum();
+      if(max<tmax) max = tmax;
+    }
+    if(max < 100) max = 100;
     Int_t tbins = 2000;
-    TH1F *h = new TH1F("","",tbins,0,200);
+    TH1F *h = new TH1F("","",tbins,0,max);
     for(Int_t p=0; p<nrow*ncol;p++){
       for(Int_t i=0; i<64; i++){
 	Double_t val = fhDigi[p]->GetBinContent(i);
 	if(val!=0) h->Fill(val);
       }
     }
-   
     Double_t integral;
     for(Int_t i=0; i<tbins; i++){
       integral = h->Integral(0,i);
@@ -159,8 +162,8 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
     fhDigi[np]->SetMinimum(minz);
     for(Int_t i=1; i<=8; i++){
       for(Int_t j=1; j<=8; j++){
-	Double_t weight = (double)(fhDigi[np]->GetBinContent(i,j))/(double)max *255;
-	if(weight > 0) digidata += Form("%d,%d,%d\n", np, (j-1)*8+i-1, (Int_t)weight);
+  	Double_t weight = (double)(fhDigi[np]->GetBinContent(i,j))/(double)max *255;
+  	if(weight > 0) digidata += Form("%d,%d,%d\n", np, (j-1)*8+i-1, (Int_t)weight);
       }
     }
   }

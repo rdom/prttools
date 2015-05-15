@@ -17,6 +17,7 @@ private:
   TRootEmbeddedCanvas  *fTime;
   TGStatusBar          *fStatusBar;
   TGNumberEntry        *fNumber;
+  TGNumberEntry        *fNumber2;
   TGLabel              *fLabel;
   TGLabel              *fLabel1;
   TGComboBox           *fComboMode;
@@ -40,6 +41,7 @@ public:
   void DoMore();
   void DoExport();
   void DoExportOffsets();
+  void InterestChanged();
   void DoSlider(Int_t pos =0);
   void DoCheckBtnClecked1();
   void DoCheckBtnClecked2();

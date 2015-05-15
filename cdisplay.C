@@ -53,9 +53,16 @@ TH2F *hShape[nmcp][npix];
 
 MSelector            *fSelector;
 const Int_t maxch =2000;
+const Int_t maxmch(nmcp*npix);
+
 TGraph *gGrDiff[maxch];
-Int_t chmap[nmcp][npix];
-Int_t mult[3000]={0};
+Int_t map_mpc[nmcp][npix];
+Int_t map_mcp[maxch];
+Int_t map_pix[maxch];
+Int_t map_row[maxch];
+Int_t map_col[maxch];
+
+Int_t mult[maxch]={0};
 
 const Int_t maxMult = 30;
 TH1F *hTotM[maxMult];
@@ -78,7 +85,6 @@ Double_t gTotMean[nmcp][npix];
 TString gsTimeCuts = "0";
 TString gsTotMean = "0";
 
-
 void MSelector::Init(TTree *tree){
   fChain = tree; 
   fChain->SetBranchAddress("PrtEvent", &fEvent);
@@ -86,6 +92,22 @@ void MSelector::Init(TTree *tree){
 
 void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
   pbar->SetPosition(100*processed/(Float_t)total);
+}
+
+void CreateMap(){  
+  for(Int_t ch=0; ch<maxmch; ch++){
+    Int_t mcp = ch/64;
+    Int_t pix = ch%64;	
+    Int_t col = pix/2 - 8*(pix/16);
+    Int_t row = pix%2 + 2*(pix/16);
+    pix = col+8*row;
+      
+    map_mpc[mcp][pix]=ch;
+    map_mcp[ch] = mcp;
+    map_pix[ch] = pix;
+    map_row[ch] = row;
+    map_col[ch] = col;
+  }
 }
 
 void init(){
@@ -127,14 +149,7 @@ void init(){
   gStyle->SetOptFit(1111);
 
   // create channel - mcp/pixel map
-  for(Int_t ch=0; ch<maxch; ch++){
-    Int_t mcp = ch/128;
-    Int_t pix = (ch - mcp*128)/2;
-    Int_t col = pix/2 - 8*(pix/16);
-    Int_t row = pix%2 + 2*(pix/16);
-    pix = row*8+col;
-    chmap[mcp][pix]=ch;
-  }
+  CreateMap();
 }
 
 void MSelector::SlaveBegin(TTree *){
@@ -515,7 +530,7 @@ void getTimeOffset(){
       // gaust->SetParameter(2,0.3);
       // hh->FitSlicesX(gaust,0,-1,10,"");
       // TGraph * gg = new TGraph((TH1D*)gDirectory->Get("hh_1")); 
-      Int_t ch = chmap[m][p];
+      Int_t ch = map_mpc[m][p];
       gGrDiff[ch] = new TGraph();
       for (int i=0;i<100;i++){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
@@ -543,7 +558,7 @@ void MyMainFrame::DoExportOffsets(){
     Int_t c;
     for (Int_t m=0; m <nmcp; m++) {
       for(Int_t p=0; p<npix; p++){
-	c = chmap[m][p];
+	c = map_mpc[m][p];
 	gGrDiff[c]->SetName(Form("%d_%d_%d",c,m,p));
 	gGrDiff[c]->Write();
       }
@@ -593,7 +608,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==4) hLeTot[mcp][pix]->Draw("colz");
       if(gComboId==10) hShape[mcp][pix]->Draw("colz");
       if(gComboId==11){
-	Int_t ch = chmap[mcp][pix];
+	Int_t ch = map_mpc[mcp][pix];
 	hLeTot[mcp][pix]->Draw("colz");
 	Double_t* xx = gGrDiff[ch]->GetX();
 	Double_t* yy = gGrDiff[ch]->GetY();
@@ -609,6 +624,39 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       cTime->Update(); 
     }
   }
+}
+
+void MyMainFrame::InterestChanged(){
+  Int_t ch = fNumber2->GetIntNumber();
+  
+  std::cout<<"ch  "<<ch <<std::endl;
+ 
+  Int_t mcp = map_mcp[ch];
+  Int_t pix = map_pix[ch];
+  if(gComboId==0) {
+    TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
+    normalize(hh,2);
+    hPTime[mcp][pix]->Draw();
+    fit(hPTime[mcp][pix],1);
+    hPTime[mcp][pix]->Draw("same");
+    if(hPTime[mcp][pix]->GetEntries()>10) hSTime[mcp][pix]->Draw("same");
+  }
+  if(gComboId==2) hPTot[mcp][pix]->Draw();   
+  if(gComboId==5) hPMult[mcp][pix]->Draw();      
+  if(gComboId==4) hLeTot[mcp][pix]->Draw("colz");
+  if(gComboId==10) hShape[mcp][pix]->Draw("colz");
+  if(gComboId==11){
+    Int_t ch = map_mpc[mcp][pix];
+    hLeTot[mcp][pix]->Draw("colz");
+    Double_t* xx = gGrDiff[ch]->GetX();
+    Double_t* yy = gGrDiff[ch]->GetY();
+
+    TGraph* gr = new TGraph(gGrDiff[ch]->GetN(),yy,xx);
+    gr->SetMarkerStyle(7);
+    gr->SetMarkerColor(2);
+    gr->Draw("P same");
+  }
+  cTime->Update();
 }
 
 void MSelector::Terminate(){
@@ -1132,7 +1180,17 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   TGTextButton * fBtnExportOffsets = new TGTextButton(fHm2, "Export &offsets");
   fBtnExportOffsets->Connect("Clicked()", "MyMainFrame", this, "DoExportOffsets()");
   fHm2->AddFrame(fBtnExportOffsets, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
+  
+  fHm2->AddFrame(new TGLabel(fHm2, "Ch of interest: "), new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 3, 4));
+  fNumber2 = new TGNumberEntry(fHm2, 0, 9,999, TGNumberFormat::kNESInteger,
+			       TGNumberFormat::kNEANonNegative,
+			      TGNumberFormat::kNELLimitMinMax,
+			      0, maxch);
 
+  fNumber2->Connect("ValueSet(Long_t)", "MyMainFrame", this, "InterestChanged()");
+  (fNumber2->GetNumberEntry())->Connect("ReturnPressed()", "MyMainFrame", this, "InterestChanged()");
+  fHm2->AddFrame(fNumber2, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
+  
   fHm->AddFrame(fHm2, new TGLayoutHints(kLHintsExpandX | kLHintsCenterX,5, 5, 5, 5));
 
 
@@ -1156,7 +1214,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fNumber = new TGNumberEntry(hframe, 0, 9,999, TGNumberFormat::kNESInteger,
 			      TGNumberFormat::kNEANonNegative, 
 			      TGNumberFormat::kNELLimitMinMax,
-			      0, 99999);
+			      0, maxch);
   fNumber->SetNumber(0);
   hframe->AddFrame(fNumber, new TGLayoutHints(kLHintsTop | kLHintsLeft, 5, 5, 3, 4));
    
