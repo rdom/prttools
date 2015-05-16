@@ -190,6 +190,12 @@ void initDigi(Int_t type=0){
   }
 }
 
+void resetDigi(){
+    for(Int_t m=0; m<3*5;m++){	
+      fhDigi[m]->Reset("M");
+    }
+}
+
 void axisHits800x500(TH2 * hist){
   hist->SetStats(0);
   hist->SetTitle(Form("%d hits",(Int_t)hist->GetEntries()));
