@@ -127,19 +127,24 @@ void TTSelector::Begin(TTree *){
 
 Bool_t badcannel(Int_t ch){
 
-  // bad pixels july14
-  if(ch ==  379) return true;
-  if(ch ==  381) return true;
-  if(ch == 1397) return true;
-  if(ch == 1869) return true;
+  // // bad pixels july14
+  // if(ch ==  379) return true;
+  // if(ch ==  381) return true;
+  // if(ch == 1397) return true;
+  // if(ch == 1869) return true;
 
-  if(ch == 1405) return true;
-  if(ch == 1403) return true;
-  if(ch == 1385) return true;
-  if(ch == 1381) return true;
-  if(ch == 1383) return true;
-  if(ch == 1387) return true;
+  // if(ch == 1405) return true;
+  // if(ch == 1403) return true;
+  // if(ch == 1385) return true;
+  // if(ch == 1381) return true;
+  // if(ch == 1383) return true;
+  // if(ch == 1387) return true;
 
+  if(ch==830) return true;
+  if(ch==831) return true;
+  if(ch==828) return true;
+  if(ch==815) return true;
+	
   return false;
 }
 

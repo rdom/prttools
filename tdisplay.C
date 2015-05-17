@@ -37,6 +37,8 @@ Int_t nfiles = 10;
 const Int_t maxfiles = 10;
 const Int_t maxch =3000;
 const Int_t nmcp = 15, npix = 64;
+const Int_t maxmch(nmcp*npix);
+  
 TString fileList[maxfiles];
 
 TH1F *hFine[maxfiles][maxch];
@@ -56,30 +58,23 @@ const Int_t tdcmax=10000;
 Int_t tdcnum=41;
 Int_t ctdc = 48;
 
-TString tdcsid2014[88] = 
-  {"0010","0011","0012","0013","0110","0111","0112","0113","0210","0211","0212","0213","0310","0311","0312","0313","0410","0411","0412","0413"
-   ,"0510","0511","0512","0513","0610","0611","0612","0613","0710","0711","0712","0713","0810","0811","0812","0813","0910","0911","0912","0913"
-   ,"1010","1011","1012","1013","1110","1111","1112","1113","1210","1211","1212","1213","1310","1311","1312","1313","1410","1411","1412","1413"
-   ,"1510","1511","1512","1513","1610","1611","1612","1613","1710","1711","1712","1713","1810","1811","1812","1813","1910","1911","1912","1913"
-   ,"2010","2011","2012","2013","2110","2111","2112","2113"};
-
-TString tdcsid2015[41] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
-			 "2014","2015","2016","2018","2019","201a","201c","2020","2023","2024",
-			 "2025","2026","2027","2028","2029","202a","202b","202c","202d","202e","202f"
+TString tdcsid[41] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
+		     "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
+		     "2014","2015","2016","2018","2019","201a","201c","2020","2023","2024",
+		     "2025","2026","2027","2028","2029","202a","202b","202c","202d","202e","202f"
 };
 
-TString tdcsid[100];
-Int_t tdcid[100];
 Double_t tdcRefTime[100];
 
 Double_t timeTe0[tdcmax][50];
 Int_t mult[tdcmax];
 
-Int_t tdcmap[tdcmax];
-Int_t mcpmap[tdcmax];
-Int_t pixmap[tdcmax];
-Int_t chmap[nmcp][npix];
+Int_t map_tdc[tdcmax];
+Int_t map_mpc[nmcp][npix];
+Int_t map_mcp[maxch];
+Int_t map_pix[maxch];
+Int_t map_row[maxch];
+Int_t map_col[maxch];
 
 Int_t gComboId=0;
 TGraph *gGr[maxfiles][maxch];
@@ -87,34 +82,25 @@ TGraph *gGr[maxfiles][maxch];
 TCanvas *cTime;
 
 void CreateMap(){
-  Int_t seqid =0;
-  for(Int_t i=0; i<tdcmax; i++){
-    tdcmap[i]=-1;
-    mcpmap[i]=-1;
-    for(Int_t j=0; j<tdcnum; j++){
-      if(i==TString::BaseConvert(tdcsid[j],16,10).Atoi()){
-	tdcmap[i]=seqid++;
-	mcpmap[i]=j/4;
-	pixmap[i]=j-j/ctdc;
-	break;
-      }
-    }
+  
+  Int_t seqid =-1;
+  for(Int_t i=0; i<tdcnum; i++){
+    Int_t dec = TString::BaseConvert(tdcsid[i],16,10).Atoi();
+    map_tdc[dec]=++seqid;
   }
-  for(Int_t ch=0; ch<maxch; ch++){
-    Int_t mcp = ch/128;
-    Int_t pix = (ch - mcp*128)/2;
+  
+  for(Int_t ch=0; ch<maxmch; ch++){
+    Int_t mcp = ch/64;
+    Int_t pix = ch%64;	
     Int_t col = pix/2 - 8*(pix/16);
     Int_t row = pix%2 + 2*(pix/16);
-    pix = col*8+row;
-    
-    if(gSetup==2015){
-      mcp = ch/64;
-      pix = ch%64;	
-      col = pix/2 - 8*(pix/16);
-      row = pix%2 + 2*(pix/16);
-      pix = col+8*row;
-    }
-    chmap[mcp][pix]=ch;
+    pix = col+8*row;
+      
+    map_mpc[mcp][pix]=ch;
+    map_mcp[ch] = mcp;
+    map_pix[ch] = pix;
+    map_row[ch] = row;
+    map_col[ch] = col;
   }
 }
 
@@ -134,28 +120,15 @@ void TTSelector::SlaveBegin(TTree *){
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
       hFine[j][c] = new TH1F(Form("hFine_%d_ch%d",j,c),Form("hFine_%d_ch%d;bin [#];LE entries [#]",j,c) , 600,1,600);
-      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 500,-20,20);
+      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 500,0,70);
       hTot[j][c]->SetLineColor(j+1);
       fOutput->Add(hFine[j][c]);
       fOutput->Add(hTot[j][c]);
     }
   }
-
-  if(gSetup==2014){
-    ctdc = 32;
-    tdcnum = 88;
-    for(Int_t i=0; i<tdcnum; i++){
-      tdcsid[i]=tdcsid2014[i];
-    }
-  }else{
-    ctdc = 48;
-    for(Int_t i=0; i<tdcnum; i++){
-      tdcsid[i]=tdcsid2015[i];
-    }
-  }
    
   //  const Int_t lb = -85, hb = 105;
-    const Long_t lb = -2000, hb = 2000;
+    const Long_t lb = 0, hb = 100;
   for(Int_t c=0; c<maxch; c++){
     hLeTot[c] = new TH2F(Form("hLeTot_ch%d",c), Form("hLeTot_ch%d",c) ,200,lb,hb, 100,-2,5);
     fOutput->Add(hLeTot[c]);
@@ -206,6 +179,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   if(sarr->At(1)){
     TString soffset = ((TObjString *) sarr->At(1))->GetName();
     offset = soffset.Atof();
+    offset = offset/400.;
   }
   
   Int_t fileid=0;
@@ -218,7 +192,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   GetEntry(entry);
   for(Int_t i=0; i<Hits_; i++){
-    tdcSeqId = tdcmap[Hits_nTrbAddress[i]];
+    tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
     ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
 
     if(Hits_nSignalEdge[i]==0){
@@ -235,66 +209,38 @@ Bool_t TTSelector::Process(Long64_t entry){
  
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
-      if(Hits_nSignalEdge[i]==0) continue; //tailing edge
+      if(Hits_nSignalEdge[i]==0 || Hits_nTdcChannel[i]==0) continue; //tailing edge || ref channel
       
-      tdcSeqId = tdcmap[Hits_nTrbAddress[i]];
+      tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
       ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
       
-      if(gSetup==2014 && (ch%2==0 || Hits_nTdcChannel[i]==0)) continue; // go away trailing edge and ref channel
-      if(gSetup==2015 && Hits_nTdcChannel[i]==0) continue; // go away ref channel
-
       hFine[fileid][ch]->Fill(Hits_nFineTime[i]);
       
-      //      hCh->Fill(ch);
       if(ch<3000) {
-	if(gSetup==2014){
-	  mcp = ch/128;
-	  pix = (ch%128)/2;	
-	  col = pix/2 - 8*(pix/16);
-	  row = pix%2 + 2*(pix/16);
-	  pix = col+8*row;
+	mcp = map_mcp[ch];
+	pix = map_pix[ch];	
+	triggerTime = grTime1 - grTime0;
 
-	  if(gMode!=3){
-	    // noisy pixels
-	    if(ch==1397) continue;
-	    if(mcp==2  && pix==55) continue;
-	    if(mcp==2  && pix==62) continue;
-	    if(mcp==14 && pix==35) continue;
-	  }
-	  triggerTime = grTime1-grTime0;
-	}else{ //gSetup == 2015
-	  mcp = ch/64;
-	  pix = ch%64;	
-	  col = pix/2 - 8*(pix/16);
-	  row = pix%2 + 2*(pix/16);
-	  pix = col+8*row;
-	  triggerTime = 0;
-
-	   if(ch==103) continue;
-	   if(ch==373) continue;
-	   if(ch==672) continue;
-	   if(ch==674) continue;
-	   if(ch==677) continue;
-	   if(ch==682) continue;
-	   if(ch==687) continue;
-	}
+	if(ch==830) continue;
+	if(ch==831) continue;
+	if(ch==828) continue;
+	if(ch==815) continue;
 
 	hCh->Fill(ch);
-	timeLe = Hits_fTime[i]-tdcRefTime[tdcSeqId];
-	timeTe = timeT[ch]-tdcRefTime[tdcSeqId];;
+	timeLe = Hits_fTime[i]-tdcRefTime[tdcSeqId] - triggerTime;
+	timeTe = timeT[ch]-tdcRefTime[tdcSeqId]-triggerTime;
 	  
-	if(mcp<15){
-	  fhDigi[mcp]->Fill(col,row);
+	if(ch<maxmch){
+	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
 	  TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
 	  hFine[fileid][ch]->SetTitle(Form("tdc 0x%s, chain %d, lch %d = ch %d, m%dp%d ",tdchex.Data() ,(ch/16)%3,ch%16,ch, mcp, pix));
-	  hTimeL[mcp][pix]->Fill(timeLe - triggerTime); 
-	  hTimeT[mcp][pix]->Fill(timeTe - triggerTime);
-	  hShape[mcp][pix]->Fill(timeLe - triggerTime,offset);
-	  hShape[mcp][pix]->Fill(timeTe - triggerTime,offset);
+	  hTimeL[mcp][pix]->Fill(timeLe); 
+	  hTimeT[mcp][pix]->Fill(timeTe);
+	  hShape[mcp][pix]->Fill(timeLe,offset);
+	  hShape[mcp][pix]->Fill(timeTe,offset);
 	}
-	//if(ch==gTrigger) 
 	hTot[fileid][ch]->Fill(timeTe-timeLe);
-	hLeTot[ch]->Fill(timeLe - triggerTime,timeTe-timeLe);
+	hLeTot[ch]->Fill(timeLe,timeTe-timeLe);
       }
     }
   }
@@ -304,7 +250,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
 TString drawHist(Int_t m, Int_t p){
   TString histname="";
-  Int_t ch = chmap[m][p];
+  Int_t ch = map_mpc[m][p];
   
   if(gComboId==0){
     TLegend *leg = new TLegend(0.5,0.7,0.9,0.9);
@@ -666,16 +612,6 @@ void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, In
   gTrigger = trigger;
   gMode=mode;
   gSetup = 2015;
-  if(gSetup==2014){
-    ctdc = 32;
-    tdcnum = 88;
-    for(Int_t i=0; i<tdcnum; i++){
-      tdcsid[i]=tdcsid2014[i];
-    }
-  }else{
-    for(Int_t i=0; i<tdcnum; i++){
-      tdcsid[i]=tdcsid2015[i];
-    }
-  }
+
   new MyMainFrame(gClient->GetRoot(), 800, 800);
 }
