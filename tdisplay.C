@@ -34,7 +34,7 @@
 #include "tdisplay.h"
 
 Int_t nfiles = 10;
-const Int_t maxfiles = 10;
+const Int_t maxfiles = 200;
 const Int_t maxch =3000;
 const Int_t nmcp = 15, npix = 64;
 const Int_t maxmch(nmcp*npix);
