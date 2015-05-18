@@ -30,7 +30,8 @@
 #include "TPaveStats.h"
 #include "TObjString.h"
 #include "TApplication.h"
-
+#include <TLegend.h>
+#include <TAxis.h>
 
 #include <iostream>
 #include <fstream>
@@ -56,6 +57,62 @@ TH2F*    fhDigi[15];
 TPad*    fhPads[15];
 TPad*    fhPglobal;
 TCanvas* cDigi;
+
+const Int_t nmcp = 15, npix = 64;
+const Int_t maxmch(nmcp*npix);
+const Int_t maxch =3000;
+const Int_t tdcmax=10000;
+const Int_t tdcnum=41, ctdc = 48;
+
+Int_t map_tdc[tdcmax];
+Int_t map_mpc[nmcp][npix];
+Int_t map_mcp[maxch];
+Int_t map_pix[maxch];
+Int_t map_row[maxch];
+Int_t map_col[maxch];
+
+TString tdcsid[tdcnum] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
+			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
+			 "2014","2015","2016","2018","2019","201a","201c","2020","2023","2024",
+			 "2025","2026","2027","2028","2029","202a","202b","202c","202d","202e","202f"
+};
+
+void CreateMap(){
+  Int_t seqid =-1;
+  for(Int_t i=0; i<tdcnum; i++){
+    Int_t dec = TString::BaseConvert(tdcsid[i],16,10).Atoi();
+    map_tdc[dec]=++seqid;
+  }
+  
+  for(Int_t ch=0; ch<maxmch; ch++){
+    Int_t mcp = ch/64;
+    Int_t pix = ch%64;	
+    Int_t col = pix/2 - 8*(pix/16);
+    Int_t row = pix%2 + 2*(pix/16);
+    pix = col+8*row;
+      
+    map_mpc[mcp][pix]=ch;
+    map_mcp[ch] = mcp;
+    map_pix[ch] = pix;
+    map_row[ch] = row;
+    map_col[ch] = col;
+  }
+}
+
+Bool_t badcannel(Int_t ch){
+  
+  // bad pixels july15
+
+  if(ch==202) return true;
+  if(ch==204) return true;
+  if(ch==206) return true;
+  if(ch==830) return true;
+  if(ch==831) return true;
+  if(ch==828) return true;
+  if(ch==815) return true;
+	
+  return false;
+}
 
 TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
   if(!cDigi) cDigi = new TCanvas("cDigi","cDigi",0,0,800,400);

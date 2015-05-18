@@ -11,6 +11,26 @@
 #include <TH2.h>
 #include <TObject.h>
 
+#include <TApplication.h>
+#include <TGClient.h>
+#include <TGButton.h>
+#include <TGFrame.h>
+#include <TFrame.h>
+#include <TRootEmbeddedCanvas.h>
+#include <TGStatusBar.h>
+#include <TGraph.h>
+#include <TGNumberEntry.h>
+#include <TGLabel.h>
+#include <TGListBox.h>
+#include <TGComboBox.h>
+#include <TGButtonGroup.h>
+#include <TGTextEntry.h>
+#include <TGProgressBar.h>
+#include <TProof.h>
+#include <TGSplitter.h>
+#include <TChainElement.h>
+#include <TText.h>
+
 const Int_t kMaxHits = 50000;
 
 class TTSelector : public TSelector {
@@ -100,7 +120,7 @@ public :
    virtual void    SetObject(TObject *obj) { fObject = obj; }
    virtual void    SetInputList(TList *input) { fInput = input; }
    virtual TList  *GetOutputList() const { return fOutput; }
-   virtual void    Terminate();
+  virtual void    Terminate();
 
    ClassDef(TTSelector,0);
 };
@@ -117,7 +137,7 @@ public:
   virtual ~MyMainFrame();
   void DoExport();
   void DoExportGr();
-  void DoExit();
+  void DoExit(){gApplication->Terminate(0);}
   TString updatePlot(Int_t id=0, TCanvas *cT=0);
 
   ClassDef(MyMainFrame, 0);

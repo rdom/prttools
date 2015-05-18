@@ -1,48 +1,17 @@
 // cdisplay - tool to plot different quantities from the *M.root file
 // original author: Roman Dzhygadlo - GSI Darmstadt 
 
-#include "TStyle.h"
-#include <TApplication.h>
-#include <TGClient.h>
-#include <TGButton.h>
-#include <TGFrame.h>
-#include <TFrame.h>
-#include <TRootEmbeddedCanvas.h>
-#include <TGStatusBar.h>
-#include <TCanvas.h>
-#include <TLegend.h>
-#include <TF1.h>
-#include "TSpectrum.h"
-#include <TRandom.h>
-#include <TGraph.h>
-#include <TAxis.h>
-#include <TGNumberEntry.h>
-#include <TGLabel.h>
-#include <TGListBox.h>
-#include <TGComboBox.h>
-#include <TGButtonGroup.h>
-#include <TGTextEntry.h>
-#include <TGProgressBar.h>
-#include <TThread.h>
-#include <TProof.h>
-#include <TGSplitter.h>
-#include <TGSlider.h>
-
-#include <sstream>
-
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
 #define prt__sim
-#include "prttools.C"
-
 #include "cdisplay.h"
-
+#include "prttools.C"
 
 class PrtHit;
 class PrtEvent;
 
 MyMainFrame *gMain;
-const Int_t nmcp = 15, npix = 64;
+
 TH1F *hPTime[nmcp][npix];
 TH1F *hSTime[nmcp][npix];
 TH1F *hPTot[nmcp][npix];
@@ -52,15 +21,7 @@ TH2F *hLeTot[nmcp][npix];
 TH2F *hShape[nmcp][npix];
 
 MSelector            *fSelector;
-const Int_t maxch =2000;
-const Int_t maxmch(nmcp*npix);
-
 TGraph *gGrDiff[maxch];
-Int_t map_mpc[nmcp][npix];
-Int_t map_mcp[maxch];
-Int_t map_pix[maxch];
-Int_t map_row[maxch];
-Int_t map_col[maxch];
 
 Int_t mult[maxch]={0};
 
@@ -92,22 +53,6 @@ void MSelector::Init(TTree *tree){
 
 void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
   pbar->SetPosition(100*processed/(Float_t)total);
-}
-
-void CreateMap(){  
-  for(Int_t ch=0; ch<maxmch; ch++){
-    Int_t mcp = ch/64;
-    Int_t pix = ch%64;	
-    Int_t col = pix/2 - 8*(pix/16);
-    Int_t row = pix%2 + 2*(pix/16);
-    pix = col+8*row;
-      
-    map_mpc[mcp][pix]=ch;
-    map_mcp[ch] = mcp;
-    map_pix[ch] = pix;
-    map_row[ch] = row;
-    map_col[ch] = col;
-  }
 }
 
 void init(){
@@ -265,29 +210,6 @@ void MSelector::SlaveBegin(TTree *){
   fOutput->Add(hCh);
 }
 
-Bool_t badcannel(Int_t ch){
-
-  // // bad pixels july14
-  // if(ch ==  379) return true;
-  // if(ch ==  381) return true;
-  // if(ch == 1397) return true;
-  // if(ch == 1869) return true;
-
-  // if(ch == 1405) return true;
-  // if(ch == 1403) return true;
-  // if(ch == 1385) return true;
-  // if(ch == 1381) return true;
-  // if(ch == 1383) return true;
-  // if(ch == 1387) return true;
-  // if(ch == 1395) return true;
-
-  // bad pixels july15
-   if(ch ==  830) return true;
-   if(ch ==  48) return true;
-
-  return false;
-}
-
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
 
@@ -322,7 +244,6 @@ Bool_t MSelector::Process(Long64_t entry){
       hit = fEvent->GetHit(h);
       ch  = hit.GetChannel();
       mult[ch]++;
-      if(badcannel(ch)) continue; 
 
       if(hit.GetMcpId()>14) thitCount1++;
       else  thitCount2++;
@@ -345,7 +266,7 @@ Bool_t MSelector::Process(Long64_t entry){
       hMult->Fill(chMultiplicity);
     }
 
-    if(mcp>14){
+    if(ch>=maxmch){
       hitCount1++;
       continue;
     }
@@ -571,9 +492,10 @@ void MyMainFrame::DoExportOffsets(){
   }
 }
 
+TLine *gLine1 = new TLine(0,0,0,1000);
 Bool_t lock = false;
 void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
-  if(gComboId==0 || gComboId==2 || gComboId==5 || gComboId==4 || gComboId==10 || gComboId==11){
+  if(gComboId==0 || gComboId==2 || gComboId==5 || gComboId==4 || gComboId==10 || gComboId==11 || gComboId==7){
     TCanvas *c = (TCanvas *) gTQSender;
     TPad *pad = (TPad *) c->GetSelectedPad();
     if (!pad) return;
@@ -593,6 +515,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       smcp = smcp(3,smcp.Sizeof());
       Int_t mcp = smcp.Atoi();
       Int_t pix = 8*(biny-1)+binx-1;
+      Int_t ch = map_mpc[mcp][pix];
       //    printf("Canvas %s: event=%d, x=%d, y=%d, p=%d, selected=%d\n", smcp.Data(), event, binx, biny, pix,smcp.Atoi());
       cTime->cd();
       if(gComboId==0) {
@@ -608,7 +531,6 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==4) hLeTot[mcp][pix]->Draw("colz");
       if(gComboId==10) hShape[mcp][pix]->Draw("colz");
       if(gComboId==11){
-	Int_t ch = map_mpc[mcp][pix];
 	hLeTot[mcp][pix]->Draw("colz");
 	Double_t* xx = gGrDiff[ch]->GetX();
 	Double_t* yy = gGrDiff[ch]->GetY();
@@ -621,16 +543,23 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gMain->fCheckBtn2->GetState() == kButtonDown){
 	gMain->fEdit3->SetText(Form("%2.2f %2.2f", gTimeCuts[mcp][pix][0], gTimeCuts[mcp][pix][1]));
       }
-      cTime->Update(); 
+      if(gComboId==7){
+	gLine1->SetX1(ch+0.5);
+	gLine1->SetX2(ch+0.5);
+	gLine1->SetY1(0);
+	gLine1->SetY2(hCh->GetMaximum()+hCh->GetMaximum()*0.05);
+	gLine1->SetLineColor(kRed);
+	gLine1->Draw();
+      }
+      cTime->Update();
+      gMain->fNumber2->SetIntNumber(ch);
     }
   }
 }
 
 void MyMainFrame::InterestChanged(){
   Int_t ch = fNumber2->GetIntNumber();
-  
-  std::cout<<"ch  "<<ch <<std::endl;
- 
+  std::cout<<"ch of interest "<<ch <<std::endl;
   Int_t mcp = map_mcp[ch];
   Int_t pix = map_pix[ch];
   if(gComboId==0) {
@@ -1184,8 +1113,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fHm2->AddFrame(new TGLabel(fHm2, "Ch of interest: "), new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 3, 4));
   fNumber2 = new TGNumberEntry(fHm2, 0, 9,999, TGNumberFormat::kNESInteger,
 			       TGNumberFormat::kNEANonNegative,
-			      TGNumberFormat::kNELLimitMinMax,
-			      0, maxch);
+			       TGNumberFormat::kNELLimitMinMax,
+			       0, maxch);
 
   fNumber2->Connect("ValueSet(Long_t)", "MyMainFrame", this, "InterestChanged()");
   (fNumber2->GetNumberEntry())->Connect("ReturnPressed()", "MyMainFrame", this, "InterestChanged()");

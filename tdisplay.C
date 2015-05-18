@@ -3,106 +3,27 @@
 
 #define TTSelector_cxx
 #include "prttools.C"
-
-#include "TStyle.h"
-#include <TApplication.h>
-#include <TGClient.h>
-#include <TGButton.h>
-#include <TGFrame.h>
-#include <TFrame.h>
-#include <TRootEmbeddedCanvas.h>
-#include <TGStatusBar.h>
-#include <TCanvas.h>
-#include <TLegend.h>
-#include <TF1.h>
-#include <TRandom.h>
-#include <TGraph.h>
-#include <TAxis.h>
-#include <TGNumberEntry.h>
-#include <TGLabel.h>
-#include <TGListBox.h>
-#include <TGComboBox.h>
-#include <TGButtonGroup.h>
-#include <TGTextEntry.h>
-#include <TGProgressBar.h>
-#include <TThread.h>
-#include <TProof.h>
-#include <TGSplitter.h>
-#include <TChainElement.h>
-#include <TText.h>
-
 #include "tdisplay.h"
 
-Int_t nfiles = 10;
-const Int_t maxfiles = 200;
-const Int_t maxch =3000;
-const Int_t nmcp = 15, npix = 64;
-const Int_t maxmch(nmcp*npix);
-  
+Int_t gSetup=2015, gTrigger, gMode=0, gComboId=0, nfiles = 10;
+TString ginFile="";
+const Int_t maxfiles = 150;
 TString fileList[maxfiles];
 
+TH1F *hCh;
 TH1F *hFine[maxfiles][maxch];
 TH1F *hTot[maxfiles][maxch];
-TH2F *hLeTot[maxch];
-
 TH1F *hTimeL[nmcp][npix];
 TH1F *hTimeT[nmcp][npix];
+
+TH2F *hLeTot[maxch];
 TH2F *hShape[nmcp][npix];
-
-TH1F *hCh;
-
-TString ginFile="";
-Int_t gSetup=2015, gTrigger, gMode=0;;
-
-const Int_t tdcmax=10000;
-Int_t tdcnum=41;
-Int_t ctdc = 48;
-
-TString tdcsid[41] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-		     "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
-		     "2014","2015","2016","2018","2019","201a","201c","2020","2023","2024",
-		     "2025","2026","2027","2028","2029","202a","202b","202c","202d","202e","202f"
-};
-
-Double_t tdcRefTime[100];
-
-Double_t timeTe0[tdcmax][50];
-Int_t mult[tdcmax];
-
-Int_t map_tdc[tdcmax];
-Int_t map_mpc[nmcp][npix];
-Int_t map_mcp[maxch];
-Int_t map_pix[maxch];
-Int_t map_row[maxch];
-Int_t map_col[maxch];
-
-Int_t gComboId=0;
 TGraph *gGr[maxfiles][maxch];
 
+Double_t tdcRefTime[100];
+Double_t timeTe0[tdcmax][50];
+Int_t mult[tdcmax];
 TCanvas *cTime;
-
-void CreateMap(){
-  
-  Int_t seqid =-1;
-  for(Int_t i=0; i<tdcnum; i++){
-    Int_t dec = TString::BaseConvert(tdcsid[i],16,10).Atoi();
-    map_tdc[dec]=++seqid;
-  }
-  
-  for(Int_t ch=0; ch<maxmch; ch++){
-    Int_t mcp = ch/64;
-    Int_t pix = ch%64;	
-    Int_t col = pix/2 - 8*(pix/16);
-    Int_t row = pix%2 + 2*(pix/16);
-    pix = col+8*row;
-      
-    map_mpc[mcp][pix]=ch;
-    map_mcp[ch] = mcp;
-    map_pix[ch] = pix;
-    map_row[ch] = row;
-    map_col[ch] = col;
-  }
-}
 
 void TTSelector::SlaveBegin(TTree *){
   std::cout<<"init starts "<<std::endl;
@@ -127,13 +48,13 @@ void TTSelector::SlaveBegin(TTree *){
     }
   }
    
-  //  const Int_t lb = -85, hb = 105;
-    const Long_t lb = 0, hb = 100;
+  const Long_t lb = 0, hb = 100;
   for(Int_t c=0; c<maxch; c++){
     hLeTot[c] = new TH2F(Form("hLeTot_ch%d",c), Form("hLeTot_ch%d",c) ,200,lb,hb, 100,-2,5);
     fOutput->Add(hLeTot[c]);
   }
 
+  initDigi(0);
   for(Int_t m=0; m<nmcp; m++){
     for(Int_t p=0; p<npix; p++){
 
@@ -145,18 +66,6 @@ void TTSelector::SlaveBegin(TTree *){
       fOutput->Add(hTimeT[m][p]);
       fOutput->Add(hShape[m][p]);
     }
-
-    fhDigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),8,0.,8.,8,0.,8.);
-    fhDigi[m]->SetStats(0);
-    fhDigi[m]->SetTitle(0);
-    fhDigi[m]->GetXaxis()->SetNdivisions(10);
-    fhDigi[m]->GetYaxis()->SetNdivisions(10);
-    fhDigi[m]->GetXaxis()->SetLabelOffset(100);
-    fhDigi[m]->GetYaxis()->SetLabelOffset(100);
-    fhDigi[m]->GetXaxis()->SetTickLength(1);
-    fhDigi[m]->GetYaxis()->SetTickLength(1);
-    fhDigi[m]->GetXaxis()->SetAxisColor(15);
-    fhDigi[m]->GetYaxis()->SetAxisColor(15);
     fOutput->Add(fhDigi[m]);
   }
 
@@ -194,7 +103,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   for(Int_t i=0; i<Hits_; i++){
     tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
     ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
-
+    
     if(Hits_nSignalEdge[i]==0){
       timeT[ch]=Hits_fTime[i];
       continue;
@@ -213,18 +122,13 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
       ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
-      
+   
       hFine[fileid][ch]->Fill(Hits_nFineTime[i]);
       
       if(ch<3000) {
 	mcp = map_mcp[ch];
 	pix = map_pix[ch];	
 	triggerTime = grTime1 - grTime0;
-
-	if(ch==830) continue;
-	if(ch==831) continue;
-	if(ch==828) continue;
-	if(ch==815) continue;
 
 	hCh->Fill(ch);
 	timeLe = Hits_fTime[i]-tdcRefTime[tdcSeqId] - triggerTime;
@@ -352,8 +256,7 @@ void MyMainFrame::DoExport(){
   fSavePath = filedir+"/plots";
   
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  Int_t layout =(gSetup==2014)? 1 : 2;
-  writeString("digi.csv", drawDigi("m,p,v\n",layout));
+  writeString("digi.csv", drawDigi("m,p,v\n",2));
   Float_t total = (nmcp-1)*(npix-1);
   if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
     for(Int_t m=0; m<nmcp; m++){
@@ -484,10 +387,6 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
   return "";
 }
 
-void MyMainFrame::DoExit(){
-  gApplication->Terminate(0);
-}
-
 MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p, w, h){
 
   // Create the embedded canvas
@@ -588,11 +487,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   ch->AddBranchToCache("*");
   ch->Process(selector,option,entries);
 
-
-  Int_t layout =(gSetup==2014)? 1 : 2;
-  drawDigi("m,p,v\n",layout);
-
-  
+  drawDigi("m,p,v\n",2,-2,-2); 
   updatePlot(0); //gComboId
 
   cDigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
@@ -601,12 +496,11 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 }
 
 MyMainFrame::~MyMainFrame(){
-  Cleanup();
   delete fEcan;
   delete fTime;
 }
 
-void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t setup=2015){ //1952 //1920
+void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t setup=2015){
   //inFile= "data/dirc/scan1/th_1*.hld.root";
   ginFile = inFile;
   gTrigger = trigger;

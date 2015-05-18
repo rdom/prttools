@@ -4,12 +4,44 @@
 #ifndef cdisplay_h
 #define cdisplay_h
 
+// #include <TROOT.h>
+// #include <TChain.h>
+// #include <TFile.h>
+// #include <TSelector.h>
+// #include <TH2.h>
+// #include <vector>
+
+#include "cdisplay.h"
+
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
 #include <TSelector.h>
 #include <TH2.h>
-#include <vector>
+#include <TObject.h>
+
+#include <TApplication.h>
+#include <TGClient.h>
+#include <TGButton.h>
+#include <TGFrame.h>
+#include <TFrame.h>
+#include <TRootEmbeddedCanvas.h>
+#include <TGStatusBar.h>
+#include <TGraph.h>
+#include <TGNumberEntry.h>
+#include <TGLabel.h>
+#include <TGListBox.h>
+#include <TGComboBox.h>
+#include <TGButtonGroup.h>
+#include <TGTextEntry.h>
+#include <TGProgressBar.h>
+#include <TProof.h>
+#include <TGSplitter.h>
+#include <TChainElement.h>
+#include <TText.h>
+
+#include <TGSlider.h>
+
 
 class MyMainFrame : public TGMainFrame {
 private:
