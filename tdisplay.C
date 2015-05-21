@@ -5,7 +5,7 @@
 #include "prttools.C"
 #include "tdisplay.h"
 
-Int_t gSetup=2015, gTrigger, gMode=0, gComboId=0, nfiles = 10;
+Int_t gSetup=2015, gTrigger, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
 TString ginFile="";
 const Int_t maxfiles = 150;
 TString fileList[maxfiles];
@@ -33,10 +33,10 @@ void TTSelector::SlaveBegin(TTree *){
   gTrigger = ((TObjString*)strobj->At(1))->GetString().Atoi();
   gMode = ((TObjString*)strobj->At(2))->GetString().Atoi();
   gSetup = ((TObjString*)strobj->At(3))->GetString().Atoi();
-  for(Int_t i=4; i<nfiles+2; i++){
+  for(Int_t i=4; i<nfiles+4; i++){
     fileList[i-4]=((TObjString*)strobj->At(i))->GetString();
     std::cout<<" fileList[i]  "<<fileList[i-4] <<std::endl;
-  }
+  } 
   
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
@@ -47,7 +47,7 @@ void TTSelector::SlaveBegin(TTree *){
       fOutput->Add(hTot[j][c]);
     }
   }
-   
+  
   const Long_t lb = 0, hb = 100;
   for(Int_t c=0; c<maxch; c++){
     hLeTot[c] = new TH2F(Form("hLeTot_ch%d",c), Form("hLeTot_ch%d",c) ,200,lb,hb, 100,-2,5);
@@ -77,7 +77,7 @@ void TTSelector::SlaveBegin(TTree *){
 }
 
 Bool_t TTSelector::Process(Long64_t entry){
-
+  if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   Int_t tdcSeqId,ch,mcp,pix,col,row;
   Double_t triggerTime(0), grTime0(0), grTime1(0),timeLe(0), timeTe(0), offset(0);
   Double_t timeT[50000];
@@ -103,7 +103,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   for(Int_t i=0; i<Hits_; i++){
     tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
     ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
-    
+    //if(Hits_nTdcErrCode[i]!=0) continue;
     if(Hits_nSignalEdge[i]==0){
       timeT[ch]=Hits_fTime[i];
       continue;
@@ -119,6 +119,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
       if(Hits_nSignalEdge[i]==0 || Hits_nTdcChannel[i]==0) continue; //tailing edge || ref channel
+      //if(Hits_nTdcErrCode[i]!=0) continue;
       
       tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
       ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
@@ -218,7 +219,7 @@ TString drawHist(Int_t m, Int_t p){
 Bool_t lock = false;
 void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
   // if(gComboId==0 || gComboId==1)
-    {
+  {
     TCanvas *c = (TCanvas *) gTQSender;
     TPad *pad = (TPad *) c->GetSelectedPad();
     if (!pad) return;
@@ -256,7 +257,7 @@ void MyMainFrame::DoExport(){
   fSavePath = filedir+"/plots";
   
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  writeString("digi.csv", drawDigi("m,p,v\n",2));
+  writeString(fSavePath+"digi.csv", drawDigi("m,p,v\n",2));
   Float_t total = (nmcp-1)*(npix-1);
   if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
     for(Int_t m=0; m<nmcp; m++){
@@ -266,7 +267,7 @@ void MyMainFrame::DoExport(){
 
 	cExport->SetName(histname);
 	canvasAdd(cExport);
-	canvasSave(0,1);
+	canvasSave(1,1);
 	canvasDel(cExport->GetName());
     
 	gSystem->ProcessEvents();
@@ -276,7 +277,7 @@ void MyMainFrame::DoExport(){
     histname = updatePlot(gComboId,cExport);
     cExport->SetName(histname);
     canvasAdd(cExport);
-    canvasSave(0,1);
+    canvasSave(1,1);
     canvasDel(cExport->GetName());
   }
 
@@ -285,7 +286,7 @@ void MyMainFrame::DoExport(){
 
   cExport->SetName("digi");
   canvasAdd(cExport);
-  canvasSave(0,1);
+  canvasSave(1,1);
   canvasDel(cExport->GetName());
   
   gROOT->SetBatch(0);
@@ -298,8 +299,8 @@ void MyMainFrame::DoExportGr(){
   TFile efile(filedir+"/calib1.root","RECREATE");
   
   for(Int_t c=0; c<maxch; c++){
-      gGr[0][c]->SetName(Form("%d",c));
-      gGr[0][c]->Write();
+    gGr[0][c]->SetName(Form("%d",c));
+    gGr[0][c]->Write();
   }
   efile.Write();
   efile.Close();
@@ -460,31 +461,33 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   while (( chEl=(TChainElement*)next() )) {
     fileList[nfiles]=chEl->GetTitle();
     strfiles += fileList[nfiles] +" ";
-      nfiles++;
+    nfiles++;
   }
-
+  
   if(gMode==3) nfiles=1;
   if(gMode==4) nfiles=2;
   
-  TString option = Form("%d %d %d %d",nfiles,gTrigger,gMode,gSetup)+strfiles;
+  TString option = Form("%d %d %d %d ",nfiles,gTrigger,gMode,gSetup)+strfiles;
   
   std::cout<<"nfiles "<<nfiles <<std::endl;
 
   Int_t entries = ch->GetEntries();
   std::cout<<"Entries in chain:  "<< entries<<std::endl;
  
-  TString workers = "workers=4";
-  if(gSystem->GetFromPipe("whoami")=="hadaq" && entries>1000000) workers = "workers=12";
-
-  TProof *proof = TProof::Open(workers);
-  proof->SetProgressDialog(0);
-  proof->Load("tdisplay.C+");
-  ch->SetProof();
-
+  TString workers = Form("workers=%d",gWorkers);
+  TProof *proof;
+  if(gWorkers>1){
+    proof = TProof::Open(workers);
+    proof->SetProgressDialog(0);
+    proof->Load("tdisplay.C+");
+    ch->SetProof();
+  }
+  
   TTSelector *selector = new TTSelector();
   CreateMap();
   ch->SetCacheSize(10000000);
   ch->AddBranchToCache("*");
+  
   ch->Process(selector,option,entries);
 
   drawDigi("m,p,v\n",2,-2,-2); 
@@ -500,12 +503,13 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t setup=2015){
+void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4){
   //inFile= "data/dirc/scan1/th_1*.hld.root";
   ginFile = inFile;
   gTrigger = trigger;
   gMode=mode;
   gSetup = 2015;
+  gWorkers = workers;
 
   new MyMainFrame(gClient->GetRoot(), 800, 800);
 }

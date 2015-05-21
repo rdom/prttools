@@ -13,12 +13,14 @@ show_help(){
      -r
         reference channel id
      -l
-        use latest *hld.root file in current folder"
+        use latest *hld.root file in current folder
+     -j
+        number of proof threads (default 4) if <2 - no proof will be used"
     echo "$help" 
 }
 
 OPTIND=1 
-while getopts "h?r:la:" opt; do
+while getopts "h?r:la:j:" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -30,10 +32,13 @@ while getopts "h?r:la:" opt; do
 	    ;;
 	a)  mode=$OPTARG
 	    ;;
+	j)  threads=$OPTARG
+            ;;
     esac
 done
 refChannel=${refChannel:-0}
 mode=${mode:-0}
+threads=${threads:-4}
 shift $((OPTIND-1))
 
 fileName=$1
@@ -61,6 +66,6 @@ else
 	cd $HOME/dirc/prttools
     fi
 
-    root -l tdisplay.C+"(\"$inFile\",$refChannel,$mode)"
+    root -l tdisplay.C+"(\"$inFile\",$refChannel,$mode,$threads)"
     cd -
 fi

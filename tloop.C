@@ -36,8 +36,8 @@ void tloop(TString inFile= "/data.local/may2015/pl15139141259.hld.root"){
   ch->Add(inFile);
   
   Int_t entries = ch->GetEntries();
-  TTSelector *selector = new TTSelector();
-  
   std::cout<<"Entries in chain:  "<< entries<<std::endl;
+  
+  TTSelector *selector = new TTSelector();
   ch->Process(selector,"",entries);
 }
