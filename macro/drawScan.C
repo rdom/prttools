@@ -4,22 +4,13 @@
 #include "../../prttools/prttools.C"
 
 void drawScan(TString infile="../build/hits.root"){
-  fSaveFlag = 2;
-  fInfo = "drawScan.C \n";
+  fSavePath = "auto";
   PrtInit(infile,1); //digi
   
-  Int_t angle(0);
-  Double_t test(0);
-  Int_t itest(0), step(0);
+  Int_t itest(0);
   PrtHit fHit;
   for (Int_t ievent=0; ievent<fCh->GetEntries(); ievent++){
     PrtNextEvent(ievent,1000);
-    if(ievent==0){
-      angle = fEvent->GetAngle() + 0.01;
-      step = fEvent->GetPrismStep()*2;
-      test = fEvent->GetTest1();
-      fInfo +=  fEvent->PrintInfo();
-    }
     for(Int_t h=0; h<fEvent->GetHitSize(); h++){
       fHit = fEvent->GetHit(h);
       Int_t mcpid = fHit.GetMcpId();
@@ -29,7 +20,10 @@ void drawScan(TString infile="../build/hits.root"){
       fhDigi[mcpid]->Fill(7-pixid/8, pixid%8);
     }
   }
-  itest = test+50;
-  drawDigi("m,p,v\n",1);
-  save(cDigi,"tiltdirc",Form("sc_%d_%d",angle,itest),fInfo,fSaveFlag,1,2);
+  itest = fTest1+50;
+  drawDigi("m,p,v\n",4);
+  cDigi->SetName(Form("sc_%d_%d",fAngle,fMomentum/1000));
+  canvasAdd(cDigi);  
+  canvasSave(1,0);
+  
 }

@@ -8,7 +8,6 @@
 #define PrtEvent_h 1
 
 #include "TObject.h"
-#include "TClonesArray.h"
 #include "TString.h"
 
 #include <vector>
@@ -31,15 +30,15 @@ public:
   Int_t GetType() const { return fType; }
   Long_t GetTime() const { return fTime; }
 
-  Double_t GetAngle()         const { return fAngle; }
+  Double_t GetAngle()      const { return fAngle; }
   Int_t GetPhysList()      const { return fPhysList; }
   Int_t GetParticle()      const { return fParticle; }
-  TVector3 GetMomentum()      const { return fMomentum; }
-  TVector3 GetPosition()      const { return fPosition; }
+  TVector3 GetMomentum()   const { return fMomentum; }
+  TVector3 GetPosition()   const { return fPosition; }
   Int_t GetHitSize()       const { return fHitSize; }
   Int_t GetGeometry()      const { return fGeometry; }
-  Int_t GetLens()      const { return fLens; }
-  Int_t GetTrigger()      const { return fTrigger; } 
+  Int_t GetLens()          const { return fLens; }
+  Int_t GetTrigger()       const { return fTrigger; } 
   Double_t GetTest1()      const { return fTest1; }
   Double_t GetTest2()      const { return fTest2; }
   Double_t GetPrismStep(){ return fPrismStep; }
@@ -93,6 +92,6 @@ private:
   Double_t fBeamZ;
   TString  fInfo;
   
-  ClassDef(PrtEvent, 2);
+  ClassDef(PrtEvent, 3);
 };
 #endif
