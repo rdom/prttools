@@ -35,6 +35,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #ifdef prt__sim
    class PrtEvent;
