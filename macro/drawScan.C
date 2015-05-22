@@ -4,7 +4,7 @@
 #include "../../prttools/prttools.C"
 
 void drawScan(TString infile="../build/hits.root"){
-  fSavePath = "auto";
+  fSavePath = "scan3";
   PrtInit(infile,1); //digi
   
   Int_t itest(0);
