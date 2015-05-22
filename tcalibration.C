@@ -39,24 +39,25 @@ void TTSelector::Begin(TTree *){
       gGr[channel]= new TGraph(*gr);
     }
     f.Close();
+  }
 
-    if(gMode == 1){
-      TFile f2(gtFile);
-      TIter nextkey2(f2.GetListOfKeys());
-      TKey *key2;
+  if(gtFile!=""){
+    TFile f2(gtFile);
+    TIter nextkey2(f2.GetListOfKeys());
+    TKey *key2;
 
-      while ((key2 = (TKey*)nextkey2())) {
-	TGraph *gr = (TGraph*)key2->ReadObj();
-	TString name = gr->GetName();
-	Int_t channel = name.Atoi();
+    while ((key2 = (TKey*)nextkey2())) {
+      TGraph *gr = (TGraph*)key2->ReadObj();
+      TString name = gr->GetName();
+      Int_t channel = name.Atoi();
 
-	gGrDiff[channel]= new TGraph(*gr);
-      }
-      f2.Close();
+      gGrDiff[channel]= new TGraph(*gr);
     }
-    std::cout<<"Initialization successful"<<std::endl;
-  }  
-}
+    f2.Close();
+  }
+  std::cout<<"Initialization successful"<<std::endl;
+}  
+
 
 Bool_t TTSelector::Process(Long64_t entry){
   Int_t trbSeqId,ch;
@@ -77,6 +78,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
     if(gcFile!="") time[i] = coarseTime-gGr[ch]->Eval(Hits_nFineTime[i]);
     else time[i] = coarseTime-(Hits_nFineTime[i]-31)*0.0102;
+    
     if(Hits_nSignalEdge[i]==0){
       timeT[ch]=time[i];
       continue;
@@ -100,15 +102,16 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(badcannel(ch)) continue; 
       if(ch>3000) continue;
       
-      if(gSetup==2015 && Hits_nTdcChannel[i]==0) continue; // go away ref channel
+      if(Hits_nTdcChannel[i]==0) continue; // go away ref channel
       
-      //timeLe = time[i]-trbRefTime[trbSeqId];
-      //timeLe = timeLe - (grTime1-grTime0);
-      timeLe = time[i];
+      if(gMode==1)timeLe = time[i]-trbRefTime[trbSeqId];
+      else timeLe = time[i];
+
+      if(gTrigger!=0) timeLe = timeLe - (grTime1-grTime0);
       
       timeTot = time[i] - timeT[ch];
            
-      if(gMode == 1){
+      if(gtFile!=""){
 	if(ch>1920) continue;
 	else timeLe -= gGrDiff[ch]->Eval(timeTot);
 	if(abs(timeTot)>10) continue; 
@@ -138,17 +141,14 @@ void TTSelector::Terminate(){
   fFile->Close();
 }
 
-void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "outFileC.root", TString cFile= "calib.root", TString tFile= "calibOffsets.root", Int_t trigger=0,  Int_t sEvent =0, Int_t eEvent=0, Int_t build = 0){
+void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "outFileC.root", TString cFile= "calib.root", TString tFile= "calibOffsets.root", Int_t trigger=0,  Int_t sEvent =0, Int_t eEvent=0, Int_t mode=1, Int_t build=0){
   if(build==1) return;
   ginFile = inFile;
   goutFile = outFile;
   gcFile = cFile; // fine time calibration
   gtFile = tFile; // pilas offsets + walk corrections
   gTrigger = trigger;
-  if(gtFile=="") gMode = 0;
-  else  gMode = 1;
-
-  gSetup = 2015;
+  gMode = mode;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

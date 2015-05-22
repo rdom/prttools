@@ -50,7 +50,7 @@
 
 
 TChain*  fCh = 0;
-Int_t    fNEntries=0;
+Int_t    fNEntries(0), fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0);
 TString  fSavePath = "";
 TString  fInfo = "", fPath;
 TH2F*    fhDigi[15];
@@ -209,7 +209,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   }
 
   for(Int_t p=0; p<nrow*ncol;p++){
-    if(layoutId == 1)  np =p%3*5 + p/3;
+    if(layoutId == 1 || layoutId == 4)  np =p%3*5 + p/3;
     else np = p;
     
     fhPads[p]->cd();
@@ -445,6 +445,11 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
       fInfo += "\n";
     }
     fInfo += fEvent->PrintInfo();
+    fMomentum = fEvent->GetMomentum().Mag() +0.01;
+    fAngle = fEvent->GetAngle() + 0.01;
+    fParticle =  fEvent->GetParticle();
+    fTest1 = fEvent->GetTest1();
+    fTest2 = fEvent->GetTest2();
   }
 }
 #endif  

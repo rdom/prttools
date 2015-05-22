@@ -178,7 +178,7 @@ TString drawHist(Int_t m, Int_t p){
     y1 = (y1>0)? y1 : 0; 
     leg->SetY1(y1);
     leg->Draw();
-    histname=gGr[0][ch]->GetName();
+    histname=Form("gCalib_mcp%dpix%d",m,p);
   }
   if(gComboId==1){
     for(Int_t j=0; j<nfiles; j++){
@@ -257,7 +257,7 @@ void MyMainFrame::DoExport(){
   fSavePath = filedir+"/plots";
   
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  writeString(fSavePath+"digi.csv", drawDigi("m,p,v\n",2));
+  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",2));
   Float_t total = (nmcp-1)*(npix-1);
   if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
     for(Int_t m=0; m<nmcp; m++){
