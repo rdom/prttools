@@ -1203,6 +1203,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   HideFrame(fHm);
 
   //if(gTrigger==0) fEdit1->SetText("400 -200 200");
+  fEdit1->SetText("300 0 60");
   fEdit2->SetText("200 -2 5");
 
   if(gTrigger==0) fEdit1->SetText("400 -600 600");
@@ -1213,7 +1214,9 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
     fEdit1->SetText("400 -150 -50");
     fEdit2->SetText("200 -50 -30");
   }
-  else fEdit1->SetText("300 0 60");
+  
+  if(gTrigger=1778) fEdit1->SetText("300 50 150");
+  
   if(ginFile.Contains("C.root"))  fEdit1->SetText("400 50 100");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
 
