@@ -547,10 +547,23 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==7){
 	gLine1->SetX1(ch+0.5);
 	gLine1->SetX2(ch+0.5);
-	gLine1->SetY1(0);
-	gLine1->SetY2(hCh->GetMaximum()+hCh->GetMaximum()*0.05);
+	gLine1->SetY1(cTime->GetUymin());
+	gLine1->SetY2(cTime->GetUymax());
 	gLine1->SetLineColor(kRed);
 	gLine1->Draw();
+
+
+	hCh->SetBit(TH1::kNoStats);
+	TPaveStats *ps = (TPaveStats*)hCh->GetListOfFunctions()->FindObject("stats");
+	TList *list = ps->GetListOfLines();
+	list->RemoveAll();
+
+        ps->AddText(Form("Entries %d",(Int_t)hCh->GetEntries()));
+	ps->AddText("TDC = 0x"+tdcsid[ch/48]);
+	ps->AddText(Form("Global ch = %d",ch));
+	ps->AddText(Form("TDC ch = %d",ch%48+1));
+	ps->AddText(Form("PADIWA ch =  %d",(ch%48)%16+1));
+	
       }
       cTime->Update();
       gMain->fNumber2->SetIntNumber(ch);

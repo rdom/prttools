@@ -10,7 +10,7 @@ TString ginFile="";
 const Int_t maxfiles = 150;
 TString fileList[maxfiles];
 
-TH1F *hCh;
+TH1F *hCh, *hRefDiff;
 TH1F *hFine[maxfiles][maxch];
 TH1F *hTot[maxfiles][maxch];
 TH1F *hTimeL[nmcp][npix];
@@ -69,8 +69,10 @@ void TTSelector::SlaveBegin(TTree *){
     fOutput->Add(fhDigi[m]);
   }
 
-  hCh = new TH1F("hCh","hCh;channel [#];entries [#]",3000,0,3000); 
+  hCh = new TH1F("hCh","hCh;channel [#];entries [#]",3000,0,3000);
   fOutput->Add(hCh);
+  hRefDiff = new TH1F("hRefDiff","hRefDiff;time [ns];entries [#]",500,-10,10); 
+  fOutput->Add(hRefDiff);
   CreateMap();
   std::cout<<"init done " <<std::endl;
   
@@ -150,6 +152,16 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
   }
 
+  for(Int_t i=0; i<tdcnum; i++){
+    for(Int_t j=i+1; j<tdcnum; j++){
+      hRefDiff->Fill(tdcRefTime[j]-tdcRefTime[i]);
+    }
+  }
+
+  for(Int_t i=0; i<10; i++){
+    tdcRefTime[i]=0;
+  }
+  
   return kTRUE;
 }
 
@@ -211,6 +223,11 @@ TString drawHist(Int_t m, Int_t p){
   if(gComboId==6){
     hLeTot[ch]->Draw("colz");
     histname=hLeTot[ch]->GetName();
+  }
+
+  if(gComboId==7){
+    hRefDiff->Draw();
+    histname=hRefDiff->GetName();
   }
 
   return histname;
@@ -374,6 +391,7 @@ void TTSelector::Terminate(){
   }
 
   hCh = dynamic_cast<TH1F *>(TProof::GetOutput("hCh", fOutput));
+  hRefDiff = dynamic_cast<TH1F *>(TProof::GetOutput("hRefDiff", fOutput));
   Calibrate();
   std::cout<<"terminate done "<<std::endl;
   
@@ -419,6 +437,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fComboMode->AddEntry("Le vs.TOT time", 6);
   fComboMode->AddEntry("Signal shape", 3);
   fComboMode->AddEntry("Channels", 4);
+  fComboMode->AddEntry("Ref time diff", 7);
   fComboMode->Connect("Selected(Int_t)", "MyMainFrame", this, "updatePlot(Int_t)");
 
   TGTextButton * fBtnExport = new TGTextButton(hframe, "Export for the &blog");
