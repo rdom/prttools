@@ -61,14 +61,18 @@ void TTSelector::Begin(TTree *){
 
 Bool_t TTSelector::Process(Long64_t entry){
   Int_t trbSeqId,ch;
-  Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime;
+  Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime,offset(0);
   Double_t time[50000], timeT[50000];
+
+  TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
+  TObjArray *sarr = current_file_name.Tokenize("_");
 
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   GetEntry(entry);
   
   fEvent = new PrtEvent();
   // fEvent->SetReferenceChannel(gTrigger);
+  
   for(Int_t i=0; i<Hits_; i++){
     
     trbSeqId = map_tdc[Hits_nTrbAddress[i]];
@@ -94,15 +98,13 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t nrhits=0;
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
-      if(Hits_nTrbAddress[i]==0) continue;
-      if(Hits_nSignalEdge[i]==0) continue; //tailing edge
+      if(Hits_nTdcChannel[i]==0) continue; // ref channel
+      if(Hits_nSignalEdge[i]==0) continue; // tailing edge
   
       trbSeqId = map_tdc[Hits_nTrbAddress[i]];
       ch = ctdc*trbSeqId+Hits_nTdcChannel[i]-1;
       if(badcannel(ch)) continue; 
       if(ch>3000) continue;
-      
-      if(Hits_nTdcChannel[i]==0) continue; // go away ref channel
       
       if(gMode==1)timeLe = time[i]-trbRefTime[trbSeqId];
       else timeLe = time[i];

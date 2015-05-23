@@ -169,7 +169,7 @@ void MSelector::SlaveBegin(TTree *){
       hPMult[m][p]   = new TH1F(Form("mult_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  50,0,50);
       
       if(gMode==1){
-	hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d",m,p) , 400,80,110,120,-30,30);
+	hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d",m,p) , bins1,min1,max1,120,-30,30);
 	hLeTot[m][p] = new TH2F(Form("hLeTot_mcp%dpix%d" ,m,p), Form("mcp %d, pixel %d",m, p), 200,min1,max1, bins2,min2,max2);
 	axisTime800x500(hShape[m][p],"time, [ns]");
 	hShape[m][p]->GetYaxis()->SetTitle("offset to the threshold, [mV]");
@@ -220,8 +220,9 @@ Bool_t MSelector::Process(Long64_t entry){
     if(sarr->GetEntries()==3){
       if(((TObjString *) sarr->At(0))->GetName()=="th");
       TString soffset = ((TObjString *) sarr->At(1))->GetName();
-      offset = soffset.Atof();
-    }
+      offset = soffset.Atof()/400.;
+    }else
+      offset = fEvent->GetTest1();
   }
   TString fileid("");
   bool bsim(false);
