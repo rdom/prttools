@@ -570,8 +570,7 @@ TString createDir(){
   return finalpath;
 }
 
-void save(TPad *c= NULL, TString name="", Int_t what=0, Int_t style=0){
-  TString path = createDir();
+void save(TPad *c= NULL,TString path,TString name="", Int_t what=0, Int_t style=0){
   if(c && path != "") {
     gROOT->SetBatch(1);
     Int_t w = 800, h = 400;
@@ -642,8 +641,9 @@ void canvasDel(TString name="c"){
 void canvasSave(Int_t what=0, Int_t style=0){
   TIter next(gg_canvasList);
   TCanvas *c=0;
+  TString path = createDir();
   while((c = (TCanvas*) next())){
-    save(c, c->GetName(), what,style);
+    save(c, path, c->GetName(), what,style);
   }
 }  
 
