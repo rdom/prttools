@@ -1,30 +1,6 @@
 #include "prttools.C"
 
-const Int_t tdcmax=10000;
-Int_t tdcnum=20;
-Int_t tdcmap[tdcmax];
 Int_t tharr[tdcmax];
-
-// TString trbsid[20] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-// 		     "2010","2011","2012","2013","2014","2015",
-// 		     "2016","2017","2018","2019"};
-
-TString trbsid[20] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013"};
-
-void CreateMap(){
-  Int_t seqid =0;
-  for(Int_t i=0; i<tdcmax; i++){
-    tdcmap[i]=-1;
-    for(Int_t j=0; j<tdcnum; j++){
-      if(i==TString::BaseConvert(trbsid[j],16,10).Atoi()){
-	tdcmap[i]=seqid++;
-	break;
-      }
-    }
-  }
-}
-
 
 Double_t min(1000000),max(0);
 TH1F* hLow = new TH1F("hLow",";channel [#];threshold [?]",1000,0,1000);
@@ -59,7 +35,7 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t 
       if(th>max) max = th;
       if(th<min) min = th;
     
-      Int_t tdcSeq = tdcmap[tdc];
+      Int_t tdcSeq = map_tdc[tdc];
       Int_t channel= tdcSeq*48 + chain*16 + ch;
       tharr[channel]=th;
       hLow->Fill(channel,th);
@@ -89,7 +65,8 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t 
       if(th>max) max = th;
       if(th<min) min = th;
     
-      Int_t tdcSeq = tdcmap[tdc];
+      Int_t tdcSeq = map_tdc[tdc];
+      std::cout<<"tdcSeq "<< tdc << "  " <<  tdcSeq<<std::endl;
       Int_t channel= tdcSeq*48 + chain*16 + ch;
       Int_t mcp = channel/64;
       Int_t pix = channel%64;
@@ -122,9 +99,15 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t 
   cTh = new TCanvas("cTh","cTh",0,0,800,400);
 
   hLow->SetLineColor(2);
-  hLow->Draw();
   hHigh->SetLineColor(4);
-  hHigh->Draw("same");
+
+  if(infile2 != ""){
+    hLow->Draw();
+    hHigh->Draw("same");
+  }else{
+    hHigh->Draw();
+    hLow->Draw("same");
+  }
   
   // TClass *cl = cDigi->IsA();
   // l = cl->GetMenuList();

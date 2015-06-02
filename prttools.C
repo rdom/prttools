@@ -570,7 +570,7 @@ TString createDir(){
   return finalpath;
 }
 
-void save(TPad *c= NULL,TString path,TString name="", Int_t what=0, Int_t style=0){
+void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t style=0){
   if(c && path != "") {
     gROOT->SetBatch(1);
     Int_t w = 800, h = 400;

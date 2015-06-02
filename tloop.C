@@ -1,3 +1,5 @@
+// run as: root loadprtlibs.C tloop.C
+
 #define TTSelector_cxx
 #include "prttools.C"
 #include "tloop.h"
