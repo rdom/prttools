@@ -126,7 +126,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
     fhPglobal->Draw();
   }
   fhPglobal->cd();
-
+  
   Int_t nrow = 3, ncol = 5;
  
   if(layoutId > 1){

@@ -3,9 +3,9 @@
 Int_t tharr[tdcmax];
 
 Double_t min(1000000),max(0);
+TCanvas *cTemp;
 TH1F* hLow = new TH1F("hLow",";channel [#];threshold [?]",1000,0,1000);
 TH1F* hHigh = new TH1F("hHigh",";channel [#];threshold [?]",1000,0,1000);
-
 
 void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t range = 0){
   fSavePath = "auto";
@@ -66,7 +66,6 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t 
       if(th<min) min = th;
     
       Int_t tdcSeq = map_tdc[tdc];
-      std::cout<<"tdcSeq "<< tdc << "  " <<  tdcSeq<<std::endl;
       Int_t channel= tdcSeq*48 + chain*16 + ch;
       Int_t mcp = channel/64;
       Int_t pix = channel%64;
@@ -92,31 +91,21 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t 
   }
   drawDigi("m,p,v\n",3,max,min);
 
-  TPaletteAxis *pal = new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]);   
   cDigi->cd();
-  pal->Draw();
-
-  cTh = new TCanvas("cTh","cTh",0,0,800,400);
-
+  (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();   
+  cTemp = (TCanvas*)cDigi->Clone();
+  
   hLow->SetLineColor(2);
   hHigh->SetLineColor(4);
 
-  if(infile2 != ""){
-    hLow->Draw();
-    hHigh->Draw("same");
-  }else{
-    hHigh->Draw();
-    hLow->Draw("same");
-  }
+  cTh = new TCanvas("cTh","cTh",0,0,800,400);
+  hHigh->Draw();
+  if(infile2 != "") hLow->Draw("same");
   
   // TClass *cl = cDigi->IsA();
   // l = cl->GetMenuList();
-  // n = new TClassMenuItem(TClassMenuItem::kPopupUserFunction,cl, "Draw thresholds. Mode 1","mode1",0,"int,int");
-  // l->AddFirst(n);
-  // n = new TClassMenuItem(TClassMenuItem::kPopupUserFunction,cl, "Draw thresholds. Mode 2","mode2",0,"int,int");
-  // l->AddFirst(n);
-  
-
+  // l->AddFirst(new TClassMenuItem(TClassMenuItem::kPopupUserFunction,cl, "Draw thresholds. Mode 1","mode1",0,"int,int"));
+  // l->AddFirst(new TClassMenuItem(TClassMenuItem::kPopupUserFunction,cl, "Draw thresholds. Mode 2","mode2",0,"int,int"));
   
   // TClass *cl = gClient->GetRoot()->IsA();
   // l = cl->GetMenuList();
@@ -125,26 +114,20 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t 
   //  			 "test no 1","poptest1",0,"int,int");
   // l->AddFirst(n);
    
-  // TGMenuBar *fMenuBar = new TGMenuBar(gClient->GetRoot(),100,20,kHorizontalFrame);
+  // TGMenuBar *fMenuBar = new TGMenuBar(gClient->GetDefaultRoot(),100,20,kHorizontalFrame);
   // fMenuBar->AddPopup("UUUUZ");
 
   // fMenuBar = new TGMenuBar(gClient->GetRoot(),100,20,kHorizontalFrame);
   // fMenuBar->AddPopup("&ZZZZZZZZZZZZZZZZZZZ");
-  // EnableEntry(fMenuBar);
-    // gClient->SetRoot();
+  // gClient->SetRoot();
 }
 
 // void mode1(){
-//   cDigi->cd();
-//   hLow->SetLineColor(2);
-//   hLow->Draw();
-//   hHigh->SetLineColor(4);
-//   hHigh->Draw("same");
-//   cDigi->Modified();
-//   cDigi->Update();
+//   cTh->Draw();
+//   // hHigh->Draw();
+//   //if(infile2 != "") hLow->Draw("same");
 // }
 
 // void mode2(){
-//   cDigi->cd();
-//   drawDigi("m,p,v\n",3,max,min);
+//   cTemp->Draw();
 // }
