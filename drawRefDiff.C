@@ -29,11 +29,11 @@ void TTSelector::Begin(TTree *){
   
   for(Int_t i=0; i<50; i++){
     for(Int_t j=0; j<50; j++){
-      hDif[i][j] = new TH1F(Form("hDif%d_%d",i,j),Form("hDif%d_%d;time [ns];entries [#]",i,j),1000,-gRange,gRange);
+      hDif[i][j] = new TH1F(Form("hDif%d_%d",i,j),Form("hDif%d_%d;time [ns];entries [#]",i,j),2000,-gRange,gRange);
     }
   }
  
-}
+} 
 
 Bool_t TTSelector::Process(Long64_t entry){
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
@@ -44,7 +44,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     Int_t tdc = map_tdc[Hits_nTrbAddress[i]];
     Int_t lch = Hits_nTdcChannel[i];
     Int_t ch = 48*tdc+lch;
-    if(ch%48==0){
+    if(lch==0){
       hTdc->Fill(tdc);
       times[tdc]=Hits_fTime[i];
     }
@@ -80,7 +80,7 @@ void drawRefDiff(TString inFile= "/data.local/may2015/ce15145205719.hld.root",In
   
   Int_t entries = ch->GetEntries();
   std::cout<<"Entries in chain:  "<< entries<<std::endl;
-  entries = 10000;
+  //entries = 10000;
   TTSelector *selector = new TTSelector();
   ch->Process(selector,"",entries);
 
