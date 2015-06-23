@@ -80,7 +80,7 @@ void drawRefDiff(TString inFile= "/data.local/may2015/ce15145205719.hld.root",In
   
   Int_t entries = ch->GetEntries();
   std::cout<<"Entries in chain:  "<< entries<<std::endl;
-  if(events==0) entries = events;
+  if(events!=0) entries = events;
   //entries = 10000;
   TTSelector *selector = new TTSelector();
   ch->Process(selector,"",entries);
