@@ -63,7 +63,7 @@ const Int_t nmcp = 15, npix = 64;
 const Int_t maxmch(nmcp*npix);
 const Int_t maxch =3000;
 const Int_t tdcmax=10000;
-const Int_t tdcnum=41, ctdc = 48;
+const Int_t ctdc = 48; //41
 
 Int_t map_tdc[tdcmax];
 Int_t map_mpc[nmcp][npix];
@@ -72,6 +72,14 @@ Int_t map_pix[maxch];
 Int_t map_row[maxch];
 Int_t map_col[maxch];
 
+// const Int_t tdcnum=16;
+// TString tdcsid[tdcnum] ={"10","11","12","13",
+// 			 "20","21","22","23",
+// 			 "780","781","782","783",
+// 			 "840","841","842","843"
+// };
+
+const Int_t tdcnum=41;
 TString tdcsid[tdcnum] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
 			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
 			 "2014","2015","2016","2018","2019","201a","201c","2020","2023","2024",

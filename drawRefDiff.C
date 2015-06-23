@@ -29,7 +29,7 @@ void TTSelector::Begin(TTree *){
   
   for(Int_t i=0; i<50; i++){
     for(Int_t j=0; j<50; j++){
-      hDif[i][j] = new TH1F(Form("hDif%d_%d",i,j),Form("hDif%d_%d;time [ns];entries [#]",i,j),2000,-gRange,gRange);
+      hDif[i][j] = new TH1F(Form("hDif%d_%d",i,j),Form("hDif%d_%d;time [ns];entries [#]",i,j),5000,-gRange,gRange);
     }
   }
  
@@ -72,7 +72,7 @@ void TTSelector::Terminate(){
   //  canvasSave(1,0); //-1
 } 
 
-void drawRefDiff(TString inFile= "/data.local/may2015/ce15145205719.hld.root",Int_t range=1000){ //ce15144155257.hld.root
+void drawRefDiff(TString inFile= "/data.local/may2015/ce15145205719.hld.root",Int_t range=1000, Int_t events=0){ //ce15144155257.hld.root
   gRange = range;
   
   TChain* ch = new TChain("T");
@@ -80,6 +80,7 @@ void drawRefDiff(TString inFile= "/data.local/may2015/ce15145205719.hld.root",In
   
   Int_t entries = ch->GetEntries();
   std::cout<<"Entries in chain:  "<< entries<<std::endl;
+  if(events==0) entries = events;
   //entries = 10000;
   TTSelector *selector = new TTSelector();
   ch->Process(selector,"",entries);

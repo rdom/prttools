@@ -16,8 +16,8 @@ show_help(){
         run calibration
      -k 
         run K tree creation
-     -m 
-        run M tree creation
+     //-m 
+       // run M tree creation
      -o 
         make it all smart (do not run conversion and calibration if it is already done) 
      -b 
@@ -216,32 +216,32 @@ if [ "$threads" -gt 0 ]; then
 		printf "\r$statusline done [$((finish_time - start_time)) s]\n"
 	fi
 
-	if (( $option == 4 || $option == 0 )); then  ####################################
-	statusline="Creating M tree .."
-	printf "\r$statusline .."
-	start_time=$(date +%s)
+	# if (( $option == 4 || $option == 0 )); then  ####################################
+	# statusline="Creating M tree .."
+	# printf "\r$statusline .."
+	# start_time=$(date +%s)
 
-	for ((i=0;i<$threads;i++)); do
-	startEvent=$(echo "$step*$i" |bc)
-	endEvent=$(echo "$step*($i+1)-1" |bc)
-	if (( $i == $threads-1 )); then 
-		endEvent=$total 
-	fi
-	root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${fileId}Mj$i.root\",${startEvent},${endEvent},4,${calibrationOpt})" > /dev/null & 
-	done
+	# for ((i=0;i<$threads;i++)); do
+	# startEvent=$(echo "$step*$i" |bc)
+	# endEvent=$(echo "$step*($i+1)-1" |bc)
+	# if (( $i == $threads-1 )); then 
+	# 	endEvent=$total 
+	# fi
+	# root -l -b -q "RunMonitorM.cpp(\"$inDir\",\"$inName\",\"${fileId}Mj$i.root\",${startEvent},${endEvent},4,${calibrationOpt})" > /dev/null & 
+	# done
 
-	waitForMe
-	statusline="$statusline merging .."
-	printf "\r$statusline"
-	rm -f "$inDir$fileId"M.root
-	list="$inDir$fileId"Mj*.root
-	hadd "$inDir${fileId}M.root" $list >/dev/null 2>/dev/null
-	rm $list
-	finish_time=$(date +%s)
-	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
-fi
+	# waitForMe
+	# statusline="$statusline merging .."
+	# printf "\r$statusline"
+	# rm -f "$inDir$fileId"M.root
+	# list="$inDir$fileId"Mj*.root
+	# hadd "$inDir${fileId}M.root" $list >/dev/null 2>/dev/null
+	# rm $list
+	# finish_time=$(date +%s)
+	# printf "\r$statusline done [$((finish_time - start_time)) s]\n"
+	# fi
 else
-	echo "ONE JOB"
+    echo "ONE JOB"
 	if (( $endEvent != 0)); then
 		endEvent=1000	
 	fi
