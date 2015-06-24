@@ -104,6 +104,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   GetEntry(entry);
   for(Int_t i=0; i<Hits_; i++){
     tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
+    if(tdcSeqId<0) continue;
     ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
     //if(Hits_nTdcErrCode[i]!=0) continue;
     if(Hits_nSignalEdge[i]==0){
@@ -124,6 +125,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       //if(Hits_nTdcErrCode[i]!=0) continue;
       
       tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
+      if(tdcSeqId<0) continue;
       ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
    
       hFine[fileid][ch]->Fill(Hits_nFineTime[i]);

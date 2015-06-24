@@ -94,6 +94,7 @@ TString tdcsid[tdcnum] ={"2000","2001","2002","2003","2004","2005","2006","2007"
 
 void CreateMap(){
   Int_t seqid =-1;
+  for(Int_t i=0; i<tdcmax; i++) map_tdc[i]=-1;
   for(Int_t i=0; i<tdcnum; i++){
     Int_t dec = TString::BaseConvert(tdcsid[i],16,10).Atoi();
     map_tdc[dec]=++seqid;
@@ -114,7 +115,13 @@ void CreateMap(){
   }
 }
 
+Int_t GetChannelNumber(Int_t trbSeqId, Int_t tdcChannel){
+  Int_t ch = 48*trbSeqId+tdcChannel;
+  return ch;
+}
+
 Bool_t badcannel(Int_t ch){
+  if(ch<0) return true;
   
   // bad pixels july15
 

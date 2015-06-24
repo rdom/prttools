@@ -42,6 +42,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   
   for(Int_t i=0; i<Hits_; i++){
     Int_t tdc = map_tdc[Hits_nTrbAddress[i]];
+    if(tdc<0) continue;
     Int_t lch = Hits_nTdcChannel[i];
     Int_t ch = 48*tdc+lch;
     if(lch==0){

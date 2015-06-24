@@ -76,6 +76,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   for(Int_t i=0; i<Hits_; i++){
     
     trbSeqId = map_tdc[Hits_nTrbAddress[i]];
+    if(trbSeqId<0) continue;
     ch = ctdc*trbSeqId+Hits_nTdcChannel[i];
     if(badcannel(ch)) continue; 
 
@@ -102,6 +103,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
   
       trbSeqId = map_tdc[Hits_nTrbAddress[i]];
+      if(trbSeqId<0) continue;
       ch = ctdc*trbSeqId+Hits_nTdcChannel[i]-1;
       if(badcannel(ch)) continue; 
       if(ch>3000) continue;
