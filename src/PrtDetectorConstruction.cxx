@@ -41,7 +41,7 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   fHall[0] = 1000; fHall[1] = 500; fHall[2] = 2000;
   fBar[0] = 17; fBar[1] = 32; fBar[2] =1250;
   fMirror[0] = 20; fMirror[1] = 40; fMirror[2] =1;
-  fPrizm[0] = 170; fPrizm[1] = 300; fPrizm[3] = 50;  fPrizm[2] = fPrizm[3]+fPrizm[1]*tan(45*deg);
+  fPrizm[0] = 170; fPrizm[1] = 380; fPrizm[3] = 50;  fPrizm[2] = fPrizm[3]+fPrizm[1]*tan(45*deg);
   fMcpTotal[0] = fMcpTotal[1] = 53+6; fMcpTotal[2]=1;
   fMcpActive[0] = fMcpActive[1] = 53; fMcpActive[2]=1;
   fLens[0] = fLens[1] = 40; fLens[2]=10;
@@ -117,7 +117,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   }
   
   // The DIRC
-  G4Box* gDirc = new G4Box("gDirc",400.,200.,fBar[2]/2.+350);
+  G4Box* gDirc = new G4Box("gDirc",400.,200.,fBar[2]/2.+fPrizm[1]+50);
   lDirc = new G4LogicalVolume(gDirc,defaultMaterial,"lDirc",0,0,0);
 
   G4ThreeVector dircpos = G4ThreeVector(0., 0., 0.);
@@ -153,7 +153,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   
   if(PrtManager::Instance()->GetLens() == 1){ // Spherical lens
     G4double r1 = 0; // PrtManager::Instance()->GetTest1(); 
-    G4double lensrad1 = (r1==0)? 73: r1;
+    G4double lensrad1 = (r1==0)? 73.58: r1;
     G4double lensMinThikness = 2; 
 
     G4ThreeVector zTrans1(0, 0, -lensrad1+fLens[2]/2.-lensMinThikness);
@@ -166,7 +166,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   }
 
   if(PrtManager::Instance()->GetLens() == 2){ // Cylindrical lens
-    G4double lensrad = 73.5;
+    G4double lensrad = 73.58;
     G4double lensMinThikness = 8;
     G4ThreeVector zTrans(0, 0, -lensrad+fLens[2]/2.-lensMinThikness);
     G4Tubs* gcylinder = new G4Tubs("Cylinder",0,lensrad,fLens[1]/2.+1.1,0,360*deg);
