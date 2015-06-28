@@ -98,7 +98,11 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
   Int_t binx = hTdc->GetXaxis()->FindBin( pad->PadtoX(x))-1;
 
   if(binx<0 || binx >49) return;
-    
+
+  if(gState==0){
+    gRef = binx;
+  }
+  
   if(event==1 && gState==0){
     gState = 1;
     gDrawBox = false;
