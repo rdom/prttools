@@ -39,7 +39,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
     prech = ch;
     
-    if(ch ==1346) trigTime1 = Hits_fTime[i];
+    if(ch ==1345) trigTime1 = Hits_fTime[i];
     if(ch ==1344) trigTime0 = Hits_fTime[i];
   }
 
