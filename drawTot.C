@@ -4,17 +4,28 @@
 #include "prttools.C"
 #include "drawTot.h"
 
-TH1F * hTimeL = new TH1F("hTime","hTime;LE [ns];counts [#]",500,80,150);
-TH1F * hTimeT = new TH1F("hTime","hTime;TE [ns];counts [#]",500,80,150);
-TH1F * hTot = new TH1F("hTot","hTot;TOT [ns];counts [#]",200,-60,-20);
-TH1F * hCh = new TH1F("hCh","hCh;channel [#];counts [#]",1500,0,1500);
+TString m_fileid;
+Int_t ttr1 = -50, ttr2 = -35;
 
-TH2F * hLeTot = new TH2F("hLeTot","hLeTot;LE [ns];TOT [ns]",200,88,94,200,-50,-40);
-TH2F * hTeTot = new TH2F("hTeTot","hTeTot;TE [ns];TOT [ns]",200,131,140,200,-50,-40);
-TH2F * hLeTe  = new TH2F("hLeTe","hLeTe;LE [ns];TE [ns]",200,88,94,200,131,140);
+TH1F *hTimeL,*hTimeT,*hTot,*hCh;
+TH2F *hLeTot,*hTeTot,*hLeTe;
 
 void TTSelector::Begin(TTree *){
   fSavePath = "auto";
+
+  hTimeL = new TH1F("hTime",m_fileid+";LE [ns];counts [#]",500,-135,-74);
+  hTimeT = new TH1F("hTime",m_fileid+";TE [ns];counts [#]",500,-135,-74);
+  hTot = new TH1F("hTot",m_fileid+";TOT [ns];counts [#]",200,ttr1,ttr2);
+  hCh = new TH1F("hCh",m_fileid+";channel [#];counts [#]",1500,0,1500);
+
+  // TH2F * hLeTot = new TH2F("hLeTot","hLeTot;LE [ns];TOT [ns]",200,88,94,200,-50,-40);
+  // TH2F * hTeTot = new TH2F("hTeTot","hTeTot;TE [ns];TOT [ns]",200,131,140,200,-50,-40);
+  // TH2F * hLeTe  = new TH2F("hLeTe","hLeTe;LE [ns];TE [ns]",200,88,94,200,131,140);
+
+  hLeTot = new TH2F("hLeTot",m_fileid+";LE [ns];TOT [ns]",200,-135,-120,200,ttr1,ttr2);
+  hTeTot = new TH2F("hTeTot",m_fileid+";TE [ns];TOT [ns]",200,-95,-75,200,ttr1,ttr2);
+  hLeTe  = new TH2F("hLeTe",m_fileid+";LE [ns];TE [ns]",200,-135,-120,200,-95,-75);
+ 
   CreateMap();
 }
 
@@ -51,7 +62,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     if(Hits_nSignalEdge[i]==0 || Hits_nTdcChannel[i]==0 ) continue;
 
     hCh->Fill(ch);	
-    if(ch == 100){
+    if(ch == 39){
       Double_t le = Hits_fTime[i]-reftimes[tdc]-(trigTime1-trigTime0);
       Double_t te = trailtimes[ch]-reftimes[tdc]-(trigTime1-trigTime0);
       //      if(le>90.5 && le<91.5)
@@ -86,10 +97,13 @@ void TTSelector::Terminate(){
   canvasAdd("LeTe",800,500);
   hLeTe->Draw("colz");
   //hCh->Draw();
-  canvasSave(1,0);
+  canvasSave(0,0);
 } 
 
+
 void drawTot(TString inFile= "../data/pilas_15178162456.hld.root_calibrated.root", Int_t events = 100000){
+  m_fileid =  inFile;
+  m_fileid =  m_fileid.Remove(0,m_fileid.Last('/')+1);
   gStyle->SetOptStat(1001111);
   TChain* ch = new TChain("T");
   ch->Add(inFile);

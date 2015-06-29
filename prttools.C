@@ -524,7 +524,11 @@ TString randstr(Int_t len = 10){
 
 Int_t getColorId(Int_t ind, Int_t style =0){
   Int_t cid = 1;
-  if(style==0) cid=ind+1;
+  if(style==0) {
+    cid=ind+1;
+    if(cid==5) cid =8;
+    if(cid==3) cid =15;
+  }
   if(style==1) cid=ind+300;
   return cid;
 }
