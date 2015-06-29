@@ -164,7 +164,7 @@ if [ "$threads" -gt 0 ]; then
 	statusline="Calib"
 	start_time=$(date +%s)
 	root -l -b -q "Convert.C(\"$inDir\",\"${inName}\",\"${inName}$i.root\",0,${total},2,${calibrationOpt})" > /dev/null &
-	waitForMe "1"
+	waitForMe "1" "${inName}"
 	printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s] \n"
     fi
     
