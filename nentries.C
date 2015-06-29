@@ -11,6 +11,7 @@ void nentries(TString inFile = "T.root"){
   std::cout<<"Entries in chain:  "<< ch->GetEntries()<<std::endl;
 
   // lStream.close();
+  // std::cout.rdbuf(sb);
 }
 
 

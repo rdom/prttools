@@ -105,31 +105,33 @@ Bool_t TTSelector::Process(Long64_t entry){
   for(Int_t i=0; i<Hits_; i++){
     tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
     if(tdcSeqId<0) continue;
-    ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
-    //if(Hits_nTdcErrCode[i]!=0) continue;
+    ch = ctdc*tdcSeqId+Hits_nTdcChannel[i];
+    //if(Hits_nTdcErrCode[i]!=0) continue
+
+    if(ch==gTrigger) grTime1 = Hits_fTime[i];
+    if(Hits_nTdcChannel[i]==0) { //ref channel
+      tdcRefTime[tdcSeqId] = Hits_fTime[i];
+      if(gTrigger/48==tdcSeqId) grTime0 = Hits_fTime[i];
+      continue;
+    }
+
     if(Hits_nSignalEdge[i]==0){
       timeT[ch]=Hits_fTime[i];
       continue;
     }
-
-    if(Hits_nTdcChannel[i]==0) { //ref channel
-      tdcRefTime[tdcSeqId] = Hits_fTime[i];
-      if((gTrigger-ch)<=ctdc && (gTrigger-ch)>0) grTime0 = Hits_fTime[i];
-    }
-    if(ch==gTrigger) grTime1 = Hits_fTime[i];
   }
  
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
-      if(Hits_nSignalEdge[i]==0 || Hits_nTdcChannel[i]==0) continue; //tailing edge || ref channel
+      if(Hits_nSignalEdge[i]==0) continue; //tailing edge
       //if(Hits_nTdcErrCode[i]!=0) continue;
       
       tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
       if(tdcSeqId<0) continue;
-      ch = ctdc*tdcSeqId+Hits_nTdcChannel[i]-1;
-   
-      hFine[fileid][ch]->Fill(Hits_nFineTime[i]);
-      
+      ch = ctdc*tdcSeqId+Hits_nTdcChannel[i];
+      hFine[fileid][AddRefChannels(ch)]->Fill(Hits_nFineTime[i]);
+      if(Hits_nTdcChannel[i]==0) continue; // ref channel
+      ch -=1;
       if(ch<3000) {
 	mcp = map_mcp[ch];
 	pix = map_pix[ch];	
@@ -170,6 +172,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 TString drawHist(Int_t m, Int_t p){
   TString histname="";
   Int_t ch = map_mpc[m][p];
+  ch = AddRefChannels(ch)+1;
   
   if(gComboId==0){
     TLegend *leg = new TLegend(0.5,0.7,0.9,0.9);
@@ -511,7 +514,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   ch->Process(selector,option,entries);
 
-  drawDigi("m,p,v\n",2,-2,-2); 
+  drawDigi("m,p,v\n",2);  
   updatePlot(0); //gComboId
 
   cDigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,

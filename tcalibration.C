@@ -7,7 +7,7 @@
  
 TString ginFile(""), goutFile(""), gcFile(""), gtFile("");
 Int_t gSetup=2015, gTrigger(0), gMode(0);
-Double_t trbRefTime[100];
+Double_t tdcRefTime[100];
 Int_t gComboId=0;
 TGraph *gGr[maxch];
 TGraph *gGrDiff[maxch];
@@ -25,7 +25,7 @@ void TTSelector::Begin(TTree *){
   fTree = new TTree("data","Tree for GSI Prt Analysis");  
   fEvent = new PrtEvent();
   fTree->Branch("PrtEvent", "PrtEvent", &fEvent, 64000, 2);
-
+  
   if(gcFile!=""){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
@@ -35,7 +35,6 @@ void TTSelector::Begin(TTree *){
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
       Int_t channel = name.Atoi();
-
       gGr[channel]= new TGraph(*gr);
     }
     f.Close();
@@ -58,10 +57,9 @@ void TTSelector::Begin(TTree *){
   std::cout<<"Initialization successful"<<std::endl;
 }  
 
-
 Bool_t TTSelector::Process(Long64_t entry){
-  Int_t trbSeqId,ch;
-  Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime,offset(0);
+  Int_t tdc,ch;
+  Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime(0),offset(0);
   Double_t time[50000], timeT[50000];
 
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
@@ -72,17 +70,16 @@ Bool_t TTSelector::Process(Long64_t entry){
   
   fEvent = new PrtEvent();
   // fEvent->SetReferenceChannel(gTrigger);
-  
+
   for(Int_t i=0; i<Hits_; i++){
-    
-    trbSeqId = map_tdc[Hits_nTrbAddress[i]];
-    if(trbSeqId<0) continue;
-    ch = ctdc*trbSeqId+Hits_nTdcChannel[i];
-    if(badcannel(ch)) continue; 
+    if(Hits_nTdcChannel[i]==0) continue;
+    tdc = map_tdc[Hits_nTrbAddress[i]];
+    ch = GetChannelNumber(tdc,Hits_nTdcChannel[i]);
+    if(badcannel(ch)) continue;
 
     coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
-    if(gcFile!="") time[i] = coarseTime-gGr[ch]->Eval(Hits_nFineTime[i]);
-    else time[i] = coarseTime-(Hits_nFineTime[i]-31)*0.0102;
+    if(gcFile!="") time[i] = coarseTime-gGr[AddRefChannels(ch)]->Eval(Hits_nFineTime[i]);
+    else time[i] = Hits_fTime[i]; //coarseTime-(Hits_nFineTime[i]-31)*0.0102; //Hits_fTime[i];//
     
     if(Hits_nSignalEdge[i]==0){
       timeT[ch]=time[i];
@@ -90,25 +87,25 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
 
     if(Hits_nTdcChannel[i]==0) {  // is ref channel
-      trbRefTime[trbSeqId] = time[i];
+      tdcRefTime[tdc] = time[i];
       if(gTrigger!=0 && (gTrigger-ch)<=ctdc && (gTrigger-ch)>0) grTime0 = time[i];
     }
     if(gTrigger!=0 && ch==gTrigger) grTime1 = time[i];
   }
+  
   PrtHit hit;
   Int_t nrhits=0;
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
+      if(Hits_nTdcErrCode[i]!=0) continue;
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
-  
-      trbSeqId = map_tdc[Hits_nTrbAddress[i]];
-      if(trbSeqId<0) continue;
-      ch = ctdc*trbSeqId+Hits_nTdcChannel[i]-1;
-      if(badcannel(ch)) continue; 
-      if(ch>3000) continue;
       
-      if(gMode==1)timeLe = time[i]-trbRefTime[trbSeqId];
+      tdc = map_tdc[Hits_nTrbAddress[i]];
+      ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
+      if(badcannel(ch)) continue;
+
+      if(gMode==1)timeLe = time[i]-tdcRefTime[tdc];
       else timeLe = time[i];
 
       if(gTrigger!=0) timeLe = timeLe - (grTime1-grTime0);

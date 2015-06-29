@@ -1223,6 +1223,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   else if(gTrigger==1952 || gTrigger==1956 || gTrigger==1953 || gTrigger==1957) fEdit1->SetText("400 80 120");
   else if(gTrigger==1920 || gTrigger==1921) fEdit1->SetText("400 -100 -50");
   else if(gTrigger==2560 || gTrigger==2561) fEdit1->SetText("400 150 200");
+  else if(gTrigger==1344) fEdit1->SetText("400 -150 -80");
+  else if(gTrigger==1345) fEdit1->SetText("400 0 100");
   else if(gTrigger>=1776 || gTrigger<1825) {
     fEdit1->SetText("400 -150 -50");
     fEdit2->SetText("200 -50 -30");
@@ -1233,7 +1235,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(ginFile.Contains("C.root"))  fEdit1->SetText("400 50 100");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
 
-  if(gTrigger==1952 || gTrigger==1956) fEdit2->SetText("200 -2 5");
+  if(gTrigger==1952 || gTrigger==1956) fEdit2->SetText("200 -60 -20");
+  if(gTrigger==1344 || gTrigger==1345) fEdit2->SetText("200 -60 -20");
   fEdit3->SetText("0 0");
   fEdit4->SetText("0 0");
   fNumber->SetIntNumber(gTrigger);

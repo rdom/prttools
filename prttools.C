@@ -61,7 +61,7 @@ TCanvas* cDigi;
 
 const Int_t nmcp = 15, npix = 64;
 const Int_t maxmch(nmcp*npix);
-const Int_t maxch =3000;
+const Int_t maxch =1500;
 const Int_t tdcmax=10000;
 const Int_t ctdc = 48; //41
 
@@ -115,9 +115,18 @@ void CreateMap(){
   }
 }
 
-Int_t GetChannelNumber(Int_t trbSeqId, Int_t tdcChannel){
-  Int_t ch = 48*trbSeqId+tdcChannel;
+Int_t GetChannelNumber(Int_t tdc, Int_t tdcChannel){
+  Int_t ch = -1;
+  if(tdc>=0) ch = 48*tdc+tdcChannel;
   return ch;
+}
+
+Int_t RemoveRefChannels(Int_t ch){
+  return ch - ch/48;
+}
+
+Int_t AddRefChannels(Int_t ch){
+  return ch + ch/48;
 }
 
 Bool_t badcannel(Int_t ch){
