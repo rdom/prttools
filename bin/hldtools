@@ -71,10 +71,14 @@ option=${option:-0}
 startEvent=${startEvent:-0}
 endEvent=${endEvent:-0} 
 threads=${threads:-0}
-calibrationOpt=${calibrationOpt:-1}
 
 shift $((OPTIND-1))
 
+if [ "$calibrationOpt" -eq 1 ]; then
+    option=2
+else
+    calibrationOpt=${calibrationOpt:-1} 
+fi
 
 fileName=$1
 if [ $latestFile ]; then
