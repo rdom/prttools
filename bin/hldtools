@@ -105,17 +105,7 @@ inFile=$(readlink -f $fileName)
 inName=$(basename $inFile)
 inDir=$(dirname $inFile)/
 
-
-
-if [ -d $HOME/Unpacker/mz-unpacker-BarrelDirc ]; then
-    cd $HOME/Unpacker/mz-unpacker-BarrelDirc
-fi
-
-
-#local
-cd $HOME/dirc/unpacker_mz
-cd $HOME/dirc/mz-unpacker-new
-
+cd $HOME/dirc/mz-unpacker
 
 waitForMe (){
     while : 
