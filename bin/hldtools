@@ -25,7 +25,12 @@ show_help(){
      -l
         use latest *.hld file in current folder 
      -q 
-        run -a option on claster for all unconverted .hld files. output will be in data folder.
+        batch processing option 
+        1 run hldtools -j10 -d for undecoded .hld files in current folder.
+        101 run hldtools -j10 -d for all .hld files in current folder.
+        2 run tcalibration -j10 -c calibf_june.root for not calibrated .hld.root files in current folder.
+        102 run tcalibration -j10 -c calibf_june.root for all .hld.root files in current folder 
+        5 run on the cluster
         one needs to be logged in on hera  
      -s 
         start event
