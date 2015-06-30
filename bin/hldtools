@@ -114,7 +114,7 @@ fi
 if (( $batchmode == 2 || $batchmode == 102  )); then
     for x in $(ls *.hld.root); do
 	if [ ! -f  ${x%.*.*}"C0.root" ] || [ $batchmode == 102 ]; then
-	    tcalibration -j10 -c calib-trb.root $x
+	    tcalibration -j10 -c calibf_june.root $x
 	fi
     done
     exit 0
