@@ -144,14 +144,14 @@ else
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$inDir${fileId}${suf}j$i.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode)" > /dev/null  2>/dev/null &
+	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$inDir${fileId}${suf}${i}j.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode)" > /dev/null  2>/dev/null &
 	done
 	
 	waitForMe
 	statusline="$statusline merging .."
 	printf "\r$statusline"
 	rm -f "${inDir}${fileId}${suf}".root
-	list="${inDir}${fileId}${suf}j"*.root
+	list="${inDir}${fileId}${suf}"*j.root
 	hadd  "${inDir}${fileId}${suf}.root" $list >/dev/null 2>/dev/null
 	rm $list
 	finish_time=$(date +%s)
