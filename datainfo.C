@@ -101,9 +101,13 @@ public:
 Int_t gg_alias=0;
 std::vector<DataInfo> dataArray;
 std::vector<DataInfo> aliasArray;
-const Int_t gg_nstudies = 6;
+const Int_t gg_nstudies = 200;
+Int_t gg_studyArray[gg_nstudies];
 TString study[gg_nstudies];
 void init(){
+
+  for(Int_t i=0; i<gg_nstudies; i++) gg_studyArray[i]=0;
+  
   study[0]="Angle scan. July 14.";
   study[1]="Z scan. July 14.";
   study[2]="Uniq Angle and Z. July 14.";
@@ -173,6 +177,47 @@ void init(){
 
 
   //= August 14 =================================
+  study[50]="X scan with lens. August 14.";
+  
+  //= May 15    =================================
+  study[100]="X scan with lens. May 15.";
+  
+  //= June 15   =================================
+
+  // lenses 1- 2-componet sph.
+  // lenses 2- 2-componet cyl.
+  // lenses 3- 3-componet sph.
+  
+  
+  study[150]="Angle scan with 7 GeV/c, 2-layer spherical lens.";
+  
+  // study id | run name | lens | angle | z pos | x pos | step
+  dataArray.push_back(DataInfo(150,"beam_15181014802",1,20.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181020846",1,25.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181012738",1,30.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181022734",1,35.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181011013",1,40.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181024437",1,45.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181004916",1,50.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181030400",1,55.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181002807",1,60.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181000647",1,70.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181034220",1,75.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181040321",1,85.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181042444",1,89.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181044329",1,89.50,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181050434",1,90.50,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181052518",1,91.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181054550",1,95.00,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181060653",1,105.0,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181062614",1,115.0,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181064133",1,124.0,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181065632",1,124.5,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181071156",1,125.0,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181072725",1,125.5,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181074753",1,126.0,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181080832",1,135.0,470,0,11));
+  dataArray.push_back(DataInfo(150,"beam_15181082901",1,145.0,470,0,11));	     
 }
 
 std::vector<DataInfo> getStudy(Int_t id){
@@ -192,7 +237,9 @@ void createAliases(){
     TString same = dataArray[i].getRunId();
     if(dataArray[i].getAliasId()==""){
       gg_alias++;
-      dataArray[i].setAliasId(Form("%011d",gg_alias));
+      Int_t st = dataArray[i].getStudyId();
+      gg_studyArray[st]++;
+      dataArray[i].setAliasId(Form("%011d",st*10000000 +gg_studyArray[st]));
     }
     
     for(UInt_t j = 0; j != dataArray.size(); j++) {
@@ -283,9 +330,9 @@ void createAliases(){
 
 void p_hadd(){
   for(UInt_t i = 0; i != aliasArray.size(); i++) {
-    std::cout<<"hadd  cc"<<aliasArray[i].getAliasId()<< ".hld.root  ";
+    std::cout<<"hadd "<<aliasArray[i].getAliasId()<< ".hld.root  ";
     for(Int_t j=0; j<aliasArray[i].getNChildren();j++ ){
-      cout<<"cc"<<aliasArray[i].getChildRunId(j)<<".hld.root ";
+      cout<<aliasArray[i].getChildRunId(j)<<".hld.root ";
     }
     std::cout<<std::endl;
   }
@@ -295,7 +342,9 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
   if(format==0){ // file name 
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"cc"<<newset[i].getAliasId()<< "C.root"<<std::endl;
+      for(Int_t j=0; j<newset[i].getNChildren();j++ ){
+	cout<<newset[i].getChildRunId(j)<<".hld.root "<<std::endl;
+      }
     }
   }
 
@@ -319,13 +368,19 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
   if(format==4){ //sim out name  
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"cc"<<newset[i].getAliasId()<< "S.root"<<std::endl;
+      std::cout<<newset[i].getAliasId()<< "S.root"<<std::endl;
+    }
+  }
+
+   if(format==5){ // alias  name 
+    for(UInt_t i = 0; i != newset.size(); i++) {
+      std::cout<<newset[i].getAliasId()<< "C.root"<<std::endl;
     }
   }
 
   if(format==10){ // cp
-    for(UInt_t i = 0; i != dataArray.size(); i++) {
-      std::cout<<"cc"<<dataArray[i].getRunId()<< ".hld  ";
+    for(UInt_t i = 0; i != newset.size(); i++) {
+      std::cout<<newset[i].getRunId()<< ".hld  ";
     }
   }
 
@@ -358,7 +413,7 @@ void p_exportinfo(TString name="alias.info"){
       out<<"<td>"<<newset[k].getAliasId()<<"</td>\n"; 
       out<<"<td>\n";
       for(Int_t j=0; j<newset[k].getNChildren();j++ ){
-	out<<"cc"<<newset[k].getChildRunId(j)<<".hld<br>";
+	out<<newset[k].getChildRunId(j)<<".hld<br>";
       }
       out<<"</td>";
 
@@ -417,6 +472,7 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   std::vector<DataInfo> newset= getStudy(studyId);
 
   p_print(newset, format);
+
   //p_exportinfo();
   //p_export();
 
