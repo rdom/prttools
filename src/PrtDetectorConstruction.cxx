@@ -726,7 +726,7 @@ void PrtDetectorConstruction::SetVisualization(){
     lLens1->SetVisAttributes(vaLens);
     G4VisAttributes * vaLens1 = new G4VisAttributes(G4Colour(0.,0.5,1.0,transp));
     lLens2->SetVisAttributes(vaLens1);
-    if(lLens3) lLens3->SetVisAttributes(vaLens);
+    if(PrtManager::Instance()->GetLens()==3) lLens3->SetVisAttributes(vaLens);
   }
 
   G4VisAttributes *waPrizm = new G4VisAttributes(G4Colour(0.,0.9,0.9,0.2));
