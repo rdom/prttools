@@ -17,7 +17,7 @@ void drawTdcWindow(TString infile="hits.root"){
     for(Int_t h=0; h<fEvent->GetHitSize(); h++){
       fHit = fEvent->GetHit(h);
       hTime[fHit.GetTdc()]->Fill(fHit.GetLeadTime());
-      hTime[fHit.GetTdc()]->Fill(fHit.GetLeadTime()+fHit.GetTot());
+      hTime[fHit.GetTdc()]->Fill(fHit.GetLeadTime()+fHit.GetTotTime());
     }
   }
   TFile *f = new TFile(infile+".time.root","recreate");
