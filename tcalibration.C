@@ -117,7 +117,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(abs(timeLe)>300) continue; 
       }
 
-      hit.SetTdc(Hits_nTdcChannel[i]);
+      hit.SetTdc(tdc);
       hit.SetChannel(ch);
       hit.SetMcpId(map_mcp[ch]);
       hit.SetPixelId(map_pix[ch]+1);
