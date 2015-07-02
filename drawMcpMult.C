@@ -8,6 +8,7 @@ TH1F *hCh;
 TString m_fileid;
 TH1F *hm[15],*hp[60];
 Double_t hv, mcp, mult;
+Int_t detid;
 
 TFile *f;
 TTree *tree;
@@ -45,30 +46,34 @@ Bool_t TTSelector::Process(Long64_t entry){
     hCh->Fill(ch);
   }
 
-  for(Int_t i=0; i<15; i++)  if(mmcp[i]>0) hm[i]->Fill(mmcp[i]);
-  for(Int_t i=0; i<15*4; i++) if(mpadiva[i]>0)  hp[i]->Fill(mpadiva[i]);
+  if(detid==0) for(Int_t i=0; i<15; i++)  if(mmcp[i]>0) hm[i]->Fill(mmcp[i]);
+  if(detid==1) for(Int_t i=0; i<15*4; i++) if(mpadiva[i]>0)  hp[i]->Fill(mpadiva[i]);
   
   return kTRUE;
 }
 
 void TTSelector::Terminate(){
-  for(Int_t i=0; i<15; i++){
-    mcp = i;
-    mult = hm[i]->GetMean();
-    tree->Fill();
+  if(detid==0){
+    for(Int_t i=0; i<15; i++){
+      mcp = i;
+      mult = hm[i]->GetMean();
+      tree->Fill();
+    }
   }
-  
-  // for(Int_t i=0; i<15*4; i++){
-  //   mcp = i;
-  //   padiva = hp[i]->GetMean();
-  //   tree.Fill();
-  // }
+
+  if(detid==1){
+    for(Int_t i=0; i<15*4; i++){
+      mcp = i;
+      mult = hp[i]->GetMean();
+      tree->Fill();
+    }
+  }
 
   tree->Write();
 }
 
-
-void drawMcpMult(TString inFile= "../data/pilas_15178162456.hld.root",Int_t events = 10000){
+void drawMcpMult(TString inFile= "../data/pilas_15178162456.hld.root",Int_t events = 10000, Int_t detectorid=0){
+  detid = detectorid;
   TString str = inFile;
 
   TString shv = str.Remove(0,str.Last('/')+1).Remove(0,4).Remove(4,9);
