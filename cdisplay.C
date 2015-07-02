@@ -1236,7 +1236,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
 
   if(gTrigger==1952 || gTrigger==1956) fEdit2->SetText("200 -60 -20");
-  if(gTrigger==1344 || gTrigger==1345) fEdit2->SetText("200 -60 -20");
+  if(gTrigger==1344 || gTrigger==1345) fEdit2->SetText("200 20 60");
   fEdit3->SetText("0 0");
   fEdit4->SetText("0 0");
   fNumber->SetIntNumber(gTrigger);
