@@ -108,7 +108,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
       if(gTrigger!=0) timeLe = timeLe - (grTime1-grTime0);
       
-      timeTot = time[i] - timeT[ch];
+      timeTot = timeT[i] - time[ch];
            
       if(gtFile!=""){
 	if(ch>1920) continue;
