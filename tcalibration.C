@@ -16,7 +16,6 @@ void TTSelector::Begin(TTree *){
   TString option = GetOption();
   TObjArray *strobj = option.Tokenize(" ");
   gTrigger = ((TObjString*)strobj->At(0))->GetString().Atoi();
-  
   gMode = ((TObjString*)strobj->At(1))->GetString().Atoi();
   CreateMap();
   TString filedir=ginFile;
@@ -72,7 +71,6 @@ Bool_t TTSelector::Process(Long64_t entry){
   // fEvent->SetReferenceChannel(gTrigger);
 
   for(Int_t i=0; i<Hits_; i++){
-    if(Hits_nTdcChannel[i]==0) continue;
     tdc = map_tdc[Hits_nTrbAddress[i]];
     ch = GetChannelNumber(tdc,Hits_nTdcChannel[i]);
     if(badcannel(ch)) continue;
@@ -85,7 +83,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       timeT[ch]=time[i];
       continue;
     }
-
+    
     if(Hits_nTdcChannel[i]==0) {  // is ref channel
       tdcRefTime[tdc] = time[i];
       if(gTrigger!=0 && (gTrigger-ch)<=ctdc && (gTrigger-ch)>0) grTime0 = time[i];

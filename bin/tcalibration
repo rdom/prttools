@@ -136,7 +136,7 @@ else
 	printf "\r$statusline .."
 	start_time=$(date +%s)
 	
-	root -l -q loadprtlibs.C tcalibration.C++'("","","","", 0,0,0,0,1)'  > /dev/null 2>/dev/null
+	root -l -q loadprtlibs.C tcalibration.C+'("","","","", 0,0,0,0,1)'  > /dev/null 2>/dev/null
 	
 	for ((i=0;i<$threads;i++)); do
 	    startEvent=$(echo "$step*$i" |bc)
