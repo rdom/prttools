@@ -28,6 +28,7 @@ void TTSelector::Begin(TTree *){
   CreateMap();
 }
 
+Double_t tdcRefTime[100];
 Bool_t TTSelector::Process(Long64_t entry){
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   GetEntry(entry);
@@ -35,12 +36,25 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t mmcp[15],mpadiva[60];
   for(Int_t i=0; i<15; i++) mmcp[i]=0;
   for(Int_t i=0; i<60; i++) mpadiva[i]=0;
+
+  for(Int_t i=0; i<Hits_; i++){
+    Int_t tdc = map_tdc[Hits_nTrbAddress[i]];
+    Int_t ch = GetChannelNumber(tdc,Hits_nTdcChannel[i]);
+    if(badcannel(ch)) continue;
+
+    Double_t coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
+    if(Hits_nTdcChannel[i]==0)  tdcRefTime[tdc] = coarseTime-(Hits_nFineTime[i]-31)*0.0102; 
+  }
 	
   for(Int_t i=0; i<Hits_; i++){
     Int_t tdc = map_tdc[Hits_nTrbAddress[i]];
     Int_t ch = GetChannelNumber(tdc,Hits_nTdcChannel[i]);
     if(Hits_nSignalEdge[i]==0 || Hits_nTdcChannel[i]==0) continue;
     if(badcannel(ch) || ch >= 15*64) continue;
+    
+    Double_t coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
+    Double_t time  = coarseTime-(Hits_nFineTime[i]-31)*0.0102 -tdcRefTime[tdc]; 
+    if(time < 0 || time > 50 ) continue;
     mmcp[ch/64]++;
     mpadiva[ch/16]++;
     hCh->Fill(ch);
