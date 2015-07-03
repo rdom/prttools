@@ -262,7 +262,6 @@ Bool_t MSelector::Process(Long64_t entry){
     if(gTofMin==gTofMax || (tof>gTofMin && tof<gTofMax)) hTof->Fill(tof);
   }
 
-  if(tof!=0) 
   for(Int_t h=0; h<nhits; h++){
     hit = fEvent->GetHit(h);
     ch  = hit.GetChannel();
@@ -642,12 +641,13 @@ void MSelector::Terminate(){
   hTof = dynamic_cast<TH1F *>(TProof::GetOutput("hTof", fOutput)); 
 }
 
-void MyMainFrame::DoDraw(){
+void MyMainFrame::DoDraw(){  
   fCheckBtn2->SetText("3 sigma time cut                         ");
   fCheckBtn2->SetTextColor(Pixel_t(0x000000),kFALSE);   
   fCheckBtn3->SetText("Walk correction                         ");
   fCheckBtn3->SetTextColor(Pixel_t(0x000000),kFALSE);  
   if(gTrigger>-1) gTrigger = fNumber->GetIntNumber();
+  
 
   for(Int_t m=0; m<nmcp; m++){
     if(fhDigi[m]) fhDigi[m]->Reset();
@@ -1025,6 +1025,18 @@ void MyMainFrame::DoCheckBtnClecked4(){
   }
 }
 
+TH2F* fhDigi_history[15];
+void MyMainFrame::DoHistory(){
+    for(Int_t m=0; m<nmcp; m++){
+      fhDigi_temp[m] = (TH2F*)fhDigi[m]->Clone();
+      if(fhDigi_history[m]){
+	fhDigi[m] = (TH2F*)fhDigi_history[m]->Clone();   
+      }
+      fhDigi_history[m] = (TH2F*)fhDigi_temp[m]->Clone();
+    }
+    drawDigi("m,p,v\n",layout);
+}
+
 void MyMainFrame::DoExit(){
   gApplication->Terminate(0);
 }
@@ -1098,13 +1110,17 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fEdit4->Resize(80, fEdit4->GetDefaultHeight());
   fHm0->AddFrame(fL5, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
   fHm0->AddFrame(fEdit4, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
-
+ 
   TGLabel *fL6 = new TGLabel(fHm0, "TOF cut: ");
   fEdit5 = new TGTextEntry(fHm0, new TGTextBuffer(100));
   fEdit5->SetToolTipText("min max");
   fEdit5->Resize(80, fEdit5->GetDefaultHeight());
   fHm0->AddFrame(fL6, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
   fHm0->AddFrame(fEdit5, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
+
+  TGTextButton * fBtnHistory = new TGTextButton(fHm0, "M");
+  fBtnHistory->Connect("Clicked()", "MyMainFrame", this, "DoHistory()");
+  fHm0->AddFrame(fBtnHistory, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
   
   fHm->AddFrame(fHm0, new TGLayoutHints(kLHintsExpandX | kLHintsCenterX,5, 5, 5, 5));
 

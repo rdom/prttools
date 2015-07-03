@@ -73,6 +73,7 @@ public:
   void DoDraw();
   void DoMore();
   void DoExport();
+  void DoHistory();
   void DoExportOffsets();
   void InterestChanged();
   void DoSlider(Int_t pos =0);
