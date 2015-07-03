@@ -73,13 +73,20 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   if(fPrismRadiatorStep !=0 ) fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2.+fPrismRadiatorStep;
   fCenterShift =  G4ThreeVector(0., 0., 0.);
   if(true){
-    // fPrismRadiatorStep = fPrizm[3]/2.-fBar[0]/2.; 
-    //  fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2.   +30.6; 
-    //fCenterShift =  G4ThreeVector(fBar[2]/2.-334,0,-40.3);
-    Double_t zshift = (PrtManager::Instance()->GetBeamZ()==-1)? 0: fBar[2]/2.-PrtManager::Instance()->GetBeamZ();
-    std::cout<<"zshift  "<<zshift <<std::endl;
+    if(fGeomId == 2015){
+      //fPrismRadiatorStep = fPrizm[3]/2.-fBar[0]/2.; 
+      //fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2.   +30.6;
+      
+      fCenterShift =  G4ThreeVector(fBar[2]/2.-400,0,-132);
+    }else{
+      Double_t zshift = (PrtManager::Instance()->GetBeamZ()==-1)? 0: fBar[2]/2.-PrtManager::Instance()->GetBeamZ();
+      std::cout<<"zshift  "<<zshift <<std::endl;
+      fCenterShift =  G4ThreeVector(zshift,-PrtManager::Instance()->GetBeamX(),0);
+    }
+
+   
     
-    fCenterShift =  G4ThreeVector(zshift,-PrtManager::Instance()->GetBeamX(),0);
+   
   }
   
   PrtManager::Instance()->SetRadiatorL(fBar[2]);
@@ -111,7 +118,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   G4Box* gTrigger = new G4Box("gTrigger",20.,20.,5);
   lTrigger = new G4LogicalVolume(gTrigger,frontMaterial,"lTrigger",0,0,0);
   
-  if(fGeomId == 3){
+  if(fGeomId == 3 || fGeomId == 2015){
     new G4PVPlacement(0,G4ThreeVector(0,0,-1200),lFront,"wFront",lExpHall,false,0);
     new G4PVPlacement(0,G4ThreeVector(0,0,1500),lTrigger,"wTrigger",lExpHall,false,0); 
   }
@@ -132,14 +139,15 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   G4Box* gCover = new G4Box("gCover",1,150,fBar[2]/2.);
   G4LogicalVolume *lCover = new G4LogicalVolume(gCover, MirrorMaterial ,"lCover",0,0,0);
 
-  if(fGeomId == 3){
+  if(fGeomId == 3 || fGeomId == 2015){
     new G4PVPlacement(0,G4ThreeVector(-100,0,0),lCover,"wCover",lDirc,false,0);
   }
   
   // The Bar
   G4Box* gBar = new G4Box("gBar",fBar[0]/2.,fBar[1]/2.,fBar[2]/2.);
   lBar = new G4LogicalVolume(gBar,BarMaterial,"lBar",0,0,0);
-  G4double xshift = 0;//(fBar[1]-fPrizm[0])/2.; //gx
+  G4double xshift = 0;
+  if(fGeomId==2015) xshift = (fBar[1]-fPrizm[0])/2.;
   wBar =  new G4PVPlacement(0,G4ThreeVector(fPrismRadiatorStep,xshift,0),lBar,"wBar", lDirc,false,0);
 
   // The Mirror
