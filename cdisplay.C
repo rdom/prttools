@@ -40,7 +40,7 @@ TString ginFile;
 
 Double_t gTimeCutMin=-10000, gTimeCutMax=10000;
 Double_t gMultCutMin=0, gMultCutMax=0;  
-TSpectrum *spect = new TSpectrum(2);;
+TSpectrum *spect = new TSpectrum(2);
 Double_t gTimeCuts[nmcp][npix][2];
 Double_t gTotMean[nmcp][npix];
 TString gsTimeCuts = "0";

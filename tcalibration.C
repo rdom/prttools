@@ -59,7 +59,7 @@ void TTSelector::Begin(TTree *){
 Bool_t TTSelector::Process(Long64_t entry){
   Int_t tdc,ch;
   Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime(0),offset(0);
-  Double_t time[50000], timeT[50000];
+  Double_t time[10000], timeT[10000];
 
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   TObjArray *sarr = current_file_name.Tokenize("_");
@@ -69,8 +69,8 @@ Bool_t TTSelector::Process(Long64_t entry){
   
   fEvent = new PrtEvent();
   // fEvent->SetReferenceChannel(gTrigger);
-
-  for(Int_t i=0; i<Hits_; i++){
+  
+  for(Int_t i=0; i<Hits_ && i<10000; i++){
     tdc = map_tdc[Hits_nTrbAddress[i]];
     ch = GetChannelNumber(tdc,Hits_nTdcChannel[i]);
     if(badcannel(ch)) continue;
@@ -80,7 +80,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     else time[i] = Hits_fTime[i]; //coarseTime-(Hits_nFineTime[i]-31)*0.0102; //Hits_fTime[i];//
     
     if(Hits_nSignalEdge[i]==0){
-      timeT[ch]=time[i];
+      timeT[i]=time[i];
       continue;
     }
     
@@ -94,7 +94,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   PrtHit hit;
   Int_t nrhits=0;
   if((grTime0>0 && grTime1>0) || gTrigger==0){
-    for(Int_t i=0; i<Hits_; i++){
+    for(Int_t i=0; i<Hits_ && i<10000; i++){
       if(Hits_nTdcErrCode[i]!=0) continue;
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
@@ -108,7 +108,9 @@ Bool_t TTSelector::Process(Long64_t entry){
 
       if(gTrigger!=0) timeLe = timeLe - (grTime1-grTime0);
       
-      timeTot = timeT[ch] - time[i];
+      timeTot = timeT[i+1] - time[i];
+
+      // if(timeLe>-300 && timeLe <-100) std::cout<<"timeLe "<<timeLe << " - "<<timeTot  <<std::endl;      
            
       if(gtFile!=""){
 	if(ch>1920) continue;

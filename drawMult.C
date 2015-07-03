@@ -1,8 +1,7 @@
-#define prt__sim
+#define prt__beam
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
-
 
 void drawMult(TString infile="hits.root"){
   fSavePath = "auto";
@@ -25,7 +24,6 @@ void drawMult(TString infile="hits.root"){
     }
 
     hMult->Fill(counts);
-      
   }
 
   canvasAdd("Time",800,500);
