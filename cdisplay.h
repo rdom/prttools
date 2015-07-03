@@ -59,6 +59,7 @@ private:
   TGTextEntry          *fEdit1;
   TGTextEntry          *fEdit2;
   TGTextEntry          *fEdit4;
+  TGTextEntry          *fEdit5;
   TGCheckButton        *fCheckBtn1;
   TGCheckButton        *fCheckBtn2;
   TGCheckButton        *fCheckBtn3;

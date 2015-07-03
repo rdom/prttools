@@ -29,7 +29,7 @@ const Int_t maxMult = 30;
 TH1F *hTotM[maxMult];
 TH1F *hLeM[maxMult];
 
-TH1F *hTot,*hLe,*hLes,*hMult,*hCh;
+TH1F *hTot,*hLe,*hLes,*hMult,*hCh,*hTof;
 TH1F *hMultEvtNum1,*hMultEvtNum2;
 
 TCanvas *cTime;
@@ -38,7 +38,7 @@ TString gPath="", gInfo="";
 TGHProgressBar *pbar;
 TString ginFile; 
 
-Double_t gTimeCutMin=-10000, gTimeCutMax=10000;
+Double_t gTimeCutMin=-10000, gTimeCutMax=10000,gTofMin(0),gTofMax(0);
 Double_t gMultCutMin=0, gMultCutMax=0;  
 TSpectrum *spect = new TSpectrum(2);
 Double_t gTimeCuts[nmcp][npix][2];
@@ -64,10 +64,10 @@ void init(){
   TString insim =  ginFile;
   insim.ReplaceAll("C.root","S.root");
   
-  Long_t* id;
-  Long_t* size;
-  Long_t* flags;
-  Long_t* modtime;
+  Long_t* id(0);
+  Long_t* size(0);
+  Long_t* flags(0);
+  Long_t* modtime(0);
   if(!gSystem->GetPathInfo(insim,id,size,flags,modtime)){
     std::cout<<"Add Sim file: "<<insim <<std::endl;
     fCh->Add(insim);
@@ -102,7 +102,7 @@ void MSelector::SlaveBegin(TTree *){
   std::istringstream source(option.Data());
   Int_t bins1 =100, bins2 = 100;
   Double_t min1=-5, max1=5, min2=-5, max2=5;
-  source>>gMode>>gTrigger>>bins1>>min1>>max1>>bins2>>min2>>max2>>gTimeCutMin>>gTimeCutMax>>gMultCutMin>>gMultCutMax>>gsTimeCuts>>gsTotMean;
+  source>>gMode>>gTrigger>>bins1>>min1>>max1>>bins2>>min2>>max2>>gTimeCutMin>>gTimeCutMax>>gMultCutMin>>gMultCutMax>>gsTimeCuts>>gsTotMean>>gTofMin>>gTofMax;
 
   TObjArray *sarr = gsTimeCuts.Tokenize(";");
 
@@ -195,6 +195,7 @@ void MSelector::SlaveBegin(TTree *){
   hLes=new TH1F("hLeAs","",5000,-100,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",3000,0,3000);
+  hTof=new TH1F("hTof","",500,170,190);
 
   axisTime800x500(hTot,"TOT time, [ns]");
   axisTime800x500(hLe,"LE time, [ns]");
@@ -208,6 +209,7 @@ void MSelector::SlaveBegin(TTree *){
   fOutput->Add(hMult);
   fOutput->Add(hEMult[nmcp]);
   fOutput->Add(hCh);
+  fOutput->Add(hTof);
 }
 
 Bool_t MSelector::Process(Long64_t entry){
@@ -218,9 +220,10 @@ Bool_t MSelector::Process(Long64_t entry){
     TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
     TObjArray *sarr = current_file_name.Tokenize("_");
     if(sarr->GetEntries()==3){
-      if(((TObjString *) sarr->At(0))->GetName()=="th");
-      TString soffset = ((TObjString *) sarr->At(1))->GetName();
-      offset = soffset.Atof()/400.;
+      if(((TObjString *) sarr->At(0))->GetName()=="th"){
+	TString soffset = ((TObjString *) sarr->At(1))->GetName();
+	offset = soffset.Atof()/400.;
+      }
     }else
       offset = fEvent->GetTest1();
   }
@@ -233,30 +236,34 @@ Bool_t MSelector::Process(Long64_t entry){
     if(current_file_name.Contains("S.root")) bsim = true;
   } 
 
-  Double_t le,tot, triggerLe=-1;
+  Double_t le,tot, triggerLe(0), tof(0), tof1(0),tof2(0);
   PrtHit hit;
-  Int_t mcp,pix,col,row,ch,chMultiplicity;
-  Int_t thitCount1=0, thitCount2=0, hitCount1=0, hitCount2=0;
+  Int_t mcp,pix,col,row,ch,chMultiplicity(0);
+  Int_t thitCount1(0), thitCount2(0), hitCount1(0), hitCount2(0);
   memset(mult, 0, sizeof(mult));
 
   Int_t nhits = fEvent->GetHitSize();
   if(gTrigger>0){
-    for(UInt_t h=0; h<nhits; h++){
+    for(Int_t h=0; h<nhits; h++){
       hit = fEvent->GetHit(h);
       ch  = hit.GetChannel();
       mult[ch]++;
 
       if(hit.GetMcpId()>14) thitCount1++;
       else  thitCount2++;
-      if(ch == (UInt_t)gTrigger) {
-	triggerLe = hit.GetLeadTime();
-      }
+      
+      if(ch == (Int_t)gTrigger) triggerLe = hit.GetLeadTime();
+      if(hit.GetChannel()==960)  tof1 = hit.GetLeadTime();
+      if(hit.GetChannel()==1104) tof2 = hit.GetLeadTime();
     }
-  }else{
-    triggerLe=0;
+  }
+  if(tof1!=0 && tof2!=0) {
+    tof = tof2-tof1;
+    if(gTofMin==gTofMax || (tof>gTofMin && tof<gTofMax)) hTof->Fill(tof);
   }
 
-  for(UInt_t h=0; h<nhits; h++){
+  if(tof!=0) 
+  for(Int_t h=0; h<nhits; h++){
     hit = fEvent->GetHit(h);
     ch  = hit.GetChannel();
     mcp = hit.GetMcpId();
@@ -272,7 +279,8 @@ Bool_t MSelector::Process(Long64_t entry){
       continue;
     }
     
-    if(gMultCutMin!=gMultCutMax && (thitCount2<gMultCutMin || thitCount2>gMultCutMax)) continue; 
+    if(gMultCutMin!=gMultCutMax && (thitCount2<gMultCutMin || thitCount2>gMultCutMax)) continue;
+    if(gTofMin != gTofMax && (tof<gTofMin || tof>gTofMax)) continue; 
 
     pix = hit.GetPixelId()-1;
     row = pix/8;
@@ -630,7 +638,8 @@ void MSelector::Terminate(){
   hMultEvtNum1 = dynamic_cast<TH1F *>(TProof::GetOutput("hMultEvtNum1", fOutput));
   hMultEvtNum2 = dynamic_cast<TH1F *>(TProof::GetOutput("hMultEvtNum2", fOutput));
 
-  hCh = dynamic_cast<TH1F *>(TProof::GetOutput("hChA", fOutput)); 
+  hCh = dynamic_cast<TH1F *>(TProof::GetOutput("hChA", fOutput));
+  hTof = dynamic_cast<TH1F *>(TProof::GetOutput("hTof", fOutput)); 
 }
 
 void MyMainFrame::DoDraw(){
@@ -654,12 +663,13 @@ void MyMainFrame::DoDraw(){
   if(hLes) hLes->Reset();
   if(hTot) hTot->Reset();
   if(hMult) hMult->Reset();
-  if(hCh) hCh->Reset(); 
+  if(hCh) hCh->Reset();
+  if(hTof) hTof->Reset(); 
 
   fHProg3->Reset();
   //fNEntries = 100000;
 
-  TString option = Form("%d %d %s %s %s %s %s %s",gMode,gTrigger,fEdit1->GetText(),fEdit2->GetText(),fEdit3->GetText(),fEdit4->GetText(),gsTimeCuts.Data(), gsTotMean.Data());
+  TString option = Form("%d %d %s %s %s %s %s %s %s",gMode,gTrigger,fEdit1->GetText(),fEdit2->GetText(),fEdit3->GetText(),fEdit4->GetText(),gsTimeCuts.Data(), gsTotMean.Data(),fEdit5->GetText());
 
   gROOT->SetBatch(1);
   fCh->Process(fSelector,option,fNEntries);
@@ -764,7 +774,11 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
   case 7: // Channels
     hCh->Draw();
     histname=hCh->GetName();
-    break; 
+    break;
+  case 12: // TOF
+    hTof->Draw();
+    histname=hTof->GetName();
+    break;
   case 8: // Event Mult
     if(hEMult[0]->GetMaximum()>max) max = hEMult[0]->GetMaximum();
     if(hEMult[1]->GetMaximum()>max) max = hEMult[1]->GetMaximum();
@@ -1085,6 +1099,13 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fHm0->AddFrame(fL5, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
   fHm0->AddFrame(fEdit4, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
 
+  TGLabel *fL6 = new TGLabel(fHm0, "TOF cut: ");
+  fEdit5 = new TGTextEntry(fHm0, new TGTextBuffer(100));
+  fEdit5->SetToolTipText("min max");
+  fEdit5->Resize(80, fEdit5->GetDefaultHeight());
+  fHm0->AddFrame(fL6, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
+  fHm0->AddFrame(fEdit5, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
+  
   fHm->AddFrame(fHm0, new TGLayoutHints(kLHintsExpandX | kLHintsCenterX,5, 5, 5, 5));
 
   TGHorizontalFrame *fHm1 = new TGHorizontalFrame(fHm, 400, 40);
@@ -1181,6 +1202,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fComboMode->AddEntry("Leading Edge All", 1);
   fComboMode->AddEntry("ToT", 2);
   fComboMode->AddEntry("ToT All", 3);
+  fComboMode->AddEntry("TOF",12);
   if(gMode==1){
     fComboMode->AddEntry("Le vs. ToT", 4);
     fComboMode->AddEntry("Signal shape",10);
@@ -1239,6 +1261,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(gTrigger==1344 || gTrigger==1345) fEdit2->SetText("200 20 60");
   fEdit3->SetText("0 0");
   fEdit4->SetText("0 0");
+  fEdit5->SetText("0 0");
   fNumber->SetIntNumber(gTrigger);
   fCheckBtn2->SetState(kButtonUp);
 
