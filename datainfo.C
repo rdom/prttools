@@ -13,6 +13,7 @@ class DataInfo {
   Double_t _z;
   Double_t _x;
   Double_t _step;
+  Double_t _momentum;
   Double_t _simToffset;
 
   Int_t _fileId;
@@ -25,8 +26,8 @@ class DataInfo {
 
 public:
   DataInfo(){}; 	//the default constructor
-  DataInfo(Int_t studyId, TString r, Int_t l, Double_t a, Double_t z,Double_t x,Double_t s):
-    _studyId(studyId),_runId(r),_lensId(l),_angle(a),_z(z),_x(x),_step(s),_aliasId(""),_nchildren(0),_fileId(0){
+  DataInfo(Int_t studyId, TString r, Int_t l, Double_t a, Double_t z,Double_t x,Double_t s, Double_t m):
+    _studyId(studyId),_runId(r),_lensId(l),_angle(a),_z(z),_x(x),_step(s),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0){
   };
 
   ~DataInfo() {}
@@ -37,7 +38,7 @@ public:
   };
 
   bool operator == (const DataInfo& d) const{
-    return _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _step == d._step;
+    return _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _step == d._step && _momentum == d._momentum;
   }
 
   bool operator < (const DataInfo& d) const{
@@ -71,6 +72,7 @@ public:
     info += Form("X = %f [mm];",_x);
     info += Form("Z = %f [mm];",_z);
     info += Form("Step = %f [mm];",_step);
+    info += Form("Momentum = %f [mm];",_momentum);
     info += Form("Uniq file id for current study = %d;",_fileId);
     info += Form("Folder path = %d/%d;",_studyId,_fileId);
     return info;
@@ -84,6 +86,7 @@ public:
   Double_t getZ() const { return _z; }
   Double_t getX() const { return _x; }
   Double_t getStep() const { return _step; }
+  Double_t getMomentum() const { return _momentum; }
   TString getAliasId() const {return _aliasId; }
   Int_t getFileId(){return _fileId;}
   TString getChildRunId(Int_t ind){return _childRuns[ind];}
@@ -117,62 +120,62 @@ void init(){
 
   //= July 14 ===================================
 
-  dataArray.push_back(DataInfo(0,"14190005337",0,122.00,442.46,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14191201517",0,122.00,442.46,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14191211929",0,122.00,442.46,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14192221441",0,122.00,442.46,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14192224720",0,122.00,442.46,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14192230122",0,120.00,436.57,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193200214",0,122.00,442.46,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193201620",0,122.00,442.46,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193202529",0,122.00,442.46,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193203751",0,120.00,436.57,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193204418",0,119.50,435.14,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193205040",0,119.00,433.72,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193205754",0,118.50,432.32,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193212008",0,118.00,430.94,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193212908",0,116.00,425.55,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193213740",0,114.00,420.38,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193214623",0,112.00,415.40,-1.00,30.6));
-  dataArray.push_back(DataInfo(0,"14193215453",0,110.00,411.36,-1.00,30.6));
-  dataArray.push_back(DataInfo(2,"14194193450",0,55.700,1047.4,-1.00,30.6));
-  dataArray.push_back(DataInfo(2,"14194193623",0,55.700,1047.4,-1.00,30.6));
-  dataArray.push_back(DataInfo(2,"14194193901",0,55.700,1047.4,-1.00,30.6));
-  dataArray.push_back(DataInfo(1,"14194200623",0,56.920,1042.1,-1.00,30.6));
-  dataArray.push_back(DataInfo(1,"14194200712",0,56.920,1042.1,-1.00,30.6));
-  dataArray.push_back(DataInfo(1,"14194202800",0,56.920,677.10,-1.00,30.6));
-  dataArray.push_back(DataInfo(1,"14194204509",0,56.920,392.10,-1.00,30.6));
-  dataArray.push_back(DataInfo(1,"14194210453",0,56.920,162.10,-1.00,30.6));
-  dataArray.push_back(DataInfo(3,"14194212652",0,120.13,180.12,-1.00,30.6));
+  dataArray.push_back(DataInfo(0,"14190005337",0,122.00,442.46,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14191201517",0,122.00,442.46,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14191211929",0,122.00,442.46,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14192221441",0,122.00,442.46,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14192224720",0,122.00,442.46,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14192230122",0,120.00,436.57,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193200214",0,122.00,442.46,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193201620",0,122.00,442.46,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193202529",0,122.00,442.46,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193203751",0,120.00,436.57,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193204418",0,119.50,435.14,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193205040",0,119.00,433.72,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193205754",0,118.50,432.32,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193212008",0,118.00,430.94,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193212908",0,116.00,425.55,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193213740",0,114.00,420.38,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193214623",0,112.00,415.40,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(0,"14193215453",0,110.00,411.36,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(2,"14194193450",0,55.700,1047.4,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(2,"14194193623",0,55.700,1047.4,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(2,"14194193901",0,55.700,1047.4,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(1,"14194200623",0,56.920,1042.1,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(1,"14194200712",0,56.920,1042.1,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(1,"14194202800",0,56.920,677.10,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(1,"14194204509",0,56.920,392.10,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(1,"14194210453",0,56.920,162.10,-1.00,30.6,1.9));
+  dataArray.push_back(DataInfo(3,"14194212652",0,120.13,180.12,-1.00,30.6,1.9));
                                   
-  dataArray.push_back(DataInfo(4,"14196211606",2,127.00,291.69,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196212144",2,127.00,291.69,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196213127",2,126.00,290.21,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196214102",2,125.00,288.73,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196215015",2,124.00,287.24,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196220032",2,123.00,285.74,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196220932",2,123.00,285.74,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196221241",2,122.00,284.23,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196222402",2,121.00,282.71,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196222743",2,121.00,282.71,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196223412",2,120.00,281.18,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196224618",2,119.00,279.65,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196225437",2,119.00,279.65,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196230221",2,113.00,270.18,-1.00,18.0));
-  dataArray.push_back(DataInfo(4,"14196231032",2,112.00,268.56,-1.00,18.0));
-  dataArray.push_back(DataInfo(5,"14197203207",2,125.00,318.32,-1.00,18.0));
-  dataArray.push_back(DataInfo(5,"14197203627",2,125.00,318.32,-1.00,18.0));
-  dataArray.push_back(DataInfo(5,"14197204025",2,125.00,318.32,-1.00,18.0));
-  dataArray.push_back(DataInfo(5,"14197204224",2,125.00,318.32,-1.00,18.0));
-  dataArray.push_back(DataInfo(5,"14197205430",2,125.00,318.32,-1.00,18.0));
-  dataArray.push_back(DataInfo(5,"14197205528",2,125.00,318.32,-21.0,18.0));
-  dataArray.push_back(DataInfo(5,"14197210005",2,125.00,318.32,-21.0,18.0));
-  dataArray.push_back(DataInfo(5,"14197211125",2,125.00,318.32,-41.0,18.0));
-  dataArray.push_back(DataInfo(5,"14197211314",2,125.00,318.32,-41.0,18.0));
-  dataArray.push_back(DataInfo(5,"14197211528",2,125.00,318.32,-41.0,18.0));
-  dataArray.push_back(DataInfo(5,"14197211648",2,125.00,318.32,-41.0,18.0));
-  dataArray.push_back(DataInfo(5,"14197212345",2,125.00,318.32,-61.0,18.0));
-  dataArray.push_back(DataInfo(5,"14197212900",2,125.00,318.32,-61.0,18.0));
+  dataArray.push_back(DataInfo(4,"14196211606",2,127.00,291.69,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196212144",2,127.00,291.69,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196213127",2,126.00,290.21,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196214102",2,125.00,288.73,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196215015",2,124.00,287.24,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196220032",2,123.00,285.74,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196220932",2,123.00,285.74,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196221241",2,122.00,284.23,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196222402",2,121.00,282.71,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196222743",2,121.00,282.71,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196223412",2,120.00,281.18,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196224618",2,119.00,279.65,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196225437",2,119.00,279.65,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196230221",2,113.00,270.18,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(4,"14196231032",2,112.00,268.56,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197203207",2,125.00,318.32,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197203627",2,125.00,318.32,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197204025",2,125.00,318.32,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197204224",2,125.00,318.32,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197205430",2,125.00,318.32,-1.00,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197205528",2,125.00,318.32,-21.0,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197210005",2,125.00,318.32,-21.0,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197211125",2,125.00,318.32,-41.0,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197211314",2,125.00,318.32,-41.0,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197211528",2,125.00,318.32,-41.0,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197211648",2,125.00,318.32,-41.0,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197212345",2,125.00,318.32,-61.0,18.0,1.9));
+  dataArray.push_back(DataInfo(5,"14197212900",2,125.00,318.32,-61.0,18.0,1.9));
 
 
 
@@ -192,32 +195,32 @@ void init(){
   study[150]="Angle scan with 7 GeV/c, 2-layer spherical lens.";
   
   // study id | run name | lens | angle | z pos | x pos | step
-  dataArray.push_back(DataInfo(150,"beam_15181014802",1,20.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181020846",1,25.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181012738",1,30.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181022734",1,35.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181011013",1,40.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181024437",1,45.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181004916",1,50.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181030400",1,55.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181002807",1,60.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181000647",1,70.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181034220",1,75.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181040321",1,85.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181042444",1,89.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181044329",1,89.50,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181050434",1,90.50,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181052518",1,91.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181054550",1,95.00,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181060653",1,105.0,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181062614",1,115.0,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181064133",1,124.0,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181065632",1,124.5,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181071156",1,125.0,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181072725",1,125.5,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181074753",1,126.0,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181080832",1,135.0,470,0,11));
-  dataArray.push_back(DataInfo(150,"beam_15181082901",1,145.0,470,0,11));	     
+  dataArray.push_back(DataInfo(150,"beam_15181014802",1,20.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181020846",1,25.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181012738",1,30.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181022734",1,35.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181011013",1,40.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181024437",1,45.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181004916",1,50.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181030400",1,55.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181002807",1,60.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181000647",1,70.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181034220",1,75.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181040321",1,85.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181042444",1,89.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181044329",1,89.50,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181050434",1,90.50,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181052518",1,91.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181054550",1,95.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181060653",1,105.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181062614",1,115.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181064133",1,124.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181065632",1,124.5,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181071156",1,125.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181072725",1,125.5,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181074753",1,126.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181080832",1,135.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181082901",1,145.0,378,0,11,7.0)); 
 }
 
 std::vector<DataInfo> getStudy(Int_t id){
@@ -343,7 +346,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   if(format==0){ // file name 
     for(UInt_t i = 0; i != newset.size(); i++) {
       for(Int_t j=0; j<newset[i].getNChildren();j++ ){
-	cout<<newset[i].getChildRunId(j)<<".hld.root "<<std::endl;
+	cout<<newset[i].getChildRunId(j)<<"C0.root "<<std::endl;
       }
     }
   }
@@ -362,7 +365,12 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
   if(format==3){ // prtdirc
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<" -l "<<newset[i].getLensId()<<" -a "<<newset[i].getAngle()<<" -gz "<<newset[i].getZ()<<" -gx "<<newset[i].getX()<<" -gs "<<newset[i].getStep()<<" "<<std::endl;
+      std::cout<<" -p "<< newset[i].getMomentum() << " -l "<<newset[i].getLensId()
+	       <<" -a "<<newset[i].getAngle()<<" -gz "<<newset[i].getZ()
+	       <<" -gx "<<newset[i].getX()<<" -gs "<<newset[i].getStep();
+
+      if(newset[i].getStudyId()>=150) std::cout<<" -g 2015 -c 2015 "<<std::endl;
+      else  std::cout<<" "<<std::endl;
     }
   }
 
@@ -371,13 +379,21 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
       std::cout<<newset[i].getAliasId()<< "S.root"<<std::endl;
     }
   }
-
-   if(format==5){ // alias  name 
+  
+  if(format==5){ // alias  name 
+     for(UInt_t i = 0; i != newset.size(); i++) {
+       std::cout<<newset[i].getAliasId()<< "C.root"<<std::endl;
+     }
+  }
+  
+  if(format==6){ // reco
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<newset[i].getAliasId()<< "C.root"<<std::endl;
+      std::cout<<"\""<<newset[i].getChildRunId(0)<<"C0.root\","<<newset[i].getMomentum() << ","<<newset[i].getLensId()
+	       <<","<<newset[i].getAngle()<<","<<newset[i].getZ()
+	       <<","<<newset[i].getX()<<","<<newset[i].getStep()<<std::endl;
     }
   }
-
+  
   if(format==10){ // cp
     for(UInt_t i = 0; i != newset.size(); i++) {
       std::cout<<newset[i].getRunId()<< ".hld  ";

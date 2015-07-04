@@ -10,12 +10,14 @@ for ((i=150;i<151;i++)); do
 
     args=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,3)" 2>/dev/null))
     outs=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,4)" 2>/dev/null))
-
+    reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,6)" 2>/dev/null))
+    
     IFS="$OIFS"
 
     for ((k=1;k<${#file[@]};k++)); do
 	#cdisplay -a10  -p "j14/${path[k]}" -i "${info[k]}" ${file[k]}
-	echo -o ${outs[k]} -s 0 -e 500 -x "pi+" -p 1.7 -z 0 -g 3 -h 2  ${args[k]}  -b 1
+	echo "${path[k]}"
+        #echo -o ${outs[k]} -s 0 -e 500 -x "pi+" -p 1.7 -z 0 -g 3 -h 2  ${args[k]}  -b 1
 	#prtdirc -o ${outs[k]} -s 0 -e 500 -x "pi+" -p 1.7 -z 0 -g 3 -h 2  ${args[k]}  -b 1 > ${outs[k]}.log  &
     done
 done
