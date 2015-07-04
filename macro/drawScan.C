@@ -9,7 +9,7 @@ void drawScan(TString infile="../build/hits.root"){
   
   Int_t itest(0);
   PrtHit fHit;
-  for (Int_t ievent=0; ievent<100000; ievent++){
+  for (Int_t ievent=0; ievent<fCh->GetEntries(); ievent++){
     PrtNextEvent(ievent,1000);
     for(Int_t h=0; h<fEvent->GetHitSize(); h++){
       fHit = fEvent->GetHit(h);

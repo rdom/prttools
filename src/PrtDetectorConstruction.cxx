@@ -72,22 +72,18 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   fPrismRadiatorStep = PrtManager::Instance()->GetPrismStep();
   if(fPrismRadiatorStep !=0 ) fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2.+fPrismRadiatorStep;
   fCenterShift =  G4ThreeVector(0., 0., 0.);
-  if(true){
+  
     if(fGeomId == 2015){
       //fPrismRadiatorStep = fPrizm[3]/2.-fBar[0]/2.; 
       //fPrismRadiatorStep = fBar[0]/2.-fPrizm[3]/2.   +30.6;
       
-      fCenterShift =  G4ThreeVector(fBar[2]/2.-400,0,-132);
-    }else{
+      //fCenterShift =  G4ThreeVector(fBar[2]/2.,0,-132);
+   
       Double_t zshift = (PrtManager::Instance()->GetBeamZ()==-1)? 0: fBar[2]/2.-PrtManager::Instance()->GetBeamZ();
       std::cout<<"zshift  "<<zshift <<std::endl;
-      fCenterShift =  G4ThreeVector(zshift,-PrtManager::Instance()->GetBeamX(),0);
+      fCenterShift =  G4ThreeVector(zshift,-PrtManager::Instance()->GetBeamX(),-132);
     }
-
-   
-    
-   
-  }
+  
   
   PrtManager::Instance()->SetRadiatorL(fBar[2]);
   PrtManager::Instance()->SetRadiatorW(fBar[1]);
@@ -147,7 +143,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
   G4Box* gBar = new G4Box("gBar",fBar[0]/2.,fBar[1]/2.,fBar[2]/2.);
   lBar = new G4LogicalVolume(gBar,BarMaterial,"lBar",0,0,0);
   G4double xshift = 0;
-  if(fGeomId==2015) xshift = (fBar[1]-fPrizm[0])/2.;
+  if(fGeomId==2015 && PrtManager::Instance()->GetRadiator()==2) xshift = (fBar[1]-fPrizm[0])/2.;
   wBar =  new G4PVPlacement(0,G4ThreeVector(fPrismRadiatorStep,xshift,0),lBar,"wBar", lDirc,false,0);
 
   // The Mirror
