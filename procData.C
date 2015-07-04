@@ -113,7 +113,7 @@ void procData(TString infile="hits.root", TString path="auto", Int_t study = 0, 
       } 
     }
 
-    if(counts>0) hMult->Fill(counts);
+    if(counts>5) hMult->Fill(counts);
   }
 
   canvasAdd("Le",800,500);
