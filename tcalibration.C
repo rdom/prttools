@@ -76,6 +76,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     if(badcannel(ch)) continue;
 
     coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
+
     if(gcFile!="") time[i] = coarseTime-gGr[AddRefChannels(ch)]->Eval(Hits_nFineTime[i]);
     else time[i] = Hits_fTime[i]; //coarseTime-(Hits_nFineTime[i]-31)*0.0102; //Hits_fTime[i];//
     
@@ -110,11 +111,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       timeTot = timeT[i+1] - time[i];
 
+      
       // if(timeLe>-300 && timeLe <-100) std::cout<<"timeLe "<<timeLe << " - "<<timeTot  <<std::endl;      
            
       if(gtFile!=""){
-	if(ch>=960) continue;
-	else timeLe -= gGrDiff[ch]->Eval(timeTot);
+	if(ch<960) timeLe -= gGrDiff[ch]->Eval(timeTot);	
 	//if(abs(timeTot)>10) continue; 
 	//if(abs(timeLe)>300) continue; 
       }
