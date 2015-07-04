@@ -64,14 +64,14 @@ TVector3 fit(TH1F *h, Double_t range = 3){
   return TVector3(mean1,sigma1,0);
 }
 
-void procData(TString path="auto", TString infile="hits.root", Int_t study = 0, Int_t fileid, Double_t mom=0, Double_t angle=0, Double_t z =0, Double_t x= 0, Double_t step=0){
-  fSavePath = path+"/plots";
+void procData(TString path="auto", TString infile="hits.root", Int_t studyid = 0, Int_t fileid=0, Double_t mom=0, Double_t angle=0, Double_t z =0, Double_t x= 0, Double_t step=0){
+  fSavePath = path+Form("/%d/%d",studyid,fielid);
   PrtInit(infile,1);
 
   Double_t mult(0);
   TFile *file = new TFile(infile+".res.root","recreate");
   TTree *tree= new TTree("proc","proc");
-  tree->Branch("study", &study,"study/I");
+  tree->Branch("studyid", &studyid,"studyid/I");
   tree->Branch("fileid", &fileid,"fileid/I");
   tree->Branch("mom", &mom,"mon/D");
   tree->Branch("angle", &angle,"angel/D");
