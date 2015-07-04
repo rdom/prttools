@@ -87,7 +87,7 @@ void procData(TString infile="hits.root", TString path="auto", Int_t study = 0, 
 
   Double_t tof1, tof2;
   PrtHit fHit;
-  Int_t entries = 10000; //fCh->GetEntries();
+  Int_t entries = fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
 
