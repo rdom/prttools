@@ -385,7 +385,7 @@ TVector3 fit(TH1F *h, Double_t range = 3){
   xxmax = xmax;
   xxmin = xxmax;
   Int_t nfound = 1, peakSearch = 1;
-  if(integral>5){ 
+  if(integral>20){ 
     
     if(peakSearch == 1){
       gaust->SetParLimits(2,0.1,2);
