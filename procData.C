@@ -65,7 +65,7 @@ TVector3 fit(TH1F *h, Double_t range = 3){
 }
 
 void procData(TString path="auto", TString infile="hits.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0, Int_t lensId, Double_t angle=0, Double_t z =0, Double_t x= 0, Double_t step=0){
-  fSavePath = path+Form("/%d/%d",studyId,fielid);
+  fSavePath = path+Form("/%d/%d",studyId,fileId);
   PrtInit(infile,1);
 
   Double_t mult(0);
