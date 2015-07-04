@@ -115,8 +115,8 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(gtFile!=""){
 	if(ch>=960) continue;
 	else timeLe -= gGrDiff[ch]->Eval(timeTot);
-	if(abs(timeTot)>10) continue; 
-	if(abs(timeLe)>300) continue; 
+	//if(abs(timeTot)>10) continue; 
+	//if(abs(timeLe)>300) continue; 
       }
 
       hit.SetTdc(tdc);
