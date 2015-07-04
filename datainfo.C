@@ -388,7 +388,8 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   
   if(format==6){ // reco
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"\""<<newset[i].getChildRunId(0)<<"C0.root\","<<newset[i].getMomentum() << ","<<newset[i].getLensId()
+      std::cout<<"\"/d/proc/jun15/"<<newset[i].getStudyId()<<"\",\""<<newset[i].getChildRunId(0)<<"C.root\","
+	       << newset[i].getStudyId() <<","<<i<<","<<newset[i].getMomentum() << ","<<newset[i].getLensId()
 	       <<","<<newset[i].getAngle()<<","<<newset[i].getZ()
 	       <<","<<newset[i].getX()<<","<<newset[i].getStep()<<std::endl;
     }
