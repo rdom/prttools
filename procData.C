@@ -66,10 +66,10 @@ TVector3 fit(TH1F *h, Double_t range = 3){
 
 void procData(TString path="auto", TString infile="hits.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0, Int_t lensId=0, Double_t angle=0, Double_t z =0, Double_t x= 0, Double_t step=0){
   fSavePath = path+Form("/%d/%d",studyId,fileId);
-  PrtInit(infile,1);
+  PrtInit(path+"/"+infile,1);
 
   Double_t mult(0);
-  TFile *file = new TFile(infile+".res.root","recreate");
+  TFile *file = new TFile(path+"/"+infile+".res.root","recreate");
   TTree *tree= new TTree("proc","proc");
   tree->Branch("studyId", &studyId,"studyId/I");
   tree->Branch("fileId", &fileId,"fileId/I");
