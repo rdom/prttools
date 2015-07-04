@@ -113,7 +113,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       // if(timeLe>-300 && timeLe <-100) std::cout<<"timeLe "<<timeLe << " - "<<timeTot  <<std::endl;      
            
       if(gtFile!=""){
-	if(ch>1920) continue;
+	if(ch>=960) continue;
 	else timeLe -= gGrDiff[ch]->Eval(timeTot);
 	if(abs(timeTot)>10) continue; 
 	if(abs(timeLe)>300) continue; 
