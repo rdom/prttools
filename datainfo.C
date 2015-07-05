@@ -8,6 +8,7 @@ class DataInfo {
 
   TString _runId;
   Int_t _studyId;
+  Int_t _radiatorId;
   Int_t _lensId;
   Double_t _angle;
   Double_t _z;
@@ -26,8 +27,8 @@ class DataInfo {
 
 public:
   DataInfo(){}; 	//the default constructor
-  DataInfo(Int_t studyId, TString r, Int_t l, Double_t a, Double_t z,Double_t x,Double_t s, Double_t m):
-    _studyId(studyId),_runId(r),_lensId(l),_angle(a),_z(z),_x(x),_step(s),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0){
+  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t s, Double_t m):
+    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_step(s),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0){
   };
 
   ~DataInfo() {}
@@ -38,7 +39,7 @@ public:
   };
 
   bool operator == (const DataInfo& d) const{
-    return _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _step == d._step && _momentum == d._momentum;
+    return ,_radiatorId == d.radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _step == d._step && _momentum == d._momentum;
   }
 
   bool operator < (const DataInfo& d) const{
@@ -67,6 +68,7 @@ public:
     for(Int_t i=0; i<_nchildren;i++){
       info += Form("Child[%d] Id = ",i)+_childRuns[i] +";";
     }
+    info += Form("Radiator Id = %d;",_radiatorId);
     info += Form("Lens Id = %d;",_lensId);
     info += Form("Angle = %f;",_angle);
     info += Form("X = %f [mm];",_x);
@@ -81,6 +83,7 @@ public:
   /* Accessors */
   Int_t getStudyId() const { return _studyId; }
   TString getRunId() const { return _runId; }
+  Int_t getRadiatorId() const {return _radiatorId; }
   Int_t getLensId() const {return _lensId; }
   Double_t getAngle() const { return _angle; }
   Double_t getZ() const { return _z; }
@@ -194,33 +197,33 @@ void init(){
   
   study[150]="Angle scan with 7 GeV/c, 2-layer spherical lens.";
   
-  // study id | run name | lens | angle | z pos | x pos | step
-  dataArray.push_back(DataInfo(150,"beam_15181014802",1,20.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181020846",1,25.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181012738",1,30.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181022734",1,35.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181011013",1,40.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181024437",1,45.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181004916",1,50.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181030400",1,55.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181002807",1,60.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181000647",1,70.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181034220",1,75.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181040321",1,85.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181042444",1,89.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181044329",1,89.50,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181050434",1,90.50,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181052518",1,91.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181054550",1,95.00,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181060653",1,105.0,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181062614",1,115.0,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181064133",1,124.0,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181065632",1,124.5,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181071156",1,125.0,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181072725",1,125.5,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181074753",1,126.0,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181080832",1,135.0,378,0,11,7.0));
-  dataArray.push_back(DataInfo(150,"beam_15181082901",1,145.0,378,0,11,7.0)); 
+  // study id | run name | radiator | lens | angle | z pos | x pos | step
+  dataArray.push_back(DataInfo(150,"beam_15181014802",1,1,20.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181020846",1,1,25.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181012738",1,1,30.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181022734",1,1,35.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181011013",1,1,40.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181024437",1,1,45.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181004916",1,1,50.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181030400",1,1,55.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181002807",1,1,60.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181000647",1,1,70.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181034220",1,1,75.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181040321",1,1,85.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181042444",1,1,89.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181044329",1,1,89.50,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181050434",1,1,90.50,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181052518",1,1,91.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181054550",1,1,95.00,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181060653",1,1,105.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181062614",1,1,115.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181064133",1,1,124.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181065632",1,1,124.5,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181071156",1,1,125.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181072725",1,1,125.5,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181074753",1,1,126.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181080832",1,1,135.0,378,0,11,7.0));
+  dataArray.push_back(DataInfo(150,"beam_15181082901",1,1,145.0,378,0,11,7.0)); 
 }
 
 std::vector<DataInfo> getStudy(Int_t id){
@@ -416,6 +419,7 @@ void p_exportinfo(TString name="alias.info"){
     out<<"<td>Files alias </td>"; 
     out<<"<td>Files       </td>";
     out<<"<td>Study Id  </td>";
+    out<<"<td>Radiator  </td>";
     out<<"<td>Lens      </td>";
     out<<"<td>Andle     </td>";
     out<<"<td>Z         </td>";
@@ -435,6 +439,7 @@ void p_exportinfo(TString name="alias.info"){
       out<<"</td>";
 
       out<<"<td>"<<newset[k].getStudyId()<<"</td>";
+      out<<"<td>"<<newset[k].getRadiatorId()<<"</td>";
       out<<"<td>"<<newset[k].getLensId()<<"</td>";
       out<<"<td>"<<newset[k].getAngle()<<"</td>";
       out<<"<td>"<<newset[k].getZ()<<"</td>";

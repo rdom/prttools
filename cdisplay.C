@@ -194,8 +194,8 @@ void MSelector::SlaveBegin(TTree *){
   hLe=new TH1F("hLeA","",5000,-100,100);
   hLes=new TH1F("hLeAs","",5000,-100,100);
   hMult=new TH1F("hMultA","",50,0,50);
-  hCh=new TH1F("hChA","",3000,0,3000);
-  hTof=new TH1F("hTof","",500,170,190);
+  hCh=new TH1F("hChA","",2000,0,2000);
+  hTof=new TH1F("hTof","",2000,100,300);
 
   axisTime800x500(hTot,"TOT time, [ns]");
   axisTime800x500(hLe,"LE time, [ns]");
@@ -218,14 +218,14 @@ Bool_t MSelector::Process(Long64_t entry){
   Double_t offset=0;
   if(gMode==1){
     TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
+    current_file_name.Remove(0, current_file_name.Last('/')+1);
     TObjArray *sarr = current_file_name.Tokenize("_");
     if(sarr->GetEntries()==3){
-      if(((TObjString *) sarr->At(0))->GetName()=="th"){
+      if(current_file_name.Contains("th_")){
 	TString soffset = ((TObjString *) sarr->At(1))->GetName();
 	offset = soffset.Atof()/400.;
       }
-    }else
-      offset = fEvent->GetTest1();
+    }else offset = fEvent->GetTest1();
   }
   TString fileid("");
   bool bsim(false);
