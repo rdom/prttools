@@ -169,7 +169,7 @@ void MSelector::SlaveBegin(TTree *){
       hPMult[m][p]   = new TH1F(Form("mult_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  50,0,50);
       
       if(gMode==1){
-	hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d",m,p) , bins1,min1,max1,100,-5,15);
+	hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d",m,p) , bins1,min1,max1,105,-5,15);
 	hLeTot[m][p] = new TH2F(Form("hLeTot_mcp%dpix%d" ,m,p), Form("mcp %d, pixel %d",m, p), 200,min1,max1, bins2,min2,max2);
 	axisTime800x500(hShape[m][p],"time, [ns]");
 	hShape[m][p]->GetYaxis()->SetTitle("offset to the threshold, [mV]");
