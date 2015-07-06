@@ -100,7 +100,7 @@ runOneStudy (){
     start_time=$(date +%s)
     statusline="run study $1"
 
-    root -l -q loadprtlibs.C procData.C++ > log 2> log 
+    root -l -q loadprtlibs.C procData.C++
     
     for ((k=1;k<${#file[@]};k++)); do
 	root -l -q -b loadprtlibs.C procData.C+"(${reco[k]})" > log 2> log &
