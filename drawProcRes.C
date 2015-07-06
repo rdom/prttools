@@ -31,7 +31,7 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   gNph->SetLineColor(38);
   gNph->SetMarkerStyle(20);
   gNph->SetMarkerSize(0.7);
-  gNph->GetYaxis()->SetRangeUser(0,150);
+  gNph->GetYaxis()->SetRangeUser(0,160);
   gNph->GetYaxis()->SetTitle("multiplicity [#]");
 
 
