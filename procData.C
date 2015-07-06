@@ -87,7 +87,7 @@ void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t f
   tree->Branch("mult",&mult,"mult/D");
   
   TH1F * hMult  = new TH1F("mult","Mult;multiplicity [#];entries [#]",300,0,300);
-  TH1F * hLe  = new TH1F("le","LE; LE [ns]; entries [#]",1000,-300,0);
+  TH1F * hLe  = new TH1F("le","LE; LE [ns]; entries [#]",1000,-230,-100);
   TH1F * hTot  = new TH1F("tot","TOT; TOT [#]; entries [#]",1000,20,80);
  
   gStyle->SetOptStat(1001111);
@@ -105,10 +105,10 @@ void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t f
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
       if(fHit.GetChannel()==1344) tTime = fHit.GetLeadTime();
-      if(fHit.GetChannel()==1344) trig = kTRUE;
-      if(fHit.GetChannel()==960)  tof1 = kTRUE;
-      if(fHit.GetChannel()==1104) tof2 = kTRUE;
-      if(fHit.GetChannel()==1248) mcpout = kTRUE;
+      if(fHit.GetChannel()==1344) trig = true;
+      if(fHit.GetChannel()==960)  tof1 = true;
+      if(fHit.GetChannel()==1104) tof2 = true;
+      if(fHit.GetChannel()==1248) mcpout = true;
     }
 
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
@@ -122,7 +122,7 @@ void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t f
 	  hLe->Fill(time);
 	  hTot->Fill(tot);
 
-	  if(tot>20 && tot<60 && time<-50 && time > -220)  counts++;
+	  if(tot>20 && tot<60 && time<-180 && time > -220)  counts++;
 	}
       }
     }
