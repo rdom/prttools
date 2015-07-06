@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for ((i=150;i<151;i++)); do
+for ((i=150;i<153;i++)); do
     OIFS="$IFS"
     IFS=$'\n'
 
