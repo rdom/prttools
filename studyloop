@@ -54,7 +54,7 @@ if [ ${run} == "0" ]; then
     cd $study
     for x in $(ls *.hld); do
 	if [ ! -f "${x%.*}.hld.root" ]; then
-	   echo  hldtools -j10 -d $x
+	    hldtools -j10 -d $x
 	fi
     done
     exit
@@ -64,7 +64,7 @@ if [ ${run} == "1" ]; then
     cd $study
     for x in $(ls *.hld.root); do
 	if [ ! -f  ${x%.*.*}"C0.root" ]; then
-	   tcalibration -j10 -c ../calib/calibf_june.root -t ../calib/calibo_june.root -j10 -d $x
+	   tcalibration -j10 -c ../calib/calibf_june.root -t ../calib/calibo_june.root -j10 $x
 	fi
     done
     exit

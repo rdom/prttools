@@ -414,15 +414,13 @@ void init(){
       dataArray.push_back(DataInfo(154,"beam_15187031101",1,4,65.00,378,85.0,70.5,15.5,7.0));
       dataArray.push_back(DataInfo(154,"beam_15187032616",1,4,75.00,378,85.0,70.5,15.5,7.0));
       dataArray.push_back(DataInfo(154,"beam_15187034209",1,4,85.00,378,85.0,70.5,15.5,7.0));
-
-      
-      // dataArray.push_back(DataInfo(154,"",1,4,,378,85.0,70.5,15.5,7.0));
-      // dataArray.push_back(DataInfo(154,"",1,4,,378,85.0,70.5,15.5,7.0));
-      // dataArray.push_back(DataInfo(154,"",1,4,,378,85.0,70.5,15.5,7.0));
-      // dataArray.push_back(DataInfo(154,"",1,4,,378,85.0,70.5,15.5,7.0));
-      // dataArray.push_back(DataInfo(154,"",1,4,,378,85.0,70.5,15.5,7.0));
-      // dataArray.push_back(DataInfo(154,"",1,4,,378,85.0,70.5,15.5,7.0));
-
+      dataArray.push_back(DataInfo(154,"beam_15187042652",1,4,95.00,378,85.0,70.5,15.5,7.0));
+      dataArray.push_back(DataInfo(154,"beam_15187044406",1,4,105.0,378,85.0,70.5,15.5,7.0));
+      dataArray.push_back(DataInfo(154,"beam_15187050255",1,4,115.0,378,85.0,70.5,15.5,7.0));
+      dataArray.push_back(DataInfo(154,"beam_15187052346",1,4,125.0,378,85.0,70.5,15.5,7.0));
+      dataArray.push_back(DataInfo(154,"beam_15187054808",1,4,135.0,378,85.0,70.5,15.5,7.0));
+      dataArray.push_back(DataInfo(154,"beam_15187060856",1,4,145.0,378,85.0,70.5,15.5,7.0));
+      dataArray.push_back(DataInfo(154,"beam_15187062311",1,4,155.0,378,85.0,70.5,15.5,7.0));
 	
     }
 
@@ -584,14 +582,14 @@ void init(){
     study[172]="Momentum scan, plate with 2-layer cyl. lens.";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
-      dataArray.push_back(DataInfo(171,"beam_15185054335",2,2,125.0,378,85.0,0.0,11,10.)); //11 ???  378 (636) ???
-      dataArray.push_back(DataInfo(171,"beam_15185055820",2,2,125.0,378,85.0,0.0,11,9.0));
-      dataArray.push_back(DataInfo(171,"beam_15185061258",2,2,125.0,378,85.0,0.0,11,8.0));
-      dataArray.push_back(DataInfo(171,"beam_15185062806",2,2,125.0,378,85.0,0.0,11,6.0));
-      dataArray.push_back(DataInfo(171,"beam_18185064716",2,2,125.0,378,85.0,0.0,11,5.0));
-      dataArray.push_back(DataInfo(171,"beam_18185071041",2,2,125.0,378,85.0,0.0,11,4.0));
-      dataArray.push_back(DataInfo(171,"beam_15185074047",2,2,125.0,378,85.0,0.0,11,4.0));
-      dataArray.push_back(DataInfo(171,"beam_15185075232",2,2,125.0,378,85.0,0.0,11,3.0));
+      dataArray.push_back(DataInfo(172,"beam_15185054335",2,2,125.0,378,85.0,0.0,11,10.)); //11 ???  378 (636) ???
+      dataArray.push_back(DataInfo(172,"beam_15185055820",2,2,125.0,378,85.0,0.0,11,9.0));
+      dataArray.push_back(DataInfo(172,"beam_15185061258",2,2,125.0,378,85.0,0.0,11,8.0));
+      dataArray.push_back(DataInfo(172,"beam_15185062806",2,2,125.0,378,85.0,0.0,11,6.0));
+      dataArray.push_back(DataInfo(172,"beam_18185064716",2,2,125.0,378,85.0,0.0,11,5.0));
+      dataArray.push_back(DataInfo(172,"beam_18185071041",2,2,125.0,378,85.0,0.0,11,4.0));
+      dataArray.push_back(DataInfo(172,"beam_15185074047",2,2,125.0,378,85.0,0.0,11,4.0));
+      dataArray.push_back(DataInfo(172,"beam_15185075232",2,2,125.0,378,85.0,0.0,11,3.0));
     }
 
     // ======= Z-X scans ===========================================

@@ -1,6 +1,6 @@
 #include "prttools.C"
 void drawProcRes(TString inFile = "../data/res151.root"){
-  fSavePath = "auto";
+  fSavePath = "mult";
   TChain ch("proc"); ch.Add(inFile);
 
   Int_t studyId = 0, fileId=0,radiatorId, lensId=0;
@@ -22,16 +22,19 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   
   Int_t nent = ch.GetEntries();
   std::cout<<"# entries  "<< nent <<std::endl;
+  Int_t point(0);
   for (Int_t i = 0; i < nent; i++) {
     ch.GetEvent(i);
-    gNph->SetPoint(i,angle,mult);
+    if(angle<160)
+      gNph->SetPoint(point++,angle,mult);
   }
   gNph->Sort();
 
   gNph->SetLineColor(38);
   gNph->SetMarkerStyle(20);
   gNph->SetMarkerSize(0.7);
-  gNph->GetYaxis()->SetRangeUser(0,160);
+  gNph->GetYaxis()->SetRangeUser(0,170);
+  gNph->GetXaxis()->SetRangeUser(10,170);
   gNph->GetYaxis()->SetTitle("multiplicity [#]");
 
 
@@ -45,9 +48,9 @@ void drawProcRes(TString inFile = "../data/res151.root"){
 
   gNph->GetXaxis()->SetTitle("#theta_{track} [#circ]");
 
-  TCanvas* c2 = new TCanvas("c2","c2",800,500);c2->SetBottomMargin(0.12);
+  TCanvas* c2 = new TCanvas(Form("mult_%d",studyId),"c2",800,500);c2->SetBottomMargin(0.12);
   gNph->Draw("APL");
   canvasAdd(c2);
  
-  canvasSave(0,1);
+  canvasSave(1,1);
 }
