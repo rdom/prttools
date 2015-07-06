@@ -99,22 +99,22 @@ void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t f
     PrtNextEvent(ievent,1000);
     Int_t counts(0);
     Double_t tot(0);
-    Bool_t trig(false),mcpout(false),tof1(false),tof2(false);
+    Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false);
 
     Double_t time(0), tTime(0);
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
       if(fHit.GetChannel()==1344) tTime = fHit.GetLeadTime();
-      if(fHit.GetChannel()==1344) trig = true;
-      if(fHit.GetChannel()==960)  tof1 = true;
-      if(fHit.GetChannel()==1104) tof2 = true;
-      if(fHit.GetChannel()==1248) mcpout = true;
+      if(fHit.GetChannel()==1344) btrig = true;
+      if(fHit.GetChannel()==960)  btof1 = true;
+      if(fHit.GetChannel()==1104) btof2 = true;
+      if(fHit.GetChannel()==1248) bmcpout = true;
     }
 
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
 
-      if(trig && tof1 && tof2 && mcpout){
+      if(btrig && btof1 && btof2 && bmcpout){
 	if(fHit.GetChannel()<960 ){
 
 	  time = fHit.GetLeadTime() - tTime;
