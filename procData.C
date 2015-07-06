@@ -94,27 +94,34 @@ void procData(TString path="auto", TString infile="hits.root", Int_t studyId = 0
   Int_t entries = fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
+    Int_t counts(0);
+    Double_t tot(0);
+    Bool_t trig(false),mcpout(false),tof1(false),tof2(false);
 
     Double_t time(0), tTime(0);
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
-      if(fHit.GetChannel()==1344) tTime=fHit.GetLeadTime();
+      if(fHit.GetChannel()==1344) tTime = fHit.GetLeadTime();
+      if(fHit.GetChannel()==1344) trig = kTRUE;
+      if(fHit.GetChannel()==960)  tof1 = kTRUE;
+      if(fHit.GetChannel()==1104) tof2 = kTRUE;
+      if(fHit.GetChannel()==1248) mcpout = kTRUE;
     }
 
-    Int_t counts(0);
-    Double_t tot(0);
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
-      
-      if(fHit.GetChannel()<960 ){
-	time = fHit.GetLeadTime() - tTime;
-	tot=fHit.GetTotTime();
-	
-	hLe->Fill(time);
-	hTot->Fill(tot);
 
-	if(tot>20 && tot<60 && time<-50 && time > -220)  counts++;
-      } 
+      if(trig && tof1 && tof2 && mcpout){
+	if(fHit.GetChannel()<960 ){
+
+	  time = fHit.GetLeadTime() - tTime;
+	  tot = fHit.GetTotTime();	
+	  hLe->Fill(time);
+	  hTot->Fill(tot);
+
+	  if(tot>20 && tot<60 && time<-50 && time > -220)  counts++;
+	}
+      }
     }
 
     if(counts>5) hMult->Fill(counts);
