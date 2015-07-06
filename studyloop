@@ -124,7 +124,9 @@ for ((i=150;i<200;i++)); do
     if (( i != $study &&  $study != 0 )); then
 	continue
     fi
-    runOneStudy $i
+    if [ -d $study ]; then
+	 runOneStudy $i
+    fi
 done
 
 
