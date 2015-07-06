@@ -1,5 +1,5 @@
 #include "prttools.C"
-void drawProcRes(TString inFile = "../data/res.root"){
+void drawProcRes(TString inFile = "../data/res151.root"){
   fSavePath = "auto";
   TChain ch("proc"); ch.Add(inFile);
 
