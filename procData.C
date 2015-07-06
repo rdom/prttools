@@ -64,7 +64,10 @@ TVector3 fit(TH1F *h, Double_t range = 3){
   return TVector3(mean1,sigma1,0);
 }
 
-void procData(TString path="auto", TString infile="hits.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z =0, Double_t x= 0, Double_t xstep=0, Double_t ystep=0){
+void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z =0, Double_t x= 0, Double_t xstep=0, Double_t ystep=0){
+
+  if(infile=="") return;
+  
   fSavePath = path+Form("/%d/%d",studyId,fileId);
   PrtInit(path+"/"+infile,1);
 
