@@ -48,6 +48,7 @@ public:
     if(_studyId==1 && _z<d._z) return true; //z
     if(_studyId==4 && _angle<d._angle) return true; //angle
     if(_studyId==5 && _z>d._z) return true; //x
+    if(_studyId>100 && _studyId<170 &&_angle<d._angle) return true; //angle
     return false; 
   }
 
