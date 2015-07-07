@@ -104,7 +104,7 @@ for ((i=150;i<200;i++)); do
 	start_time=$(date +%s)
 	statusline="run study $i"
 
-	root -l -q loadprtlibs.C procData.C++  > log 
+	root -l -q loadprtlibs.C procData.C++  > log 2>log 
 	
 	for ((k=1;k<${#file[@]};k++)); do
 	    root -l -q -b loadprtlibs.C procData.C+"(${reco[k]})" > log 2> log &
@@ -114,12 +114,11 @@ for ((i=150;i<200;i++)); do
 
 	cd -
 	cd $i
-	
 	sleep 2
 	rm -f res_${i}.root
 	hadd res_${i}.root *.root.res.root
 	rm -f *.root.res.root
-	
+	cd -
 	printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s]     \n"
 
     fi
