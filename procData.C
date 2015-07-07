@@ -122,7 +122,12 @@ void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t f
 	  hLe->Fill(time);
 	  hTot->Fill(tot);
 
-	  if(tot>20 && tot<60 && time<-180 && time > -220)  counts++;
+	  if(tot>20 && tot<60 && time<-180 && time > -220)  {
+	    Int_t mcpid = fHit.GetMcpId();
+	    Int_t pixid = fHit.GetPixelId()-1;
+	    fhDigi[mcpid]->Fill(pixid%8, pixid/8);
+	    counts++;
+	  }
 	}
       }
     }
@@ -130,18 +135,22 @@ void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t f
     if(counts>5) hMult->Fill(counts);
   }
 
-  canvasAdd("Le",800,500);
+  TString ext = Form("_%d_%d",studyId,fileId);
+  
+  canvasAdd("le"+ext,800,500);
   hLe->Draw();
   
-  canvasAdd("tot",800,500);
-  //  fit(hTof,3); 
+  canvasAdd("tot"+ext,800,500);
   hTot->Draw();
 
-  canvasAdd("mult",800,500);
+  canvasAdd("mult"+ext,800,500);
   mult = fit(hMult,30).X();
-
   hMult->Draw();
+  
+  canvasAdd("hits"+ext,800,500);
+  drawDigi("m,p,v\n",2,-2,-2);
 
+  
   tree->Fill();
   tree->Write();
   

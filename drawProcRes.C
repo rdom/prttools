@@ -30,6 +30,19 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   }
   gNph->Sort();
 
+  TString names[200];
+  names[150]="bar 2LS @ 7 GeV/c";
+  names[151]="bar 3LS @ 7 GeV/c";
+  names[152]="plate WL @ 7 GeV/c";
+  names[153]="plate 2LC @ 7 GeV/c";
+  names[154]="bar 2LAG @ 7 GeV/c";
+  names[160]="bar 3LS @ 5 GeV/c";
+  names[161]="plate WL @ 5 GeV/c";
+  names[162]="plate 2LC @ 5 GeV/c";
+  
+  
+  gNph->SetTitle(names[studyId]);
+  
   gNph->SetLineColor(38);
   gNph->SetMarkerStyle(20);
   gNph->SetMarkerSize(0.7);
@@ -52,5 +65,5 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   gNph->Draw("APL");
   canvasAdd(c2);
  
-  canvasSave(1,1);
+  canvasSave(0,1);
 }
