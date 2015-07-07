@@ -224,7 +224,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
     Double_t integral;
     for(Int_t i=0; i<tbins; i++){
       integral = h->Integral(0,i);
-      if(integral>10) {
+      if(integral>5) {
 	minz = h->GetBinCenter(i);
 	break;
       } 
@@ -232,7 +232,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 
     for(Int_t i=tbins; i>0; i--){
       integral = h->Integral(i,tbins);
-      if(integral>10) {
+      if(integral>5) {
 	max = h->GetBinCenter(i);
 	break;
       } 

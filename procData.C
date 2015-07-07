@@ -147,7 +147,7 @@ void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t f
   mult = fit(hMult,30).X();
   hMult->Draw();
   
-  drawDigi("m,p,v\n",2);
+  drawDigi("m,p,v\n",2,-2,-2);
   cDigi->SetName("hits"+ext);
   canvasAdd(cDigi);  
   
