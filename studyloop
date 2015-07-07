@@ -73,7 +73,7 @@ fi
 waitForMe (){
     while : 
     do 
-	activth=$(ps aux | grep "[r]oot" | grep "procData" | wc -l)
+	activth=$(ps aux | grep " [r]oot" | grep "procData" | wc -l)
 	printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
 	sleep .1
 	if [ "$activth" -lt "$1" ]; then 
