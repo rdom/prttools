@@ -51,6 +51,9 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   if(PrtManager::Instance()->GetLens() == 3){
     fLens[0] = 60; fLens[1] = 60; fLens[2]=15;
   }
+  if(PrtManager::Instance()->GetLens() == 4){
+    fLens[0] = 50; fLens[1] = 50; fLens[2]=5.7;
+  }
 
   if(fMcpLayout == 2012){
     fNCol = 3;
@@ -249,9 +252,21 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
     lLens3 = new G4LogicalVolume(gLens3,BarMaterial,"lLens3",0,0,0);
   }
 
+  if(PrtManager::Instance()->GetLens() == 4){ // Spherical lens with air gap // f =250 , d = , w = 5.7
+    G4double r1 = 0; // PrtManager::Instance()->GetTest1(); 
+    G4double lensrad1 = (r1==0)? 250: r1;
+    G4double lensMinThikness = 2; 
+
+    G4ThreeVector zTrans1(0, 0, -lensrad1+fLens[2]/2.-lensMinThikness);
+    G4Tubs* gfbox = new G4Tubs("Fbox",0,fLens[0]/2.,fLens[2]/2.,0.*deg,360.*deg);
+    G4Sphere* gsphere = new G4Sphere("Sphere",0,lensrad1,0,360*deg,0,360*deg);
+    G4IntersectionSolid* gLens1 = new G4IntersectionSolid("Fbox*Sphere", gfbox, gsphere,new G4RotationMatrix(),zTrans1); 
+    lLens1 = new G4LogicalVolume(gLens1,Nlak33aMaterial,"lLens1",0,0,0); //Nlak33aMaterial  
+  }
+  
   if(PrtManager::Instance()->GetLens() != 0 && PrtManager::Instance()->GetLens() != 10){
     new G4PVPlacement(0,G4ThreeVector(fPrismRadiatorStep,0,fBar[2]/2.+fLens[2]/2.),lLens1,"wLens1", lDirc,false,0);
-    new G4PVPlacement(0,G4ThreeVector(fPrismRadiatorStep,0,fBar[2]/2.+fLens[2]/2.),lLens2,"wLens2", lDirc,false,0);
+    if(PrtManager::Instance()->GetLens() != 4) new G4PVPlacement(0,G4ThreeVector(fPrismRadiatorStep,0,fBar[2]/2.+fLens[2]/2.),lLens2,"wLens2", lDirc,false,0);
     if(PrtManager::Instance()->GetLens() == 3)  new G4PVPlacement(0,G4ThreeVector(fPrismRadiatorStep,0,fBar[2]/2.+fLens[2]/2.),lLens3,"wLens3", lDirc,false,0);
   }else{
     fLens[2]=0; 
@@ -305,7 +320,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
     // The MCP Pixel
     int mcpDimx = 8;
     int mcpDimy = 8;
-    if(fGeomId>101) {
+    if(fGeomId>101 && fGeomId < 2000) {
       mcpDimx = fGeomId/100;
       mcpDimy = fGeomId%100;
     }
@@ -729,7 +744,7 @@ void PrtDetectorConstruction::SetVisualization(){
     //vaLens->SetForceAuxEdgeVisible(true);
     lLens1->SetVisAttributes(vaLens);
     G4VisAttributes * vaLens1 = new G4VisAttributes(G4Colour(0.,0.5,1.0,transp));
-    lLens2->SetVisAttributes(vaLens1);
+    if(PrtManager::Instance()->GetLens()!=4) lLens2->SetVisAttributes(vaLens1);
     if(PrtManager::Instance()->GetLens()==3) lLens3->SetVisAttributes(vaLens);
   }
 

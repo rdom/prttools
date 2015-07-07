@@ -111,7 +111,6 @@ void PrtLutReco::Run(Int_t start, Int_t end){
     
     //    TVector3 rotatedmom = fEvent->GetMomentum().Unit();
     Double_t fAngle =  180 - fEvent->GetAngle();
-    std::cout<<"fAngle  "<<fAngle  <<std::endl;
     
     TVector3 rotatedmom = momInBar;
     rotatedmom.RotateY(fAngle/180.*TMath::Pi());
@@ -137,6 +136,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
       else reflected = kFALSE;
       
       Int_t sensorId = 100*fHit.GetMcpId()+fHit.GetPixelId();
+      std::cout<<"sensorId "<<sensorId <<std::endl;
    
       PrtLutNode *node = (PrtLutNode*) fLut->At(sensorId);
       Int_t size = node->Entries();
@@ -203,8 +203,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
     }
 
     //FindPeak(cangle,spr);
-    std::cout<<"RES   "<<spr*1000 << "   N "<<nHits << "  "<<spr/sqrt(nHits)*1000<<std::endl;
-    
+    //std::cout<<"RES   "<<spr*1000 << "   N "<<nHits << "  "<<spr/sqrt(nHits)*1000<<std::endl;
     
     //Int_t pdgreco = FindPdg(fEvent->GetMomentum().Mag(), cherenkovreco);
 
@@ -369,7 +368,6 @@ void circleFcn2(Int_t &, Double_t *, Double_t &f, Double_t *par, Int_t) {
     else f += fabs(dr);
   }
 }
-
 
 void PrtLutReco::FitRing(Double_t& x0, Double_t& y0, Double_t& theta){
 
