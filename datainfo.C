@@ -374,7 +374,7 @@ void init(){
       dataArray.push_back(DataInfo(153,"beam_15185052036",2,2,155.0,378,85.0,0.00,11,7.0));
     }
 
-    study[154]="Angle scan with 7 GeV/c, bar with 2-layer air gap lens";
+    study[154]="Angle scan with 7 GeV/c, bar with 1-layer air gap lens";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
       dataArray.push_back(DataInfo(154,"beam_15186160145",1,4,125.0,378,85.0,70.5,15.5,7.0));
@@ -534,63 +534,67 @@ void init(){
   }
 
     // ======= Momentum scans ======================================
-    study[170]="Momentum scan, bar with 3-layer sph. lens.";
+    study[170]="Momentum scan, bar with 3-layer sph. lens. 125 degree";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
-      dataArray.push_back(DataInfo(170,"beam_15177160909",1,3,125.0,378,85.0,67.5,16.5,10.)); // 16.5 ??? 378 (600) ???
-      dataArray.push_back(DataInfo(170,"beam_15177163322",1,3,125.0,378,85.0,67.5,16.5,9.0));
-      dataArray.push_back(DataInfo(170,"beam_15177165632",1,3,125.0,378,85.0,67.5,16.5,8.0));
-      dataArray.push_back(DataInfo(170,"beam_15177172240",1,3,125.0,378,85.0,67.5,16.5,7.0));
-      dataArray.push_back(DataInfo(170,"beam_15177175750",1,3,125.0,378,85.0,67.5,16.5,6.0));
-      dataArray.push_back(DataInfo(170,"beam_15177183208",1,3,125.0,378,85.0,67.5,16.5,5.0));
-      dataArray.push_back(DataInfo(170,"beam_15177193027",1,3,125.0,378,85.0,67.5,16.5,4.0));
-      dataArray.push_back(DataInfo(170,"beam_15177211451",1,3,125.0,378,85.0,67.5,16.5,3.0));
-      dataArray.push_back(DataInfo(170,"beam_15177223304",1,3,125.0,378,85.0,67.5,16.5,3.0));
-      dataArray.push_back(DataInfo(170,"beam_15179023137",1,3,125.0,378,85.0,67.5,16.5,3.0));
-      dataArray.push_back(DataInfo(170,"beam_15179031432",1,3,125.0,378,85.0,67.5,16.5,2.0));
+       // 16.5 ??? 378 (600) ???
+         
       dataArray.push_back(DataInfo(170,"beam_15179034945",1,3,125.0,378,85.0,67.5,16.5,10.));
-      dataArray.push_back(DataInfo(170,"beam_15179040647",1,3,125.0,378,85.0,67.5,16.5,9.0));
       dataArray.push_back(DataInfo(170,"beam_15179041521",1,3,125.0,378,85.0,67.5,16.5,9.0));
       dataArray.push_back(DataInfo(170,"beam_15179043010",1,3,125.0,378,85.0,67.5,16.5,8.0));
       dataArray.push_back(DataInfo(170,"beam_15179044540",1,3,125.0,378,85.0,67.5,16.5,7.0));
       dataArray.push_back(DataInfo(170,"beam_15179050147",1,3,125.0,378,85.0,67.5,16.5,6.0));
       dataArray.push_back(DataInfo(170,"beam_15179051932",1,3,125.0,378,85.0,67.5,16.5,5.0));
       dataArray.push_back(DataInfo(170,"beam_15179054114",1,3,125.0,378,85.0,67.5,16.5,4.0));
+      dataArray.push_back(DataInfo(170,"beam_15179023137",1,3,125.0,378,85.0,67.5,16.5,3.0));
       dataArray.push_back(DataInfo(170,"beam_15179061046",1,3,125.0,378,85.0,67.5,16.5,2.0));
     }
 
-    study[171]="Momentum scan, plate without lens.";
+    study[171]="Momentum scan, plate without lens. 125 degree";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
       dataArray.push_back(DataInfo(171,"beam_15184102124",2,0,125.0,378,85.0,0.0,11,10.)); //11 ???  378 (636) ???
-      dataArray.push_back(DataInfo(171,"beam_15184104038",2,0,125.0,378,85.0,0.0,11,10.));
-      dataArray.push_back(DataInfo(171,"beam_15184104219",2,0,125.0,378,85.0,0.0,11,9.0));
-      dataArray.push_back(DataInfo(171,"beam_15184110440",2,0,125.0,378,85.0,0.0,11,8.0));
       dataArray.push_back(DataInfo(171,"beam_15184112613",2,0,125.0,378,85.0,0.0,11,9.0));
+      dataArray.push_back(DataInfo(171,"beam_15184110440",2,0,125.0,378,85.0,0.0,11,8.0));
       dataArray.push_back(DataInfo(171,"beam_15184114505",2,0,125.0,378,85.0,0.0,11,7.0));
       dataArray.push_back(DataInfo(171,"beam_15184121116",2,0,125.0,378,85.0,0.0,11,6.0));
       dataArray.push_back(DataInfo(171,"beam_15184123830",2,0,125.0,378,85.0,0.0,11,5.0));
       dataArray.push_back(DataInfo(171,"beam_15184131342",2,0,125.0,378,85.0,0.0,11,4.0));
-      dataArray.push_back(DataInfo(171,"beam_15184135301",2,0,125.0,378,85.0,0.0,11,3.0));
-      
+      dataArray.push_back(DataInfo(171,"beam_15184065128",2,0,125.0,378,85.0,0.0,11,3.0));
+    }
+
+    study[172]="Momentum scan, plate without lens. 55 degree";
+    {
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
       dataArray.push_back(DataInfo(171,"beam_15184141820",2,0,55.0,378,85.0,0.0,11,3.0));//11 ???  378 (636) ???
       dataArray.push_back(DataInfo(171,"beam_15184143916",2,0,55.0,378,85.0,0.0,11,4.0));
       dataArray.push_back(DataInfo(171,"beam_15184150700",2,0,55.0,378,85.0,0.0,11,5.0));
       dataArray.push_back(DataInfo(171,"beam_15184154153",2,0,55.0,378,85.0,0.0,11,6.0));
-      dataArray.push_back(DataInfo(171,"beam_15184160844",2,0,55.0,378,85.0,0.0,11,7.0));
+      dataArray.push_back(DataInfo(171,"beam_15184160844",2,0,55.0,378,85.0,0.0,11,7.0)); 
     }
     
-    study[172]="Momentum scan, plate with 2-layer cyl. lens.";
+    study[173]="Momentum scan, plate with 2-layer cyl. lens. 125 degree";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
       dataArray.push_back(DataInfo(172,"beam_15185054335",2,2,125.0,378,85.0,0.0,11,10.)); //11 ???  378 (636) ???
       dataArray.push_back(DataInfo(172,"beam_15185055820",2,2,125.0,378,85.0,0.0,11,9.0));
       dataArray.push_back(DataInfo(172,"beam_15185061258",2,2,125.0,378,85.0,0.0,11,8.0));
       dataArray.push_back(DataInfo(172,"beam_15185062806",2,2,125.0,378,85.0,0.0,11,6.0));
-      dataArray.push_back(DataInfo(172,"beam_18185064716",2,2,125.0,378,85.0,0.0,11,5.0));
-      dataArray.push_back(DataInfo(172,"beam_18185071041",2,2,125.0,378,85.0,0.0,11,4.0));
-      dataArray.push_back(DataInfo(172,"beam_15185074047",2,2,125.0,378,85.0,0.0,11,4.0));
+      dataArray.push_back(DataInfo(172,"beam_15185064716",2,2,125.0,378,85.0,0.0,11,5.0));
+      dataArray.push_back(DataInfo(172,"beam_15185071041",2,2,125.0,378,85.0,0.0,11,4.0));
       dataArray.push_back(DataInfo(172,"beam_15185075232",2,2,125.0,378,85.0,0.0,11,3.0));
+    }
+
+    study[174]="Momentum scan, bar with 1-layer air gap lens. 125 degree";
+    {
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
+      dataArray.push_back(DataInfo(154,"beam_15187064331",1,4,125.0,378,85.0,70.5,15.5,10.0));
+      dataArray.push_back(DataInfo(154,"beam_15187071510",1,4,125.0,378,85.0,70.5,15.5,9.00));
+      dataArray.push_back(DataInfo(154,"beam_15187075151",1,4,125.0,378,85.0,70.5,15.5,8.00));
+      dataArray.push_back(DataInfo(154,"beam_15187081410",1,4,125.0,378,85.0,70.5,15.5,6.00));
+      dataArray.push_back(DataInfo(154,"beam_15187085029",1,4,125.0,378,85.0,70.5,15.5,5.00));
+      dataArray.push_back(DataInfo(154,"beam_15187093204",1,4,125.0,378,85.0,70.5,15.5,4.00));
+      dataArray.push_back(DataInfo(154,"beam_15187101807",1,4,125.0,378,85.0,70.5,15.5,3.00));
     }
 
     // ======= Z-X scans ===========================================
