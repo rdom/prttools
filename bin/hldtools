@@ -75,7 +75,7 @@ done
 option=${option:-0}
 startEvent=${startEvent:-0}
 endEvent=${endEvent:-0} 
-threads=${threads:-0}
+threads=${threads:-1}
 calibrationOpt=${calibrationOpt:-0}
 batchmode=${batchmode:-0}
 
