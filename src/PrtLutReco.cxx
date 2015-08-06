@@ -136,7 +136,6 @@ void PrtLutReco::Run(Int_t start, Int_t end){
       else reflected = kFALSE;
       
       Int_t sensorId = 100*fHit.GetMcpId()+fHit.GetPixelId();
-      std::cout<<"sensorId "<<sensorId <<std::endl;
    
       PrtLutNode *node = (PrtLutNode*) fLut->At(sensorId);
       Int_t size = node->Entries();
@@ -202,8 +201,8 @@ void PrtLutReco::Run(Int_t start, Int_t end){
       trackinfo.AddPhoton(photoninfo);
     }
 
-    //FindPeak(cangle,spr);
-    //std::cout<<"RES   "<<spr*1000 << "   N "<<nHits << "  "<<spr/sqrt(nHits)*1000<<std::endl;
+    FindPeak(cangle,spr, fEvent->GetAngle()+0.01);
+    std::cout<<"RES   "<<spr*1000 << "   N "<<nHits << "  "<<spr/sqrt(nHits)*1000<<std::endl;
     
     //Int_t pdgreco = FindPdg(fEvent->GetMomentum().Mag(), cherenkovreco);
 
@@ -221,7 +220,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
     PrtManager::Instance()->Fill();
   }
  
-  FindPeak(cangle,spr,fEvent->GetAngle()+0.01);
+  // FindPeak(cangle,spr,fEvent->GetAngle()+0.01);
   Double_t aEvents = ntotal/(Double_t)nEvents;
 
   nph = ntotal/(Double_t)nEvents;
@@ -263,7 +262,7 @@ Bool_t PrtLutReco::FindPeak(Double_t& cherenkovreco, Double_t& spr, Int_t a){
     spr = fFit->GetParameter(2); 
     if(fVerbose>1) gROOT->SetBatch(0);
     
-    Bool_t storePics(true);
+    Bool_t storePics(false);
     if(storePics){
       TCanvas* c = new TCanvas("c","c",0,0,800,500);
       fHist->GetXaxis()->SetTitle("#theta_{C} [rad]");

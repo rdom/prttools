@@ -51,7 +51,7 @@ PrtDetectorConstruction::PrtDetectorConstruction()
   if(PrtManager::Instance()->GetLens() == 3){
     fLens[0] = 60; fLens[1] = 60; fLens[2]=15;
   }
-  if(PrtManager::Instance()->GetLens() == 4){
+  if(PrtManager::Instance()->GetLens() == 4 || PrtManager::Instance()->GetLens() == 5){
     fLens[0] = 50; fLens[1] = 50; fLens[2]=5.7;
   }
 
@@ -261,8 +261,24 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
     G4Tubs* gfbox = new G4Tubs("Fbox",0,fLens[0]/2.,fLens[2]/2.,0.*deg,360.*deg);
     G4Sphere* gsphere = new G4Sphere("Sphere",0,lensrad1,0,360*deg,0,360*deg);
     G4IntersectionSolid* gLens1 = new G4IntersectionSolid("Fbox*Sphere", gfbox, gsphere,new G4RotationMatrix(),zTrans1); 
-    lLens1 = new G4LogicalVolume(gLens1,Nlak33aMaterial,"lLens1",0,0,0); //Nlak33aMaterial  
+    lLens1 = new G4LogicalVolume(gLens1,BarMaterial,"lLens1",0,0,0); //Nlak33aMaterial
   }
+
+   if(PrtManager::Instance()->GetLens() == 5){ // Spherical lens with air gap // f =250 , d = , w = 5.7 // black edges
+    G4double r1 = 0; // PrtManager::Instance()->GetTest1(); 
+    G4double lensrad1 = (r1==0)? 250: r1;
+    G4double lensMinThikness = 2; 
+
+    G4ThreeVector zTrans1(0, 0, -lensrad1+fLens[2]/2.-lensMinThikness);
+    G4Tubs* gfbox = new G4Tubs("Fbox",0,fLens[0]/2.,fLens[2]/2.,0.*deg,360.*deg);
+    G4Sphere* gsphere = new G4Sphere("Sphere",0,lensrad1,0,360*deg,0,360*deg);
+    G4IntersectionSolid* gLens1 = new G4IntersectionSolid("Fbox*Sphere", gfbox, gsphere,new G4RotationMatrix(),zTrans1);
+    G4SubtractionSolid* gLens2 = new G4SubtractionSolid("Fbox-Sphere", gfbox, gsphere,new G4RotationMatrix(),zTrans1);
+    lLens1 = new G4LogicalVolume(gLens1,BarMaterial,"lLens1",0,0,0); //Nlak33aMaterial
+    lLens2 = new G4LogicalVolume(gLens2,defaultMaterial,"lLens2",0,0,0);
+  }
+
+ 
   
   if(PrtManager::Instance()->GetLens() != 0 && PrtManager::Instance()->GetLens() != 10){
     new G4PVPlacement(0,G4ThreeVector(fPrismRadiatorStep,0,fBar[2]/2.+fLens[2]/2.),lLens1,"wLens1", lDirc,false,0);
@@ -327,16 +343,14 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
     gPixel = new G4Box("gPixel",fMcpActive[0]/(2*(double)mcpDimx),fMcpActive[1]/(2*(double)mcpDimy),fMcpActive[2]/20.);
     lPixel = new G4LogicalVolume(gPixel,BarMaterial,"lPixel",0,0,0);
 
-    int pixelId = 0;
     for(int i=0; i<mcpDimx; i++){
       for(int j=mcpDimy-1; j>=0; j--){
 	double shiftx = i*(fMcpActive[0]/(double)mcpDimx)-fMcpActive[0]/2.+fMcpActive[0]/(2*(double)mcpDimx);
 	double shifty = j*(fMcpActive[0]/(double)mcpDimy)-fMcpActive[0]/2.+fMcpActive[0]/(2*(double)mcpDimy);
-	new G4PVPlacement(0,G4ThreeVector(shiftx,shifty,0),lPixel,"wPixel", lMcp,false,64-pixelId++);      
+	new G4PVPlacement(0,G4ThreeVector(shiftx,shifty,0),lPixel,"wPixel", lMcp,false,8*j+i+1);      
       }
     }
  
-    int mcpId = 0;
     for(int j=0; j<fNRow; j++){
       for(int i=0; i<fNCol; i++){
 	double shiftx = i*(fMcpTotal[0]+14)-fPrizm[3]/2+fMcpActive[0]/2.+2.5; // +2.5 adjustment to the prt2014 
@@ -361,8 +375,7 @@ G4VPhysicalVolume* PrtDetectorConstruction::Construct(){
 	  if(j==1) shiftx -= (3/2.)*fMcpActive[0]/8.; //i*(fMcpTotal[0]+3)-fPrizm[3]/2+fMcpActive[0]/2.+2*fMcpActive[0]/8.;
 	  shifty = (fMcpTotal[0]+3)*(j-1);
 	}
-	new G4PVPlacement(0,G4ThreeVector(shiftx,shifty,fBar[2]/2.+fPrizm[1]+fMcpActive[2]/2.+fLens[2]),lMcp,"wMcp", lDirc,false,mcpId);
-	mcpId++;
+	new G4PVPlacement(0,G4ThreeVector(shiftx,shifty,fBar[2]/2.+fPrizm[1]+fMcpActive[2]/2.+fLens[2]),lMcp,"wMcp", lDirc,false,fNRow*i+j);
       }
     }
   }else{
