@@ -77,7 +77,7 @@ tseed=$(($(date +%s%N)/1000000-1393400000000))
 printf "====== Run PRTDIRC with $tseed seed base ======\n"
 
 #simopt="-w 0 -g 3 -h 2 -c 2015 -l 0 -b 1"
-simopt="-p 7 -x pi+ -l 5 -gz 378 -gx 0 -gs 15.5 -g 2015 -c 2015 -e 100 -b 1 "
+simopt="-p 7 -x pi+ -l 3 -gz 378 -gx 0 -gs 15.5 -g 2015 -c 2015 -e 100 -b 1 "
 
 if [ ${run} == "1" ]; then
     ../build/prtdirc  $simopt -s 1 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 500000  

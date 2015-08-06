@@ -19,13 +19,11 @@ void drawScan(TString infile="../build/hits.root"){
       Int_t pixid = fHit.GetPixelId()-1;
       
       Double_t time = fHit.GetLeadTime();
-      // fhDigi[mcpid]->Fill(7-pixid/8, pixid%8);
-      fhDigi[mcpid]->Fill(pixid%8, pixid/8); // for beam data
+      fhDigi[mcpid]->Fill(pixid%8, pixid/8);
     }
   }
   itest = fTest1+50;
-  drawDigi("m,p,v\n",2,-2,-2); //for beam data
-  //drawDigi("m,p,v\n",4);
+  drawDigi("m,p,v\n",2,-2,-2);
   cDigi->SetName(Form("sc_%d_%d",fAngle,fMomentum/1000));
   canvasAdd(cDigi);  
   canvasSave(1,0);
