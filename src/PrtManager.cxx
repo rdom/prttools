@@ -76,6 +76,7 @@ PrtManager* PrtManager::Instance(G4String outfile, G4int runtype){
 void PrtManager::AddEvent(PrtEvent event){
   if(fRunType==0 || fRunType==6){
     fEvent = new PrtEvent(event);
+    fEvent->SetType(1);
     fEvent->SetPhysList(fPhysList);
     fEvent->SetAngle((180*deg-fAngle)/deg);
     //fEvent->SetRadiatorL(fRadiatorL);

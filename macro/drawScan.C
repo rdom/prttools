@@ -5,6 +5,7 @@
 
 void drawScan(TString infile="../build/hits.root"){
   // infile="/media/l/hex/dirc/data/beam_15188064753C0.root";
+  infile="/media/l/hex/dirc/data/beam_15181040321C.root";
   
   fSavePath = "scan3";
   PrtInit(infile,1); //digi

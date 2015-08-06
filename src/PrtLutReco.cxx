@@ -48,7 +48,7 @@ PrtLutReco::PrtLutReco(TString infile, TString lutfile, Int_t verbose){
   fTree->SetBranchAddress("LUT",&fLut); 
   fTree->GetEntry(0);
 
-  fHist = new TH1F("chrenkov_angle_hist","chrenkov_angle_hist", 100,0.7,0.9); //200
+  fHist = new TH1F("chrenkov_angle_hist","chrenkov_angle_hist", 100,0,1); //200
   fFit = new TF1("fgaus","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2]) +[3]",0.35,0.9);
   fSpect = new TSpectrum(10);
 
@@ -71,7 +71,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
   TVector3 fnX1 = TVector3 (1,0,0);   
   TVector3 fnY1 = TVector3( 0,1,0);
   bool testTrRes = false;
-  Double_t angdiv,dtheta,dtphi;
+  Double_t angdiv,dtheta,dtphi,fAngle;;
 
   TString outFile = PrtManager::Instance()->GetOutName()+"_spr.root";
   Double_t theta(0),phi(0), trr(0),  nph(0),
@@ -105,12 +105,14 @@ void PrtLutReco::Run(Int_t start, Int_t end){
     PrtTrackInfo trackinfo;
     trackinfo.AddInfo(fEvent->PrintInfo()+"\n Basic reco informaion: \n");
     tree.SetTitle(fEvent->PrintInfo());
-    Double_t minChangle = 0.35;
-    Double_t maxChangle = 0.9;
+    Double_t minChangle = -3.35;
+    Double_t maxChangle = 3.9;
     trackinfo.AddInfo(Form("Cerenkov angle selection: (%f,%f) \n",minChangle,maxChangle));
     
     //    TVector3 rotatedmom = fEvent->GetMomentum().Unit();
-    Double_t fAngle =  180 - fEvent->GetAngle();
+
+    if( fEvent->GetType()==1) fAngle =  180 - fEvent->GetAngle(); // sim
+    else fAngle = 90 - PrtManager::Instance()->GetAngle(); // beam data
     
     TVector3 rotatedmom = momInBar;
     rotatedmom.RotateY(fAngle/180.*TMath::Pi());
@@ -120,6 +122,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
       PrtPhotonInfo photoninfo;
       fHit = fEvent->GetHit(h);
       hitTime = fHit.GetLeadTime();
+      
       Double_t radiatorL = 1250; //bar
       lenz = radiatorL/2.-fHit.GetPosition().X();
       
@@ -164,7 +167,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	  fHist1->Fill(hitTime);
 	  fHist2->Fill(bartime + evtime);
 	  
-	  if(fabs((bartime + evtime)-hitTime)>test1) continue;
+	  //if(fabs((bartime + evtime)-hitTime)>test1) continue;
 	  fHist3->Fill(fabs((bartime + evtime)),hitTime);
 	  tangle = rotatedmom.Angle(dir);
 	  //if(  tangle>TMath::Pi()/2.) tangle = TMath::Pi()-tangle;
@@ -278,53 +281,53 @@ Bool_t PrtLutReco::FindPeak(Double_t& cherenkovreco, Double_t& spr, Int_t a){
       c->Print(Form("spr/tangle_%d.png", a));
       c->WaitPrimitive();
 
-      TCanvas* c2 = new TCanvas("c2","c2",0,0,800,400);
-      c2->Divide(2,1);
-      c2->cd(1);
-      fHist3->GetXaxis()->SetTitle("calculated time [ns]");
-      fHist3->GetYaxis()->SetTitle("measured time [ns]");
-      fHist3->SetTitle(Form("theta %d", a));
+      // TCanvas* c2 = new TCanvas("c2","c2",0,0,800,400);
+      // c2->Divide(2,1);
+      // c2->cd(1);
+      // fHist3->GetXaxis()->SetTitle("calculated time [ns]");
+      // fHist3->GetYaxis()->SetTitle("measured time [ns]");
+      // fHist3->SetTitle(Form("theta %d", a));
 
-      fHist4->SetStats(0);
-      fHist4->GetXaxis()->SetTitle("#theta_{c}sin(#varphi_{c})");
-      fHist4->GetYaxis()->SetTitle("#theta_{c}cos(#varphi_{c})");
-      fHist4->SetTitle(Form("Calculated from LUT, #theta = %d#circ", a));
-      fHist4->Draw("colz");
-      Double_t x0(0), y0(0), theta(cherenkovreco);
-      FitRing(x0,y0,theta);
-      TVector3 corr(x0,y0,1-TMath::Sqrt(x0*x0+y0*y0));
-      std::cout<<"Tcorr "<< corr.Theta()*1000<< "  Pcorr "<< corr.Phi() <<std::endl;
+      // fHist4->SetStats(0);
+      // fHist4->GetXaxis()->SetTitle("#theta_{c}sin(#varphi_{c})");
+      // fHist4->GetYaxis()->SetTitle("#theta_{c}cos(#varphi_{c})");
+      // fHist4->SetTitle(Form("Calculated from LUT, #theta = %d#circ", a));
+      // fHist4->Draw("colz");
+      // Double_t x0(0), y0(0), theta(cherenkovreco);
+      // FitRing(x0,y0,theta);
+      // TVector3 corr(x0,y0,1-TMath::Sqrt(x0*x0+y0*y0));
+      // std::cout<<"Tcorr "<< corr.Theta()*1000<< "  Pcorr "<< corr.Phi() <<std::endl;
 
-      TLegend *leg = new TLegend(0.5,0.7,0.85,0.87);
-      //      leg->SetFillColor(0);
-      //leg->SetFillColorAlpha(0,0.8);
-      leg->SetFillStyle(0);
-      //leg->SetFillStyle(4000); 
-      leg->SetBorderSize(0);
-      leg->AddEntry((TObject*)0,Form("Entries %0.0f",fHist4->GetEntries()),"");
-      leg->AddEntry((TObject*)0,Form("#Delta#theta_{c} %f [mrad]",corr.Theta()*1000),"");
-      leg->AddEntry((TObject*)0,Form("#Delta#varphi_{c} %f [rad]",corr.Phi()),"");
-      leg->Draw();
+      // TLegend *leg = new TLegend(0.5,0.7,0.85,0.87);
+      // //      leg->SetFillColor(0);
+      // //leg->SetFillColorAlpha(0,0.8);
+      // leg->SetFillStyle(0);
+      // //leg->SetFillStyle(4000); 
+      // leg->SetBorderSize(0);
+      // leg->AddEntry((TObject*)0,Form("Entries %0.0f",fHist4->GetEntries()),"");
+      // leg->AddEntry((TObject*)0,Form("#Delta#theta_{c} %f [mrad]",corr.Theta()*1000),"");
+      // leg->AddEntry((TObject*)0,Form("#Delta#varphi_{c} %f [rad]",corr.Phi()),"");
+      // leg->Draw();
 
-      TArc *arc = new TArc(x0,y0,theta);
-      arc->SetLineColor(kRed);
-      arc->SetLineWidth(1);
-      arc->SetFillStyle(0);
-      arc->Draw();
-      gg_i=0;
-      gg_gr.Set(0);
+      // TArc *arc = new TArc(x0,y0,theta);
+      // arc->SetLineColor(kRed);
+      // arc->SetLineWidth(1);
+      // arc->SetFillStyle(0);
+      // arc->Draw();
+      // gg_i=0;
+      // gg_gr.Set(0);
 
-      c2->cd(2);
-      gStyle->SetOptStat(1110); 
-      fHist5->GetXaxis()->SetTitle("#theta_{c}sin(#varphi_{c})");
-      fHist5->GetYaxis()->SetTitle("#theta_{c}cos(#varphi_{c})");
-      fHist5->SetTitle(Form("True from MC, #theta = %d#circ", a));
-      fHist5->Draw("colz");
+      // c2->cd(2);
+      // gStyle->SetOptStat(1110); 
+      // fHist5->GetXaxis()->SetTitle("#theta_{c}sin(#varphi_{c})");
+      // fHist5->GetYaxis()->SetTitle("#theta_{c}cos(#varphi_{c})");
+      // fHist5->SetTitle(Form("True from MC, #theta = %d#circ", a));
+      // fHist5->Draw("colz");
 
-      c2->Print(Form("spr/tcorr_%d.png", a));
-      c2->Modified();
-      c2->Update();
-      c2->WaitPrimitive();
+      // c2->Print(Form("spr/tcorr_%d.png", a));
+      // c2->Modified();
+      // c2->Update();
+      // c2->WaitPrimitive();
     
     }
   }
