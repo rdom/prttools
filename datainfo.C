@@ -200,7 +200,8 @@ void init(){
     // 1 - 2-componet sph. 2CS
     // 2 - 2-componet cyl. 2CC
     // 3 - 3-componet sph. 3CS
-    // 4 - 2-componet sph with air gap 4CS
+    // 4 - 1-componet sph. with air gap 1CS
+    // 5 - 1-componet cyl. with air gap 1CC
 
     // radiators
     // 1 - bar
@@ -744,12 +745,12 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
   if(format==3){ // prtdirc
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<" -p "<< newset[i].getMomentum() <<" -l "<<newset[i].getRadiatorId()
+      std::cout<<newset[i].getChildRunId(0)<<":  "<<" -p "<< newset[i].getMomentum() <<" -h "<<newset[i].getRadiatorId()
 	       << " -l "<<newset[i].getLensId()
 	       <<" -a "<<newset[i].getAngle()<<" -gz "<<newset[i].getZ()
-	       <<" -gx "<<newset[i].getX()<<" -gxs "<<newset[i].getXstep()<<" -gys "<<newset[i].getYstep();
+	       <<" -gx "<<newset[i].getX()<<" -gxs "<<newset[i].getXstep()<<" -gys "<<newset[i].getYstep() ;
 
-      if(newset[i].getStudyId()>=150) std::cout<<" -g 2015 -c 2015 "<<std::endl;
+      if(newset[i].getStudyId()>=150) std::cout<<" -g 2015 -c 2015 "<<"<br>"<<std::endl;
       else  std::cout<<" "<<std::endl;
     }
   }
@@ -791,22 +792,24 @@ void p_exportinfo(TString name="alias.info"){
 
   for(Int_t i=0; i<gg_nstudies; i++){
     std::vector<DataInfo> newset= getStudy(i);
+    if(i<100 || newset.size()==0) continue;
+    
     out<<"<h3>Study id # "<<i<< "  "<<study[i] <<"</h3>\n";
 
     out<<"<table style=\"width:100%\">\n";
     out<<"<tr>\n";
     out<<"<td>Files alias </td>"; 
-    out<<"<td>Files       </td>";
+    out<<"<td>Files     </td>";
     out<<"<td>Study Id  </td>";
-    out<<"<td>Radiator  </td>";
+    out<<"<td>Rad- iator  </td>";
     out<<"<td>Lens      </td>";
-    out<<"<td>Andle     </td>";
+    out<<"<td>Angle     </td>";
     out<<"<td>Z         </td>";
     out<<"<td>X         </td>";
-    out<<"<td>X step      </td>";
-    out<<"<td>Y step      </td>";
+    out<<"<td>X step    </td>";
+    out<<"<td>Y step    </td>";
     out<<"<td>File Id   </td>";
-    out<<"<td>Sim offset</td>";
+    //  out<<"<td>Sim off set</td>";
     out<<"</tr>";
 
     for(UInt_t k = 0; k != newset.size(); k++) {  
@@ -827,7 +830,7 @@ void p_exportinfo(TString name="alias.info"){
       out<<"<td>"<<newset[k].getXstep()<<"</td>";
       out<<"<td>"<<newset[k].getYstep()<<"</td>";
       out<<"<td>"<<newset[k].getFileId()<<"</td>";
-      out<<"<td>"<<newset[k].getSimTO()<<"</td>";
+      //  out<<"<td>"<<newset[k].getSimTO()<<"</td>";
       out<<"</tr>";
     }
     out<<"</table>\n";
