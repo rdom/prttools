@@ -40,7 +40,7 @@ public:
   };
 
   bool operator == (const DataInfo& d) const{
-    return _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum;
+    return _studyId == d._studyId && _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum;
   }
 
   bool operator < (const DataInfo& d) const{
@@ -49,6 +49,7 @@ public:
     if(_studyId==4 && _angle<d._angle) return true; //angle
     if(_studyId==5 && _z>d._z) return true; //x
     if(_studyId>100 && _studyId<170 &&_angle<d._angle) return true; //angle
+    if(_studyId>169 && d._studyId>169 && _momentum < d._momentum) return true; //momentum
     return false; 
   }
 
@@ -567,35 +568,37 @@ void init(){
     study[172]="Momentum scan, plate without lens. 55 degree";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
-      dataArray.push_back(DataInfo(171,"beam_15184141820",2,0,55.0,378,85.0,0.0,11,3.0));//11 ???  378 (636) ???
-      dataArray.push_back(DataInfo(171,"beam_15184143916",2,0,55.0,378,85.0,0.0,11,4.0));
-      dataArray.push_back(DataInfo(171,"beam_15184150700",2,0,55.0,378,85.0,0.0,11,5.0));
-      dataArray.push_back(DataInfo(171,"beam_15184154153",2,0,55.0,378,85.0,0.0,11,6.0));
-      dataArray.push_back(DataInfo(171,"beam_15184160844",2,0,55.0,378,85.0,0.0,11,7.0)); 
+      dataArray.push_back(DataInfo(172,"beam_15184141820",2,0,55.0,378,85.0,0.0,11,3.0));//11 ???  378 (636) ???
+      dataArray.push_back(DataInfo(172,"beam_15184143916",2,0,55.0,378,85.0,0.0,11,4.0));
+      dataArray.push_back(DataInfo(172,"beam_15184150700",2,0,55.0,378,85.0,0.0,11,5.0));
+      dataArray.push_back(DataInfo(172,"beam_15184154153",2,0,55.0,378,85.0,0.0,11,6.0));
+      dataArray.push_back(DataInfo(172,"beam_15184160844",2,0,55.0,378,85.0,0.0,11,7.0)); 
     }
     
     study[173]="Momentum scan, plate with 2-layer cyl. lens. 125 degree";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
-      dataArray.push_back(DataInfo(172,"beam_15185054335",2,2,125.0,378,85.0,0.0,11,10.)); //11 ???  378 (636) ???
-      dataArray.push_back(DataInfo(172,"beam_15185055820",2,2,125.0,378,85.0,0.0,11,9.0));
-      dataArray.push_back(DataInfo(172,"beam_15185061258",2,2,125.0,378,85.0,0.0,11,8.0));
-      dataArray.push_back(DataInfo(172,"beam_15185062806",2,2,125.0,378,85.0,0.0,11,6.0));
-      dataArray.push_back(DataInfo(172,"beam_15185064716",2,2,125.0,378,85.0,0.0,11,5.0));
-      dataArray.push_back(DataInfo(172,"beam_15185071041",2,2,125.0,378,85.0,0.0,11,4.0));
-      dataArray.push_back(DataInfo(172,"beam_15185075232",2,2,125.0,378,85.0,0.0,11,3.0));
+      dataArray.push_back(DataInfo(173,"beam_15185054335",2,2,125.0,378,85.0,0.0,11,10.)); //11 ???  378 (636) ???
+      dataArray.push_back(DataInfo(173,"beam_15185055820",2,2,125.0,378,85.0,0.0,11,9.0));
+      dataArray.push_back(DataInfo(173,"beam_15185061258",2,2,125.0,378,85.0,0.0,11,8.0));
+      dataArray.push_back(DataInfo(173,"beam_15184195338",2,2,125.0,378,85.0,0.0,11,7.0)); // form 153
+      dataArray.push_back(DataInfo(173,"beam_15185062806",2,2,125.0,378,85.0,0.0,11,6.0));
+      dataArray.push_back(DataInfo(173,"beam_15185064716",2,2,125.0,378,85.0,0.0,11,5.0));
+      dataArray.push_back(DataInfo(173,"beam_15185071041",2,2,125.0,378,85.0,0.0,11,4.0));
+      dataArray.push_back(DataInfo(173,"beam_15185075232",2,2,125.0,378,85.0,0.0,11,3.0));
     }
 
     study[174]="Momentum scan, bar with 1-layer air gap lens. 125 degree";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
-      dataArray.push_back(DataInfo(154,"beam_15187064331",1,4,125.0,378,85.0,70.5,15.5,10.0));
-      dataArray.push_back(DataInfo(154,"beam_15187071510",1,4,125.0,378,85.0,70.5,15.5,9.00));
-      dataArray.push_back(DataInfo(154,"beam_15187075151",1,4,125.0,378,85.0,70.5,15.5,8.00));
-      dataArray.push_back(DataInfo(154,"beam_15187081410",1,4,125.0,378,85.0,70.5,15.5,6.00));
-      dataArray.push_back(DataInfo(154,"beam_15187085029",1,4,125.0,378,85.0,70.5,15.5,5.00));
-      dataArray.push_back(DataInfo(154,"beam_15187093204",1,4,125.0,378,85.0,70.5,15.5,4.00));
-      dataArray.push_back(DataInfo(154,"beam_15187101807",1,4,125.0,378,85.0,70.5,15.5,3.00));
+      dataArray.push_back(DataInfo(174,"beam_15187064331",1,4,125.0,378,85.0,70.5,15.5,10.0));
+      dataArray.push_back(DataInfo(174,"beam_15187071510",1,4,125.0,378,85.0,70.5,15.5,9.00));
+      dataArray.push_back(DataInfo(174,"beam_15187075151",1,4,125.0,378,85.0,70.5,15.5,8.00));
+      dataArray.push_back(DataInfo(174,"beam_15186160145",1,4,125.0,378,85.0,70.5,15.5,7.00)); // from 154
+      dataArray.push_back(DataInfo(174,"beam_15187081410",1,4,125.0,378,85.0,70.5,15.5,6.00));
+      dataArray.push_back(DataInfo(174,"beam_15187085029",1,4,125.0,378,85.0,70.5,15.5,5.00));
+      dataArray.push_back(DataInfo(174,"beam_15187093204",1,4,125.0,378,85.0,70.5,15.5,4.00));
+      dataArray.push_back(DataInfo(174,"beam_15187101807",1,4,125.0,378,85.0,70.5,15.5,3.00));
     }
 
     // ======= Z-X scans ===========================================
@@ -780,7 +783,9 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   
   if(format==10){ // cp
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<newset[i].getRunId()<< ".hld  ";
+       for(Int_t j=0; j<newset[i].getNChildren();j++ ){
+	 std::cout<<newset[i].getChildRunId(j)<< ".hld  ";
+       }
     }
   }
 
