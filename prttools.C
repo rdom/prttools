@@ -121,12 +121,12 @@ Int_t GetChannelNumber(Int_t tdc, Int_t tdcChannel){
   return ch;
 }
 
-Int_t RemoveRefChannels(Int_t ch){
-  return ch - ch/48;
+Int_t RemoveRefChannels(Int_t ch, Int_t tdcSeqId){
+  return ch - tdcSeqId;
 }
 
-Int_t AddRefChannels(Int_t ch){
-  return ch + ch/48;
+Int_t AddRefChannels(Int_t ch,Int_t tdcSeqId){
+  return ch + tdcSeqId;
 }
 
 Bool_t badcannel(Int_t ch){

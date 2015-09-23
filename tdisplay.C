@@ -129,7 +129,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
       if(tdcSeqId<0) continue;
       ch = ctdc*tdcSeqId+Hits_nTdcChannel[i];
-      hFine[fileid][AddRefChannels(ch)]->Fill(Hits_nFineTime[i]);
+      hFine[fileid][AddRefChannels(ch,tdcSeqId)]->Fill(Hits_nFineTime[i]);
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
       ch -=1;
       if(ch<3000) {
@@ -172,7 +172,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 TString drawHist(Int_t m, Int_t p){
   TString histname="";
   Int_t ch = map_mpc[m][p];
-  ch = AddRefChannels(ch)+1;
+  ch = AddRefChannels(ch,ch/ctdc)+1;
   
   if(gComboId==0){
     TLegend *leg = new TLegend(0.5,0.7,0.9,0.9);

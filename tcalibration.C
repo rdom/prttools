@@ -57,7 +57,7 @@ void TTSelector::Begin(TTree *){
 }  
 
 Bool_t TTSelector::Process(Long64_t entry){
-  Int_t tdc,ch;
+  Int_t tdc,ch,tdcch;
   Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime(0),offset(0);
   Double_t time[10000], timeT[10000];
 
@@ -72,12 +72,14 @@ Bool_t TTSelector::Process(Long64_t entry){
   
   for(Int_t i=0; i<Hits_ && i<10000; i++){
     tdc = map_tdc[Hits_nTrbAddress[i]];
-    ch = GetChannelNumber(tdc,Hits_nTdcChannel[i]);
+    tdcch = Hits_nTdcChannel[i];
+    ch = GetChannelNumber(tdc,tdcch);
     if(badcannel(ch)) continue;
 
     coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
-
-    if(gcFile!="") time[i] = coarseTime-gGr[AddRefChannels(ch)]->Eval(Hits_nFineTime[i]);
+    if( AddRefChannels(ch,tdc)==48 ) std::cout<<ch<<"  AddRefChannels(ch,tdc)  "<< AddRefChannels(ch,tdc) << "  "<<gGr[AddRefChannels(ch,tdc)]->Eval(Hits_nFineTime[i])<<std::endl;
+    
+    if(gcFile!="") time[i] = coarseTime-gGr[AddRefChannels(ch,tdc)]->Eval(Hits_nFineTime[i]);
     else time[i] = Hits_fTime[i]; //coarseTime-(Hits_nFineTime[i]-31)*0.0102; //Hits_fTime[i];//
     
     if(Hits_nSignalEdge[i]==0){
@@ -85,7 +87,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       continue;
     }
     
-    if(Hits_nTdcChannel[i]==0) {  // is ref channel
+    if(tdcch==0) {  // is ref channel
       tdcRefTime[tdc] = time[i];
       if(gTrigger!=0 && (gTrigger-ch)<=ctdc && (gTrigger-ch)>0) grTime0 = time[i];
     }
