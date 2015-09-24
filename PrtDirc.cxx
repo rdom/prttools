@@ -53,7 +53,7 @@ int main(int argc,char** argv)
     session,geomAng,batchmode,lensId,particle,momentum,testVal1,testVal2,
     prismStep,beamZ,beamX,
     beamDimension, mcpLayout, infile = "hits.root", lutfile = "../data/lut.root";
-  G4int runtype = 0, verbose(0);
+  G4int firstevent(0), runtype(0), verbose(0);
 
   G4long myseed = 345354;
   for ( G4int i=1; i<argc; i=i+2 ) {
@@ -67,6 +67,7 @@ int main(int argc,char** argv)
     else if ( G4String(argv[i]) == "-h" ) radiator  = argv[i+1];
     else if ( G4String(argv[i]) == "-a" ) geomAng   = argv[i+1];
     else if ( G4String(argv[i]) == "-b" ) batchmode = argv[i+1];
+    else if ( G4String(argv[i]) == "-f" ) firstevent= atoi(argv[i+1]);
     else if ( G4String(argv[i]) == "-e" ) events    = argv[i+1];
     else if ( G4String(argv[i]) == "-l" ) lensId    = argv[i+1];
     else if ( G4String(argv[i]) == "-x" ) particle  = argv[i+1];
@@ -115,7 +116,7 @@ int main(int argc,char** argv)
 
   if(runtype == 2){
     PrtLutReco * reco = new PrtLutReco(infile,lutfile,verbose); 
-    reco->Run(0);
+    reco->Run(firstevent, atoi(events));
     return 0;
   }
 

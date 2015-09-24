@@ -48,7 +48,7 @@ PrtLutReco::PrtLutReco(TString infile, TString lutfile, Int_t verbose){
   fTree->SetBranchAddress("LUT",&fLut); 
   fTree->GetEntry(0);
 
-  fHist = new TH1F("chrenkov_angle_hist","chrenkov_angle_hist", 100,0,1); //200
+  fHist = new TH1F("chrenkov_angle_hist","chrenkov_angle_hist", 200,0,1); //200
   fFit = new TF1("fgaus","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2]) +[3]",0.35,0.9);
   fSpect = new TSpectrum(10);
 
@@ -62,8 +62,8 @@ PrtLutReco::~PrtLutReco(){
  
 //-------------- Loop over tracks ------------------------------------------
 void PrtLutReco::Run(Int_t start, Int_t end){
- TVector3 dird, dir, momInBar(0,0,1),posInBar;
- Double_t cangle,spr,tangle,boxPhi,evtime, bartime, lenz,dirz,luttheta, barHitTime, hitTime;
+  TVector3 dird, dir, momInBar(0,0,1),posInBar;
+  Double_t cangle,spr,tangle,boxPhi,evtime, bartime, lenz,dirz,luttheta, barHitTime, hitTime;
   Int_t pdgcode, evpointcount=0;
   Bool_t reflected = kFALSE;
   gStyle->SetOptFit(111);
@@ -94,34 +94,40 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 
   test1 = PrtManager::Instance()->GetTest1();
   
-  std::cout<<"Run started " <<std::endl;
+  std::cout<<"Run started for ["<<start<<","<<end <<"]"<<std::endl;
   Int_t ntotal=0;
+  PrtLutNode *node;
+  
   Int_t nEvents = fChain->GetEntries();
-  for (Int_t ievent=0; ievent<nEvents; ievent++){
+  for (Int_t ievent=0; ievent<nEvents && ievent<end; ievent++){
     fChain->GetEntry(ievent);
     Int_t nHits = fEvent->GetHitSize();
     ntotal+=nHits;
     std::cout<<"Event # "<< ievent << " has "<< nHits <<" hits"<<std::endl;
-    PrtTrackInfo trackinfo;
-    trackinfo.AddInfo(fEvent->PrintInfo()+"\n Basic reco informaion: \n");
     tree.SetTitle(fEvent->PrintInfo());
     Double_t minChangle = -3.35;
     Double_t maxChangle = 3.9;
-    trackinfo.AddInfo(Form("Cerenkov angle selection: (%f,%f) \n",minChangle,maxChangle));
-    
+
+    PrtTrackInfo trackinfo;
+    if(fVerbose>3){
+      trackinfo.AddInfo(fEvent->PrintInfo()+"\n Basic reco informaion: \n");
+      trackinfo.AddInfo(Form("Cerenkov angle selection: (%f,%f) \n",minChangle,maxChangle));
+    }
+
     //    TVector3 rotatedmom = fEvent->GetMomentum().Unit();
 
     if( fEvent->GetType()==1) fAngle =  180 - fEvent->GetAngle(); // sim
-    else fAngle = 90 - PrtManager::Instance()->GetAngle(); // beam data
+    else fAngle = 180 - PrtManager::Instance()->GetAngle(); // beam data
+    std::cout<<"fAngle  "<<fAngle <<std::endl;
     
     TVector3 rotatedmom = momInBar;
     rotatedmom.RotateY(fAngle/180.*TMath::Pi());
     TVector3 cz = rotatedmom.Unit();
     cz = TVector3(-cz.X(),cz.Y(),cz.Z());    
     for(Int_t h=0; h<nHits; h++) {
-      PrtPhotonInfo photoninfo;
       fHit = fEvent->GetHit(h);
       hitTime = fHit.GetLeadTime();
+      PrtPhotonInfo photoninfo;
       
       Double_t radiatorL = 1250; //bar
       lenz = radiatorL/2.-fHit.GetPosition().X();
@@ -140,7 +146,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
       
       Int_t sensorId = 100*fHit.GetMcpId()+fHit.GetPixelId();
    
-      PrtLutNode *node = (PrtLutNode*) fLut->At(sensorId);
+      node = (PrtLutNode*) fLut->At(sensorId);
       Int_t size = node->Entries();
     
       for(int i=0; i<size; i++){
@@ -159,7 +165,7 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	  if(dir.Angle(fnX1) < criticalAngle || dir.Angle(fnY1) < criticalAngle) continue;
 	  
 	  luttheta = dir.Theta();	
-	  if(luttheta > TMath::PiOver2()) luttheta = TMath::Pi()-luttheta;
+	  //if(luttheta > TMath::PiOver2()) luttheta = TMath::Pi()-luttheta;
 	  
 	  if(!reflected) bartime = lenz/cos(luttheta)/198.; 
 	  else bartime = (2*radiatorL - lenz)/cos(luttheta)/198.; 
@@ -170,60 +176,66 @@ void PrtLutReco::Run(Int_t start, Int_t end){
 	  //if(fabs((bartime + evtime)-hitTime)>test1) continue;
 	  fHist3->Fill(fabs((bartime + evtime)),hitTime);
 	  tangle = rotatedmom.Angle(dir);
-	  //if(  tangle>TMath::Pi()/2.) tangle = TMath::Pi()-tangle;
+	  if(tangle>TMath::PiOver2()) tangle = TMath::Pi()-tangle;
 	  
-	  PrtAmbiguityInfo ambinfo;
-	  ambinfo.SetBarTime(bartime);
-	  ambinfo.SetEvTime(evtime);
-	  ambinfo.SetCherenkov(tangle);
-	  photoninfo.AddAmbiguity(ambinfo);
+	  if(fVerbose>3){
+	    PrtAmbiguityInfo ambinfo;
+	    ambinfo.SetBarTime(bartime);
+	    ambinfo.SetEvTime(evtime);
+	    ambinfo.SetCherenkov(tangle);
+	    photoninfo.AddAmbiguity(ambinfo);
+	  }
 	  
 	  if(tangle > minChangle && tangle < maxChangle){
 	    fHist->Fill(tangle);
 	   
-	    TVector3 rdir = TVector3(-dir.X(),dir.Y(),dir.Z());
-	    rdir.RotateUz(cz);
+	    // TVector3 rdir = TVector3(-dir.X(),dir.Y(),dir.Z());
+	    // rdir.RotateUz(cz);
 	 
-	    Double_t phi = rdir.Phi();
-	    Double_t tt =  rdir.Theta();
-	    fHist4->Fill(tt*TMath::Sin(phi),tt*TMath::Cos(phi));
-	    
-	    gg_gr.SetPoint(gg_i,tangle*TMath::Sin(phi),tangle*TMath::Cos(phi));
-	    gg_i++;
+	    // Double_t phi = rdir.Phi();
+	    // Double_t tt =  rdir.Theta();
+	    // fHist4->Fill(tt*TMath::Sin(phi),tt*TMath::Cos(phi));
+
+	    // for cherenckov circle fit
+	    // gg_gr.SetPoint(gg_i,tangle*TMath::Sin(phi),tangle*TMath::Cos(phi));
+	    // gg_i++;
 	  }
 	}
       }
+      if(fVerbose>3){
+	photoninfo.SetHitTime(hitTime);
+	photoninfo.SetReflected(reflected);
+	photoninfo.SetEvReflections(evpointcount);
+	photoninfo.SetSensorId(sensorId);
+	photoninfo.SetMcCherenkovInBar(fHit.GetCherenkovMC());
 
-      photoninfo.SetHitTime(hitTime);
-      photoninfo.SetReflected(reflected);
-      photoninfo.SetEvReflections(evpointcount);
-      photoninfo.SetSensorId(sensorId);
-      photoninfo.SetMcCherenkovInBar(fHit.GetCherenkovMC());
-      
-
-      trackinfo.AddPhoton(photoninfo);
+	trackinfo.AddPhoton(photoninfo);
+      }
     }
 
-    FindPeak(cangle,spr, fEvent->GetAngle()+0.01);
-    std::cout<<"RES   "<<spr*1000 << "   N "<<nHits << "  "<<spr/sqrt(nHits)*1000<<std::endl;
+    // FindPeak(cangle,spr, fEvent->GetAngle()+0.01);
+    // std::cout<<"RES   "<<spr*1000 << "   N "<<nHits << "  "<<spr/sqrt(nHits)*1000<<std::endl;
     
     //Int_t pdgreco = FindPdg(fEvent->GetMomentum().Mag(), cherenkovreco);
 
-    // if(testTrRes) trackinfo.SetMomentum(TVector3(dtheta,dtphi,0)); //track deviation
-    trackinfo.SetMcMomentum(fEvent->GetMomentum());
-    trackinfo.SetMcMomentumInBar(momInBar);
-    trackinfo.SetMcPdg(0);
-    trackinfo.SetPdg(0);
-    trackinfo.SetAngle(fEvent->GetAngle());
-    trackinfo.SetMcCherenkov(cangle);
-
-    //trackinfo.SetCherenkov(cherenkovreco);
-    trackinfo.SetMcTimeInBar(barHitTime);
-    PrtManager::Instance()->AddTrackInfo(trackinfo);
-    PrtManager::Instance()->Fill();
+    if(fVerbose>3){
+      //if(testTrRes) trackinfo.SetMomentum(TVector3(dtheta,dtphi,0)); //track deviation
+      trackinfo.SetMcMomentum(fEvent->GetMomentum());
+      trackinfo.SetMcMomentumInBar(momInBar);
+      trackinfo.SetMcPdg(0);
+      trackinfo.SetPdg(0);
+      trackinfo.SetAngle(fEvent->GetAngle());
+      trackinfo.SetMcCherenkov(cangle);
+      
+      //trackinfo.SetCherenkov(cherenkovreco);
+      trackinfo.SetMcTimeInBar(barHitTime);
+      
+      PrtManager::Instance()->AddTrackInfo(trackinfo);
+      PrtManager::Instance()->Fill();
+    }
   }
- 
-  // FindPeak(cangle,spr,fEvent->GetAngle()+0.01);
+  
+  FindPeak(cangle,spr,fEvent->GetAngle()+0.01);
   Double_t aEvents = ntotal/(Double_t)nEvents;
 
   nph = ntotal/(Double_t)nEvents;
@@ -247,7 +259,7 @@ Bool_t PrtLutReco::FindPeak(Double_t& cherenkovreco, Double_t& spr, Int_t a){
   //  gStyle->SetCanvasPreferGL(kTRUE);
   
   if(fHist->GetEntries()>20 ){
-     gROOT->SetBatch(1);
+    gROOT->SetBatch(1);
     Int_t nfound = fSpect->Search(fHist,1,"",0.9); //0.6
     Float_t *xpeaks = fSpect->GetPositionX();
     if(nfound>0) cherenkovreco = xpeaks[0];
@@ -280,6 +292,7 @@ Bool_t PrtLutReco::FindPeak(Double_t& cherenkovreco, Double_t& spr, Int_t a){
       c->Update();
       c->Print(Form("spr/tangle_%d.png", a));
       c->WaitPrimitive();
+      //Int_t ii; std::cin>>ii;
 
       // TCanvas* c2 = new TCanvas("c2","c2",0,0,800,400);
       // c2->Divide(2,1);
