@@ -11,6 +11,7 @@ Double_t tdcRefTime[100];
 Int_t gComboId=0;
 TGraph *gGr[maxch];
 TGraph *gGrDiff[maxch];
+Int_t gMax[maxch];
 
 void TTSelector::Begin(TTree *){
   TString option = GetOption();
@@ -34,7 +35,17 @@ void TTSelector::Begin(TTree *){
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
       Int_t channel = name.Atoi();
-      gGr[channel]= new TGraph(*gr);
+      if(channel == 10000){ // line calibration
+	for(Int_t i=0; i<maxch; i++){
+	  Double_t x,y;
+	  gr->GetPoint(i,x,y);
+	  gMax[i] = (Int_t)(y+0.01);
+	  std::cout<<"i  "<<i<< "  "<<  gMax[i]<<std::endl;
+	  
+	}
+      }else{                // spline calibration
+	gGr[channel]= new TGraph(*gr);
+      }
     }
     f.Close();
   }
@@ -57,7 +68,7 @@ void TTSelector::Begin(TTree *){
 }  
 
 Bool_t TTSelector::Process(Long64_t entry){
-  Int_t tdc,ch,tdcch;
+  Int_t tdc,ch;
   Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime(0),offset(0);
   Double_t time[10000], timeT[10000];
 
@@ -72,22 +83,21 @@ Bool_t TTSelector::Process(Long64_t entry){
   
   for(Int_t i=0; i<Hits_ && i<10000; i++){
     tdc = map_tdc[Hits_nTrbAddress[i]];
-    tdcch = Hits_nTdcChannel[i];
-    ch = GetChannelNumber(tdc,tdcch);
-    if(badcannel(ch)) continue;
-
+    ch = GetChannelNumber(tdc,Hits_nTdcChannel[i]);
+ 
     coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
-    if( AddRefChannels(ch,tdc)==48 ) std::cout<<ch<<"  AddRefChannels(ch,tdc)  "<< AddRefChannels(ch,tdc) << "  "<<gGr[AddRefChannels(ch,tdc)]->Eval(Hits_nFineTime[i])<<std::endl;
-    
     if(gcFile!="") time[i] = coarseTime-gGr[AddRefChannels(ch,tdc)]->Eval(Hits_nFineTime[i]);
     else time[i] = Hits_fTime[i]; //coarseTime-(Hits_nFineTime[i]-31)*0.0102; //Hits_fTime[i];//
+
+    Double_t max = (Double_t) gMax[AddRefChannels(ch,tdc)]-2;
+    time[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
     
     if(Hits_nSignalEdge[i]==0){
       timeT[i]=time[i];
       continue;
     }
     
-    if(tdcch==0) {  // is ref channel
+    if(Hits_nTdcChannel[i]==0) {  // is ref channel
       tdcRefTime[tdc] = time[i];
       if(gTrigger!=0 && (gTrigger-ch)<=ctdc && (gTrigger-ch)>0) grTime0 = time[i];
     }
@@ -105,7 +115,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
       if(badcannel(ch)) continue;
-
+      
       if(gMode==1)timeLe = time[i]-tdcRefTime[tdc];
       else timeLe = time[i];
 

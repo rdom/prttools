@@ -86,24 +86,26 @@ void drawTof(TString infile="hits.root"){
     tof1=0;
     tof2=0;
     Int_t counts(0);
-    Double_t tot(0);
+    Double_t tot1(0),tot2(0);
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
       if(fHit.GetChannel()==960 ){
 	tof1 = fHit.GetLeadTime();
 	hTof1->Fill(fHit.GetLeadTime());
-	tot=fHit.GetTotTime();
-	hTot->Fill(tot);
+	tot1=fHit.GetTotTime();
+	hTot->Fill(tot1);
       }
 
       if(fHit.GetChannel()==1104){ //1104
 	tof2 = fHit.GetLeadTime();
 	hTof2->Fill(fHit.GetLeadTime());
-	//hTot->Fill(fHit.GetTotTime());
+	//hTot->Fill(fHit.GetTotTime());	
+	tot2=fHit.GetTotTime();
+	hTot->Fill(tot2);
       }
       if(tof1!=0 && tof2!=0) {
 	hTof->Fill(tof2-tof1);
-	hLeTot->Fill(tof2-tof1,tot);
+	hLeTot->Fill(tof2-tof1,tot1);
       }
       if(fHit.GetLeadTime()<-270 || fHit.GetLeadTime() > -200)  continue;
 	    

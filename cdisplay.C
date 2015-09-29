@@ -388,7 +388,7 @@ TVector3 fit(TH1F *h, Double_t range = 3){
   if(integral>20){ 
     
     if(peakSearch == 1){
-      gaust->SetParLimits(2,0.1,2);
+      gaust->SetParLimits(2,0.05,2);
       gaust->SetParameter(1,xmax);
       gaust->SetParameter(2,0.2);
     }
@@ -1267,10 +1267,15 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
     fEdit1->SetText("400 -150 -50");
     fEdit2->SetText("200 -50 -30");
   }
+
+  if(gTrigger==1104){
+    fEdit1->SetText("800 20 70");
+    fEdit2->SetText("800 25 55");
+  }
   
   if(gTrigger==1778) fEdit1->SetText("300 50 150");
   
-  if(ginFile.Contains("C.root"))  fEdit1->SetText("400 50 100");
+  if(ginFile.Contains("C.root"))  fEdit1->SetText("400 -220 -180");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
 
   if(gTrigger==1952 || gTrigger==1956) fEdit2->SetText("200 -60 -20");
