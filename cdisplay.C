@@ -461,7 +461,7 @@ void getTimeOffset(){
       // TGraph * gg = new TGraph((TH1D*)gDirectory->Get("hh_1")); 
       Int_t ch = map_mpc[m][p];
       gGrDiff[ch] = new TGraph();
-      for (int i=0;i<100;i++){
+      for (int i=0;i<500;i++){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
 	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);
 	Double_t vx = fit((TH1F*)h,0.5).X();
