@@ -13,6 +13,21 @@ TGraph *gGr[maxch];
 TGraph *gGrDiff[maxch];
 Int_t gMax[maxch];
 
+Double_t walktheta(-16.5*TMath::Pi()/180.);
+Double_t deltatheta(2.5*TMath::Pi()/180.);
+Double_t walky0(42.23), walky1(44.00);
+Double_t walk1x0(174.85), walk2x0(175.64);
+
+Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0, Double_t w){
+  Double_t r1(0.3), r2(0.9);
+
+  Double_t xx = cos(w)*(x-x0)+sin(w)*(y-y0);
+  Double_t yy = sin(w)*(x-x0)-cos(w)*(y-y0);
+
+  return xx*xx/(r1*r1)+yy*yy/(r2*r2)<=1;
+}
+
+
 void TTSelector::Begin(TTree *){
   TString option = GetOption();
   TObjArray *strobj = option.Tokenize(" ");
@@ -68,10 +83,12 @@ void TTSelector::Begin(TTree *){
 }  
 
 Bool_t TTSelector::Process(Long64_t entry){
-  Int_t tdc,ch;
+  //  if(entry >10000 ) return kTRUE;
+  Int_t tdc,ch,tofpid(0);
   Double_t timeTot(0), grTime0(0), grTime1(0),timeLe(0),coarseTime(0),offset(0);
   Double_t time[10000], timeT[10000];
-
+  Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false);
+ 
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   TObjArray *sarr = current_file_name.Tokenize("_");
 
@@ -79,18 +96,27 @@ Bool_t TTSelector::Process(Long64_t entry){
   GetEntry(entry);
   
   fEvent = new PrtEvent();
-  // fEvent->SetReferenceChannel(gTrigger);
+  //fEvent->SetReferenceChannel(gTrigger);
   
   for(Int_t i=0; i<Hits_ && i<10000; i++){
     tdc = map_tdc[Hits_nTrbAddress[i]];
-    ch = GetChannelNumber(tdc,Hits_nTdcChannel[i]);
- 
+    ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
+    
+    if(ch==1344) btrig = true;
+    if(ch==960)  btof1 = true;
+    if(ch==1104) btof2 = true;
+    if(ch==1248) bmcpout = true;
+    
     coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
-    if(gcFile!="") time[i] = coarseTime-gGr[AddRefChannels(ch,tdc)]->Eval(Hits_nFineTime[i]);
-    else time[i] = Hits_fTime[i]; //coarseTime-(Hits_nFineTime[i]-31)*0.0102; //Hits_fTime[i];//
+    if(gcFile!="") {
+      //spline calib
+      //time[i] = coarseTime-gGr[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]);
 
-    Double_t max = (Double_t) gMax[AddRefChannels(ch,tdc)]-2;
-    time[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
+      //linear calib
+      Double_t max = (Double_t) gMax[AddRefChannels(ch+1,tdc)]-2;
+      time[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
+    }
+    else time[i] = Hits_fTime[i]; //coarseTime-(Hits_nFineTime[i]-31)*0.0102; //Hits_fTime[i];//
     
     if(Hits_nSignalEdge[i]==0){
       timeT[i]=time[i];
@@ -103,7 +129,51 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
     if(gTrigger!=0 && ch==gTrigger) grTime1 = time[i];
   }
-  
+
+  Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
+  if(gMode==5){
+    if(!(btrig && btof1 && btof2 && bmcpout)){
+      fEvent->Clear();
+      delete fEvent;
+      return kTRUE;
+    }
+
+    for(Int_t i=0; i<Hits_ && i<10000; i++){
+      if(Hits_nTdcErrCode[i]!=0) continue;
+      if(Hits_nTdcChannel[i]==0) continue; // ref channel
+      if(Hits_nSignalEdge[i]==0) continue; // tailing edge
+      
+      tdc = map_tdc[Hits_nTrbAddress[i]];
+      ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
+      if(ch==960){
+    	tof1 = time[i]-tdcRefTime[tdc];
+    	tot1 = timeT[i+1] - time[i];
+      }
+      if(ch==1104){
+    	tof2 = time[i]-tdcRefTime[tdc];
+    	tot2 = timeT[i+1] - time[i];
+      }
+    }
+    
+    if(tof1!=0 && tof2!=0 && gMode==5) {
+      toftime = tof2-tof1;
+      if(insideOfEllipce(toftime, tot1, walk1x0, walky0,walktheta) && insideOfEllipce(toftime, tot2, walk1x0, walky1,-walktheta)){
+    	toftime += (tot1-walky0)*tan(walktheta+deltatheta);
+    	toftime += (tot2-walky1)*tan(-walktheta-deltatheta);
+    	tofpid=2212;
+    	mass = 0.938272046;
+      }
+      toftime = tof2-tof1;
+      if(insideOfEllipce(toftime, tot1, walk2x0, walky0,walktheta) && insideOfEllipce(toftime, tot2, walk2x0, walky1,-walktheta)){
+    	toftime = (tof2-tof1);
+    	toftime += (tot1-walky0)*tan(walktheta+deltatheta);
+    	toftime += (tot2-walky1)*tan(-walktheta-deltatheta);
+    	tofpid=212;
+    	mass=0.13957018;
+      }
+    }
+  }
+
   PrtHit hit;
   Int_t nrhits=0;
   if((grTime0>0 && grTime1>0) || gTrigger==0){
@@ -115,35 +185,47 @@ Bool_t TTSelector::Process(Long64_t entry){
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
       if(badcannel(ch)) continue;
-      
-      if(gMode==1)timeLe = time[i]-tdcRefTime[tdc];
-      else timeLe = time[i];
 
-      if(gTrigger!=0) timeLe = timeLe - (grTime1-grTime0);
+      if(gMode>0){
+	timeLe = time[i]-tdcRefTime[tdc];
+	if(gTrigger!=0 && ch<960) timeLe = timeLe - (grTime1-grTime0);
+	//	std::cout<<gTrigger << "  TRIG "<<(grTime1-grTime0)<<std::endl;
+	
+      }else {
+	timeLe = time[i];
+	if(gTrigger!=0 && ch<960) timeLe = timeLe - grTime1;
+      }
       
       timeTot = timeT[i+1] - time[i];
-
       
-      // if(timeLe>-300 && timeLe <-100) std::cout<<"timeLe "<<timeLe << " - "<<timeTot  <<std::endl;      
-           
       if(gtFile!=""){
 	if(ch<960) timeLe -= gGrDiff[ch]->Eval(timeTot);	
-	//if(abs(timeTot)>10) continue; 
-	//if(abs(timeLe)>300) continue; 
+      }
+      
+      if(tofpid>0 && ch < 960){
+	Double_t mom = 7;
+	//	std::cout<<"m  "<<mass <<"  s  "<< 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458)) *1E9 <<std::endl;
+	timeLe += 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
       }
 
-      hit.SetTdc(tdc);
-      hit.SetChannel(ch);
-      hit.SetMcpId(map_mcp[ch]);
-      hit.SetPixelId(map_pix[ch]+1);
-      hit.SetLeadTime(timeLe);
-      hit.SetTotTime(timeTot);
-      fEvent->AddHit(hit);
-      nrhits++;
+      if(gMode!=5 || tofpid!=0){
+	hit.SetTdc(tdc);
+	hit.SetChannel(ch);
+	hit.SetMcpId(map_mcp[ch]);
+	hit.SetPixelId(map_pix[ch]+1);
+	hit.SetLeadTime(timeLe);
+	hit.SetTotTime(timeTot);
+	fEvent->AddHit(hit);
+	nrhits++;
+      }
     }
   }
-
-  if(nrhits!=0) fTree->Fill();
+  
+  if(nrhits!=0) {
+    fEvent->SetParticle(tofpid);
+    fEvent->SetTest1(toftime);
+    fTree->Fill();
+  }
   fEvent->Clear();
   delete fEvent;
 
@@ -163,6 +245,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gtFile = tFile; // pilas offsets + walk corrections
   gTrigger = trigger;
   gMode = mode;
+  if(gMode == 5) gTrigger=960;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

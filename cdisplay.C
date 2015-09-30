@@ -195,7 +195,7 @@ void MSelector::SlaveBegin(TTree *){
   hLes=new TH1F("hLeAs","",5000,-100,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",2000,0,2000);
-  hTof=new TH1F("hTof","",2000,100,300);
+  hTof=new TH1F("hTof","",2000,150,250);
 
   axisTime800x500(hTot,"TOT time, [ns]");
   axisTime800x500(hLe,"LE time, [ns]");
@@ -243,7 +243,7 @@ Bool_t MSelector::Process(Long64_t entry){
   memset(mult, 0, sizeof(mult));
 
   Int_t nhits = fEvent->GetHitSize();
-  if(gTrigger>0){
+  if(gTrigger>-1){
     for(Int_t h=0; h<nhits; h++){
       hit = fEvent->GetHit(h);
       ch  = hit.GetChannel();
@@ -252,9 +252,9 @@ Bool_t MSelector::Process(Long64_t entry){
       if(hit.GetMcpId()>14) thitCount1++;
       else  thitCount2++;
       
-      if(ch == (Int_t)gTrigger) triggerLe = hit.GetLeadTime();
-      if(hit.GetChannel()==960)  tof1 = hit.GetLeadTime();
-      if(hit.GetChannel()==1104) tof2 = hit.GetLeadTime();
+      if(ch == gTrigger && gTrigger>0) triggerLe = hit.GetLeadTime();
+      if(ch==960)  tof1 = hit.GetLeadTime();
+      if(ch==1104) tof2 = hit.GetLeadTime();
     }
   }
   if(tof1!=0 && tof2!=0) {
@@ -1269,8 +1269,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   }
 
   if(gTrigger==1104){
-    fEdit1->SetText("800 20 70");
-    fEdit2->SetText("800 25 55");
+    fEdit1->SetText("400 20 70");
+    fEdit2->SetText("400 25 55");
   }
   
   if(gTrigger==1778) fEdit1->SetText("300 50 150");
