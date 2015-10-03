@@ -831,6 +831,30 @@ void MyMainFrame::DoMore(){
     fBtnMore->SetText("&Less");
   }
 }
+TCanvas *cExport;
+void MyMainFrame::DoSavePng(){
+  gROOT->SetBatch(1);
+  cExport = new TCanvas("cExport","cExport",0,0,800,400);
+  cExport->SetName("current");
+  cExport->SetCanvasSize(800,400);
+  
+  Int_t saveFlag = 1;
+  TString histname="", filedir=ginFile;
+  filedir.Remove(filedir.Last('/'));
+  fSavePath = filedir+"/plots";
+  
+  TObject *obj; 
+  TIter next(cTime->GetListOfPrimitives());
+  obj=next(); obj=next(); obj->Draw();
+  while ((obj=next())) obj->Draw("same");
+  
+  canvasAdd(cExport);
+  canvasSave(1,0);
+  canvasDel(cExport->GetName());
+  gROOT->SetBatch(0);
+  std::cout<<"Save current png .. done"<<std::endl;
+  
+}
 
 void MyMainFrame::DoExport(){
   gROOT->SetBatch(1);
@@ -1082,14 +1106,14 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fHm = new TGVerticalFrame(this, 200, 120, kFixedSize);
 
   TGHorizontalFrame *fHm0 = new TGHorizontalFrame(fHm, 400, 40);
-  TGLabel *fL1 = new TGLabel(fHm0, "LE's histogram parameters: ");
+  TGLabel *fL1 = new TGLabel(fHm0, "LE hist: ");
   fEdit1 = new TGTextEntry(fHm0, new TGTextBuffer(100));
   fEdit1->SetToolTipText("bins min max");
   fEdit1->Resize(80, fEdit1->GetDefaultHeight());
   fHm0->AddFrame(fL1, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
   fHm0->AddFrame(fEdit1, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
 
-  TGLabel *fL2 = new TGLabel(fHm0, "Tot's histogram parameters: ");
+  TGLabel *fL2 = new TGLabel(fHm0, "TOT hist: ");
   fEdit2 = new TGTextEntry(fHm0, new TGTextBuffer(100));
   fEdit2->SetToolTipText("bins min max");
   fEdit2->Resize(80, fEdit2->GetDefaultHeight());
@@ -1170,6 +1194,10 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fNumber2->Connect("ValueSet(Long_t)", "MyMainFrame", this, "InterestChanged()");
   (fNumber2->GetNumberEntry())->Connect("ReturnPressed()", "MyMainFrame", this, "InterestChanged()");
   fHm2->AddFrame(fNumber2, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
+
+  TGTextButton * fBtnSavetPng = new TGTextButton(fHm2, "Save &current");
+  fBtnSavetPng->Connect("Clicked()", "MyMainFrame", this, "DoSavePng()");
+  fHm2->AddFrame(fBtnSavetPng, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
   
   fHm->AddFrame(fHm2, new TGLayoutHints(kLHintsExpandX | kLHintsCenterX,5, 5, 5, 5));
 
