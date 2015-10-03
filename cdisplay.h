@@ -73,6 +73,7 @@ public:
   void DoDraw();
   void DoMore();
   void DoExport();
+  void DoSavePng();
   void DoHistory();
   void DoExportOffsets();
   void InterestChanged();

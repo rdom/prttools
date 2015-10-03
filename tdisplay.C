@@ -18,6 +18,7 @@ TH1F *hTimeT[nmcp][npix];
 
 TH2F *hLeTot[maxch];
 TH2F *hShape[nmcp][npix];
+TGraph *gMax;
 TGraph *gGr[maxfiles][maxch];
 
 Double_t tdcRefTime[100];
@@ -40,7 +41,7 @@ void TTSelector::SlaveBegin(TTree *){
   
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
-      hFine[j][c] = new TH1F(Form("hFine_%d_ch%d",j,c),Form("hFine_%d_ch%d;bin [#];LE entries [#]",j,c) , 600,1,600);
+      hFine[j][c] = new TH1F(Form("hFine_%d_ch%d",j,c),Form("hFine_%d_ch%d;bin [#];LE entries [#]",j,c) , 600,0,600);
       hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 500,0,70);
       hTot[j][c]->SetLineColor(j+1);
       fOutput->Add(hFine[j][c]);
@@ -123,13 +124,14 @@ Bool_t TTSelector::Process(Long64_t entry){
  
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
-      if(Hits_nSignalEdge[i]==0) continue; //tailing edge
       //if(Hits_nTdcErrCode[i]!=0) continue;
       
       tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
       if(tdcSeqId<0) continue;
       ch = ctdc*tdcSeqId+Hits_nTdcChannel[i];
-      hFine[fileid][AddRefChannels(ch)]->Fill(Hits_nFineTime[i]);
+      hFine[fileid][AddRefChannels(ch,tdcSeqId)]->Fill(Hits_nFineTime[i]);
+
+      if(Hits_nSignalEdge[i]==0) continue; //tailing edge
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
       ch -=1;
       if(ch<3000) {
@@ -172,7 +174,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 TString drawHist(Int_t m, Int_t p){
   TString histname="";
   Int_t ch = map_mpc[m][p];
-  ch = AddRefChannels(ch)+1;
+  ch = AddRefChannels(ch,ch/ctdc)+1;
   
   if(gComboId==0){
     TLegend *leg = new TLegend(0.5,0.7,0.9,0.9);
@@ -324,6 +326,9 @@ void MyMainFrame::DoExportGr(){
     gGr[0][c]->SetName(Form("%d",c));
     gGr[0][c]->Write();
   }
+  gMax->SetName("10000");
+  gMax->Write();
+  
   efile.Write();
   efile.Close();
   std::cout<<"Exporting .. Done"<<std::endl;
@@ -354,7 +359,8 @@ TGraph * getGarph(TH1F *hist){
 
 void Calibrate(){
   std::cout<<"Creating calibration"<<std::endl;
-
+  gMax = new TGraph();
+ 
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
       TString title = Form("%s  %d", hFine[j][c]->GetTitle(), (Int_t)hFine[j][c]->GetEntries());
@@ -369,6 +375,11 @@ void Calibrate(){
       gGr[j][c]->GetXaxis()->SetTitle("fine bin, [#]");
       gGr[j][c]->GetYaxis()->SetTitle("fine time, [ns]");
       gGr[j][c]->SetLineColor(getColorId(j));
+
+      Int_t firstbin = hFine[j][c]->FindFirstBinAbove(0);
+      Int_t lastbin = hFine[j][c]->FindLastBinAbove(0);
+      //      std::cout<<c<<"   "<<firstbin << "  "<<lastbin <<std::endl;
+      gMax->SetPoint(c,firstbin,lastbin);
     }
   }
 }

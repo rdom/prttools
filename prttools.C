@@ -121,12 +121,12 @@ Int_t GetChannelNumber(Int_t tdc, Int_t tdcChannel){
   return ch;
 }
 
-Int_t RemoveRefChannels(Int_t ch){
-  return ch - ch/48;
+Int_t RemoveRefChannels(Int_t ch, Int_t tdcSeqId){
+  return ch - tdcSeqId;
 }
 
-Int_t AddRefChannels(Int_t ch){
-  return ch + ch/48;
+Int_t AddRefChannels(Int_t ch,Int_t tdcSeqId){
+  return ch + tdcSeqId;
 }
 
 Bool_t badcannel(Int_t ch){
@@ -200,7 +200,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   Double_t max=0;
   if(maxz==0){
     for(Int_t p=0; p<nrow*ncol;p++){
-      tmax = fhDigi[p]->GetMaximum();
+      tmax = fhDigi[p]->GetBinContent(fhDigi[p]->GetMaximumBin());
       if(max<tmax) max = tmax;
     }
   }else{
@@ -238,7 +238,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
       } 
     }
   }
-
+ 
   for(Int_t p=0; p<nrow*ncol;p++){
     if(layoutId == 1 || layoutId == 4)  np =p%3*5 + p/3;
     else np = p;

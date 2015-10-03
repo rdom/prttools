@@ -195,7 +195,7 @@ void MSelector::SlaveBegin(TTree *){
   hLes=new TH1F("hLeAs","",5000,-100,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",2000,0,2000);
-  hTof=new TH1F("hTof","",2000,100,300);
+  hTof=new TH1F("hTof","",2000,150,250);
 
   axisTime800x500(hTot,"TOT time, [ns]");
   axisTime800x500(hLe,"LE time, [ns]");
@@ -243,7 +243,7 @@ Bool_t MSelector::Process(Long64_t entry){
   memset(mult, 0, sizeof(mult));
 
   Int_t nhits = fEvent->GetHitSize();
-  if(gTrigger>0){
+  if(gTrigger>-1){
     for(Int_t h=0; h<nhits; h++){
       hit = fEvent->GetHit(h);
       ch  = hit.GetChannel();
@@ -252,9 +252,9 @@ Bool_t MSelector::Process(Long64_t entry){
       if(hit.GetMcpId()>14) thitCount1++;
       else  thitCount2++;
       
-      if(ch == (Int_t)gTrigger) triggerLe = hit.GetLeadTime();
-      if(hit.GetChannel()==960)  tof1 = hit.GetLeadTime();
-      if(hit.GetChannel()==1104) tof2 = hit.GetLeadTime();
+      if(ch == gTrigger && gTrigger>0) triggerLe = hit.GetLeadTime();
+      if(ch==960)  tof1 = hit.GetLeadTime();
+      if(ch==1104) tof2 = hit.GetLeadTime();
     }
   }
   if(tof1!=0 && tof2!=0) {
@@ -388,7 +388,7 @@ TVector3 fit(TH1F *h, Double_t range = 3){
   if(integral>20){ 
     
     if(peakSearch == 1){
-      gaust->SetParLimits(2,0.1,2);
+      gaust->SetParLimits(2,0.05,2);
       gaust->SetParameter(1,xmax);
       gaust->SetParameter(2,0.2);
     }
@@ -461,7 +461,7 @@ void getTimeOffset(){
       // TGraph * gg = new TGraph((TH1D*)gDirectory->Get("hh_1")); 
       Int_t ch = map_mpc[m][p];
       gGrDiff[ch] = new TGraph();
-      for (int i=0;i<100;i++){
+      for (int i=0;i<500;i++){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
 	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);
 	Double_t vx = fit((TH1F*)h,0.5).X();
@@ -831,6 +831,30 @@ void MyMainFrame::DoMore(){
     fBtnMore->SetText("&Less");
   }
 }
+TCanvas *cExport;
+void MyMainFrame::DoSavePng(){
+  gROOT->SetBatch(1);
+  cExport = new TCanvas("cExport","cExport",0,0,800,400);
+  cExport->SetName("current");
+  cExport->SetCanvasSize(800,400);
+  
+  Int_t saveFlag = 1;
+  TString histname="", filedir=ginFile;
+  filedir.Remove(filedir.Last('/'));
+  fSavePath = filedir+"/plots";
+  
+  TObject *obj; 
+  TIter next(cTime->GetListOfPrimitives());
+  obj=next(); obj=next(); obj->Draw();
+  while ((obj=next())) obj->Draw("same");
+  
+  canvasAdd(cExport);
+  canvasSave(1,0);
+  canvasDel(cExport->GetName());
+  gROOT->SetBatch(0);
+  std::cout<<"Save current png .. done"<<std::endl;
+  
+}
 
 void MyMainFrame::DoExport(){
   gROOT->SetBatch(1);
@@ -1082,14 +1106,14 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fHm = new TGVerticalFrame(this, 200, 120, kFixedSize);
 
   TGHorizontalFrame *fHm0 = new TGHorizontalFrame(fHm, 400, 40);
-  TGLabel *fL1 = new TGLabel(fHm0, "LE's histogram parameters: ");
+  TGLabel *fL1 = new TGLabel(fHm0, "LE hist: ");
   fEdit1 = new TGTextEntry(fHm0, new TGTextBuffer(100));
   fEdit1->SetToolTipText("bins min max");
   fEdit1->Resize(80, fEdit1->GetDefaultHeight());
   fHm0->AddFrame(fL1, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
   fHm0->AddFrame(fEdit1, new TGLayoutHints(kLHintsTop | kLHintsLeft,5, 5, 5, 5));
 
-  TGLabel *fL2 = new TGLabel(fHm0, "Tot's histogram parameters: ");
+  TGLabel *fL2 = new TGLabel(fHm0, "TOT hist: ");
   fEdit2 = new TGTextEntry(fHm0, new TGTextBuffer(100));
   fEdit2->SetToolTipText("bins min max");
   fEdit2->Resize(80, fEdit2->GetDefaultHeight());
@@ -1170,6 +1194,10 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fNumber2->Connect("ValueSet(Long_t)", "MyMainFrame", this, "InterestChanged()");
   (fNumber2->GetNumberEntry())->Connect("ReturnPressed()", "MyMainFrame", this, "InterestChanged()");
   fHm2->AddFrame(fNumber2, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
+
+  TGTextButton * fBtnSavetPng = new TGTextButton(fHm2, "Save &current");
+  fBtnSavetPng->Connect("Clicked()", "MyMainFrame", this, "DoSavePng()");
+  fHm2->AddFrame(fBtnSavetPng, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
   
   fHm->AddFrame(fHm2, new TGLayoutHints(kLHintsExpandX | kLHintsCenterX,5, 5, 5, 5));
 
@@ -1267,10 +1295,15 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
     fEdit1->SetText("400 -150 -50");
     fEdit2->SetText("200 -50 -30");
   }
+
+  if(gTrigger==1104){
+    fEdit1->SetText("400 20 70");
+    fEdit2->SetText("400 25 55");
+  }
   
   if(gTrigger==1778) fEdit1->SetText("300 50 150");
   
-  if(ginFile.Contains("C.root"))  fEdit1->SetText("400 50 100");
+  if(ginFile.Contains("C.root"))  fEdit1->SetText("400 -220 -180");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
 
   if(gTrigger==1952 || gTrigger==1956) fEdit2->SetText("200 -60 -20");
