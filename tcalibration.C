@@ -27,7 +27,6 @@ Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0, Double_
   return xx*xx/(r1*r1)+yy*yy/(r2*r2)<=1;
 }
 
-
 void TTSelector::Begin(TTree *){
   TString option = GetOption();
   TObjArray *strobj = option.Tokenize(" ");
@@ -90,6 +89,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false);
  
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
+  Bool_t trbdata = current_file_name.Contains("trb");
   TObjArray *sarr = current_file_name.Tokenize("_");
 
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
@@ -184,7 +184,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
-      if(badcannel(ch)) continue;
+      if(!trbdata && badcannel(ch)) continue;
 
       if(gMode>0){
 	timeLe = time[i]-tdcRefTime[tdc];

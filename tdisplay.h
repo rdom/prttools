@@ -30,6 +30,8 @@
 #include <TGSplitter.h>
 #include <TChainElement.h>
 #include <TText.h>
+#include <TKey.h>
+
 
 const Int_t kMaxHits = 50000;
 

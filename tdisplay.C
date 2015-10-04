@@ -6,7 +6,7 @@
 #include "tdisplay.h"
 
 Int_t gSetup=2015, gTrigger, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
-TString ginFile="";
+TString ginFile(""),gcFile("");
 const Int_t maxfiles = 150;
 TString fileList[maxfiles];
 
@@ -18,7 +18,10 @@ TH1F *hTimeT[nmcp][npix];
 
 TH2F *hLeTot[maxch];
 TH2F *hShape[nmcp][npix];
-TGraph *gMax;
+TGraph *gMaxFine, *gMaxTot;
+Int_t gMaxIn[maxch];
+Double_t gMaxInTot[maxch];
+TGraph *gGrIn[maxch];
 TGraph *gGr[maxfiles][maxch];
 
 Double_t tdcRefTime[100];
@@ -34,24 +37,25 @@ void TTSelector::SlaveBegin(TTree *){
   gTrigger = ((TObjString*)strobj->At(1))->GetString().Atoi();
   gMode = ((TObjString*)strobj->At(2))->GetString().Atoi();
   gSetup = ((TObjString*)strobj->At(3))->GetString().Atoi();
-  for(Int_t i=4; i<nfiles+4; i++){
-    fileList[i-4]=((TObjString*)strobj->At(i))->GetString();
-    std::cout<<" fileList[i]  "<<fileList[i-4] <<std::endl;
+  gcFile = ((TObjString*)strobj->At(4))->GetString();
+  for(Int_t i=5; i<nfiles+5; i++){
+    fileList[i-5]=((TObjString*)strobj->At(i))->GetString();
+    std::cout<<" fileList[i]  "<<fileList[i-5] <<std::endl;
   } 
   
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
       hFine[j][c] = new TH1F(Form("hFine_%d_ch%d",j,c),Form("hFine_%d_ch%d;bin [#];LE entries [#]",j,c) , 600,0,600);
-      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 500,0,70);
+      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 2000,50,80); //2000  50 80 //400 -2 2
       hTot[j][c]->SetLineColor(j+1);
       fOutput->Add(hFine[j][c]);
       fOutput->Add(hTot[j][c]);
     }
   }
   
-  const Long_t lb = 0, hb = 100;
+  const Long_t lb = -5, hb = 5;
   for(Int_t c=0; c<maxch; c++){
-    hLeTot[c] = new TH2F(Form("hLeTot_ch%d",c), Form("hLeTot_ch%d",c) ,200,lb,hb, 100,-2,5);
+    hLeTot[c] = new TH2F(Form("hLeTot_ch%d",c), Form("hLeTot_ch%d",c) ,1000,lb,hb, 100,-0.5,0.5);
     fOutput->Add(hLeTot[c]);
   }
 
@@ -59,7 +63,7 @@ void TTSelector::SlaveBegin(TTree *){
   for(Int_t m=0; m<nmcp; m++){
     for(Int_t p=0; p<npix; p++){
 
-      hTimeL[m][p] = new TH1F(Form("hTimeL_mcp%dpix%d",m,p), Form("hTimeL_%d_%d;LE time [ns];entries [#]",m,p) , 500,lb,hb);
+      hTimeL[m][p] = new TH1F(Form("hTimeL_mcp%dpix%d",m,p), Form("hTimeL_%d_%d;LE time [ns];entries [#]",m,p) , 2000,lb,hb);
       hTimeT[m][p] = new TH1F(Form("hTimeT_mcp%dpix%d",m,p), Form("hTimeT_%d_%d;TOT [ns];entries [#]",m,p) , 500,lb,hb);
       hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d;time [ns];offset to the threshold [mV]",m,p) , 400,lb,hb,130,-5,35);
 
@@ -75,15 +79,49 @@ void TTSelector::SlaveBegin(TTree *){
   hRefDiff = new TH1F("hRefDiff","hRefDiff;time [ns];entries [#]",500,-10,10); 
   fOutput->Add(hRefDiff);
   CreateMap();
+
+  if(gcFile!=""){
+    TFile f(gcFile);
+    TIter nextkey(f.GetListOfKeys());
+    TKey *key;
+
+    while ((key = (TKey*)nextkey())) {
+      TGraph *gr = (TGraph*)key->ReadObj();
+      TString name = gr->GetName();
+      Int_t channel = name.Atoi();
+      if(channel == 10000){ // line calibration
+	for(Int_t i=0; i<maxch; i++){
+	  Double_t x,y;
+	  gr->GetPoint(i,x,y);
+	  gMaxIn[i] = (Int_t)(y+0.01);
+	  std::cout<<"ch  "<<i<< "  FT max"<<  gMaxIn[i]<<std::endl;
+	  
+	}
+      }else if(channel == 20000){ // read tot offsets
+	for(Int_t i=0; i<maxch; i++){
+	  Double_t x,y;
+	  gr->GetPoint(i,x,y);
+	  gMaxInTot[i] = y;
+	  std::cout<<"ch  "<<i<< " tot off "<<  gMaxInTot[i]<<std::endl;
+	  
+	}
+      }else{       // spline calibration
+	gGrIn[channel]= new TGraph(*gr);
+      }
+    }
+    f.Close();
+  }
+
   std::cout<<"init done " <<std::endl;
   
 }
 
 Bool_t TTSelector::Process(Long64_t entry){
+  //  if(entry>10000) return kTRUE;
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
-  Int_t tdcSeqId,ch,mcp,pix,col,row;
+  Int_t tdc,ch,mcp,pix,col,row;
   Double_t triggerTime(0), grTime0(0), grTime1(0),timeLe(0), timeTe(0), offset(0);
-  Double_t timeT[50000];
+  Double_t timeL[10000], timeT[10000];
 
  
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
@@ -104,32 +142,40 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   GetEntry(entry);
   for(Int_t i=0; i<Hits_; i++){
-    tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
-    if(tdcSeqId<0) continue;
-    ch = ctdc*tdcSeqId+Hits_nTdcChannel[i];
+    tdc = map_tdc[Hits_nTrbAddress[i]];
+    if(tdc<0) continue;
+    ch = ctdc*tdc+Hits_nTdcChannel[i];
     //if(Hits_nTdcErrCode[i]!=0) continue
+    
+    if(gcFile!="") {
+      Double_t coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
+      //spline calib
+      //time[i] = coarseTime-gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]);
 
-    if(ch==gTrigger) grTime1 = Hits_fTime[i];
+      //linear calib
+      Double_t max = (Double_t) gMaxIn[AddRefChannels(ch,tdc)]-2;
+      timeL[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
+    }
+
+    if(ch==gTrigger) grTime1 = timeL[i];
     if(Hits_nTdcChannel[i]==0) { //ref channel
-      tdcRefTime[tdcSeqId] = Hits_fTime[i];
-      if(gTrigger/48==tdcSeqId) grTime0 = Hits_fTime[i];
+      tdcRefTime[tdc] = timeL[i];
+      if(gTrigger/48==tdc) grTime0 = timeL[i];
       continue;
     }
 
-    if(Hits_nSignalEdge[i]==0){
-      timeT[ch]=Hits_fTime[i];
-      continue;
-    }
+    if(Hits_nSignalEdge[i]==0) timeT[i]=timeL[i];
+
   }
  
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
       //if(Hits_nTdcErrCode[i]!=0) continue;
       
-      tdcSeqId = map_tdc[Hits_nTrbAddress[i]];
-      if(tdcSeqId<0) continue;
-      ch = ctdc*tdcSeqId+Hits_nTdcChannel[i];
-      hFine[fileid][AddRefChannels(ch,tdcSeqId)]->Fill(Hits_nFineTime[i]);
+      tdc = map_tdc[Hits_nTrbAddress[i]];
+      if(tdc<0) continue;
+      ch = ctdc*tdc+Hits_nTdcChannel[i];
+      hFine[fileid][AddRefChannels(ch,tdc)]->Fill(Hits_nFineTime[i]);
 
       if(Hits_nSignalEdge[i]==0) continue; //tailing edge
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
@@ -137,12 +183,12 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch<3000) {
 	mcp = map_mcp[ch];
 	pix = map_pix[ch];	
-	triggerTime = grTime1 - grTime0;
+	if(gTrigger!=0) triggerTime = grTime1 - grTime0;
 
 	hCh->Fill(ch);
-	timeLe = Hits_fTime[i]-tdcRefTime[tdcSeqId] - triggerTime;
-	timeTe = timeT[ch]-tdcRefTime[tdcSeqId]-triggerTime;
-	  
+	timeLe = timeL[i]-tdcRefTime[tdc] - triggerTime;
+	timeTe = timeT[i+1]-tdcRefTime[tdc]-triggerTime;
+
 	if(ch<maxmch){
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
 	  TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
@@ -152,8 +198,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  hShape[mcp][pix]->Fill(timeLe,offset);
 	  hShape[mcp][pix]->Fill(timeTe,offset);
 	}
-	hTot[fileid][ch]->Fill(timeTe-timeLe);
-	hLeTot[ch]->Fill(timeLe,timeTe-timeLe);
+	hTot[fileid][ch]->Fill(timeTe-timeLe-gMaxInTot[ch]);
+	hLeTot[ch]->Fill(timeLe,timeTe-timeLe-gMaxInTot[ch]);
       }
     }
   }
@@ -326,8 +372,11 @@ void MyMainFrame::DoExportGr(){
     gGr[0][c]->SetName(Form("%d",c));
     gGr[0][c]->Write();
   }
-  gMax->SetName("10000");
-  gMax->Write();
+  gMaxFine->SetName("10000");
+  gMaxFine->Write();
+
+  gMaxTot->SetName("20000");
+  gMaxTot->Write();
   
   efile.Write();
   efile.Close();
@@ -359,7 +408,8 @@ TGraph * getGarph(TH1F *hist){
 
 void Calibrate(){
   std::cout<<"Creating calibration"<<std::endl;
-  gMax = new TGraph();
+  gMaxFine = new TGraph();
+  gMaxTot = new TGraph();
  
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
@@ -379,7 +429,11 @@ void Calibrate(){
       Int_t firstbin = hFine[j][c]->FindFirstBinAbove(0);
       Int_t lastbin = hFine[j][c]->FindLastBinAbove(0);
       //      std::cout<<c<<"   "<<firstbin << "  "<<lastbin <<std::endl;
-      gMax->SetPoint(c,firstbin,lastbin);
+      gMaxFine->SetPoint(c,firstbin,lastbin);
+
+      firstbin = hTot[j][c]->FindFirstBinAbove(0);
+      lastbin = hTot[j][c]->FindLastBinAbove(0);
+      gMaxTot->SetPoint(c, firstbin, hTot[j][c]->GetMean());
     }
   }
 }
@@ -502,7 +556,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(gMode==3) nfiles=1;
   if(gMode==4) nfiles=2;
   
-  TString option = Form("%d %d %d %d ",nfiles,gTrigger,gMode,gSetup)+strfiles;
+  TString option = Form("%d %d %d %d ",nfiles,gTrigger,gMode,gSetup)+gcFile+" "+strfiles;
   
   std::cout<<"nfiles "<<nfiles <<std::endl;
 
@@ -538,10 +592,11 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4){
+void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4, TString cFile= "calib.root"){
   //inFile= "data/dirc/scan1/th_1*.hld.root";
   ginFile = inFile;
   gTrigger = trigger;
+  gcFile = cFile; // fine time calibration
   gMode=mode;
   gSetup = 2015;
   gWorkers = workers;

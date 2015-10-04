@@ -288,7 +288,7 @@ Bool_t MSelector::Process(Long64_t entry){
     le = hit.GetLeadTime();
     tot = hit.GetTotTime();   
 
-    if(badcannel(ch)) continue;
+    //if(badcannel(ch)) continue;
 
     Double_t timeDiff = le-triggerLe;
       

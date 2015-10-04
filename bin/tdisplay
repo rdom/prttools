@@ -14,13 +14,15 @@ show_help(){
         reference channel id
      -l
         use latest *hld.root file in current folder
+     -c 
+        path to the file with calibration curves
      -j
         number of proof threads (default 4) if <2 - no proof will be used"
     echo "$help" 
 }
 
 OPTIND=1 
-while getopts "h?r:la:j:" opt; do
+while getopts "h?r:lc:a:j:" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -29,6 +31,8 @@ while getopts "h?r:la:j:" opt; do
 	r)  refChannel=$OPTARG
 	    ;;
 	l)  latestFile=1
+	    ;;
+	c)  cFile=$OPTARG
 	    ;;
 	a)  mode=$OPTARG
 	    ;;
@@ -58,6 +62,16 @@ fi
 
 inFile=$(readlink -f $fileName)
 
+
+if [ ! -f $cFile ] && [[ $cFile != *"*"* ]]; then
+    echo "File $cFile not found. Exit"
+    exit 0
+fi
+
+if [[ $cFile  != "" ]]; then
+   cFile=$(readlink -f $cFile) 
+fi
+
 if [ -z $1 ] && [ ! $latestFile  ]
 then
     show_help
@@ -66,6 +80,6 @@ else
 	cd $HOME/dirc/prttools
     fi
 
-    root -l tdisplay.C+"(\"$inFile\",$refChannel,$mode,$threads)"
+    root -l tdisplay.C+"(\"$inFile\",$refChannel,$mode,$threads,\"$cFile\")"
     cd -
 fi
