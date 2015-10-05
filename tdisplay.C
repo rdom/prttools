@@ -46,7 +46,7 @@ void TTSelector::SlaveBegin(TTree *){
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
       hFine[j][c] = new TH1F(Form("hFine_%d_ch%d",j,c),Form("hFine_%d_ch%d;bin [#];LE entries [#]",j,c) , 600,0,600);
-      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 2000,50,80); //2000  50 80 //400 -2 2
+      hTot[j][c] = new TH1F(Form("hTot_%d_ch%d",j,c), Form("hTot_%d_ch%d;TOT [ns];entries [#]",j,c) , 200,0,12); //2000  50 80 //400 -2 2
       hTot[j][c]->SetLineColor(j+1);
       fOutput->Add(hFine[j][c]);
       fOutput->Add(hTot[j][c]);
@@ -188,6 +188,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	hCh->Fill(ch);
 	timeLe = timeL[i]-tdcRefTime[tdc] - triggerTime;
 	timeTe = timeT[i+1]-tdcRefTime[tdc]-triggerTime;
+	Double_t tot = timeT[i+1]-timeL[i]+30;
 
 	if(ch<maxmch){
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
@@ -198,8 +199,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  hShape[mcp][pix]->Fill(timeLe,offset);
 	  hShape[mcp][pix]->Fill(timeTe,offset);
 	}
-	hTot[fileid][ch]->Fill(timeTe-timeLe-gMaxInTot[ch]);
-	hLeTot[ch]->Fill(timeLe,timeTe-timeLe-gMaxInTot[ch]);
+	hTot[fileid][ch]->Fill(tot-gMaxInTot[ch]);
+	hLeTot[ch]->Fill(timeLe,tot-gMaxInTot[ch]);
       }
     }
   }
