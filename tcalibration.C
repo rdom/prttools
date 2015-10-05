@@ -12,6 +12,7 @@ Int_t gComboId=0;
 TGraph *gGr[maxch];
 TGraph *gGrDiff[maxch];
 Int_t gMax[maxch];
+Double_t gMaxInTot[maxch];
 
 Double_t walktheta(-16.5*TMath::Pi()/180.);
 Double_t deltatheta(2.5*TMath::Pi()/180.);
@@ -57,7 +58,15 @@ void TTSelector::Begin(TTree *){
 	  std::cout<<"i  "<<i<< "  "<<  gMax[i]<<std::endl;
 	  
 	}
-      }else{                // spline calibration
+      }else if(channel == 20000){ // read tot offsets
+	for(Int_t i=0; i<maxch; i++){
+	  Double_t x,y;
+	  gr->GetPoint(i,x,y);
+	  gMaxInTot[i] = y;
+	  std::cout<<"ch  "<<i<< " tot off "<<  gMaxInTot[i]<<std::endl;
+	  
+	}
+      }else{                      // spline calibration
 	gGr[channel]= new TGraph(*gr);
       }
     }
@@ -196,7 +205,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(gTrigger!=0 && ch<960) timeLe = timeLe - grTime1;
       }
       
-      timeTot = timeT[i+1] - time[i];
+      timeTot = timeT[i+1] - time[i]-gMaxInTot[ch]+30;
       
       if(gtFile!=""){
 	if(ch<960) timeLe -= gGrDiff[ch]->Eval(timeTot);	
