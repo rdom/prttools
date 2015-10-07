@@ -137,8 +137,7 @@ private:
 public:
   MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h);
   virtual ~MyMainFrame();
-  void DoExport();
-  void DoExportGr();
+  void DoExport(Int_t type);
   void DoExit(){gApplication->Terminate(0);}
   TString updatePlot(Int_t id=0, TCanvas *cT=0);
 

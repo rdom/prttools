@@ -18,9 +18,9 @@ TH1F *hTimeT[nmcp][npix];
 
 TH2F *hLeTot[maxch];
 TH2F *hShape[nmcp][npix];
-TGraph *gMaxFine, *gMaxTot;
+TGraph *gMaxFine, *gTotOff, *gTotPeaks;
 Int_t gMaxIn[maxch];
-Double_t gMaxInTot[maxch];
+Double_t gTotO[maxch], gTotP[960][10];
 TGraph *gGrIn[maxch];
 TGraph *gGr[maxfiles][maxch];
 
@@ -38,6 +38,7 @@ void TTSelector::SlaveBegin(TTree *){
   gMode = ((TObjString*)strobj->At(2))->GetString().Atoi();
   gSetup = ((TObjString*)strobj->At(3))->GetString().Atoi();
   gcFile = ((TObjString*)strobj->At(4))->GetString();
+  
   for(Int_t i=5; i<nfiles+5; i++){
     fileList[i-5]=((TObjString*)strobj->At(i))->GetString();
     std::cout<<" fileList[i]  "<<fileList[i-5] <<std::endl;
@@ -80,7 +81,7 @@ void TTSelector::SlaveBegin(TTree *){
   fOutput->Add(hRefDiff);
   CreateMap();
 
-  if(gcFile!=""){
+  if(gcFile!="0"){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
     TKey *key;
@@ -89,21 +90,23 @@ void TTSelector::SlaveBegin(TTree *){
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
       Int_t channel = name.Atoi();
+      Double_t x,y;
       if(channel == 10000){ // line calibration
 	for(Int_t i=0; i<maxch; i++){
-	  Double_t x,y;
 	  gr->GetPoint(i,x,y);
 	  gMaxIn[i] = (Int_t)(y+0.01);
-	  std::cout<<"ch  "<<i<< "  FT max"<<  gMaxIn[i]<<std::endl;
-	  
+	  std::cout<<"ch  "<<i<< "  FT max"<<  gMaxIn[i]<<std::endl;	  
 	}
       }else if(channel == 20000){ // read tot offsets
 	for(Int_t i=0; i<maxch; i++){
-	  Double_t x,y;
+	  gr->GetPoint(i,x,gTotO[i]);
+	  std::cout<<"ch  "<<i<< " tot off "<<  gTotO[i]<<std::endl;
+	}
+      }else if(channel == 30000){ // read tot peaks
+	for(Int_t i=0; i<960*10; i++){
 	  gr->GetPoint(i,x,y);
-	  gMaxInTot[i] = y;
-	  std::cout<<"ch  "<<i<< " tot off "<<  gMaxInTot[i]<<std::endl;
-	  
+	  gTotP[i/10][i%10] = y;
+	  std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
       }else{       // spline calibration
 	gGrIn[channel]= new TGraph(*gr);
@@ -113,7 +116,6 @@ void TTSelector::SlaveBegin(TTree *){
   }
 
   std::cout<<"init done " <<std::endl;
-  
 }
 
 Bool_t TTSelector::Process(Long64_t entry){
@@ -153,7 +155,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       //time[i] = coarseTime-gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]);
 
       //linear calib
-      Double_t max = (Double_t) gMaxIn[AddRefChannels(ch,tdc)]-2;
+      Double_t max = (Double_t) gMaxIn[AddRefChannels(ch,tdc)]-5;
       timeL[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
     }
 
@@ -165,7 +167,6 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
 
     if(Hits_nSignalEdge[i]==0) timeT[i]=timeL[i];
-
   }
  
   if((grTime0>0 && grTime1>0) || gTrigger==0){
@@ -199,8 +200,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  hShape[mcp][pix]->Fill(timeLe,offset);
 	  hShape[mcp][pix]->Fill(timeTe,offset);
 	}
-	hTot[fileid][ch]->Fill(tot-gMaxInTot[ch]);
-	hLeTot[ch]->Fill(timeLe,tot-gMaxInTot[ch]);
+	hTot[fileid][ch]->Fill(tot-gTotO[ch]);
+	hLeTot[ch]->Fill(timeLe,tot-gTotO[ch]);
       }
     }
   }
@@ -221,7 +222,6 @@ Bool_t TTSelector::Process(Long64_t entry){
 TString drawHist(Int_t m, Int_t p){
   TString histname="";
   Int_t ch = map_mpc[m][p];
-  ch = AddRefChannels(ch,ch/ctdc)+1;
   
   if(gComboId==0){
     TLegend *leg = new TLegend(0.5,0.7,0.9,0.9);
@@ -229,6 +229,7 @@ TString drawHist(Int_t m, Int_t p){
     leg->SetFillStyle(0);
     leg->SetBorderSize(0);
     Int_t num=0;
+    ch = AddRefChannels(ch,ch/ctdc)+1;
     for(Int_t j=0; j<nfiles; j++){
       if(gGr[j][ch]->GetN()<1){
 	gPad->Clear();
@@ -247,6 +248,7 @@ TString drawHist(Int_t m, Int_t p){
     histname=Form("gCalib_mcp%dpix%d",m,p);
   }
   if(gComboId==1){
+    ch = AddRefChannels(ch,ch/ctdc)+1;
     for(Int_t j=0; j<nfiles; j++){
       if(j==0) hFine[j][ch]->Draw();
       else hFine[j][ch]->Draw("same");
@@ -319,69 +321,82 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
   }
 }
 
-void MyMainFrame::DoExport(){
-  gROOT->SetBatch(1);
-  TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
-  cExport->SetCanvasSize(800,400);
-  TString histname="", filedir=ginFile;
-  filedir.Remove(filedir.Last('/'));
-  fSavePath = filedir+"/plots";
+void MyMainFrame::DoExport(Int_t type){
+  if(type==0){
+    gROOT->SetBatch(1);
+    TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
+    cExport->SetCanvasSize(800,400);
+    TString histname="", filedir=ginFile;
+    filedir.Remove(filedir.Last('/'));
+    fSavePath = filedir+"/plots";
   
-  std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",2));
-  Float_t total = (nmcp-1)*(npix-1);
-  if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
-    for(Int_t m=0; m<nmcp; m++){
-      for(Int_t p=0; p<npix; p++){
-	cExport->cd();
-	histname=drawHist(m,p);
+    std::cout<<"Exporting into  "<<fSavePath <<std::endl;
+    writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",2));
+    Float_t total = (nmcp-1)*(npix-1);
+    if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
+      for(Int_t m=0; m<nmcp; m++){
+	for(Int_t p=0; p<npix; p++){
+	  cExport->cd();
+	  histname=drawHist(m,p);
 
-	cExport->SetName(histname);
-	canvasAdd(cExport);
-	canvasSave(1,1);
-	canvasDel(cExport->GetName());
+	  cExport->SetName(histname);
+	  canvasAdd(cExport);
+	  canvasSave(1,1);
+	  canvasDel(cExport->GetName());
     
-	gSystem->ProcessEvents();
+	  gSystem->ProcessEvents();
+	}
       }
+    }else{
+      histname = updatePlot(gComboId,cExport);
+      cExport->SetName(histname);
+      canvasAdd(cExport);
+      canvasSave(1,1);
+      canvasDel(cExport->GetName());
     }
-  }else{
-    histname = updatePlot(gComboId,cExport);
-    cExport->SetName(histname);
+
+    cExport = (TCanvas *) cDigi->DrawClone();
+    cExport->SetCanvasSize(800,400);
+
+    cExport->SetName("digi");
     canvasAdd(cExport);
     canvasSave(1,1);
     canvasDel(cExport->GetName());
+  
+    gROOT->SetBatch(0);
+    std::cout<<"Exporting .. Done"<<std::endl;
+    return;
   }
 
-  cExport = (TCanvas *) cDigi->DrawClone();
-  cExport->SetCanvasSize(800,400);
-
-  cExport->SetName("digi");
-  canvasAdd(cExport);
-  canvasSave(1,1);
-  canvasDel(cExport->GetName());
-  
-  gROOT->SetBatch(0);
-  std::cout<<"Exporting .. Done"<<std::endl;
-}
-
-void MyMainFrame::DoExportGr(){
+  TString name("FT");
+  if(type==2) name="TO";
+  if(type==3) name="TP"; 
   TString filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
-  TFile efile(filedir+"/calib1.root","RECREATE");
-  
-  for(Int_t c=0; c<maxch; c++){
-    gGr[0][c]->SetName(Form("%d",c));
-    gGr[0][c]->Write();
+  TFile efile(filedir+"/calib"+name+ ".root","RECREATE");
+   
+  if(type==1){
+    for(Int_t c=0; c<maxch; c++){
+      gGr[0][c]->SetName(Form("%d",c));
+      gGr[0][c]->Write();
+    }
+    gMaxFine->SetName("10000");
+    gMaxFine->Write();
   }
-  gMaxFine->SetName("10000");
-  gMaxFine->Write();
-
-  gMaxTot->SetName("20000");
-  gMaxTot->Write();
   
+  if(type==2){
+    gTotOff->SetName("20000");
+    gTotOff->Write();
+  }
+
+  if(type==3){
+    gTotPeaks->SetName("30000");
+    gTotPeaks->Write();
+  }
+    
   efile.Write();
   efile.Close();
-  std::cout<<"Exporting .. Done"<<std::endl;
+  std::cout<<"Exporting"+name+" .. Done"<<std::endl;
 }
 
 TGraph * getGarph(TH1F *hist){
@@ -406,11 +421,12 @@ TGraph * getGarph(TH1F *hist){
   }
   return gr;
 }
-
+TSpectrum *spect = new TSpectrum(10);
 void Calibrate(){
   std::cout<<"Creating calibration"<<std::endl;
   gMaxFine = new TGraph();
-  gMaxTot = new TGraph();
+  gTotOff = new TGraph();
+  gTotPeaks = new TGraph();
  
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
@@ -431,10 +447,24 @@ void Calibrate(){
       Int_t lastbin = hFine[j][c]->FindLastBinAbove(0);
       //      std::cout<<c<<"   "<<firstbin << "  "<<lastbin <<std::endl;
       gMaxFine->SetPoint(c,firstbin,lastbin);
-
+      
       firstbin = hTot[j][c]->FindFirstBinAbove(0);
       lastbin = hTot[j][c]->FindLastBinAbove(0);
-      gMaxTot->SetPoint(c, firstbin, hTot[j][c]->GetMean());
+      gTotOff->SetPoint(c, firstbin, hTot[j][c]->GetMean());
+    }
+  }
+
+  for(Int_t c=0; c<960; c++){
+    //    hTot[0][c]->ShowPeaks(2,"goff",0.05);
+    Int_t nfound = spect->Search(hTot[0][c],3,"",0.1);
+    std::cout<<"nfound  "<<nfound <<std::endl;
+    Float_t *xpeaks = spect->GetPositionX();
+    Double_t peak(0);
+    for(Int_t i=0; i<10; i++){
+      if(i<nfound) peak = xpeaks[i];
+      else peak = 0;
+      std::cout<<i<<" xpeaks "<< peak <<std::endl;
+      gTotPeaks->SetPoint(c*10+i, 1, peak);
     }
   }
 }
@@ -511,18 +541,17 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fComboMode->AddEntry("Ref time diff", 7);
   fComboMode->Connect("Selected(Int_t)", "MyMainFrame", this, "updatePlot(Int_t)");
 
-  TGTextButton * fBtnExport = new TGTextButton(hframe, "Export for the &blog");
-  fBtnExport->Connect("Clicked()", "MyMainFrame", this, "DoExport()");
-  hframe->AddFrame(fBtnExport, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
-
-  TGTextButton * fBtnExportGr = new TGTextButton(hframe, "Export curves");
-  fBtnExportGr->Connect("Clicked()", "MyMainFrame", this, "DoExportGr()");
-  hframe->AddFrame(fBtnExportGr, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
-
-
+  TGLayoutHints * layout = new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5);
+  TString names[]={"&Blog", "Fine &Calib","TOT &offset","TOT &peaks"};
+  for(Int_t i=0; i<4; i++){
+    TGTextButton * btn = new TGTextButton(hframe,names[i]);
+    btn->Connect("Clicked()", "MyMainFrame", this, Form("DoExport(=%d)",i));
+    hframe->AddFrame(btn, layout);
+  }
+  
   TGTextButton *exit = new TGTextButton(hframe, "&Exit ");
   exit->Connect("Pressed()", "MyMainFrame", this, "DoExit()");
-  hframe->AddFrame(exit, new TGLayoutHints(kLHintsCenterX, 5, 5, 3, 4));
+  hframe->AddFrame(exit, layout);
 
   AddFrame(hframe, new TGLayoutHints(kLHintsExpandX | kLHintsCenterX, 2, 2, 2, 2));
 
@@ -597,7 +626,7 @@ void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, In
   //inFile= "data/dirc/scan1/th_1*.hld.root";
   ginFile = inFile;
   gTrigger = trigger;
-  gcFile = cFile; // fine time calibration
+  gcFile = (cFile!="")? cFile: "0"; // fine time calibration
   gMode=mode;
   gSetup = 2015;
   gWorkers = workers;

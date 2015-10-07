@@ -12,7 +12,7 @@ Int_t gComboId=0;
 TGraph *gGr[maxch];
 TGraph *gGrDiff[maxch];
 Int_t gMax[maxch];
-Double_t gMaxInTot[maxch];
+Double_t gTotO[maxch], gTotP[960][10];;
 
 Double_t walktheta(-16.5*TMath::Pi()/180.);
 Double_t deltatheta(2.5*TMath::Pi()/180.);
@@ -26,6 +26,31 @@ Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0, Double_
   Double_t yy = sin(w)*(x-x0)-cos(w)*(y-y0);
 
   return xx*xx/(r1*r1)+yy*yy/(r2*r2)<=1;
+}
+
+Double_t getTotWalk(Double_t tot,Int_t ch){
+  Double_t minp(0), walk(0), d(0), min(100);
+  if(ch<960){
+    for(Int_t i=0; i<9; i++){
+      if(gTotP[ch][i]<0.00000001) continue;
+      d = gTotP[ch][i]-tot;
+      if(fabs(d)<fabs(min)){
+	minp = gTotP[ch][i];
+	min = d;
+      }
+    }
+  }
+  
+  if(fabs(min)<0.8) walk=-min*tan(12*TMath::Pi()/180.);
+  if(tot<10) walk-=(10-tot)*tan(6*TMath::Pi()/180.);
+
+  // std::cout<<ch<<"  tot "<< tot << "  min "<<min << " minp "<< minp << "      corr "<< walk<<std::endl;
+  // for(Int_t i=0; i<10; i++){
+  //   std::cout<<i<<" "<<  gTotP[ch][i] <<std::endl;
+  // }
+  // std::cout<<" " <<std::endl;
+  
+  return walk;
 }
 
 void TTSelector::Begin(TTree *){
@@ -50,9 +75,9 @@ void TTSelector::Begin(TTree *){
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
       Int_t channel = name.Atoi();
+      Double_t x,y;
       if(channel == 10000){ // line calibration
 	for(Int_t i=0; i<maxch; i++){
-	  Double_t x,y;
 	  gr->GetPoint(i,x,y);
 	  gMax[i] = (Int_t)(y+0.01);
 	  std::cout<<"i  "<<i<< "  "<<  gMax[i]<<std::endl;
@@ -60,11 +85,15 @@ void TTSelector::Begin(TTree *){
 	}
       }else if(channel == 20000){ // read tot offsets
 	for(Int_t i=0; i<maxch; i++){
-	  Double_t x,y;
 	  gr->GetPoint(i,x,y);
-	  gMaxInTot[i] = y;
-	  std::cout<<"ch  "<<i<< " tot off "<<  gMaxInTot[i]<<std::endl;
-	  
+	  gTotO[i] = y;
+	  std::cout<<"ch  "<<i<< " tot off "<<  gTotO[i]<<std::endl;
+	}
+      }else if(channel == 30000){ // read tot peaks
+	for(Int_t i=0; i<960*10; i++){
+	  gr->GetPoint(i,x,y);
+	  gTotP[i/10][i%10] = y;
+	  std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
       }else{                      // spline calibration
 	gGr[channel]= new TGraph(*gr);
@@ -122,7 +151,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       //time[i] = coarseTime-gGr[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]);
 
       //linear calib
-      Double_t max = (Double_t) gMax[AddRefChannels(ch+1,tdc)]-2;
+      Double_t max = (Double_t) gMax[AddRefChannels(ch+1,tdc)]-5;
       time[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
     }
     else time[i] = Hits_fTime[i]; //coarseTime-(Hits_nFineTime[i]-31)*0.0102; //Hits_fTime[i];//
@@ -205,7 +234,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(gTrigger!=0 && ch<960) timeLe = timeLe - grTime1;
       }
       
-      timeTot = timeT[i+1] - time[i]-gMaxInTot[ch]+30;
+      timeTot = timeT[i+1] - time[i]-gTotO[ch]+30;
+      if(ch<960) timeLe += getTotWalk(timeTot,ch);
       
       if(gtFile!=""){
 	if(ch<960) timeLe -= gGrDiff[ch]->Eval(timeTot);	
