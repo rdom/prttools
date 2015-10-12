@@ -227,7 +227,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(tdc<0) continue;
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
       ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
-
+      hFine[fileid][AddRefChannels(ch+1,tdc)]->Fill(Hits_nFineTime[i]);	  
       //if(mult[ch]>1) continue;
       
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
@@ -255,7 +255,6 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  timeLe += getTotWalk(tot,ch);
 	  timeLe += getTotWalk(triggerTot,ch,1);
 	  
-	  hFine[fileid][AddRefChannels(ch+1,tdc)]->Fill(Hits_nFineTime[i]);	  
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
 	  TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
 	  hFine[fileid][ch]->SetTitle(Form("tdc 0x%s, chain %d, lch %d = ch %d, m%dp%d ",tdchex.Data() ,(ch/16)%3,ch%16,ch, mcp, pix));
