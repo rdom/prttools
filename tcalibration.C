@@ -41,7 +41,7 @@ Double_t getTotWalk(Double_t tot,Int_t ch){
     }
   }
   
-  if(fabs(min)<0.8) walk=-min*tan(12*TMath::Pi()/180.);
+  if(fabs(min)<0.8) walk=-min*tan(10*TMath::Pi()/180.);
   if(tot<10) walk-=(10-tot)*tan(6*TMath::Pi()/180.);
 
   // std::cout<<ch<<"  tot "<< tot << "  min "<<min << " minp "<< minp << "      corr "<< walk<<std::endl;
@@ -148,11 +148,11 @@ Bool_t TTSelector::Process(Long64_t entry){
     coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
     if(gcFile!="") {
       //spline calib
-      //time[i] = coarseTime-gGr[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]);
+      time[i] = coarseTime-gGr[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
 
       //linear calib
-      Double_t max = (Double_t) gMax[AddRefChannels(ch+1,tdc)]-5;
-      time[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
+      // Double_t max = (Double_t) gMax[AddRefChannels(ch+1,tdc)]-2;
+      // time[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
     }
     else time[i] = Hits_fTime[i]; //coarseTime-(Hits_nFineTime[i]-31)*0.0102; //Hits_fTime[i];//
     

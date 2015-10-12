@@ -40,7 +40,6 @@ TString ginFile;
 
 Double_t gTimeCutMin=-10000, gTimeCutMax=10000,gTofMin(0),gTofMax(0);
 Double_t gMultCutMin=0, gMultCutMax=0;  
-TSpectrum *spect = new TSpectrum(2);
 Double_t gTimeCuts[nmcp][npix][2];
 Double_t gTotMean[nmcp][npix];
 TString gsTimeCuts = "0";
@@ -374,69 +373,12 @@ Bool_t MSelector::Process(Long64_t entry){
   return kTRUE;
 }
 
-TF1 *gaust;
-TVector3 fit(TH1F *h, Double_t range = 3){
-  int binmax = h->GetMaximumBin();
-  double xmax = h->GetXaxis()->GetBinCenter(binmax);
-  gaust = new TF1("gaust","gaus(0)",xmax-range,xmax+range);
-  gaust->SetLineColor(1);
-  Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-0.6),h->GetXaxis()->FindBin(xmax+0.6));
-  Double_t xxmin, xxmax, sigma1=0, mean1=0, sigma2, mean2;
-  xxmax = xmax;
-  xxmin = xxmax;
-  Int_t nfound = 1, peakSearch = 1;
-  if(integral>20){ 
-    
-    if(peakSearch == 1){
-      gaust->SetParLimits(2,0.05,2);
-      gaust->SetParameter(1,xmax);
-      gaust->SetParameter(2,0.2);
-    }
-    
-    if(peakSearch == 2){
-      nfound = spect->Search(h,2,"",0.2);
-      std::cout<<"nfound  "<<nfound <<std::endl;
-      Float_t *xpeaks = spect->GetPositionX();
-      if(nfound==1){
-	gaust =new TF1("gaust","gaus(0)",xmax-range,xmax+range);
-	gaust->SetParameter(1,xpeaks[0]);
-      }else if(nfound==2) {
-	if(xpeaks[0]>xpeaks[1]) {
-	  xxmax = xpeaks[0];
-	  xxmin = xpeaks[1];
-	}else {
-	  xxmax = xpeaks[1];
-	  xxmin = xpeaks[0];
-	}
-	gaust =new TF1("gaust","gaus(0)+gaus(3)",xmax-range,xmax+range);
-	gaust->SetParameter(1,xxmin);
-	gaust->SetParameter(4,xxmax);
-      }
-    
-      gaust->SetParameter(2,0.3);
-      gaust->SetParameter(5,0.3);
-    }
-
-    h->Fit("gaust","","MQN",xxmin-range, xxmax+range);
-    mean1 = gaust->GetParameter(1);
-    sigma1 = gaust->GetParameter(2);
-    if(sigma1>10) sigma1=10;
-    
-    if(peakSearch == 2){ 
-      mean2 = (nfound==1) ? gaust->GetParameter(1) : gaust->GetParameter(4);
-      sigma2 = (nfound==1) ? gaust->GetParameter(2) : gaust->GetParameter(5);
-    }
-  }
-  delete gaust;
-  return TVector3(mean1,sigma1,0);
-}
-
 void calculateTimeCut(){
   TVector3 res;
   gsTimeCuts="";
   for (Int_t m=0; m <nmcp; m++) {
     for(Int_t p=0; p<npix; p++){
-      res = fit(hPTime[m][p]);
+      res = prt_fit(hPTime[m][p]);
       gTimeCuts[m][p][0]=res.X() - 3*res.Y();
       gTimeCuts[m][p][1]=res.X() + 3*res.Y();
       gsTimeCuts+=Form("%f;%f;",gTimeCuts[m][p][0],gTimeCuts[m][p][1]);
@@ -450,7 +392,7 @@ void getTimeOffset(){
   TH2F* hh;
   for (Int_t m=0; m <nmcp; m++) {
     for(Int_t p=0; p<npix; p++){
-      Double_t mean = fit(hPTime[m][p],0.5).X();
+      Double_t mean = prt_fit(hPTime[m][p],0.5).X();
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
       hh->RebinY(2);
 
@@ -464,7 +406,7 @@ void getTimeOffset(){
       for (int i=0;i<500;i++){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
 	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);
-	Double_t vx = fit((TH1F*)h,0.5).X();
+	Double_t vx = prt_fit((TH1F*)h,0.5).X();
 	if(vx==0) vx = mean;
 	gGrDiff[ch]->SetPoint(i,x,vx);
       }
@@ -530,7 +472,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
 	normalize(hh,2);
 	hPTime[mcp][pix]->Draw();
-	fit(hPTime[mcp][pix],1);
+	prt_fit(hPTime[mcp][pix],1);
 	hPTime[mcp][pix]->Draw("same");
 	if(hPTime[mcp][pix]->GetEntries()>10) hSTime[mcp][pix]->Draw("same");
       }
@@ -587,7 +529,7 @@ void MyMainFrame::InterestChanged(){
     TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
     normalize(hh,2);
     hPTime[mcp][pix]->Draw();
-    fit(hPTime[mcp][pix],1);
+    prt_fit(hPTime[mcp][pix],1);
     hPTime[mcp][pix]->Draw("same");
     if(hPTime[mcp][pix]->GetEntries()>10) hSTime[mcp][pix]->Draw("same");
   }
@@ -875,7 +817,7 @@ void MyMainFrame::DoExport(){
 	cExport->cd();
 	if(gComboId==0) {
 	  hPTime[m][p]->Draw();
-	  fit(hPTime[m][p]);
+	  prt_fit(hPTime[m][p]);
 	  hPTime[m][p]->Draw("same");
 	  if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
@@ -924,7 +866,7 @@ void MyMainFrame::DoExport(){
 	  TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
 	  normalize(hh,2);
 	  hPTime[m][p]->Draw();
-	  fit(hPTime[m][p]);
+	  prt_fit(hPTime[m][p]);
 	  hPTime[m][p]->Draw("same");
 	  if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
@@ -1012,7 +954,7 @@ void MyMainFrame::DoCheckBtnClecked3(){
     TVector3 res;
     for (Int_t m=0; m <nmcp; m++) {
       for(Int_t p=0; p<npix; p++){
-	res = fit(hPTot[m][p]);
+	res = prt_fit(hPTot[m][p]);
 	gsTotMean+=Form("%f;",res.X());
       }
     }  
@@ -1034,7 +976,7 @@ void MyMainFrame::DoCheckBtnClecked4(){
       for(Int_t p=0; p<npix; p++){
 	Int_t col = p/8;
 	Int_t row = p%8;
-	Double_t mean = fit(hPTime[m][p],0.5).X();
+	Double_t mean = prt_fit(hPTime[m][p],0.5).X();
 	if(mean>90) mean = 90; 
 	fhDigi[m]->Fill(row,col,mean);
       }
@@ -1310,7 +1252,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
 
   if(gTrigger==1952 || gTrigger==1956) fEdit2->SetText("200 -60 -20");
-  if(gTrigger==1344 || gTrigger==1345) fEdit2->SetText("200 20 60");
+  if(gTrigger==1344 || gTrigger==1345) fEdit2->SetText("200 0 10");
   fEdit3->SetText("0 0");
   fEdit4->SetText("0 0");
   fEdit5->SetText("0 0");

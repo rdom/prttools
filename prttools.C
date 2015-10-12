@@ -58,6 +58,7 @@ TH2F*    fhDigi[15];
 TPad*    fhPads[15];
 TPad*    fhPglobal;
 TCanvas* cDigi;
+TSpectrum *prt_spect = new TSpectrum(2);
 
 const Int_t nmcp = 15, npix = 64;
 const Int_t maxmch(nmcp*npix);
@@ -91,6 +92,63 @@ TString tdcsid[tdcnum] ={"2000","2001","2002","2003","2004","2005","2006","2007"
 			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
 			 "2014","2015","2016","2018","2019","201a","201c","201d","202c","202d"
 };
+
+TF1 *gaust;
+TVector3 prt_fit(TH1F *h, Double_t range = 3){
+  int binmax = h->GetMaximumBin();
+  double xmax = h->GetXaxis()->GetBinCenter(binmax);
+  gaust = new TF1("gaust","gaus(0)",xmax-range,xmax+range);
+  gaust->SetLineColor(2);
+  Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-0.6),h->GetXaxis()->FindBin(xmax+0.6));
+  Double_t xxmin, xxmax, sigma1=0, mean1=0, sigma2, mean2;
+  xxmax = xmax;
+  xxmin = xxmax;
+  Int_t nfound = 1, peakSearch = 1;
+  if(integral>20){ 
+    
+    if(peakSearch == 1){
+      gaust->SetParLimits(2,0.01,2);
+      gaust->SetParameter(1,xmax);
+      gaust->SetParameter(2,0.2);
+    }
+    
+    if(peakSearch == 2){
+      nfound = prt_spect->Search(h,2,"",0.2);
+      std::cout<<"nfound  "<<nfound <<std::endl;
+      Float_t *xpeaks = prt_spect->GetPositionX();
+      if(nfound==1){
+	gaust =new TF1("gaust","gaus(0)",xmax-range,xmax+range);
+	gaust->SetParameter(1,xpeaks[0]);
+      }else if(nfound==2) {
+	if(xpeaks[0]>xpeaks[1]) {
+	  xxmax = xpeaks[0];
+	  xxmin = xpeaks[1];
+	}else {
+	  xxmax = xpeaks[1];
+	  xxmin = xpeaks[0];
+	}
+	gaust =new TF1("gaust","gaus(0)+gaus(3)",xmax-range,xmax+range);
+	gaust->SetParameter(1,xxmin);
+	gaust->SetParameter(4,xxmax);
+      }
+    
+      gaust->SetParameter(2,0.3);
+      gaust->SetParameter(5,0.3);
+    }
+
+    h->Fit("gaust","","MQN",xxmin-range, xxmax+range);
+    mean1 = gaust->GetParameter(1);
+    sigma1 = gaust->GetParameter(2);
+    if(sigma1>10) sigma1=10;
+    
+    if(peakSearch == 2){ 
+      mean2 = (nfound==1) ? gaust->GetParameter(1) : gaust->GetParameter(4);
+      sigma2 = (nfound==1) ? gaust->GetParameter(2) : gaust->GetParameter(5);
+    }
+  }
+  delete gaust;
+  return TVector3(mean1,sigma1,0);
+}
 
 void CreateMap(){
   Int_t seqid =-1;
