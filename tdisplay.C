@@ -247,7 +247,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	    tot += 30-gTotO[ch];
 	    timeLe += getTotWalk(tot,ch);
 	    timeLe += getTotWalk(triggerTot,ch,1);
-	    timeLe -= gLeO[ch]->Eval(tot)-30;
+	    if(gLeO[ch]) timeLe -= gLeO[ch]->Eval(tot)-30;
 	  }
 	  
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);

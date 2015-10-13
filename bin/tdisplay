@@ -16,6 +16,8 @@ show_help(){
         use latest *hld.root file in current folder
      -c 
         path to the file with calibration curves
+     -a 
+        mode, use \"-a 3\" for combining files
      -j
         number of proof threads (default 4) if <2 - no proof will be used"
     echo "$help" 
