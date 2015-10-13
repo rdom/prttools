@@ -5,29 +5,18 @@
 #include "prttools.C"
 #include "tdisplay.h"
 
-Int_t gSetup=2015, gTrigger, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
-TString ginFile(""),gcFile("");
 const Int_t maxfiles = 150;
-TString fileList[maxfiles];
-
-TH1F *hCh, *hRefDiff;
-TH1F *hFine[maxfiles][maxch];
-TH1F *hTot[maxfiles][maxch];
-TH1F *hTimeL[nmcp][npix];
-TH1F *hTimeT[nmcp][npix];
-TH1F *hSigma[tdcmax];
- 
-TH2F *hLeTot[maxch];
-TH2F *hShape[nmcp][npix];
+Int_t gSetup=2015, gTrigger, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
+TString ginFile(""),gcFile(""), fileList[maxfiles];
+TH1F *hCh, *hRefDiff, *hFine[maxfiles][maxch], *hTot[maxfiles][maxch],
+  *hTimeL[nmcp][npix], *hTimeT[nmcp][npix], *hSigma[maxtdc];
+TH2F *hLeTot[maxch], *hShape[nmcp][npix];
 TGraph *gMaxFine, *gTotOff, *gTotPeaks;
 Int_t gMaxIn[maxch];
-Double_t gTotO[maxch], gTotP[960][10];
-TGraph *gGrIn[maxch];
-TGraph *gGr[maxfiles][maxch];
-
-Double_t tdcRefTime[100];
-Double_t timeTe0[tdcmax][50];
+Double_t  tdcRefTime[maxtdc], gTotO[maxch], gTotP[960][10];
+TGraph *gGrIn[maxch], *gLeO[maxch], *gGr[maxfiles][maxch], *gGrDiff[maxch];
 TCanvas *cTime;
+
 
 Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){ 
   Double_t minp(0), walk(0), d(0), min(100);
@@ -71,15 +60,19 @@ void TTSelector::SlaveBegin(TTree *){
   }
 
   Int_t totb(200), totl(0), toth(12);
-  Int_t leb(2000), le1(-5), le2(5);
+  Int_t leb(400), le1(20), le2(40);
   if(fileList[0].Contains("trb")){
-    totb = 4000; totl=50; toth=80;
+    gTrigger=0;
+    totb=4000; totl=50; toth=80;
+    leb=4000, le1=-5, le2=5;
   }
   if(fileList[0].Contains("pilas")){
-    leb = 500; le1=70; le2=100;
+    gTrigger=1345;
+    leb = 400; le1=70; le2=100;
   }
   if(fileList[0].Contains("pico")){
-    leb = 500; le1=10; le2=40; //10 40
+    gTrigger=1345;
+    leb = 400; le1=20; le2=40; //20 40
   }
   
   for(Int_t j=0; j<nfiles; j++){
@@ -115,7 +108,7 @@ void TTSelector::SlaveBegin(TTree *){
   hCh = new TH1F("hCh","hCh;channel [#];entries [#]",3000,0,3000);
   fOutput->Add(hCh);
   hRefDiff = new TH1F("hRefDiff","ch-ref. resolution;sigma [ns];entries [#]",500,0,1);
-  for(Int_t i=0; i<tdcmax; i++){
+  for(Int_t i=0; i<maxtdc; i++){
     hSigma[i] = new TH1F(Form("hSigma%d",i),"ch-ref. resolution;sigma [ns];entries [#]",200,0,0.1);
     fOutput->Add(hSigma[i]);
   }
@@ -130,27 +123,29 @@ void TTSelector::SlaveBegin(TTree *){
     while ((key = (TKey*)nextkey())) {
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
-      Int_t channel = name.Atoi();
+      Int_t ch = name.Atoi();
       Double_t x,y;
-      if(channel == 10000){ // line calibration
+      if(ch == 10000){ // line calibration
 	for(Int_t i=0; i<maxch; i++){
 	  gr->GetPoint(i,x,y);
 	  gMaxIn[i] = (Int_t)(y+0.01);
 	  std::cout<<"ch  "<<i<< "  FT max"<<  gMaxIn[i]<<std::endl;	  
 	}
-      }else if(channel == 20000){ // read tot offsets
+      }else if(ch == 10001){ // read tot offsets
 	for(Int_t i=0; i<maxch; i++){
 	  gr->GetPoint(i,x,gTotO[i]);
-	  std::cout<<"ch  "<<i<< " tot off "<<  gTotO[i]<<std::endl;
+	  std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
-      }else if(channel == 30000){ // read tot peaks
+      }else if(ch == 10002){ // read tot peaks
 	for(Int_t i=0; i<960*10; i++){
 	  gr->GetPoint(i,x,y);
 	  gTotP[i/10][i%10] = y;
 	  std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
-      }else{       // spline calibration
-	gGrIn[channel]= new TGraph(*gr);
+      }else if(ch >= 20000 && ch < 30000){ // LE offsets
+	gLeO[ch-20000] = new TGraph(*gr);
+      }else{                      // spline calibration
+	gGrIn[ch]= new TGraph(*gr);
       }
     }
     f.Close();
@@ -161,7 +156,7 @@ void TTSelector::SlaveBegin(TTree *){
 
 Int_t mult[maxch]={0};
 Bool_t TTSelector::Process(Long64_t entry){
-  //if(entry>20000) return kTRUE;
+  //  if(entry>10000) return kTRUE;
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   Int_t tdc,ch,mcp,pix,col,row;
   Double_t triggerTime(0),triggerTot(0), grTime0(0), grTime1(0),grTime2(0),timeLe(0), timeTe(0), offset(0);
@@ -183,10 +178,9 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
   if(gMode==4) if(current_file_name.Contains("cc"))  fileid=1;
   Bool_t calib = current_file_name.Contains("trb");
-    
+
   GetEntry(entry);
   memset(mult, 0, sizeof(mult));
-
   Int_t hh(0);
   for(Int_t i=0; i<Hits_; i++){
     tdc = map_tdc[Hits_nTrbAddress[i]];
@@ -194,14 +188,13 @@ Bool_t TTSelector::Process(Long64_t entry){
     ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
     //if(Hits_nTdcErrCode[i]!=0) continue;
 
-    if(gcFile!=""){
-      Double_t coarseTime = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]);
+    timeL[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
+    if(gcFile!="0"){
       //spline calib
-      timeL[i] = coarseTime-gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
-
+      timeL[i]-= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
       //linear calib
       // Double_t max = (Double_t) gMaxIn[AddRefChannels(ch+1,tdc)]-2;
-      // timeL[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
+      // timeL[i] -= 5*(Hits_nFineTime[i]-31)/(max-31);
     }
 
     if(Hits_nSignalEdge[i]==1){
@@ -217,19 +210,19 @@ Bool_t TTSelector::Process(Long64_t entry){
       grTime2=timeL[i];
     }
   }
-  
+
   //if(hh<20) return kTRUE;
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     for(Int_t i=0; i<Hits_; i++){
       //if(Hits_nTdcErrCode[i]!=0) continue;
-      
+
       tdc = map_tdc[Hits_nTrbAddress[i]];
       if(tdc<0) continue;
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
       ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
       hFine[fileid][AddRefChannels(ch+1,tdc)]->Fill(Hits_nFineTime[i]);	  
       //if(mult[ch]>1) continue;
-      
+
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
       if(ch<3000){
 	mcp = map_mcp[ch];
@@ -241,19 +234,21 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  //if(triggerTot<38.7 || triggerTot>38.8) continue; // pico
 	  hTimeL[0][16]->Fill(triggerTot);
 	}
-	
 	hCh->Fill(ch);
-
-	if(ch<maxmch){
-	  timeLe = timeL[i]-tdcRefTime[tdc] - triggerTime;
 	
+	if(ch<maxmch){
+	  timeLe = timeL[i]-tdcRefTime[tdc] - triggerTime;	  
 	  //timeLe = tdcRefTime[tdc] - triggerTime;
 	  timeTe = timeT[i+1]-tdcRefTime[tdc]-triggerTime;
 	  Double_t tot = timeT[i+1]-timeL[i];
-	  if(tot<0 || timeLe<10 || timeLe>40) continue;
-	  if(!calib) tot += 30-gTotO[ch];
-	  timeLe += getTotWalk(tot,ch);
-	  timeLe += getTotWalk(triggerTot,ch,1);
+
+	  if(!calib){
+	    if(tot<0 || timeLe<20 || timeLe>40) continue;
+	    tot += 30-gTotO[ch];
+	    timeLe += getTotWalk(tot,ch);
+	    timeLe += getTotWalk(triggerTot,ch,1);
+	    timeLe -= gLeO[ch]->Eval(tot)-30;
+	  }
 	  
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
 	  TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
@@ -261,6 +256,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  hTimeL[mcp][pix]->Fill(timeLe); 
 	  hTimeT[mcp][pix]->Fill(timeTe);
 	  hTot[fileid][ch]->Fill(tot);
+	  
 	  hLeTot[ch]->Fill(timeLe,tot);
 	  hShape[mcp][pix]->Fill(timeLe,offset);
 	  hShape[mcp][pix]->Fill(timeTe,offset);
@@ -269,7 +265,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
   }
 
-  for(Int_t i=0; i<tdcmax; i++) tdcRefTime[i]=0;
+  for(Int_t i=0; i<maxtdc; i++) tdcRefTime[i]=0;
   
   return kTRUE;
 }
@@ -334,8 +330,14 @@ TString drawHist(Int_t m, Int_t p){
   if(gComboId==6){
     hLeTot[ch]->Draw("colz");
     histname=hLeTot[ch]->GetName();
-  }
+    Double_t* xx = gGrDiff[ch]->GetX();
+    Double_t* yy = gGrDiff[ch]->GetY();
 
+    TGraph* gr = new TGraph(gGrDiff[ch]->GetN(),yy,xx);
+    gr->SetMarkerStyle(7);
+    gr->SetMarkerColor(2);
+    gr->Draw("P same");
+  }
   if(gComboId==7){
     hRefDiff->Draw();
     histname=hRefDiff->GetName();
@@ -429,7 +431,8 @@ void MyMainFrame::DoExport(Int_t type){
 
   TString name("FT");
   if(type==2) name="TO";
-  if(type==3) name="TP"; 
+  if(type==3) name="TP";
+  if(type==4) name="LO"; 
   TString filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
   TFile efile(filedir+"/calib"+name+ ".root","RECREATE");
@@ -444,13 +447,23 @@ void MyMainFrame::DoExport(Int_t type){
   }
   
   if(type==2){
-    gTotOff->SetName("20000");
+    gTotOff->SetName("10001");
     gTotOff->Write();
   }
 
   if(type==3){
-    gTotPeaks->SetName("30000");
+    gTotPeaks->SetName("10002");
     gTotPeaks->Write();
+  }
+
+  if(type==4){
+    for (Int_t m=0; m <nmcp; m++) {
+      for(Int_t p=0; p<npix; p++){
+  	Int_t ch = map_mpc[m][p];
+  	gGrDiff[ch]->SetName(Form("%d",20000+ch));
+  	gGrDiff[ch]->Write();
+      }
+    }
   }
     
   efile.Write();
@@ -533,10 +546,38 @@ void Calibrate(){
   for(Int_t m=0; m<nmcp; m++){
     for(Int_t p=0; p<npix; p++){
       if(hTimeL[m][p]->Integral()>100){
-	double sigma = prt_fit(hTimeL[m][p],0.3).Y();
+	double sigma = prt_fit(hTimeL[m][p],0.25).Y();
 	hRefDiff->Fill(sigma);
 	Int_t ch = map_mpc[m][p];
 	hSigma[(ch/48)%4]->Fill(sigma);
+      }
+    }
+  }
+
+  if(true){
+    std::cout<<"Getting LE offsets"<<std::endl;
+    TH1D* h;
+    TH2F* hh;
+    for (Int_t m=0; m <nmcp; m++) {
+      for(Int_t p=0; p<npix; p++){
+	Int_t ch = map_mpc[m][p];
+	Double_t mean = prt_fit(hTimeL[m][p],0.2).X();
+	hh =(TH2F*) hLeTot[ch]->Clone("hh");
+	//hh->RebinY(2);
+
+	gGrDiff[ch] = new TGraph();
+	for (int i=0;i<500;i++){
+	  Double_t x = hh->GetYaxis()->GetBinCenter(i);
+	  h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);
+	  Double_t vx = prt_fit((TH1F*)h,0.3,500).X();
+	  if(vx==0) vx = mean;
+	  gGrDiff[ch]->SetPoint(i,x,vx);
+	}
+
+	gGrDiff[ch]->SetName(Form("gCalib_ch%d",ch));
+	gGrDiff[ch]->GetXaxis()->SetTitle("fine bin, [#]");
+	gGrDiff[ch]->GetYaxis()->SetTitle("fine time, [ns]");
+    
       }
     }
   }
@@ -561,7 +602,7 @@ void TTSelector::Terminate(){
   }
 
   for(Int_t c=0; c<maxch; c++) hLeTot[c] = dynamic_cast<TH2F *>(TProof::GetOutput(Form("hLeTot_ch%d",c), fOutput));
-  for(Int_t c=0; c<tdcmax; c++) hSigma[c] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("hSigma%d",c), fOutput));
+  for(Int_t c=0; c<maxtdc; c++) hSigma[c] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("hSigma%d",c), fOutput));
   
   hCh = dynamic_cast<TH1F *>(TProof::GetOutput("hCh", fOutput));
   hRefDiff = dynamic_cast<TH1F *>(TProof::GetOutput("hRefDiff", fOutput));
@@ -615,8 +656,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fComboMode->Connect("Selected(Int_t)", "MyMainFrame", this, "updatePlot(Int_t)");
 
   TGLayoutHints * layout = new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5);
-  TString names[]={"&Blog", "Fine &Calib","TOT &offset","TOT &peaks"};
-  for(Int_t i=0; i<4; i++){
+  TString names[]={"&Blog", "Fine &Calib","TOT &offset","TOT &peaks","&LE offset"};
+  for(Int_t i=0; i<5; i++){
     TGTextButton * btn = new TGTextButton(hframe,names[i]);
     btn->Connect("Clicked()", "MyMainFrame", this, Form("DoExport(=%d)",i));
     hframe->AddFrame(btn, layout);
@@ -699,7 +740,7 @@ MyMainFrame::~MyMainFrame(){
 void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4, TString cFile= "calib.root"){
   //inFile= "data/dirc/scan1/th_1*.hld.root";
   ginFile = inFile;
-  gTrigger = 1345;//rigger;
+  gTrigger = trigger;
   gcFile = (cFile!="")? cFile: "0"; // fine time calibration
   gMode=mode;
   gSetup = 2015;

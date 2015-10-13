@@ -63,10 +63,11 @@ TSpectrum *prt_spect = new TSpectrum(2);
 const Int_t nmcp = 15, npix = 64;
 const Int_t maxmch(nmcp*npix);
 const Int_t maxch =1500;
-const Int_t tdcmax=10000;
+const Int_t prt_maxnametdc=10000;
 const Int_t ctdc = 48; //41
+const Int_t maxtdc=maxch/48;
 
-Int_t map_tdc[tdcmax];
+Int_t map_tdc[prt_maxnametdc];
 Int_t map_mpc[nmcp][npix];
 Int_t map_mcp[maxch];
 Int_t map_pix[maxch];
@@ -94,20 +95,20 @@ TString tdcsid[tdcnum] ={"2000","2001","2002","2003","2004","2005","2006","2007"
 };
 
 TF1 *gaust;
-TVector3 prt_fit(TH1F *h, Double_t range = 3){
+TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20){
   int binmax = h->GetMaximumBin();
   double xmax = h->GetXaxis()->GetBinCenter(binmax);
   gaust = new TF1("gaust","gaus(0)",xmax-range,xmax+range);
   gaust->SetLineColor(2);
   Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-0.6),h->GetXaxis()->FindBin(xmax+0.6));
-  Double_t xxmin, xxmax, sigma1=0, mean1=0, sigma2, mean2;
+  Double_t xxmin, xxmax, sigma1(0), mean1(0), sigma2, mean2;
   xxmax = xmax;
   xxmin = xxmax;
   Int_t nfound = 1, peakSearch = 1;
-  if(integral>20){ 
+  if(integral>threshold){
     
     if(peakSearch == 1){
-      gaust->SetParLimits(2,0.01,2);
+      gaust->SetParLimits(2,0.005,2);
       gaust->SetParameter(1,xmax);
       gaust->SetParameter(2,0.2);
     }
@@ -152,7 +153,7 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3){
 
 void CreateMap(){
   Int_t seqid =-1;
-  for(Int_t i=0; i<tdcmax; i++) map_tdc[i]=-1;
+  for(Int_t i=0; i<prt_maxnametdc; i++) map_tdc[i]=-1;
   for(Int_t i=0; i<tdcnum; i++){
     Int_t dec = TString::BaseConvert(tdcsid[i],16,10).Atoi();
     map_tdc[dec]=++seqid;
