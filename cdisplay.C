@@ -1223,36 +1223,12 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fComboMode->Resize(300, 20);
   HideFrame(fHm);
 
-  //if(gTrigger==0) fEdit1->SetText("400 -200 200");
-  fEdit1->SetText("300 0 60");
-  fEdit2->SetText("400 -2 10");
 
-  if(gTrigger==0) fEdit1->SetText("600 280 320");
-  else if(gTrigger==1952 || gTrigger==1956 || gTrigger==1953 || gTrigger==1957) fEdit1->SetText("400 80 120");
-  else if(gTrigger==1920 || gTrigger==1921) fEdit1->SetText("400 -100 -50");
-  else if(gTrigger==2560 || gTrigger==2561) fEdit1->SetText("400 150 200");
-  else if(gTrigger==1344) fEdit1->SetText("400 -150 -80");
-  else if(gTrigger==1345) fEdit1->SetText("400 75 105");
-  else if(gTrigger>=1776 || gTrigger<1825) {
-    fEdit1->SetText("400 -150 -50");
-    fEdit2->SetText("200 -50 -30");
-  }
+  fEdit1->SetText("600 280 310");
+  fEdit2->SetText("400 0 12");
 
-  if(gTrigger==1104){
-    fEdit1->SetText("400 20 70");
-    fEdit2->SetText("400 25 55");
-  }
-  
-  if(gTrigger==1778) fEdit1->SetText("300 50 150");
-  
-  if(ginFile.Contains("C.root")){
-    fEdit1->SetText("1000 190 230");
-    fEdit2->SetText("600 30 55");
-  }
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
-
-  if(gTrigger==1952 || gTrigger==1956) fEdit2->SetText("200 -60 -20");
-  if(gTrigger==1344 || gTrigger==1345) fEdit2->SetText("200 0 10");
+  
   fEdit3->SetText("0 0");
   fEdit4->SetText("0 0");
   fEdit5->SetText("0 0");

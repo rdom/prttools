@@ -159,7 +159,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   //  if(entry>10000) return kTRUE;
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   Int_t tdc,ch,mcp,pix,col,row;
-  Double_t triggerTime(0),triggerTot(0), grTime0(0), grTime1(0),grTime2(0),timeLe(0), timeTe(0), offset(0);
+  Double_t triggerLe(0),triggerTot(0), grTime0(0), grTime1(0),grTime2(0),timeLe(0), timeTe(0), offset(0);
   Double_t timeL[10000], timeT[10000];
 
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
@@ -228,7 +228,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	mcp = map_mcp[ch];
 	pix = map_pix[ch];	
 	if(gTrigger!=0) {
-	  triggerTime = grTime1 - grTime0;
+	  triggerLe = grTime1 - grTime0;
 	  triggerTot=grTime2-grTime1;
 	  //if(triggerTot<44 || triggerTot>44.05) continue;  // pilas
 	  //if(triggerTot<38.7 || triggerTot>38.8) continue; // pico
@@ -237,9 +237,9 @@ Bool_t TTSelector::Process(Long64_t entry){
 	hCh->Fill(ch);
 	
 	if(ch<maxmch){
-	  timeLe = timeL[i]-tdcRefTime[tdc] - triggerTime;	  
-	  //timeLe = tdcRefTime[tdc] - triggerTime;
-	  timeTe = timeT[i+1]-tdcRefTime[tdc]-triggerTime;
+	  timeLe = timeL[i]-tdcRefTime[tdc] - triggerLe;	  
+	  //timeLe = tdcRefTime[tdc] - triggerLe;
+	  timeTe = timeT[i+1]-tdcRefTime[tdc]-triggerLe;
 	  Double_t tot = timeT[i+1]-timeL[i];
 
 	  if(!calib){
@@ -566,13 +566,16 @@ void Calibrate(){
 	//hh->RebinY(2);
 
 	gGrDiff[ch] = new TGraph();
-	for (int i=0;i<500;i++){
+	for (int i=0;i<400;i++){
 	  Double_t x = hh->GetYaxis()->GetBinCenter(i);
 	  h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);
-	  Double_t vx = prt_fit((TH1F*)h,0.3,500).X();
+	  Double_t vx = prt_fit((TH1F*)h,0.3,200).X();
 	  if(vx==0) vx = mean;
+	  if(vx-mean>1) vx=mean+1;
+	  if(vx-mean<-1) vx=mean-1;
 	  gGrDiff[ch]->SetPoint(i,x,vx);
 	}
+	gGrDiff[ch]->SetPoint(400,-1,mean);
 
 	gGrDiff[ch]->SetName(Form("gCalib_ch%d",ch));
 	gGrDiff[ch]->GetXaxis()->SetTitle("fine bin, [#]");
