@@ -563,19 +563,19 @@ void Calibrate(){
 	Int_t ch = map_mpc[m][p];
 	Double_t mean = prt_fit(hTimeL[m][p],0.2).X();
 	hh =(TH2F*) hLeTot[ch]->Clone("hh");
-	hh->RebinY(2);
+	//hh->RebinY(2);
 
 	gGrDiff[ch] = new TGraph();
-	for (int i=0;i<200;i++){
+	for (int i=0;i<400;i++){
 	  Double_t x = hh->GetYaxis()->GetBinCenter(i);
 	  h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);
-	  Double_t vx = prt_fit((TH1F*)h,0.3,200).X();
+	  Double_t vx = prt_fit((TH1F*)h,0.2,200).X();
 	  if(vx==0) vx = mean;
 	  if(vx-mean>1) vx=mean+1;
 	  if(vx-mean<-1) vx=mean-1;
 	  gGrDiff[ch]->SetPoint(i,x,vx);
 	}
-	gGrDiff[ch]->SetPoint(200,-1,mean);
+	gGrDiff[ch]->SetPoint(400,-1,mean);
 
 	gGrDiff[ch]->SetName(Form("gCalib_ch%d",ch));
 	gGrDiff[ch]->GetXaxis()->SetTitle("fine bin, [#]");
