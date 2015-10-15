@@ -257,7 +257,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	    timeLe += getTotWalk(tot,ch);
 	    timeLe += getTotWalk(triggerTot,ch,1);
 	    //if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
-	    timeLe -= gLeOffArr[ch]-30;
+	    timeLe -= gLeOffArr[ch];
 	  }
 	  
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
@@ -622,7 +622,7 @@ void Calibrate(){
 	Int_t firstbin = hTimeL[m][p]->FindFirstBinAbove(threshold);
 	Double_t xmax = hTimeL[m][p]->GetXaxis()->GetBinCenter(hTimeL[m][p]->GetMaximumBin());
 	Double_t xle = hTimeL[m][p]->GetXaxis()->GetBinCenter(firstbin);
-	gLeOff->SetPoint(ch, xle, xmax);
+	gLeOff->SetPoint(ch, xle-30, xmax-30);
       }
     }
   }

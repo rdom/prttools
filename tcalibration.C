@@ -234,7 +234,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeLe += getTotWalk(timeTot,ch);
 	//timeLe += getTotWalk(triggerTot,ch,1);
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
-	timeLe -= gLeOffArr[ch]-30;
+	timeLe -= gLeOffArr[ch];
 	if(tofpid>0){
 	  Double_t mom = 7;
 	  timeLe += 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
