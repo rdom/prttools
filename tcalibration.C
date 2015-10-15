@@ -7,7 +7,7 @@
  
 TString ginFile(""), goutFile(""), gcFile("");
 Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[maxch];
-Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[960][10];
+Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[960][10],gLeOffArr[960];;
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGrDiff[maxch];
 
 
@@ -39,8 +39,12 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
 	}
       }
     }
-  
-    if(fabs(min)<0.8) walk=-min*tan(10*TMath::Pi()/180.);  // 10
+    Double_t wcorr(10);
+    // if(ch/48==1) wcorr=0;
+    // if(ch/48==5) wcorr=0;
+    // if(ch/48==9) wcorr=0;
+      
+    if(fabs(min)<0.8) walk=-min*tan(wcorr*TMath::Pi()/180.);
     if(tot<10) walk-=(10-tot)*tan(6*TMath::Pi()/180.);
   }
 
@@ -78,20 +82,24 @@ void TTSelector::Begin(TTree *){
 	for(Int_t i=0; i<maxch; i++){
 	  gr->GetPoint(i,x,y);
 	  gMaxIn[i] = (Int_t)(y+0.01);
-	  //std::cout<<"ch  "<<i<< "  FT max"<<  gMaxIn[i]<<std::endl;	  
+	  std::cout<<"ch  "<<i<< "  FT max"<<  gMaxIn[i]<<std::endl;	  
 	}
       }else if(ch == 10001){ // read tot offsets
 	for(Int_t i=0; i<maxch; i++){
-	  gr->GetPoint(i,x,gTotO[i]);
-	  //std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
+	  gr->GetPoint(i,gTotO[i],y);
+	  std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
       }else if(ch == 10002){ // read tot peaks
 	for(Int_t i=0; i<960*10; i++){
 	  gr->GetPoint(i,x,y);
 	  gTotP[i/10][i%10] = y;
-	  //std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
+	  std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
-      }else if(ch >= 20000 && ch < 30000){ // LE offsets
+      }else if(ch == 10003){ // read LE offsets 1
+	for(Int_t i=0; i<960; i++){
+	  gr->GetPoint(i,gLeOffArr[i],y);
+	}
+      }else if(ch >= 20000 && ch < 30000){ // read LE offsets 3
 	gLeO[ch-20000] = new TGraph(*gr);
       }else{                      // spline calibration
 	gGrIn[ch]= new TGraph(*gr);
@@ -225,7 +233,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeTot += 30-gTotO[ch];
 	timeLe += getTotWalk(timeTot,ch);
 	//timeLe += getTotWalk(triggerTot,ch,1);
-	if(gLeO[ch]) timeLe -= gLeO[ch]->Eval(timeTot)-30;
+	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
+	timeLe -= gLeOffArr[ch]-30;
 	if(tofpid>0){
 	  Double_t mom = 7;
 	  timeLe += 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
