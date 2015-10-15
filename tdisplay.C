@@ -322,24 +322,25 @@ TString drawHist(Int_t m, Int_t p){
     hTimeL[m][p]->Draw();
     //hTimeT[m][p]->Draw("same");
     histname=hTimeL[m][p]->GetName();
+    if(!ginFile.Contains("trb")){
+      Double_t a,b;
+      TGraph* gr = new TGraph(); 
+      gLeOff->GetPoint(ch,a,b);
 
-    Double_t a,b;
-    TGraph* gr = new TGraph(); 
-    gLeOff->GetPoint(ch,a,b);
+      gLine1->SetX1(a);
+      gLine1->SetX2(a);
+      gLine1->SetY1(cTime->GetUymin());
+      gLine1->SetY2(cTime->GetUymax());
+      gLine1->SetLineColor(kRed);
+      gLine1->Draw();
 
-    gLine1->SetX1(a);
-    gLine1->SetX2(a);
-    gLine1->SetY1(cTime->GetUymin());
-    gLine1->SetY2(cTime->GetUymax());
-    gLine1->SetLineColor(kRed);
-    gLine1->Draw();
-
-    gLine2->SetX1(b);
-    gLine2->SetX2(b);
-    gLine2->SetY1(cTime->GetUymin());
-    gLine2->SetY2(cTime->GetUymax());
-    gLine2->SetLineColor(kBlue);
-    gLine2->Draw();
+      gLine2->SetX1(b);
+      gLine2->SetX2(b);
+      gLine2->SetY1(cTime->GetUymin());
+      gLine2->SetY2(cTime->GetUymax());
+      gLine2->SetLineColor(kBlue);
+      gLine2->Draw();
+    }
 	
   } 
   if(gComboId==3){
