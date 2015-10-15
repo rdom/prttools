@@ -11,9 +11,9 @@ TString ginFile(""),gcFile(""), fileList[maxfiles];
 TH1F *hCh, *hRefDiff, *hFine[maxfiles][maxch], *hTot[maxfiles][maxch],
   *hTimeL[nmcp][npix], *hTimeT[nmcp][npix], *hSigma[maxtdc];
 TH2F *hLeTot[maxch], *hShape[nmcp][npix];
-TGraph *gMaxFine, *gTotOff, *gTotPeaks;
+TGraph *gMaxFine, *gLeOff, *gTotOff, *gTotPeaks;
 Int_t gMaxIn[maxch];
-Double_t  tdcRefTime[maxtdc], gTotO[maxch], gTotP[960][10];
+Double_t  tdcRefTime[maxtdc], gTotO[maxch], gTotP[960][10],gLeOffArr[960];
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGr[maxfiles][maxch], *gGrDiff[maxch];
 TCanvas *cTime;
 
@@ -32,8 +32,13 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
 	}
       }
     }
-  
-    if(fabs(min)<0.8) walk=-min*tan(6*TMath::Pi()/180.);  // 10
+    Double_t wcorr(8);
+    if(ch/48==1) wcorr=0;
+    if(ch/48==5) wcorr=0;
+    if(ch/48==9) wcorr=0;
+    if(ch/48==13) wcorr=0;
+      
+    if(fabs(min)<0.8) walk=-min*tan(wcorr*TMath::Pi()/180.);  // 10
     if(tot<10) walk-=(10-tot)*tan(6*TMath::Pi()/180.);
   }
 
@@ -133,7 +138,7 @@ void TTSelector::SlaveBegin(TTree *){
 	}
       }else if(ch == 10001){ // read tot offsets
 	for(Int_t i=0; i<maxch; i++){
-	  gr->GetPoint(i,x,gTotO[i]);
+	  gr->GetPoint(i,gTotO[i],y);
 	  std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
       }else if(ch == 10002){ // read tot peaks
@@ -142,7 +147,11 @@ void TTSelector::SlaveBegin(TTree *){
 	  gTotP[i/10][i%10] = y;
 	  std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
-      }else if(ch >= 20000 && ch < 30000){ // LE offsets
+      }else if(ch == 10003){ // read LE offsets 1
+	for(Int_t i=0; i<960; i++){
+	  gr->GetPoint(i,gLeOffArr[i],y);
+	}
+      }else if(ch >= 20000 && ch < 30000){ // read LE offsets 3
 	gLeO[ch-20000] = new TGraph(*gr);
       }else{                      // spline calibration
 	gGrIn[ch]= new TGraph(*gr);
@@ -247,7 +256,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	    tot += 30-gTotO[ch];
 	    timeLe += getTotWalk(tot,ch);
 	    timeLe += getTotWalk(triggerTot,ch,1);
-	    if(gLeO[ch]) timeLe -= gLeO[ch]->Eval(tot)-30;
+	    //if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
+	    timeLe -= gLeOffArr[ch]-30;
 	  }
 	  
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
@@ -270,6 +280,8 @@ Bool_t TTSelector::Process(Long64_t entry){
   return kTRUE;
 }
 
+TLine *gLine1 = new TLine(0,0,0,1000);
+TLine *gLine2 = new TLine(0,0,0,1000);
 TString drawHist(Int_t m, Int_t p){
   TString histname="";
   Int_t ch = map_mpc[m][p];
@@ -310,6 +322,25 @@ TString drawHist(Int_t m, Int_t p){
     hTimeL[m][p]->Draw();
     //hTimeT[m][p]->Draw("same");
     histname=hTimeL[m][p]->GetName();
+
+    Double_t a,b;
+    TGraph* gr = new TGraph(); 
+    gLeOff->GetPoint(ch,a,b);
+
+    gLine1->SetX1(a);
+    gLine1->SetX2(a);
+    gLine1->SetY1(cTime->GetUymin());
+    gLine1->SetY2(cTime->GetUymax());
+    gLine1->SetLineColor(kRed);
+    gLine1->Draw();
+
+    gLine2->SetX1(b);
+    gLine2->SetX2(b);
+    gLine2->SetY1(cTime->GetUymin());
+    gLine2->SetY2(cTime->GetUymax());
+    gLine2->SetLineColor(kBlue);
+    gLine2->Draw();
+	
   } 
   if(gComboId==3){
     hShape[m][p]->Draw("colz");
@@ -324,19 +355,41 @@ TString drawHist(Int_t m, Int_t p){
       if(j==0) hTot[j][ch]->Draw();
       else hTot[j][ch]->Draw("same");
     }
+
+    if(ginFile.Contains("trb")){
+      Double_t a,b;
+      TGraph* gr = new TGraph(); 
+      gTotOff->GetPoint(ch,a,b);
+
+      gLine1->SetX1(a);
+      gLine1->SetX2(a);
+      gLine1->SetY1(cTime->GetUymin());
+      gLine1->SetY2(cTime->GetUymax());
+      gLine1->SetLineColor(kRed);
+      gLine1->Draw();
+
+      gLine2->SetX1(b);
+      gLine2->SetX2(b);
+      gLine2->SetY1(cTime->GetUymin());
+      gLine2->SetY2(cTime->GetUymax());
+      gLine2->SetLineColor(kBlue);
+      gLine2->Draw();
+    }
     histname=hTot[0][ch]->GetName();
     //hTot[0][1953]->Draw();
   }
   if(gComboId==6){
     hLeTot[ch]->Draw("colz");
     histname=hLeTot[ch]->GetName();
-    Double_t* xx = gGrDiff[ch]->GetX();
-    Double_t* yy = gGrDiff[ch]->GetY();
+    if(gGrDiff[ch]){
+      Double_t* xx = gGrDiff[ch]->GetX();
+      Double_t* yy = gGrDiff[ch]->GetY();
 
-    TGraph* gr = new TGraph(gGrDiff[ch]->GetN(),yy,xx);
-    gr->SetMarkerStyle(7);
-    gr->SetMarkerColor(2);
-    gr->Draw("P same");
+      TGraph* gr = new TGraph(gGrDiff[ch]->GetN(),yy,xx);
+      gr->SetMarkerStyle(7);
+      gr->SetMarkerColor(2);
+      gr->Draw("P same");
+    }
   }
   if(gComboId==7){
     hRefDiff->Draw();
@@ -457,11 +510,15 @@ void MyMainFrame::DoExport(Int_t type){
   }
 
   if(type==4){
+    gLeOff->SetName("10003");
+    gLeOff->Write();
     for (Int_t m=0; m <nmcp; m++) {
       for(Int_t p=0; p<npix; p++){
-  	Int_t ch = map_mpc[m][p];
-  	gGrDiff[ch]->SetName(Form("%d",20000+ch));
-  	gGrDiff[ch]->Write();
+	Int_t ch = map_mpc[m][p];
+	if(gGrDiff[ch]){
+	  gGrDiff[ch]->SetName(Form("%d",20000+ch));
+	  gGrDiff[ch]->Write();
+	}
       }
     }
   }
@@ -499,6 +556,7 @@ void Calibrate(){
   std::cout<<"Creating calibration"<<std::endl;
   gMaxFine = new TGraph();
   gTotOff = new TGraph();
+  gLeOff = new TGraph();
   gTotPeaks = new TGraph();
  
   for(Int_t j=0; j<nfiles; j++){
@@ -516,15 +574,15 @@ void Calibrate(){
       gGr[j][c]->GetYaxis()->SetTitle("fine time, [ns]");
       gGr[j][c]->SetLineColor(getColorId(j));
 
-      Int_t threshold =  hFine[j][c]->GetMaximum()*0.1;
-      Int_t firstbin = hFine[j][c]->FindFirstBinAbove(threshold);
-      Int_t lastbin = hFine[j][c]->FindLastBinAbove(threshold);
+      Int_t firstbin = hFine[j][c]->FindFirstBinAbove(0);
+      Int_t lastbin = hFine[j][c]->FindLastBinAbove(0);
       //      std::cout<<c<<"   "<<firstbin << "  "<<lastbin <<std::endl;
       gMaxFine->SetPoint(c,firstbin,lastbin);
-      
-      firstbin = hTot[j][c]->FindFirstBinAbove(0);
-      lastbin = hTot[j][c]->FindLastBinAbove(0);
-      gTotOff->SetPoint(c, firstbin, hTot[j][c]->GetMean());
+
+      Int_t threshold =  hTot[j][c]->GetMaximum()*0.2;
+      firstbin = hTot[j][c]->FindFirstBinAbove(threshold);
+      Double_t xle = hTot[j][c]->GetXaxis()->GetBinCenter(firstbin);
+      gTotOff->SetPoint(c, xle, hTot[j][c]->GetMean());
     }
   }
 
@@ -553,8 +611,22 @@ void Calibrate(){
       }
     }
   }
-
+  
   if(true){
+    std::cout<<"Getting LE offsets"<<std::endl;
+    for (Int_t m=0; m <nmcp; m++) {
+      for(Int_t p=0; p<npix; p++){
+	Int_t ch = map_mpc[m][p];
+	Int_t threshold =  hTimeL[m][p]->GetMaximum()*0.2;      
+	Int_t firstbin = hTimeL[m][p]->FindFirstBinAbove(threshold);
+	Double_t xmax = hTimeL[m][p]->GetXaxis()->GetBinCenter(hTimeL[m][p]->GetMaximumBin());
+	Double_t xle = hTimeL[m][p]->GetXaxis()->GetBinCenter(firstbin);
+	gLeOff->SetPoint(ch, xle, xmax);
+      }
+    }
+  }
+
+  if(false){
     std::cout<<"Getting LE offsets"<<std::endl;
     TH1D* h;
     TH2F* hh;
@@ -584,6 +656,8 @@ void Calibrate(){
       }
     }
   }
+  std::cout<<"Calibration .. Done"<<std::endl;
+  
 }
 
 void TTSelector::Terminate(){
