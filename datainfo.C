@@ -748,12 +748,14 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
   if(format==3){ // prtdirc
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<newset[i].getChildRunId(0)<<":  "<<" -p "<< newset[i].getMomentum() <<" -h "<<newset[i].getRadiatorId()
-	       << " -l "<<newset[i].getLensId()
+      std::cout//<<newset[i].getChildRunId(0)<<":  "
+	       <<" -p "<< newset[i].getMomentum() <<" -h "<<newset[i].getRadiatorId()
+	       <<" -l "<<newset[i].getLensId()
 	       <<" -a "<<newset[i].getAngle()<<" -gz "<<newset[i].getZ()
-	       <<" -gx "<<newset[i].getX()<<" -gxs "<<newset[i].getXstep()<<" -gys "<<newset[i].getYstep() ;
+	       <<" -gx "<<newset[i].getX()<<" -gsx "<<newset[i].getXstep()<<" -gsy "<<newset[i].getYstep()
+	       <<" -z 10 ";
 
-      if(newset[i].getStudyId()>=150) std::cout<<" -g 2015 -c 2015 "<<"<br>"<<std::endl;
+      if(newset[i].getStudyId()>=150) std::cout<<" -g 2015 -c 2015 "<<std::endl;
       else  std::cout<<" "<<std::endl;
     }
   }

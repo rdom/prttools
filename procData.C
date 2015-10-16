@@ -2,67 +2,7 @@
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
-
 #include <TSpectrum.h>
-
-TSpectrum *spect = new TSpectrum(2);
-TF1 *gaust;
-
-TVector3 fit(TH1F *h, Double_t range = 3){
-  int binmax = h->GetMaximumBin();
-  double xmax = h->GetXaxis()->GetBinCenter(binmax);
-  gaust = new TF1("gaust","gaus(0)",xmax-range,xmax+range);
-  gaust->SetLineColor(1);
-  Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-0.6),h->GetXaxis()->FindBin(xmax+0.6));
-  Double_t xxmin, xxmax, sigma1=0, mean1=0, sigma2, mean2;
-  xxmax = xmax;
-  xxmin = xxmax;
-  Int_t nfound = 1, peakSearch = 1;
-  if(integral>5){ 
-    
-    if(peakSearch == 1){
-      //gaust->SetParLimits(2,0.1,2);
-      gaust->SetParameter(1,xmax);
-      gaust->SetParameter(2,0.2);
-    }
-    
-    if(peakSearch == 2){
-      nfound = spect->Search(h,2,"",0.2);
-      std::cout<<"nfound  "<<nfound <<std::endl;
-      Float_t *xpeaks = spect->GetPositionX();
-      if(nfound==1){
-	gaust =new TF1("gaust","gaus(0)",xmax-range,xmax+range);
-	gaust->SetParameter(1,xpeaks[0]);
-      }else if(nfound==2) {
-	if(xpeaks[0]>xpeaks[1]) {
-	  xxmax = xpeaks[0];
-	  xxmin = xpeaks[1];
-	}else {
-	  xxmax = xpeaks[1];
-	  xxmin = xpeaks[0];
-	}
-	gaust =new TF1("gaust","gaus(0)+gaus(3)",xmax-range,xmax+range);
-	gaust->SetParameter(1,xxmin);
-	gaust->SetParameter(4,xxmax);
-      }
-    
-      gaust->SetParameter(2,0.3);
-      gaust->SetParameter(5,0.3);
-    }
-
-    h->Fit("gaust","","MQN",xxmin-range, xxmax+range);
-    mean1 = gaust->GetParameter(1);
-    sigma1 = gaust->GetParameter(2);
-    if(sigma1>10) sigma1=10;
-    
-    if(peakSearch == 2){ 
-      mean2 = (nfound==1) ? gaust->GetParameter(1) : gaust->GetParameter(4);
-      sigma2 = (nfound==1) ? gaust->GetParameter(2) : gaust->GetParameter(5);
-    }
-  }
-  delete gaust;
-  return TVector3(mean1,sigma1,0);
-}
 
 void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z =0, Double_t x= 0, Double_t xstep=0, Double_t ystep=0){
 
@@ -144,7 +84,7 @@ void procData(TString path="auto", TString infile="", Int_t studyId = 0, Int_t f
   hTot->Draw();
 
   canvasAdd("mult"+ext,800,500);
-  mult = fit(hMult,30).X();
+  mult = prt_fit(hMult,30).X();
   hMult->Draw();
   
   drawDigi("m,p,v\n",2,-2,-2);

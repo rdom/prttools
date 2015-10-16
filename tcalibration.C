@@ -82,18 +82,15 @@ void TTSelector::Begin(TTree *){
 	for(Int_t i=0; i<maxch; i++){
 	  gr->GetPoint(i,x,y);
 	  gMaxIn[i] = (Int_t)(y+0.01);
-	  std::cout<<"ch  "<<i<< "  FT max"<<  gMaxIn[i]<<std::endl;	  
 	}
       }else if(ch == 10001){ // read tot offsets
 	for(Int_t i=0; i<maxch; i++){
 	  gr->GetPoint(i,gTotO[i],y);
-	  std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
       }else if(ch == 10002){ // read tot peaks
 	for(Int_t i=0; i<960*10; i++){
 	  gr->GetPoint(i,x,y);
 	  gTotP[i/10][i%10] = y;
-	  std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
       }else if(ch == 10003){ // read LE offsets 1
 	for(Int_t i=0; i<960; i++){
