@@ -84,7 +84,7 @@ fi
 
 suf="C"
 if [[ $tFile  == "" ]]; then
-    suf="C0"
+#    suf="C0"
 fi
 
 if [ ! $fileName ]; then
