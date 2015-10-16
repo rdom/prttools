@@ -83,9 +83,9 @@ if [[ $tFile  != "" ]]; then
 fi
 
 suf="C"
-if [[ $tFile  == "" ]]; then
+#if [[ $tFile  == "" ]]; then
 #    suf="C0"
-fi
+#fi
 
 if [ ! $fileName ]; then
     show_help
