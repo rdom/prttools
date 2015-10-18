@@ -107,7 +107,7 @@ if [ ${run} == "3" ]; then
 	statusline="run study $i"
 	
 	for ((k=1;k<${#file[@]};k++)); do
-	   ./prtdirc -o "${i}s/${file[k]}S.root" ${args[k]} -x "proton" -e 1000 -b 1  > log 2> log &
+	   ./prtdirc -o "${i}s/${file[k]}S.root" ${args[k]} -x "proton" -e 1000 -b 1  > "${i}s/${file[k]}.log" &
 	   waitForMe $threads
 	done
 	waitForMe "1"
