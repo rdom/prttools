@@ -88,7 +88,6 @@ if [ ${run} == "3" ]; then
 	if (( i != $study &&  $study != 0 )); then
 	    continue
 	fi
-        mkdir -p $i
 
 	OIFS="$IFS"
 	IFS=$'\n'
@@ -102,12 +101,13 @@ if [ ${run} == "3" ]; then
 	
 	IFS="$OIFS"
 	cd ~/dirc/prtdirc/build
-
+        mkdir -p $i
+	
 	start_time=$(date +%s)
 	statusline="run study $i"
 	
 	for ((k=1;k<${#file[@]};k++)); do
-	   ./prtdirc -o "${path[k]}/${file[k]}S.root" ${args[k]} -x "proton" -e 10 -b 1  > log 2> log &
+	   ./prtdirc -o "${path[k]}/${file[k]}S.root" ${args[k]} -x "proton" -e 1000 -b 1  > log 2> log &
 	   waitForMe $threads
 	done
 	waitForMe "1"
