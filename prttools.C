@@ -51,12 +51,10 @@
 
 
 TChain*  fCh = 0;
-Int_t    fNEntries(0), fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0);
-TString  fSavePath = "";
-TString  fInfo = "", fPath;
+Int_t    fNEntries(0),fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0);
+TString  fSavePath(""),fInfo(""),fPath;
 TH2F*    fhDigi[15];
-TPad*    fhPads[15];
-TPad*    fhPglobal;
+TPad*    fhPads[15], fhPglobal;
 TCanvas* cDigi;
 TSpectrum *prt_spect = new TSpectrum(2);
 
@@ -95,9 +93,9 @@ TString tdcsid[tdcnum] ={"2000","2001","2002","2003","2004","2005","2006","2007"
 };
 
 TF1 *gaust;
-TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20){
-  int binmax = h->GetMaximumBin();
-  double xmax = h->GetXaxis()->GetBinCenter(binmax);
+TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2){
+  Int_t binmax = h->GetMaximumBin();
+  Double_t xmax = h->GetXaxis()->GetBinCenter(binmax);
   gaust = new TF1("gaust","gaus(0)",xmax-range,xmax+range);
   gaust->SetLineColor(2);
   Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-range),h->GetXaxis()->FindBin(xmax+range));
@@ -108,7 +106,7 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20){
   if(integral>threshold){
     
     if(peakSearch == 1){
-      gaust->SetParLimits(2,0.005,2);
+      gaust->SetParLimits(2,0.005,limit);
       gaust->SetParameter(1,xmax);
       gaust->SetParameter(2,0.2);
     }

@@ -69,7 +69,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151890
   hTot->Draw();
 
   canvasAdd("mult"+ext,800,400);
-  mult = prt_fit(hMult,30).X();
+  mult = prt_fit(hMult,20,20,100).X();
   hMult->Draw();
   
   drawDigi("m,p,v\n",2,-2,-2);
