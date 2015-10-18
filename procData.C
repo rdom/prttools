@@ -8,6 +8,8 @@ void procData(TString path="/data.local/data/jun15", TString infile="hits.root",
   if(infile=="") return;
   
   fSavePath = path+Form("/%d/%d",studyId,fileId);
+  if(infile.Contains("S.root")) fSavePath = path+Form("/%ds/%d",studyId,fileId);
+    
   PrtInit(path+"/"+infile,1);
 
   Double_t mult(0),le1(280),le2(350);
