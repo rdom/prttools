@@ -13,6 +13,7 @@ show_help(){
         0 - run decoding
         1 - run calibration
         2 - run proc
+        3 - run simulation
      -j
         number of threads 
      -s 
@@ -73,7 +74,7 @@ fi
 waitForMe (){
     while : 
     do 
-	activth=$(ps aux | grep " [r]oot" | grep "procData" | wc -l)
+	activth=$(ps aux | grep "[p]rocData\|[p]rtdirc" | wc -l)
 	printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
 	sleep .1
 	if [ "$activth" -lt "$1" ]; then 
@@ -81,6 +82,42 @@ waitForMe (){
 	fi
     done
 }  
+
+if [ ${run} == "3" ]; then
+    for ((i=150;i<200;i++)); do
+	if (( i != $study &&  $study != 0 )); then
+	    continue
+	fi
+        mkdir -p $i
+
+	OIFS="$IFS"
+	IFS=$'\n'
+	
+	file=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,0)" 2>/dev/null))
+	path=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,1)" 2>/dev/null))
+	
+	args=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,3)" 2>/dev/null))
+	outs=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,4)" 2>/dev/null))
+	reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,6)" 2>/dev/null))
+	
+	IFS="$OIFS"
+	cd ~/dirc/prtdirc/build
+
+	start_time=$(date +%s)
+	statusline="run study $i"
+	
+	for ((k=1;k<${#file[@]};k++)); do
+	   ./prtdirc -o "${path[k]}/${file[k]}S.root" ${args[k]} -x "proton" -e 10 -b 1  > log 2> log &
+	   waitForMe $threads
+	done
+	waitForMe "1"
+	
+	cd -
+	printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s]     \n"
+	
+    done
+    exit
+fi
 
 for ((i=150;i<200;i++)); do
     if (( i != $study &&  $study != 0 )); then

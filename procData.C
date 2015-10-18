@@ -3,14 +3,16 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
-void procData(TString path="/data.local/data/jun15", TString infile="beam_15189020959C0.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z =0, Double_t x= 0, Double_t xstep=0, Double_t ystep=0){
+void procData(TString path="/data.local/data/jun15", TString infile="hits.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
 
   if(infile=="") return;
   
   fSavePath = path+Form("/%d/%d",studyId,fileId);
   PrtInit(path+"/"+infile,1);
 
-  Double_t mult(0);
+  Double_t mult(0),le1(280),le2(350);
+  if(true){le1=0;le2=200;}
+  
   TFile *file = new TFile(path+"/"+infile+".res.root","recreate");
   TTree *tree= new TTree("proc","proc");
   tree->Branch("studyId", &studyId,"studyId/I");
@@ -26,7 +28,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151890
   tree->Branch("mult",&mult,"mult/D");
   
   TH1F * hMult  = new TH1F("mult","Mult;multiplicity [#];entries [#]",300,0,300);
-  TH1F * hLe  = new TH1F("le","LE; LE [ns]; entries [#]",1000,250,350);
+  TH1F * hLe  = new TH1F("le","LE; LE [ns]; entries [#]",1000,le1,le2);
   TH1F * hTot  = new TH1F("tot","TOT; TOT [#]; entries [#]",1000,-2,15);
  
   gStyle->SetOptStat(1001111);
@@ -37,7 +39,8 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151890
     PrtNextEvent(ievent,1000);
     Int_t counts(0);
     Double_t tot(0),time(0);
-    
+    if(fEvent->GetParticle()!=2212) continue;
+
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
 
@@ -48,7 +51,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151890
 	hLe->Fill(time);
 	hTot->Fill(tot);
 
-	if(time<350 && time > 250) {
+	if(time<le2 && time>le1){
 	  Int_t mcpid = fHit.GetMcpId();
 	  Int_t pixid = fHit.GetPixelId()-1;
 	  fhDigi[mcpid]->Fill(pixid%8, pixid/8);

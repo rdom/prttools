@@ -729,7 +729,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   if(format==0){ // file name 
     for(UInt_t i = 0; i != newset.size(); i++) {
       for(Int_t j=0; j<newset[i].getNChildren();j++ ){
-	cout<<newset[i].getChildRunId(j)<<"C0.root "<<std::endl;
+	cout<<newset[i].getChildRunId(j)<<std::endl;
       }
     }
   }
