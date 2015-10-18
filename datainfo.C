@@ -783,6 +783,17 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
     }
   }
   
+  if(format==7){ // reco
+    for(UInt_t i = 0; i != newset.size(); i++) {
+      std::cout<<"\"/d/proc/jun15/"<<newset[i].getStudyId()<<"\",\""<<newset[i].getChildRunId(0)<<"S.root\","
+	       << newset[i].getStudyId() <<","<<i<<","<<newset[i].getMomentum() << ","<<newset[i].getRadiatorId()
+	       <<","<<newset[i].getLensId()
+	       <<","<<newset[i].getAngle()<<","<<newset[i].getZ()
+	       <<","<<newset[i].getX()<<","<<newset[i].getXstep()
+	       <<","<<newset[i].getYstep()<<std::endl;
+    }
+  }
+  
   if(format==10){ // cp
     for(UInt_t i = 0; i != newset.size(); i++) {
        for(Int_t j=0; j<newset[i].getNChildren();j++ ){

@@ -12,8 +12,9 @@ show_help(){
         run type
         0 - run decoding
         1 - run calibration
-        2 - run proc
+        2 - run proc data
         3 - run simulation
+        4 - run proc sim
      -j
         number of threads 
      -s 
@@ -48,6 +49,11 @@ study=${study:-1}
 silent=${silent:-0}
 
 shift $((OPTIND-1))
+
+data=6
+if [ ${run} == "4" ]; then
+    data=7
+fi
 
 printf "====== Run dirc data processing ======\n"
 
@@ -97,11 +103,11 @@ if [ ${run} == "3" ]; then
 	
 	args=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,3)" 2>/dev/null))
 	outs=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,4)" 2>/dev/null))
-	reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,6)" 2>/dev/null))
+	reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,$data)" 2>/dev/null))
 	
 	IFS="$OIFS"
 	cd ~/dirc/prtdirc/build
-        mkdir -p "${i}s"
+        mkdir -p "${i}"
 	
 	start_time=$(date +%s)
 	statusline="run study $i"
