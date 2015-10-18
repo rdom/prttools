@@ -54,7 +54,7 @@ TChain*  fCh = 0;
 Int_t    fNEntries(0),fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0);
 TString  fSavePath(""),fInfo(""),fPath;
 TH2F*    fhDigi[15];
-TPad*    fhPads[15], fhPglobal;
+TPad*    fhPads[15], *fhPglobal;
 TCanvas* cDigi;
 TSpectrum *prt_spect = new TSpectrum(2);
 
