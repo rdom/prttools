@@ -99,11 +99,8 @@ if [ ${run} == "3" ]; then
 	IFS=$'\n'
 	
 	file=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,0)" 2>/dev/null))
-	path=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,1)" 2>/dev/null))
-	
 	args=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,3)" 2>/dev/null))
-	outs=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,4)" 2>/dev/null))
-	reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,$data)" 2>/dev/null))
+
 	
 	IFS="$OIFS"
 	cd ~/dirc/prtdirc/build
@@ -139,7 +136,7 @@ for ((i=150;i<200;i++)); do
 
 	args=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,3)" 2>/dev/null))
 	outs=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,4)" 2>/dev/null))
-	reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,6)" 2>/dev/null))
+	reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($i,$data)" 2>/dev/null))
 	
 	IFS="$OIFS"
 	cd ~/dirc/prttools
