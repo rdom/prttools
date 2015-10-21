@@ -3,17 +3,21 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
-void procData(TString path="/data.local/data/jun15", TString infile="hits.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
+void procData(TString path="/data.local/data/jun15", TString infile="beam_15180221900C.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
 
   if(infile=="") return;
-  
+
+  Double_t mult(0),le1(280),le2(330);
   fSavePath = path+Form("/%d/%d",studyId,fileId);
-  if(infile.Contains("S.root")) fSavePath = path+Form("/%ds/%d",studyId,fileId);
-    
+  
+  if(infile.Contains("S.root")) { // simulation
+    le1=0;
+    le2=50;
+    fSavePath = path+Form("/%ds/%d",studyId,fileId);
+  }
+  
   PrtInit(path+"/"+infile,1);
 
-  Double_t mult(0),le1(280),le2(350);
-  if(true){le1=0;le2=200;}
   
   TFile *file = new TFile(path+"/"+infile+".res.root","recreate");
   TTree *tree= new TTree("proc","proc");
@@ -34,7 +38,8 @@ void procData(TString path="/data.local/data/jun15", TString infile="hits.root",
   TH1F * hTot  = new TH1F("tot","TOT; TOT [#]; entries [#]",1000,-2,15);
  
   gStyle->SetOptStat(1001111);
-
+  gStyle->SetOptFit(1111);
+ 
   PrtHit fHit;
   Int_t entries = fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
@@ -68,6 +73,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="hits.root",
   TString ext = Form("_%d_%d",studyId,fileId);
   
   canvasAdd("le"+ext,800,400);
+  prt_fit(hLe,0.3,100,100).X();
   hLe->Draw();
   
   canvasAdd("tot"+ext,800,400);
