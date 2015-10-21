@@ -948,7 +948,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   if(format==0){ // file name 
     for(UInt_t i = 0; i != newset.size(); i++) {
       for(Int_t j=0; j<newset[i].getNChildren();j++ ){
-	cout<<newset[i].getChildRunId(j)<<std::endl;
+	if(j<1) cout<<newset[i].getChildRunId(j)<<std::endl;
       }
     }
   }
@@ -1034,7 +1034,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   if(format==10){ // cp
     for(UInt_t i = 0; i != newset.size(); i++) {
       for(Int_t j=0; j<newset[i].getNChildren();j++ ){
-	std::cout<<newset[i].getChildRunId(j)<< ".hld  ";
+	std::cout<<newset[i].getChildRunId(j)<< ".hld.root  ";
       }
     }
   }
