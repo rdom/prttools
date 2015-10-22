@@ -755,6 +755,10 @@ void canvasSave(Int_t what=0, Int_t style=0){
 }  
 
 void normalize(TH1F* hists[],Int_t size){
+  for(Int_t i=0; i<size; i++){
+    hists[i]->Scale(1/hists[i]->Integral(), "width"); 
+  }
+  
   Double_t max = 0;
   Double_t min = 0;
   for(Int_t i=0; i<size; i++){

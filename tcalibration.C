@@ -7,9 +7,8 @@
  
 TString ginFile(""), goutFile(""), gcFile("");
 Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[maxch];
-Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[960][10],gLeOffArr[960];;
+Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[960][10],gLeOffArr[960],gEvtOffset(0);
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGrDiff[maxch];
-
 
 Double_t walktheta(-16.5*TMath::Pi()/180.);
 Double_t deltatheta(2.5*TMath::Pi()/180.);
@@ -72,25 +71,32 @@ void TTSelector::Begin(TTree *){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
     TKey *key;
-
+    
     while ((key = (TKey*)nextkey())) {
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
-      Int_t ch = name.Atoi();
+      long long  ch = name.Atoll();
+      std::cout<<name<<"  ch  "<<ch <<std::endl;
+      
       Double_t x,y;
-      if(ch == 10000){ // line calibration
+      if(ch <10000){ // spline calibration
+	gGrIn[ch]= new TGraph(*gr);
+      }else if(ch == 10000){ // line calibration
 	for(Int_t i=0; i<maxch; i++){
 	  gr->GetPoint(i,x,y);
 	  gMaxIn[i] = (Int_t)(y+0.01);
+	  //std::cout<<"ch  "<<i<< "  FT max"<<  gMaxIn[i]<<std::endl;	  
 	}
       }else if(ch == 10001){ // read tot offsets
 	for(Int_t i=0; i<maxch; i++){
 	  gr->GetPoint(i,gTotO[i],y);
+	  //std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
       }else if(ch == 10002){ // read tot peaks
 	for(Int_t i=0; i<960*10; i++){
 	  gr->GetPoint(i,x,y);
 	  gTotP[i/10][i%10] = y;
+	  //std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
       }else if(ch == 10003){ // read LE offsets 1
 	for(Int_t i=0; i<960; i++){
@@ -98,8 +104,10 @@ void TTSelector::Begin(TTree *){
 	}
       }else if(ch >= 20000 && ch < 30000){ // read LE offsets 3
 	gLeO[ch-20000] = new TGraph(*gr);
-      }else{                      // spline calibration
-	gGrIn[ch]= new TGraph(*gr);
+      }else if(ch > 100000){ // read event offsets
+	if(ginFile.Contains(name)){
+	  gr->GetPoint(0,x,gEvtOffset);
+	}
       }
     }
     f.Close();
@@ -243,7 +251,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	hit.SetChannel(ch);
 	hit.SetMcpId(map_mcp[ch]);
 	hit.SetPixelId(map_pix[ch]+1);
-	hit.SetLeadTime(timeLe);
+	hit.SetLeadTime(timeLe-gEvtOffset);
 	hit.SetTotTime(timeTot);
 	fEvent->AddHit(hit);
 	nrhits++;

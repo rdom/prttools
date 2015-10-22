@@ -1149,7 +1149,7 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
     for(Int_t i=studyId; i<200; i++){
       std::vector<DataInfo> newset= getStudy(i);
       if(newset.size()>0){
-	std::cout<<Form("<option value=%d>",i)<<study[i]<<"</option>" <<std::endl;
+	std::cout<<Form("<option value=%d> %d ",i,i)<<study[i]<<"</option>" <<std::endl;
       }
     }
   }

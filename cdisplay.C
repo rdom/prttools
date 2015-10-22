@@ -6,7 +6,7 @@
 #define prt__sim
 #include "cdisplay.h"
 #include "prttools.C"
- 
+
 class PrtHit;
 class PrtEvent;
 
@@ -190,8 +190,8 @@ void MSelector::SlaveBegin(TTree *){
   }
 
   hTot=new TH1F("hTotA","",500,min2,max2);
-  hLe=new TH1F("hLeA","",5000,-100,100);
-  hLes=new TH1F("hLeAs","",5000,-100,100);
+  hLe=new TH1F("hLeA","",4000,200,400);
+  hLes=new TH1F("hLeAs","",2000,0,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",2000,0,2000);
   hTof=new TH1F("hTof","",2000,150,250);
@@ -228,7 +228,7 @@ Bool_t MSelector::Process(Long64_t entry){
   }
   TString fileid("");
   bool bsim(false);
-  if(gMode==100){
+  if(gMode==100 || gMode==101){
     TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
     fileid = current_file_name;
     fileid.Remove(0,fileid.Last('/')+1);
@@ -300,13 +300,13 @@ Bool_t MSelector::Process(Long64_t entry){
     }
 
     if(triggerLe!=-1 || gTrigger==0) {
+      Double_t offset = 284.89;
       if(bsim){
-	Double_t offset = 284.59;
-
-	hSTime[mcp][pix]->Fill(timeDiff+offset);
+	hSTime[mcp][pix]->Fill(timeDiff);
 	hLes->Fill(le);
 	continue;
       }
+      //timeDiff-=offset;
       if(gMode==1){
 	hLeTot[mcp][pix]->SetTitle(Form("ch %d",ch));
 	hLeTot[mcp][pix]->Fill(timeDiff,tot);
@@ -440,10 +440,9 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
 	normalize(hh,2);
-	hPTime[mcp][pix]->Draw();
-	prt_fit(hPTime[mcp][pix],1);
-	hPTime[mcp][pix]->Draw("same");
-	if(hPTime[mcp][pix]->GetEntries()>10) hSTime[mcp][pix]->Draw("same");
+	hh[0]->Draw();
+	prt_fit(hh[0],1,1);
+	if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
       }
       if(gComboId==2) hPTot[mcp][pix]->Draw();   
       if(gComboId==5) hPMult[mcp][pix]->Draw();      
@@ -494,13 +493,13 @@ void MyMainFrame::InterestChanged(){
   std::cout<<"ch of interest "<<ch <<std::endl;
   Int_t mcp = map_mcp[ch];
   Int_t pix = map_pix[ch];
+
   if(gComboId==0) {
     TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
     normalize(hh,2);
-    hPTime[mcp][pix]->Draw();
-    prt_fit(hPTime[mcp][pix],1);
-    hPTime[mcp][pix]->Draw("same");
-    if(hPTime[mcp][pix]->GetEntries()>10) hSTime[mcp][pix]->Draw("same");
+    hh[0]->Draw();
+    prt_fit(hh[0],1,1);
+    if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
   }
   if(gComboId==2) hPTot[mcp][pix]->Draw();   
   if(gComboId==5) hPMult[mcp][pix]->Draw();      
@@ -552,7 +551,7 @@ void MSelector::Terminate(){
   hTof = dynamic_cast<TH1F *>(TProof::GetOutput("hTof", fOutput)); 
 }
 
-void MyMainFrame::DoDraw(){  
+void MyMainFrame::DoDraw(){ 
   fCheckBtn2->SetText("3 sigma time cut                         ");
   fCheckBtn2->SetTextColor(Pixel_t(0x000000),kFALSE);   
   fCheckBtn3->SetText("Walk correction                         ");
@@ -617,7 +616,8 @@ void MyMainFrame::DoDraw(){
     
     TString fileid = ginFile;
     TString dirid = ginFile;
-    fileid.Remove(0,fileid.Last('/')+1);
+    fileid.Remove(0,fileid.Last('_')+1);
+    fileid.Remove(fileid.Last('C'));
     dirid.Remove(dirid.Last('/'));
     TString line = Form("if(\"%s\" == fileid) offset = %f;\n", fileid.Data(), xmax1-xmax2);
     std::cout<<"line  "<<line <<std::endl;
@@ -626,6 +626,16 @@ void MyMainFrame::DoDraw(){
     out.open(dirid+"/offsets.txt", std::ios::app);
     out << line;
     out.close();
+    
+    TFile efile(dirid+"/off_"+fileid+ ".root","RECREATE");
+    TGraph *gr = new TGraph();
+    gr->SetPoint(0,xmax1-xmax2,  xmax1-xmax2);
+    gr->SetName(fileid);
+    gr->Write();
+    efile.Write();
+    efile.Close();
+
+    gApplication->Terminate(0);
   }
 
 }
@@ -785,10 +795,11 @@ void MyMainFrame::DoExport(){
       for(Int_t p=0; p<npix; p++){
 	cExport->cd();
 	if(gComboId==0) {
-	  hPTime[m][p]->Draw();
-	  prt_fit(hPTime[m][p]);
-	  hPTime[m][p]->Draw("same");
-	  if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
+	  TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
+	  normalize(hh,2);
+	  hh[0]->Draw();
+	  prt_fit(hh[0],1,1);
+	  if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
 	}
 	if(gComboId==2){
@@ -810,7 +821,7 @@ void MyMainFrame::DoExport(){
 	
 	cExport->SetName(histname);
 	canvasAdd(cExport);
-	canvasSave(0,1);
+	canvasSave(1,0);
 	canvasDel(cExport->GetName());
 	
 	pbar->SetPosition(100*(m*p)/total);
@@ -821,7 +832,7 @@ void MyMainFrame::DoExport(){
     histname = updatePlot(gComboId,cExport);
     cExport->SetName(histname);
     canvasAdd(cExport);
-    canvasSave(0,1);
+    canvasSave(1,0);
     canvasDel(cExport->GetName());
   }
   //  cExport = (TCanvas *) cDigi->DrawClone();
@@ -842,21 +853,21 @@ void MyMainFrame::DoExport(){
 
 	  cExport->SetName(histname);
 	  canvasAdd(cExport);
-	  canvasSave(0,1);
+	  canvasSave(1,0);
 	  canvasDel(cExport->GetName());
 	}
       }
     }
     cDigi->SetName("digi");
     canvasAdd(cDigi);
-    canvasSave(0,1);
+    canvasSave(1,0);
     canvasDel(cDigi->GetName());
     writeString("digi.csv", drawDigi("m,p,v\n",layout));
 
   }else{
     cDigi->SetName("digi");
     canvasAdd(cDigi);
-    canvasSave(0,1);
+    canvasSave(1,0);
     canvasDel(cDigi->GetName());
   }
 
@@ -1195,7 +1206,9 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 
   fEdit1->SetText("600 280 310");
   fEdit2->SetText("400 0 12");
-
+  if(gMode>=100) fEdit1->SetText("600 0 50");
+  
+  
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   
   fEdit3->SetText("0 0");
