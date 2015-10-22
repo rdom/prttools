@@ -979,7 +979,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
     }
   }
 
-  if(format==4){ //sim out name  
+  if(format==4){ // sim out name  
     for(UInt_t i = 0; i != newset.size(); i++) {
       std::cout<<newset[i].getAliasId()<< "S.root"<<std::endl;
     }
@@ -1041,7 +1041,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
 }
 
-void p_exportinfo(TString name="alias.info"){
+void p_exportinfo(TString name="alias.html"){
   ofstream out;
   out.open(name);
 
@@ -1053,26 +1053,27 @@ void p_exportinfo(TString name="alias.info"){
 
     out<<"<table style=\"width:100%\">\n";
     out<<"<tr>\n";
-    out<<"<td>Files alias </td>"; 
-    out<<"<td>Files     </td>";
+    //  out<<"<td>Files alias </td>"; 
+    out<<"<td>Files *.hld </td>";
     out<<"<td>Study Id  </td>";
-    out<<"<td>Rad- iator  </td>";
+    out<<"<td>Rad- iator </td>";
     out<<"<td>Lens      </td>";
     out<<"<td>Angle     </td>";
     out<<"<td>Z         </td>";
     out<<"<td>X         </td>";
     out<<"<td>X step    </td>";
     out<<"<td>Y step    </td>";
+    out<<"<td>p [GeV/c]  </td>";
     out<<"<td>File Id   </td>";
     //  out<<"<td>Sim off set</td>";
     out<<"</tr>";
 
     for(UInt_t k = 0; k != newset.size(); k++) {  
       out<<"<tr>\n";
-      out<<"<td>"<<newset[k].getAliasId()<<"</td>\n"; 
+      // out<<"<td>"<<newset[k].getAliasId()<<"</td>\n"; 
       out<<"<td>\n";
       for(Int_t j=0; j<newset[k].getNChildren();j++ ){
-	out<<newset[k].getChildRunId(j)<<".hld<br>";
+	out<<newset[k].getChildRunId(j)<<"<br>";
       }
       out<<"</td>";
 
@@ -1084,6 +1085,7 @@ void p_exportinfo(TString name="alias.info"){
       out<<"<td>"<<newset[k].getX()<<"</td>";
       out<<"<td>"<<newset[k].getXstep()<<"</td>";
       out<<"<td>"<<newset[k].getYstep()<<"</td>";
+      out<<"<td>"<<newset[k].getMomentum()<<"</td>";
       out<<"<td>"<<newset[k].getFileId()<<"</td>";
       //  out<<"<td>"<<newset[k].getSimTO()<<"</td>";
       out<<"</tr>";
@@ -1137,14 +1139,14 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   p_print(newset, format);
 
   if(format==8){
-    for(Int_t i=0; i<200; i++){
+    for(Int_t i=studyId; i<200; i++){
       std::vector<DataInfo> newset= getStudy(i);
       if(newset.size()>0){
 	p_print(newset, format);
 	std::cout<<Form("desc[%d]=\"",i)<<study[i]<<"\";" <<std::endl;
       }
     }
-    for(Int_t i=0; i<200; i++){
+    for(Int_t i=studyId; i<200; i++){
       std::vector<DataInfo> newset= getStudy(i);
       if(newset.size()>0){
 	std::cout<<Form("<option value=%d>",i)<<study[i]<<"</option>" <<std::endl;
@@ -1163,8 +1165,18 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
       }
     }
   }
+
+  if(format==11){ //print all ID starting from studyId
+    for(Int_t i=studyId; i<200; i++){
+      std::vector<DataInfo> newset= getStudy(i);
+      if(newset.size()>0){
+	std::cout<<i<<std::endl;
+      }
+    }
+  }
   
-  //p_exportinfo();
+  if(format==12) p_exportinfo(); // html
+
   //p_export();
 
   // std::cout<<"ST"<<studyId<<std::endl;
