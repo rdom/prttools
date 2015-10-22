@@ -7,13 +7,14 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151802
   
   if(infile=="") return;
 
-  Double_t mult(0),le1(280),le2(330);
-  fSavePath = path+Form("/%d/%d",studyId,fileId);
+  Double_t mult(0),le1(0),le2(50),offset(0);
+  fSavePath = path+Form("/%ds/%d",studyId,fileId);
   
-  if(infile.Contains("S.root")) { // simulation
-    le1=0;
-    le2=50;
-    fSavePath = path+Form("/%ds/%d",studyId,fileId);
+  if(infile.Contains("C.root")) { // simulation
+    offset=284.59;
+    // le1=280;
+    // le2=330;
+    fSavePath = path+Form("/%d/%d",studyId,fileId);
   }
   
   PrtInit(path+"/"+infile,1);
@@ -53,7 +54,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151802
 
       if(fHit.GetChannel()<960 ){
 
-	time = fHit.GetLeadTime();
+	time = fHit.GetLeadTime()-offset;
 	tot = fHit.GetTotTime();
 	hLe->Fill(time);
 	hTot->Fill(tot);

@@ -301,38 +301,7 @@ Bool_t MSelector::Process(Long64_t entry){
 
     if(triggerLe!=-1 || gTrigger==0) {
       if(bsim){
-	Double_t offset = 72.2;
-	if("cc00000000001C.root" == fileid) offset = 72.080000;
-	if("cc00000000002C.root" == fileid) offset = 72.240000;
-	if("cc00000000003C.root" == fileid) offset = 72.240000;
-	if("cc00000000004C.root" == fileid) offset = 72.360000;
-	if("cc00000000005C.root" == fileid) offset = 72.400000;
-	if("cc00000000006C.root" == fileid) offset = 72.480000;
-	if("cc00000000007C.root" == fileid) offset = 72.200000;
-	if("cc00000000008C.root" == fileid) offset = 72.240000;
-	if("cc00000000009C.root" == fileid) offset = 72.160000;
-	if("cc00000000010C.root" == fileid) offset = 72.160000;
-	if("cc00000000011C.root" == fileid) offset = 73.560000;
-	if("cc00000000012C.root" == fileid) offset = 73.560000;
-	if("cc00000000013C.root" == fileid) offset = 72.960000;
-	if("cc00000000014C.root" == fileid) offset = 72.480000;
-	if("cc00000000015C.root" == fileid) offset = 72.120000;
-	if("cc00000000016C.root" == fileid) offset = 72.680000;
-	if("cc00000000017C.root" == fileid) offset = 72.040000;
-	if("cc00000000018C.root" == fileid) offset = 72.120000;
-	if("cc00000000019C.root" == fileid) offset = 72.040000;
-	if("cc00000000020C.root" == fileid) offset = 72.080000;
-	if("cc00000000021C.root" == fileid) offset = 72.040000;
-	if("cc00000000022C.root" == fileid) offset = 72.080000;
-	if("cc00000000023C.root" == fileid) offset = 72.080000;
-	if("cc00000000024C.root" == fileid) offset = 72.040000;
-	if("cc00000000025C.root" == fileid) offset = 72.080000;
-	if("cc00000000026C.root" == fileid) offset = 72.000000;
-	if("cc00000000027C.root" == fileid) offset = 72.040000;
-	if("cc00000000028C.root" == fileid) offset = 71.960000;
-	if("cc00000000029C.root" == fileid) offset = 71.920000;
-	if("cc00000000030C.root" == fileid) offset = 71.920000;
-	if("cc00000000031C.root" == fileid) offset = 71.960000;
+	Double_t offset = 284.59;
 
 	hSTime[mcp][pix]->Fill(timeDiff+offset);
 	hLes->Fill(le);
