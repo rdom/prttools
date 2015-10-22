@@ -99,11 +99,10 @@ processOneSim (){
 	IFS="$OIFS"
         mkdir -p "$1"
 	
-	start_time=$(date +%s)
 	statusline="run study $1"
 	
-	for ((k=1;k<${#file[@]};k++)); do
-	   ./prtdirc -o "${1}/${file[k]}S.root" ${args[k]} -x "proton" -e 2000 -b 1  > "${1}/${file[k]}.log" &
+	for ((fk=1;fk<${#file[@]};fk++)); do
+	   ./prtdirc -o "${1}/${file[fk]}S.root" ${args[k]} -x "proton" -e 2000 -b 1  > "${1}/${file[fk]}.log" &
 	   waitForMe $threads
 	done
 }
@@ -123,18 +122,19 @@ processOneReco (){
 	
 	IFS="$OIFS"
 	
-	start_time=$(date +%s)
 	statusline="run study $1"
-	
-	for ((k=1;k<${#file[@]};k++)); do
-	    root -l -q -b loadprtlibs.C procData.C+"(${reco[k]})" > log 2> log &
+	cd ~/dirc/prttools > /dev/null 
+	for ((fk=1;fk<${#file[@]};fk++)); do
+	    root -l -q -b loadprtlibs.C procData.C+"(${reco[fk]})" > log 2> log &
 	    waitForMe $threads
 	done
+	cd - > /dev/null 
     fi
 }  
 
+start_time=$(date +%s)
 if [ ${run} == "3" ]; then
-    cd ~/dirc/prtdirc/build
+    cd ~/dirc/prtdirc/build > /dev/null 
     if (( $study == 0 )); then
 	OIFS="$IFS"
 	IFS=$'\n'
@@ -146,12 +146,14 @@ if [ ${run} == "3" ]; then
     else
 	processOneSim $study 
     fi
-    cd -
+    cd - > /dev/null 
     waitForMe "1"
     printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s]     \n"
 else
-    cd ~/dirc/prttools
-    root -l -q -b loadprtlibs.C procData.C++  > log 2>log 
+    cd ~/dirc/prttools > /dev/null 
+    root -l -q -b $HOME/dirc/prttools/datainfo.C++  > log 2>log 
+    root -l -q -b loadprtlibs.C procData.C++  > log 2>log
+    cd - > /dev/null 
     if (( $study == 0 )); then
 	OIFS="$IFS"
 	IFS=$'\n'
@@ -160,7 +162,6 @@ else
 	for ((k=1;k<${#allstudies[@]};k++)); do
 	    processOneReco ${allstudies[k]}
 	done
-	cd -
 	waitForMe "1" && sleep 2
 	for ((k=1;k<${#allstudies[@]};k++)); do
 	    cd ${allstudies[k]}
@@ -171,11 +172,11 @@ else
 	done
     else
 	processOneReco $study
-	cd -
+
 	waitForMe "1" && sleep 2
 	cd $study
-	rm -f res_${1}.root
-	hadd res_${1}.root *.root.res.root
+	rm -f res_${study}.root
+	hadd res_${study}.root *.root.res.root
 	rm -f *.root.res.root
 	cd -
     fi
