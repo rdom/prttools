@@ -67,7 +67,7 @@ void init(){
   Long_t* size(0);
   Long_t* flags(0);
   Long_t* modtime(0);
-  if(!gSystem->GetPathInfo(insim,id,size,flags,modtime)){
+  if(gMode>=100 && !gSystem->GetPathInfo(insim,id,size,flags,modtime)){
     std::cout<<"Add Sim file: "<<insim <<std::endl;
     fCh->Add(insim);
   }
@@ -169,7 +169,7 @@ void MSelector::SlaveBegin(TTree *){
       
       if(gMode==1){
 	hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d",m,p) , bins1,min1,max1,100,-5.1,15);
-	hLeTot[m][p] = new TH2F(Form("hLeTot_mcp%dpix%d" ,m,p), Form("mcp %d, pixel %d",m, p), 200,min1,max1, bins2,min2,max2);
+	hLeTot[m][p] = new TH2F(Form("hLeTot_mcp%dpix%d" ,m,p), Form("mcp %d, pixel %d",m, p), 400,min1,max1, bins2,min2,max2);
 	axisTime800x500(hShape[m][p],"time, [ns]");
 	hShape[m][p]->GetYaxis()->SetTitle("offset to the threshold, [mV]");
       
@@ -1204,7 +1204,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   HideFrame(fHm);
 
 
-  fEdit1->SetText("600 280 310");
+  fEdit1->SetText("600 0 60");
   fEdit2->SetText("400 0 12");
   if(gMode>=100) fEdit1->SetText("600 0 50");
   

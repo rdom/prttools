@@ -76,8 +76,6 @@ void TTSelector::Begin(TTree *){
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
       long long  ch = name.Atoll();
-      std::cout<<name<<"  ch  "<<ch <<std::endl;
-      
       Double_t x,y;
       if(ch <10000){ // spline calibration
 	gGrIn[ch]= new TGraph(*gr);
