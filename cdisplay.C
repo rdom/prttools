@@ -3,7 +3,7 @@
 
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
-#define prt__sim
+#define prt__beam
 #include "cdisplay.h"
 #include "prttools.C"
 
@@ -11,39 +11,21 @@ class PrtHit;
 class PrtEvent;
 
 MyMainFrame *gMain;
-
-TH1F *hPTime[nmcp][npix];
-TH1F *hSTime[nmcp][npix];
-TH1F *hPTot[nmcp][npix];
-TH1F *hPMult[nmcp][npix];
-TH1F *hEMult[nmcp+1];
-TH2F *hLeTot[nmcp][npix];
-TH2F *hShape[nmcp][npix];
-
-MSelector            *fSelector;
+TGHProgressBar *pbar;
+MSelector *fSelector;
 TGraph *gGrDiff[maxch];
-
-Int_t mult[maxch]={0};
+TCanvas *cTime;
 
 const Int_t maxMult = 30;
-TH1F *hTotM[maxMult];
-TH1F *hLeM[maxMult];
+Int_t mult[maxch]={0},gComboId(0), gTrigger(0), gMode(0), layout(0);
+Double_t gTimeCutMin(-10000),gTimeCutMax(10000),gTofMin(0),gTofMax(0);
+Double_t gMultCutMin(0),gMultCutMax(0),gTimeCuts[nmcp][npix][2], gTotMean[nmcp][npix];
+TString ginFile(""), gPath(""), gInfo(""),gsTimeCuts("0"), gsTotMean("0");
 
-TH1F *hTot,*hLe,*hLes,*hMult,*hCh,*hTof;
-TH1F *hMultEvtNum1,*hMultEvtNum2;
-
-TCanvas *cTime;
-Int_t gComboId=0, gTrigger = 0, gMode=0, layout = 2;
-TString gPath="", gInfo="";
-TGHProgressBar *pbar;
-TString ginFile; 
-
-Double_t gTimeCutMin=-10000, gTimeCutMax=10000,gTofMin(0),gTofMax(0);
-Double_t gMultCutMin=0, gMultCutMax=0;  
-Double_t gTimeCuts[nmcp][npix][2];
-Double_t gTotMean[nmcp][npix];
-TString gsTimeCuts = "0";
-TString gsTotMean = "0";
+TH1F *hTotM[maxMult], *hLeM[maxMult];
+TH1F *hTot,*hLe,*hLes,*hMult,*hCh,*hTof,*hMultEvtNum1,*hMultEvtNum2;
+TH1F *hPTime[nmcp][npix],*hSTime[nmcp][npix],*hPTot[nmcp][npix],*hPMult[nmcp][npix],*hEMult[nmcp+1];
+TH2F *hLeTot[nmcp][npix],*hShape[nmcp][npix];
 
 void MSelector::Init(TTree *tree){
   fChain = tree; 
@@ -55,25 +37,16 @@ void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
 }
 
 void init(){
-  SetRootPalette(1);
-  TFile *f = new TFile(ginFile);
-  fCh = new TChain("data");
-  fCh->Add(ginFile);
+  PrtInit(ginFile);
   
   TString insim =  ginFile;
   insim.ReplaceAll("C.root","S.root");
   
-  Long_t* id(0);
-  Long_t* size(0);
-  Long_t* flags(0);
-  Long_t* modtime(0);
+  Long_t *id(0), *size(0), *flags(0), *modtime(0);
   if(gMode>=100 && !gSystem->GetPathInfo(insim,id,size,flags,modtime)){
     std::cout<<"Add Sim file: "<<insim <<std::endl;
     fCh->Add(insim);
   }
-
-  fNEntries = fCh->GetEntries();
-  std::cout<<"Entries in chain:  "<< fNEntries<<std::endl;
 
   TString workers = "workers=4";
   if(gSystem->GetFromPipe("whoami")=="hadaq" && fNEntries>1000000) workers = "workers=12";
@@ -213,7 +186,7 @@ void MSelector::SlaveBegin(TTree *){
 
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
-
+  
   Double_t offset=0;
   if(gMode==1){
     TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();

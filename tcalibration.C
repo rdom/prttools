@@ -24,7 +24,7 @@ Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0, Double_
   return xx*xx/(r1*r1)+yy*yy/(r2*r2)<=1;
 }
 
-Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){ 
+Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
   Double_t minp(0), walk(0), d(0), min(100);
 
   if(type==0){
@@ -186,22 +186,25 @@ Bool_t TTSelector::Process(Long64_t entry){
       }
     }
     
-    if(tof1!=0 && tof2!=0 && gMode==5) {
+    if(tof1!=0 && tof2!=0) {
       toftime = tof2-tof1;
       if(insideOfEllipce(toftime, tot1, walk1x0, walky0,walktheta) && insideOfEllipce(toftime, tot2, walk1x0, walky1,-walktheta)){
     	toftime += (tot1-walky0)*tan(walktheta+deltatheta);
     	toftime += (tot2-walky1)*tan(-walktheta-deltatheta);
     	tofpid=2212;
     	mass = 0.938272046;
-      }
-      toftime = tof2-tof1;
-      if(insideOfEllipce(toftime, tot1, walk2x0, walky0,walktheta) && insideOfEllipce(toftime, tot2, walk2x0, walky1,-walktheta)){
+      }else if(insideOfEllipce(toftime, tot1, walk2x0, walky0,walktheta) && insideOfEllipce(toftime, tot2, walk2x0, walky1,-walktheta)){
     	toftime = (tof2-tof1);
     	toftime += (tot1-walky0)*tan(walktheta+deltatheta);
     	toftime += (tot2-walky1)*tan(-walktheta-deltatheta);
     	tofpid=212;
     	mass=0.13957018;
       }
+    }
+    if(tofpid==0){
+      fEvent->Clear();
+      delete fEvent;
+      return kTRUE;
     }
   }
 
@@ -238,10 +241,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//timeLe += getTotWalk(triggerTot,ch,1);
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
 	timeLe -= gLeOffArr[ch];
-	if(tofpid>0){
-	  Double_t mom = 7;
-	  timeLe += 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
-	}
+	Double_t mom = 7;
+	timeLe += 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
       }
 
       if(gMode!=5 || tofpid!=0){

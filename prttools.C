@@ -515,6 +515,7 @@ void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
 
   fCh->Add(inFile);
   fCh->SetBranchAddress("PrtEvent", &fEvent);
+  
   fNEntries = fCh->GetEntries();
   std::cout<<"Entries in chain:  "<<fNEntries <<std::endl;
   if(bdigi == 1) initDigi();
@@ -552,8 +553,22 @@ void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
 
   fCh->Add(inFile);
   fCh->SetBranchAddress("PrtEvent", &fEvent);
+  
+  fCh->SetBranchStatus("fHitArray.fLocalPos", 0);
+  fCh->SetBranchStatus("fHitArray.fGlobalPos", 0);
+  fCh->SetBranchStatus("fHitArray.fDigiPos", 0);
+  fCh->SetBranchStatus("fHitArray.fMomentum", 0);
+  fCh->SetBranchStatus("fHitArray.fPosition", 0);
+  
+  fCh->SetBranchStatus("fHitArray.fParentParticleId", 0);
+  fCh->SetBranchStatus("fHitArray.fNreflectionsInPrizm", 0);
+  fCh->SetBranchStatus("fHitArray.fPathInPrizm", 0);
+  fCh->SetBranchStatus("fHitArray.fCherenkovMC", 0);
+
+  fCh->SetBranchStatus("fPosition", 0);
+
   fNEntries = fCh->GetEntries();
-  std::cout<<"Entries in chain:  "<<fNEntries <<std::endl;
+  std::cout<<"Entries in chain: "<<fNEntries <<std::endl;
   if(bdigi == 1) initDigi();
 }
 

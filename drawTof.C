@@ -8,11 +8,26 @@
 // Double_t walky0(42.23), walky1(44.00);
 // Double_t walk1x0(174.85), walk2x0(175.64);
 
+//7
+// Double_t walktheta(-10.5*TMath::Pi()/180.);
+// Double_t deltatheta(2.5*TMath::Pi()/180.);
+// Double_t walky0(42.23), walky1(44.00);
+// Double_t walk1x0(174.85), walk2x0(175.64);
 
-Double_t walktheta(-10.5*TMath::Pi()/180.);
-Double_t deltatheta(2.5*TMath::Pi()/180.);
+
+//10
+Double_t walktheta(-12*TMath::Pi()/180.);
 Double_t walky0(42.23), walky1(44.00);
-Double_t walk1x0(174.85), walk2x0(175.64);
+Double_t walk1x0(175), walk2x0(175.4);
+
+Double_t fx1[10]={175.4,175.4,175.4,175.4,175.4,175.4,175.4,175.4,175.4,175.4};
+Double_t fx2[10]={175.0,175.0,175.0,175.0,175.0,175.0,175.0,175.0,175.0,175.0};
+
+Double_t fr11[10]={0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.20};
+Double_t fr12[10]={0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.65};
+
+Double_t fr21[10]={0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.20};
+Double_t fr22[10]={0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.65};
 
 Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0, Double_t w){
   Double_t r1(0.3), r2(0.9);
@@ -47,7 +62,7 @@ void drawTof(TString infile="hits.root"){
   PrtHit fHit;
   for (Int_t ievent=0; ievent< fCh->GetEntries(); ievent++){ //fCh->GetEntries()
     PrtNextEvent(ievent,1000);
-
+    
     Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false);
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
@@ -58,7 +73,7 @@ void drawTof(TString infile="hits.root"){
     }
     
     if(!(btrig && btof1 && btof2 && bmcpout)) continue;
-    
+
     tof1=0;
     tof2=0;
     Int_t counts(0);
@@ -71,36 +86,32 @@ void drawTof(TString infile="hits.root"){
 	tot1=fHit.GetTotTime();
 	hTot->Fill(tot1);
       }
-
-      if(fHit.GetChannel()==1104){ //1104
+      if(fHit.GetChannel()==1104){
 	tof2 = fHit.GetLeadTime();
 	hTof2->Fill(fHit.GetLeadTime());
 	//hTot->Fill(fHit.GetTotTime());	
 	tot2=fHit.GetTotTime();
 	hTot->Fill(tot2);
       }
-      if(tof1!=0 && tof2!=0) {
-	//std::cout<<"tof2-tof1 "<<tof2-tof1 <<std::endl;
-	
-	hTof->Fill(tof2-tof1);
-	if(insideOfEllipce(tof2-tof1, tot1, walk1x0, walky0,walktheta) && insideOfEllipce(tof2-tof1, tot2, walk1x0, walky1,-walktheta)){
-	  Double_t time = (tof2-tof1);
+
+      if(tof1!=0 && tof2!=0){
+	Double_t time = (tof2-tof1);
+	hTof->Fill(time);	
+	//	if(insideOfEllipce(tof2-tof1, tot1, walk1x0, walky0,walktheta) && insideOfEllipce(tof2-tof1, tot2, walk1x0, walky1,-walktheta)){
 	  hLeTotW->Fill(time,tot1);
-	  time += (tot1-walky0)*tan(walktheta+deltatheta);
+	  time += (tot1-walky0)*tan(walktheta);
 	  hLeTotC->Fill(time,tot1);
-	  time += (tot2-walky1)*tan(-walktheta-deltatheta);
+	  time += (tot2-walky1)*tan(-walktheta);
 	  hLeTotC2->Fill(time,tot2);
 	  hTofC->Fill(time);
-	}
-	if(insideOfEllipce(tof2-tof1, tot1, walk2x0, walky0,walktheta) && insideOfEllipce(tof2-tof1, tot2, walk2x0, walky1,-walktheta)){
-	  Double_t time = (tof2-tof1);
-	  hLeTotW->Fill(time,tot1);
-	  time += (tot1-walky0)*tan(walktheta+deltatheta);
-	  hLeTotC->Fill(time,tot1);
-	  time += (tot2-walky1)*tan(-walktheta-deltatheta);
-	  hLeTotC2->Fill(time,tot2);
-	  hTofC->Fill(time);
-	}
+	  //	}else if(insideOfEllipce(tof2-tof1, tot1, walk2x0, walky0,walktheta) && insideOfEllipce(tof2-tof1, tot2, walk2x0, walky1,-walktheta)){
+	//   hLeTotW->Fill(time,tot1);
+	//   time += (tot1-walky0)*tan(walktheta);
+	//   hLeTotC->Fill(time,tot1);
+	//   time += (tot2-walky1)*tan(-walktheta);
+	//   hLeTotC2->Fill(time,tot2);
+	//   hTofC->Fill(time);
+	// }
 	
 	hLeTot->Fill(tof2-tof1,tot1);
       }
