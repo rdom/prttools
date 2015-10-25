@@ -33,7 +33,7 @@ void drawTof(TString infile="hits.root"){
 
   TString fileid(infile);
   fileid.Remove(0,fileid.Last('/')+1);
-  fileid.Remove(fileid.Last('.')-4);
+  fileid.Remove(fileid.Last('.')-2);
   DataInfo di = getDataInfo(fileid);
   Int_t momentum = di.getMomentum();
   Int_t studyId = di.getStudyId();
