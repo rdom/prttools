@@ -93,16 +93,17 @@ TString tdcsid[tdcnum] ={"2000","2001","2002","2003","2004","2005","2006","2007"
 };
 
 TF1 *gaust;
-TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2){
+TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1){
   Int_t binmax = h->GetMaximumBin();
   Double_t xmax = h->GetXaxis()->GetBinCenter(binmax);
   gaust = new TF1("gaust","gaus(0)",xmax-range,xmax+range);
+  gaust->SetNpx(500);
   gaust->SetLineColor(2);
   Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-range),h->GetXaxis()->FindBin(xmax+range));
   Double_t xxmin, xxmax, sigma1(0), mean1(0), sigma2, mean2;
   xxmax = xmax;
   xxmin = xxmax;
-  Int_t nfound = 1, peakSearch = 1;
+  Int_t nfound(1);
   if(integral>threshold){
     
     if(peakSearch == 1){
@@ -112,11 +113,12 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
     }
     
     if(peakSearch == 2){
-      nfound = prt_spect->Search(h,2,"",0.2);
+      nfound = prt_spect->Search(h,4,"",0.1);
       std::cout<<"nfound  "<<nfound <<std::endl;
       Float_t *xpeaks = prt_spect->GetPositionX();
       if(nfound==1){
 	gaust =new TF1("gaust","gaus(0)",xmax-range,xmax+range);
+	gaust->SetNpx(500);
 	gaust->SetParameter(1,xpeaks[0]);
       }else if(nfound==2) {
 	if(xpeaks[0]>xpeaks[1]) {
@@ -127,12 +129,21 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
 	  xxmin = xpeaks[0];
 	}
 	gaust =new TF1("gaust","gaus(0)+gaus(3)",xmax-range,xmax+range);
-	gaust->SetParameter(1,xxmin);
-	gaust->SetParameter(4,xxmax);
+	gaust->SetNpx(500);
+	gaust->SetParameter(0,1000);
+	gaust->SetParameter(3,1000);
+	
+	gaust->FixParameter(1,xxmin);
+	gaust->FixParameter(4,xxmax);
+	gaust->SetParameter(2,0.1);
+	gaust->SetParameter(5,0.1);
+	h->Fit("gaust","","MQN",xxmin-range, xxmax+range);
+	gaust->ReleaseParameter(1);
+	gaust->ReleaseParameter(4);
       }
     
-      gaust->SetParameter(2,0.3);
-      gaust->SetParameter(5,0.3);
+      gaust->SetParameter(2,0.2);
+      gaust->SetParameter(5,0.2);
     }
 
     h->Fit("gaust","","MQN",xxmin-range, xxmax+range);
@@ -705,13 +716,30 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
 	w = ((TCanvas*)c)->GetWindowWidth();
 	h = ((TCanvas*)c)->GetWindowHeight();
       }
-      	std::cout<<"w "<<w <<std::endl;
-	std::cout<<"h "<<h <<std::endl;
 
       TCanvas *cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
       cc = (TCanvas*) c->DrawClone();
       cc->SetCanvasSize(w,h);
-      if(style == 0) cc->SetBottomMargin(0.12);
+      if(style == 0) {
+	cc->SetBottomMargin(0.12);
+	TIter next(cc->GetListOfPrimitives());
+	TObject *obj;
+	
+	while((obj = next())){
+	  if(obj->InheritsFrom("TH1")){
+	    TH1F *h = (TH1F*)obj;
+	    h->GetXaxis()->SetTitleSize(0.05);
+	    h->GetYaxis()->SetTitleSize(0.05);
+	    h->GetXaxis()->SetTitleOffset(0.85);
+	    h->GetYaxis()->SetTitleOffset(0.85);
+	  }
+	  if(obj->InheritsFrom("TF1")){
+	    TF1 *f = (TF1*)obj;
+	    f->SetNpx(500);
+	  }
+	}
+      }
+      
       cc->Modified();
       cc->Update();
     

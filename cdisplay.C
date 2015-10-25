@@ -3,7 +3,7 @@
 
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
-#define prt__beam
+#define prt__sim
 #include "cdisplay.h"
 #include "prttools.C"
 
