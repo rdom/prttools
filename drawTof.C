@@ -44,7 +44,7 @@ Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double
 void drawTof(TString infile="hits.root", Int_t momentum=7){
   gmom=momentum-1;
   TString fileid(infile);
-  fileid.Remove(0,fileid.Last('/')+1);
+  fileid.Remove(0,fileid.Last('/')-3);
   fileid.Remove(fileid.Last('.'));
   fSavePath = Form("tof/mom_%d",momentum)+fileid;
   PrtInit(infile,1);
