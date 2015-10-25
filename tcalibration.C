@@ -3,6 +3,7 @@
 
 #define TTSelector_cxx
 #include "prttools.C"
+#include "datainfo.C"
 #include "tcalibration.h"
  
 TString ginFile(""), goutFile(""), gcFile("");
@@ -110,7 +111,14 @@ void TTSelector::Begin(TTree *){
     }
     f.Close();
   }
-
+  
+  TString fileid(ginFile);
+  fileid.Remove(0,fileid.Last('/')+1);
+  fileid.Remove(fileid.Last('.')-4);
+  DataInfo di = getDataInfo(fileid);
+  std::cout<<fileid<<" si "<<di.getStudyId() <<std::endl;
+  std::cout<<fileid<<" si "<<di.getMomentum() <<std::endl;
+   
   std::cout<<"Initialization successful"<<std::endl;
 }  
 

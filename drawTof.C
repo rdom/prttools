@@ -2,8 +2,8 @@
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
+#include "datainfo.C"
 #include <TEllipse.h>
-
 
 // Double_t walktheta(-16.5*TMath::Pi()/180.);
 // Double_t deltatheta(2.5*TMath::Pi()/180.);
@@ -41,12 +41,16 @@ Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double
   return xx*xx/(r1*r1)+yy*yy/(r2*r2)<=1;
 }
 
-void drawTof(TString infile="hits.root", Int_t momentum=7){
-  gmom=momentum-1;
+void drawTof(TString infile="hits.root"){
+
   TString fileid(infile);
-  fileid.Remove(0,fileid.Last('/')-3);
-  fileid.Remove(fileid.Last('.'));
-  fSavePath = Form("tof/mom_%d",momentum)+fileid;
+  fileid.Remove(0,fileid.Last('/')+1);
+  fileid.Remove(fileid.Last('.')-4);
+  DataInfo di = getDataInfo(fileid);
+  Int_t momentum = di.getMomentum();
+  
+  gmom=momentum-1;
+  fSavePath = Form("tof/%d/%d_",di.getStudyId(),momentum)+fileid;
   PrtInit(infile,1);
 
   Int_t le1(170), le2(186);

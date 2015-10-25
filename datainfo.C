@@ -116,7 +116,7 @@ std::vector<DataInfo> aliasArray;
 const Int_t gg_nstudies = 200;
 Int_t gg_studyArray[gg_nstudies];
 TString study[gg_nstudies];
-void init(){
+void datainfo_init(){
 
   for(Int_t i=0; i<gg_nstudies; i++) gg_studyArray[i]=0;
   
@@ -824,7 +824,6 @@ void init(){
   }
 }
 
-
 std::vector<DataInfo> getStudy(Int_t id){
   std::vector<DataInfo> newset;
   for(UInt_t i = 0; i != aliasArray.size(); i++) {
@@ -1130,8 +1129,17 @@ void p_import(TString name="data.info"){
   // }
 }
 
+DataInfo getDataInfo(TString name){
+  datainfo_init();
+  for(UInt_t i = 0; i < dataArray.size(); i++) {
+    TString sname = dataArray[i].getRunId();
+    if(sname.Contains(name)) return dataArray[i];
+  }
+  return DataInfo();
+}
+
 void datainfo(Int_t studyId=0, Int_t format = 0){
-  init();
+  datainfo_init();
   createAliases();
 
   std::vector<DataInfo> newset= getStudy(studyId);
