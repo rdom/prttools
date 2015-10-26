@@ -11,7 +11,7 @@ Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[maxch];
 Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[960][10],gLeOffArr[960],gEvtOffset(0);
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGrDiff[maxch];
 
-Double_t walktheta(-16.5*TMath::Pi()/180.);
+Double_t walktheta(-13.5*TMath::Pi()/180.);
 Double_t tof1le(0),tof2le(0),tof1tot(0),tof2tot(0);
 Double_t fr11[11]={0,0.5,0.5,0.3,0.3,0.4, 0.3,0.3,0.2,0.20,0.15};
 Double_t fr12[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.80,0.70};
