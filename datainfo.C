@@ -1131,9 +1131,11 @@ void p_import(TString name="data.info"){
 
 DataInfo getDataInfo(TString name){
   datainfo_init();
-  for(UInt_t i = 0; i < dataArray.size(); i++) {
-    TString sname = dataArray[i].getRunId();
-    if(sname.Contains(name)) return dataArray[i];
+  createAliases();
+  
+  for(UInt_t i = 0; i < aliasArray.size(); i++) {
+    TString sname = aliasArray[i].getRunId();
+    if(sname.Contains(name)) return aliasArray[i];
   }
   return DataInfo();
 }

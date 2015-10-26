@@ -17,9 +17,10 @@ Double_t fr11[11]={0,0.5,0.5,0.3,0.3,0.4, 0.3,0.3,0.2,0.20,0.15};
 Double_t fr12[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.80,0.70};
 Double_t fr21[11]={0,0.8,0.8,0.3,0.3,0.4, 0.3,0.3,0.2,0.2,0.2};
 Double_t fr22[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.8,0.8};
+Double_t c1y(0.5),c2y(0.5),c1x(0.9),c2x(0.9);
+DataInfo di;
 
-Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0, Double_t w){
-  Double_t r1(0.3), r2(0.9);
+Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double_t r1, Double_t r2, Double_t w=0){
 
   Double_t xx = cos(w)*(x-x0)+sin(w)*(y-y0);
   Double_t yy = sin(w)*(x-x0)-cos(w)*(y-y0);
@@ -84,6 +85,7 @@ void TTSelector::Begin(TTree *){
 	  gr->GetPoint(0,tof1le,tof2le);
 	  gr->GetPoint(1,tof1tot,tof2tot);
 	}
+	continue;
       }
       
       long long  ch = name.Atoll();
@@ -125,10 +127,13 @@ void TTSelector::Begin(TTree *){
   TString fileid(ginFile);
   fileid.Remove(0,fileid.Last('/')+1);
   fileid.Remove(fileid.Last('.')-4);
-  DataInfo di = getDataInfo(fileid);
+  di = getDataInfo(fileid);
   Int_t momentum = di.getMomentum();
-  std::cout<<fileid<<" si "<<di.getStudyId() <<std::endl;
-  std::cout<<fileid<<" si "<<momentum <<std::endl;
+  std::cout<<fileid<<" studuid "<<di.getStudyId() << " mom "<<momentum <<std::endl;
+   if(di.getStudyId()==171 && momentum==7){
+    tof1le=174.98;
+    tof2le=175.74;
+  }
   c1y=fr11[momentum];
   c2y=fr21[momentum];
   c1x=fr12[momentum];
@@ -154,7 +159,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   fEvent = new PrtEvent();
   if(gMode==5){
     fEvent->SetAngle(di.getAngle());
-    fEvent->SetMomentum(di.getMomentum());
+    fEvent->SetMomentum(TVector3(0,0,di.getMomentum()));
     fEvent->SetTrigger(960);
     fEvent->SetGeometry(di.getStudyId());
     fEvent->SetLens(di.getLensId());
@@ -224,10 +229,10 @@ Bool_t TTSelector::Process(Long64_t entry){
       time += (tot1-tof1tot)*tan(walktheta);
       time += (tot2-tof2tot)*tan(-walktheta);
 
-      if(insideOfEllipce(time, tot1, tof1le, tof1tot, cpiy, cpix) && insideOfEllipce(time, tot2, tof1le, tof2tot, cpiy, cpix)){
+      if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)){
 	tofpid=2212;
     	mass = 0.938272046;
-      }else if(insideOfEllipce(time, tot1, tof2le, tof1tot, cpy, cpx) && insideOfEllipce(time, tot2, tof2le, tof2tot, cpy, cpx)){
+      }else if(insideOfEllipce(time, tot1, tof2le, tof1tot, c2y, c2x) && insideOfEllipce(time, tot2, tof2le, tof2tot, c2y, c2x)){
 	tofpid=212;
     	mass=0.13957018;
       }
@@ -277,6 +282,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeLe += 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
       }
 
+      if(gMode==5 && (ch != 960 || ch != 1104 )) continue;
       if(gMode!=5 || tofpid!=0){
 	hit.SetTdc(tdc);
 	hit.SetChannel(ch);
