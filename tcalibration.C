@@ -12,9 +12,11 @@ Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[960][10],gLeOffArr[960],gEvtOffs
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGrDiff[maxch];
 
 Double_t walktheta(-16.5*TMath::Pi()/180.);
-Double_t deltatheta(2.5*TMath::Pi()/180.);
-Double_t walky0(42.23), walky1(44.00);
-Double_t walk1x0(174.85), walk2x0(175.64);
+Double_t tof1le(0),tof2le(0),tof1tot(0),tof2tot(0);
+Double_t fr11[11]={0,0.5,0.5,0.3,0.3,0.4, 0.3,0.3,0.2,0.20,0.15};
+Double_t fr12[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.80,0.70};
+Double_t fr21[11]={0,0.8,0.8,0.3,0.3,0.4, 0.3,0.3,0.2,0.2,0.2};
+Double_t fr22[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.8,0.8};
 
 Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0, Double_t w){
   Double_t r1(0.3), r2(0.9);
@@ -76,6 +78,14 @@ void TTSelector::Begin(TTree *){
     while ((key = (TKey*)nextkey())) {
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
+      if(name.Contains("tof")){
+	name.Remove(0,4);
+	if(ginFile.Contains(name)){
+	  gr->GetPoint(0,tof1le,tof2le);
+	  gr->GetPoint(1,tof1tot,tof2tot);
+	}
+      }
+      
       long long  ch = name.Atoll();
       Double_t x,y;
       if(ch <10000){ // spline calibration
@@ -116,8 +126,13 @@ void TTSelector::Begin(TTree *){
   fileid.Remove(0,fileid.Last('/')+1);
   fileid.Remove(fileid.Last('.')-4);
   DataInfo di = getDataInfo(fileid);
+  Int_t momentum = di.getMomentum();
   std::cout<<fileid<<" si "<<di.getStudyId() <<std::endl;
-  std::cout<<fileid<<" si "<<di.getMomentum() <<std::endl;
+  std::cout<<fileid<<" si "<<momentum <<std::endl;
+  c1y=fr11[momentum];
+  c2y=fr21[momentum];
+  c1x=fr12[momentum];
+  c2x=fr22[momentum];
    
   std::cout<<"Initialization successful"<<std::endl;
 }  
@@ -137,7 +152,17 @@ Bool_t TTSelector::Process(Long64_t entry){
   GetEntry(entry);
   
   fEvent = new PrtEvent();
-  //fEvent->SetReferenceChannel(gTrigger);
+  if(gMode==5){
+    fEvent->SetAngle(di.getAngle());
+    fEvent->SetMomentum(di.getMomentum());
+    fEvent->SetTrigger(960);
+    fEvent->SetGeometry(di.getStudyId());
+    fEvent->SetLens(di.getLensId());
+    fEvent->SetPrismStepX(di.getXstep());
+    fEvent->SetPrismStepY(di.getYstep());
+    fEvent->SetBeamX(di.getX());
+    fEvent->SetBeamZ(di.getZ());
+  }
   
   for(Int_t i=0; i<Hits_ && i<10000; i++){
     tdc = map_tdc[Hits_nTrbAddress[i]];
@@ -195,20 +220,19 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
     
     if(tof1!=0 && tof2!=0) {
-      toftime = tof2-tof1;
-      if(insideOfEllipce(toftime, tot1, walk1x0, walky0,walktheta) && insideOfEllipce(toftime, tot2, walk1x0, walky1,-walktheta)){
-    	toftime += (tot1-walky0)*tan(walktheta+deltatheta);
-    	toftime += (tot2-walky1)*tan(-walktheta-deltatheta);
-    	tofpid=2212;
+      Double_t time = tof2-tof1;
+      time += (tot1-tof1tot)*tan(walktheta);
+      time += (tot2-tof2tot)*tan(-walktheta);
+
+      if(insideOfEllipce(time, tot1, tof1le, tof1tot, cpiy, cpix) && insideOfEllipce(time, tot2, tof1le, tof2tot, cpiy, cpix)){
+	tofpid=2212;
     	mass = 0.938272046;
-      }else if(insideOfEllipce(toftime, tot1, walk2x0, walky0,walktheta) && insideOfEllipce(toftime, tot2, walk2x0, walky1,-walktheta)){
-    	toftime = (tof2-tof1);
-    	toftime += (tot1-walky0)*tan(walktheta+deltatheta);
-    	toftime += (tot2-walky1)*tan(-walktheta-deltatheta);
-    	tofpid=212;
+      }else if(insideOfEllipce(time, tot1, tof2le, tof1tot, cpy, cpx) && insideOfEllipce(time, tot2, tof2le, tof2tot, cpy, cpx)){
+	tofpid=212;
     	mass=0.13957018;
       }
     }
+    
     if(tofpid==0){
       fEvent->Clear();
       delete fEvent;
