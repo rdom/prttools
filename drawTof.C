@@ -25,8 +25,6 @@ Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double
 }
 
 void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
-
-
   if(gcFile!="0"){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
@@ -55,7 +53,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   fSavePath = Form("tof/%d/%d",studyId,di.getFileId());
   PrtInit(infile,1);
   std::cout<<"ppp  "<<fSavePath <<std::endl;
-  
+  if(studyId<0) return;
 
   Int_t le1(170), le2(186);
   Int_t l1(174), l2(177);
@@ -125,13 +123,13 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
       time += (tot2-tof2tot)*tan(-walktheta);
       hTofC->Fill(time);
      
-      if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)){
+      // if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)){
    	hLeTotC->Fill(time,tot1);
 	hLeTotC2->Fill(time,tot2);
-      }else if(insideOfEllipce(time, tot1, tof2le, tof1tot, c2y, c2x) && insideOfEllipce(time, tot2, tof2le, tof2tot, c2y, c2x)){
-      	hLeTotC->Fill(time,tot1);
-      	hLeTotC2->Fill(time,tot2);
-      }
+      // }else if(insideOfEllipce(time, tot1, tof2le, tof1tot, c2y, c2x) && insideOfEllipce(time, tot2, tof2le, tof2tot, c2y, c2x)){
+      // 	hLeTotC->Fill(time,tot1);
+      // 	hLeTotC2->Fill(time,tot2);
+      // }
 	
       hLeTot->Fill(tof2-tof1,tot1);
     }
