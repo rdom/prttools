@@ -5,21 +5,15 @@
 #include "datainfo.C"
 #include <TEllipse.h>
 
-
 Double_t walktheta(-13*TMath::Pi()/180.);
+
 Double_t fy1(42.25), fy2(44.05);
-
-Double_t fr11[10]={0.5,0.5,0.3,0.3,0.4, 0.3,0.3,0.2,0.20,0.15};
-Double_t fr12[10]={1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.80,0.70};
-
-Double_t fx1[200][10];
-Double_t fx2[200][10];
-
-
-Double_t fr21[10]={0.8,0.8,0.3,0.3,0.4, 0.3,0.3,0.2,0.2,0.2};
-Double_t fr22[10]={1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.8,0.8};
-Int_t gmom(7);
-
+Double_t fr11[11]={0,0.5,0.5,0.3,0.3,0.4, 0.3,0.3,0.2,0.20,0.15};
+Double_t fr12[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.80,0.70};
+Double_t fx1[200][11];
+Double_t fx2[200][11];
+Double_t fr21[11]={0,0.8,0.8,0.3,0.3,0.4, 0.3,0.3,0.2,0.2,0.2};
+Double_t fr22[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.8,0.8};
 
 Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double_t r1, Double_t r2, Double_t w=0){
 
@@ -33,31 +27,24 @@ void drawTof(TString infile="hits.root"){
 
   TString fileid(infile);
   fileid.Remove(0,fileid.Last('/')+1);
-  fileid.Remove(fileid.Last('.')-2);
+  fileid.Remove(fileid.Last('.')-1);
   DataInfo di = getDataInfo(fileid);
   Int_t momentum = di.getMomentum();
   Int_t studyId = di.getStudyId();
-  gmom=momentum-1;
   fSavePath = Form("tof/%d/%d_",studyId,momentum)+fileid;
   PrtInit(infile,1);
 
   Int_t le1(170), le2(186);
   Int_t l1(174), l2(177);
 
-  // fx1[170][]={564,646,474};
-  
   fx1[150][7]=174.95;
   fx2[150][7]=175.70;
-
   fx1[151][7]=174.95;
   fx2[151][7]=175.70;
-
   fx1[152][7]=175.0;  
   fx2[152][7]=175.8;  
-
   fx1[153][7]=175.05;  
   fx2[153][7]=175.85;
-  
   fx1[154][7]=175.3;  
   fx2[154][7]=176.0;  
   fx1[155][7]=175.3;  
@@ -150,7 +137,7 @@ void drawTof(TString infile="hits.root"){
   fx1[174][7]=175.3;
   fx1[174][8]=175.15;
   fx1[174][9]=175.15;
-  fx1[174][10]=175.15;
+  fx1[174][10]=175.1;
   fx2[174][3]=179.5;
   fx2[174][4]=177.7;
   fx2[174][5]=176.8;
@@ -158,7 +145,7 @@ void drawTof(TString infile="hits.root"){
   fx2[174][7]=176.1;
   fx2[174][8]=175.80;
   fx2[174][9]=175.70;
-  fx2[174][10]=175.60;
+  fx2[174][10]=175.50;
 
  
   fx1[175][4]=175.1;
@@ -185,12 +172,13 @@ void drawTof(TString infile="hits.root"){
   fx1[179][2]=175.3;
   fx1[179][3]=175.2;
   fx1[179][4]=175.1;
-  fx1[179][5]=175.1;
-  fx1[179][6]=175.1;
+  fx1[179][5]=175;
+  fx1[179][6]=175;
   fx1[179][7]=175.1;
-  fx1[179][8]=175.1;
-  fx1[179][9]=175.1;
-  fx1[179][10]=175.0;
+  fx1[179][8]=175;
+  fx1[179][9]=175;
+  fx1[179][10]=174.9;
+  
   fx2[179][2]=184.4;
   fx2[179][3]=179.4;
   fx2[179][4]=177.5;
@@ -198,8 +186,8 @@ void drawTof(TString infile="hits.root"){
   fx2[179][6]=176.1;
   fx2[179][7]=175.8;
   fx2[179][8]=175.6;
-  fx2[179][9]=175.5;
-  fx2[179][10]=175.4;
+  fx2[179][9]=175.4;
+  fx2[179][10]=175.3;
 
   fx1[180][7]=175.3;
   fx2[180][7]=176.0;
@@ -351,9 +339,26 @@ void drawTof(TString infile="hits.root"){
   hTof->Draw();
 
   canvasAdd("tofC",800,400);
-  prt_fit(hTofC,10,20,2,2);
+  TVector3 r=prt_fit(hTofC,10,20,2,2);
   hTofC->Draw();
+  Double_t tot1=hLeTotC->GetMean(2);
+  Double_t tot2=hLeTotC2->GetMean(2);
+  std::cout<<"p1  "<<r.X() << "   p1 "<< r.Z() << " t1 "<< tot1 <<"  t2 "<< tot2<<std::endl;
 
+  
+  fileid=infile;
+  fileid.Remove(0,fileid.Last('_')+1);
+  fileid.Remove(fileid.Last('C'));
+  TFile efile(infile+".tof.root","RECREATE");
+  TGraph *gr = new TGraph();
+  gr->SetPoint(0,r.X(),r.Z());
+  gr->SetPoint(1,tot1,tot2);
+  gr->SetName("tof_"+fileid);
+  gr->Write();
+  efile.Write();
+  efile.Close();
+  
+  
   // canvasAdd("tot",800,400);
   // hTot->Draw();
   

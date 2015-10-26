@@ -157,7 +157,7 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
     }
   }
   delete gaust;
-  return TVector3(mean1,sigma1,0);
+  return TVector3(mean1,sigma1,mean2);
 }
 
 void CreateMap(){
