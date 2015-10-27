@@ -18,7 +18,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151810
   }
   
   PrtInit(path+"/"+infile,1);
-
+  CreateMap();
   
   TFile *file = new TFile(path+"/"+infile+".res.root","recreate");
   TTree *tree= new TTree("proc","proc");
@@ -48,11 +48,13 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151810
     Int_t counts(0);
     Double_t tot(0),time(0);
     if(fEvent->GetParticle()!=2212) continue;
-
+ 
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
-      if(fHit.GetChannel()<960 && !badcannel(fHit.GetChannel())){
-
+      Int_t ch = fHit.GetChannel();
+      if(ch==-1) ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()];
+      
+      if(ch<960 && !badcannel(ch)){
 	time = fHit.GetLeadTime()-offset;
 	tot = fHit.GetTotTime();
 	hLe->Fill(time);
