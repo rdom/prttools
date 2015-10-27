@@ -210,6 +210,7 @@ Bool_t badcannel(Int_t ch){
   if(ch==831) return true;
   if(ch==828) return true;
   if(ch==815) return true;
+  if(ch>383 && ch<400) return true; //dead chain
 	
   return false;
 }

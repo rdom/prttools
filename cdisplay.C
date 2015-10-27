@@ -182,6 +182,8 @@ void MSelector::SlaveBegin(TTree *){
   fOutput->Add(hEMult[nmcp]);
   fOutput->Add(hCh);
   fOutput->Add(hTof);
+  
+  CreateMap();
 }
 
 Bool_t MSelector::Process(Long64_t entry){
@@ -238,7 +240,8 @@ Bool_t MSelector::Process(Long64_t entry){
     hit = fEvent->GetHit(h);
     ch  = hit.GetChannel();
     mcp = hit.GetMcpId();
-
+    if(ch==-1) ch = map_mpc[mcp][ hit.GetPixelId()-1];
+    
     if(!bsim){
       hCh->Fill(ch);
       chMultiplicity = mult[ch];
