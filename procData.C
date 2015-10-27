@@ -51,7 +51,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151810
 
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
-      if(fHit.GetChannel()<960 && !badcannel(ch)){
+      if(fHit.GetChannel()<960 && !badcannel(fHit.GetChannel())){
 
 	time = fHit.GetLeadTime()-offset;
 	tot = fHit.GetTotTime();
