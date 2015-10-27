@@ -3,7 +3,7 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
-void procData(TString path="/data.local/data/jun15", TString infile="beam_15181042444C.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
+void procData(TString path="/data.local/data/jun15", TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
   
   if(infile=="") return;
 
