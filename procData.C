@@ -3,15 +3,15 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
-void procData(TString path="/data.local/data/jun15", TString infile="beam_15180221900C.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
+void procData(TString path="/data.local/data/jun15", TString infile="beam_15181042444C.root", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
   
   if(infile=="") return;
 
   Double_t mult(0),le1(0),le2(50),offset(0);
   fSavePath = path+Form("/%ds/%d",studyId,fileId);
   
-  if(infile.Contains("C.root")) { // simulation
-    offset=284.59;
+  if(infile.Contains("C.root")) { // beam data
+    // offset=284.59;
     // le1=280;
     // le2=330;
     fSavePath = path+Form("/%d/%d",studyId,fileId);
@@ -51,8 +51,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="beam_151802
 
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
-
-      if(fHit.GetChannel()<960 ){
+      if(fHit.GetChannel()<960 && !badcannel(ch)){
 
 	time = fHit.GetLeadTime()-offset;
 	tot = fHit.GetTotTime();

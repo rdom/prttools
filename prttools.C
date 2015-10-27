@@ -110,6 +110,7 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
       gaust->SetParLimits(2,0.005,limit);
       gaust->SetParameter(1,xmax);
       gaust->SetParameter(2,0.2);
+      h->Fit("gaust","","MQN",xxmin-range, xxmax+range);
     }
     
     if(peakSearch == 2){
