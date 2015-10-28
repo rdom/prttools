@@ -100,9 +100,8 @@ processOneSim (){
         mkdir -p "$1"
 	
 	statusline="run study $1"
-	
 	for ((fk=1;fk<${#file[@]};fk++)); do
-	    ./prtdirc -o "${1}/${file[fk]}S.root" ${args[k]} -x "proton" -e 2000 -b 1  > "${1}/${file[fk]}.log" &
+	    ./prtdirc -o "${1}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 2000 -b 1  > "${1}/${file[fk]}.log" &
 	   waitForMe $threads
 	done
 }
