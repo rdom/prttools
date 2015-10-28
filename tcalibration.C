@@ -153,7 +153,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   Bool_t trbdata = current_file_name.Contains("trb");
   TObjArray *sarr = current_file_name.Tokenize("_");
 
-  if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
+  if(entry%10000==0) std::cout<<"event # "<< entry <<std::endl;
   GetEntry(entry);
   
   fEvent = new PrtEvent();

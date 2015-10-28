@@ -80,7 +80,7 @@ fi
 waitForMe (){
     while : 
     do 
-	activth=$(ps aux | grep "[p]rocData\|[p]rtdirc" | wc -l)
+	activth=$(ps aux | grep "root.exe.*[p]rocData\|[p]rtdirc" | wc -l)
 	printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
 	sleep .1
 	if [ "$activth" -lt "$1" ]; then 
@@ -102,7 +102,7 @@ processOneSim (){
 	statusline="run study $1"
 	
 	for ((fk=1;fk<${#file[@]};fk++)); do
-	   ./prtdirc -o "${1}/${file[fk]}S.root" ${args[k]} -x "proton" -e 2000 -b 1  > "${1}/${file[fk]}.log" &
+	    ./prtdirc -o "${1}/${file[fk]}S.root" ${args[k]} -x "proton" -e 2000 -b 1  > "${1}/${file[fk]}.log" &
 	   waitForMe $threads
 	done
 }

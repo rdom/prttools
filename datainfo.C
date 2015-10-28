@@ -1210,6 +1210,6 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   //for(UInt_t i = 0; i != aliasArray.size(); i++) {
   //   std::cout<<"A  "<<aliasArray[i].getAliasId()<< "  "<< aliasArray[i].getStudyId() << "  "<< aliasArray[i].getAngle() <<std::endl;
   // }
-  p_hadd();
+  // p_hadd();
 }
 
