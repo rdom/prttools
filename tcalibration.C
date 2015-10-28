@@ -230,11 +230,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       time += (tot2-tof2tot)*tan(-walktheta);
 
       if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)){
+	tofpid=212;
+	mass=0.13957018;
+      }else if(insideOfEllipce(time, tot1, tof2le, tof1tot, c2y, c2x) && insideOfEllipce(time, tot2, tof2le, tof2tot, c2y, c2x)){
 	tofpid=2212;
     	mass = 0.938272046;
-      }else if(insideOfEllipce(time, tot1, tof2le, tof1tot, c2y, c2x) && insideOfEllipce(time, tot2, tof2le, tof2tot, c2y, c2x)){
-	tofpid=212;
-    	mass=0.13957018;
       }
     }
     
