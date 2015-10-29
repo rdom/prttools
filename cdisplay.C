@@ -280,7 +280,7 @@ Bool_t MSelector::Process(Long64_t entry){
       if(bsim){
 	hSTime[mcp][pix]->Fill(timeDiff);
 	hLes->Fill(le);
-	continue;
+	//continue;
       }
       //timeDiff-=offset;
       if(gMode==1){

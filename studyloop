@@ -107,6 +107,8 @@ processOneSim (){
 	
 	IFS="$OIFS"
         mkdir -p "$1"
+
+	datapath="/d/proc/jun15/${1}"
 	
 	statusline="run study $1"
 	for ((fk=1;fk<${#file[@]};fk++)); do
@@ -126,7 +128,7 @@ processOneSim (){
 		./prtdirc -s 2 -i "${1}/${file[fk]}S.root" -u "${1}/lut_${file[fk]}S.root" -o "${1}/reco_${file[fk]}S.root" -e 1000 -t1 2   >> "${1}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "4" ]; then
-		./prtdirc -s 2 -i "/d/proc/jun15/${1}/${file[fk]}C.root" -u "${1}/lut_${file[fk]}S.root" -o "/d/proc/jun15/${1}/reco_${file[fk]}S.root" -e 1000 -t1 2   >> "${1}/${file[fk]}.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${1}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 1000 -t1 2   >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    waitForMe $threads
 	done
