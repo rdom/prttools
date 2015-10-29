@@ -634,12 +634,6 @@ Int_t getColorId(Int_t ind, Int_t style =0){
   return cid;
 }
 
-void waitPrimitive(TCanvas *c){
-  c->Modified(); 
-  c->Update(); 
-  c->WaitPrimitive();
-}
-
 Int_t shiftHist(TH1F *hist, Double_t double_shift){
   Int_t bins=hist->GetXaxis()->GetNbins();
   Double_t xmin=hist->GetXaxis()->GetBinLowEdge(1);
@@ -797,7 +791,21 @@ void canvasSave(Int_t what=0, Int_t style=0){
   while((c = (TCanvas*) next())){
     save(c, path, c->GetName(), what,style);
   }
-}  
+}
+
+void waitPrimitive(TString name){
+  TIter next(gg_canvasList);
+  TCanvas *c=0;
+  while((c = (TCanvas*) next())){
+    std::cout<<"c->GetName()  "<<c->GetName() <<std::endl;
+    
+    if(std::string(c->GetName())==name){
+      c->Modified(); 
+      c->Update(); 
+      c->WaitPrimitive();
+    }
+  }
+}
 
 void normalize(TH1F* hists[],Int_t size){
   for(Int_t i=0; i<size; i++){
