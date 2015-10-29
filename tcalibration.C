@@ -282,7 +282,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeLe += 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
       }
 
-      if(gMode==5 && (ch>960 && ch != 1104)) continue;
+      if(gMode==5 && (ch>960 && ch != 1104 && ch != 1344 && ch != 1248)) continue;
       if(gMode!=5 || tofpid!=0){
 	hit.SetTdc(tdc);
 	hit.SetChannel(ch);
