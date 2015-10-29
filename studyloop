@@ -10,11 +10,17 @@ show_help(){
   DESCRIPTION 
      -r 
         run type
-        0 - run decoding
+        0 - run decoding (default)
         1 - run calibration
         2 - run proc data
         3 - run simulation
         4 - run proc sim
+     -l 
+        level of reco
+        0 - run sim, lut, reco (default)
+        1 - run sim only
+        2 - run lut simulation only
+        3 - run reco only
      -j
         number of threads 
      -s 
@@ -27,7 +33,7 @@ show_help(){
 }
 
 OPTIND=1 
-while getopts "h?r:j:s:n" opt; do
+while getopts "h?r:l:j:s:n" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -39,12 +45,15 @@ while getopts "h?r:j:s:n" opt; do
 	    ;;
 	r)  run=$OPTARG
             ;;
+	l)  level=$OPTARG
+            ;;
 	n)  silent=1
             ;;
     esac
 done
 threads=${threads:-6}
 run=${run:-0}
+level=${level:-0}
 study=${study:-1}
 silent=${silent:-0}
 
@@ -100,10 +109,22 @@ processOneSim (){
         mkdir -p "$1"
 	
 	statusline="run study $1"
-	for ((fk=1;fk<4;fk++)); do
-	    ./prtdirc -o "${1}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 50 -b 1  > "${1}/${file[fk]}.log" && \
-	    ./prtdirc -o "${1}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${1}/${file[fk]}.log" && \
-	    ./prtdirc -s 2 -i "${1}/${file[fk]}S.root" -u "${1}/lut_${file[fk]}S.root" -o "${1}/reco_${file[fk]}S.root" -e 1000 -t1 10   >> "${1}/${file[fk]}.log" &
+	for ((fk=1;fk<${#file[@]};fk++)); do
+	    if [ ${level} == "0" ]; then
+		./prtdirc -o "${1}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 500 -b 1  > "${1}/${file[fk]}.log" && \
+		    ./prtdirc -o "${1}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${1}/${file[fk]}.log" && \
+		    ./prtdirc -s 2 -i "${1}/${file[fk]}S.root" -u "${1}/lut_${file[fk]}S.root" -o "${1}/reco_${file[fk]}S.root" -e 1000 -t1 10   >> "${1}/${file[fk]}.log" &
+	    fi
+	    if [ ${level} == "1" ]; then
+		./prtdirc -o "${1}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 100 -b 1  > "${1}/${file[fk]}.log" &
+	    fi
+	    if [ ${level} == "2" ]; then
+		./prtdirc -o "${1}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${1}/${file[fk]}.log" &
+		waitForMe $threads
+	    fi
+	    if [ ${level} == "3" ]; then
+		./prtdirc -s 2 -i "${1}/${file[fk]}S.root" -u "${1}/lut_${file[fk]}S.root" -o "${1}/reco_${file[fk]}S.root" -e 1000 -t1 1   >> "${1}/${file[fk]}.log" &
+	    fi
 	    waitForMe $threads
 	done
 }
