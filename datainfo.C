@@ -936,7 +936,7 @@ void p_hadd(){
   // for(UInt_t i = 0; i != aliasArray.size(); i++) {
   //   std::cout<<"hadd "<<aliasArray[i].getAliasId()<< ".hld.root  ";
   //   for(Int_t j=0; j<aliasArray[i].getNChildren();j++ ){
-  //     cout<<aliasArray[i].getChildRunId(j)<<".hld.root ";
+  //     std::cout<<aliasArray[i].getChildRunId(j)<<".hld.root ";
   //   }
   //   std::cout<<std::endl;
   // }
@@ -945,10 +945,10 @@ void p_hadd(){
     if(aliasArray[i].getNChildren()>1 && sid>=150){
       std::cout<<"hadd "<<sid<<"/"<<aliasArray[i].getAliasId()<< ".hld.root  ";
       for(Int_t j=0; j<aliasArray[i].getNChildren();j++ ){
-	cout<<sid<<"/"<<aliasArray[i].getChildRunId(j)<<".hld.root ";
+	std::cout<<sid<<"/"<<aliasArray[i].getChildRunId(j)<<".hld.root ";
       }
       std::cout<<std::endl;
-      cout<<"mv "<<sid<<"/"<<aliasArray[i].getAliasId()<< ".hld.root  " <<sid<<"/"<<aliasArray[i].getChildRunId(0)<<".hld.root && rm "<<sid<<"/"<<aliasArray[i].getChildRunId(1)<< ".hld.root  "  <<std::endl;
+      std::cout<<"mv "<<sid<<"/"<<aliasArray[i].getAliasId()<< ".hld.root  " <<sid<<"/"<<aliasArray[i].getChildRunId(0)<<".hld.root && rm "<<sid<<"/"<<aliasArray[i].getChildRunId(1)<< ".hld.root  "  <<std::endl;
       
     }
   }
@@ -960,7 +960,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   if(format==0){ // file name 
     for(UInt_t i = 0; i != newset.size(); i++) {
       for(Int_t j=0; j<newset[i].getNChildren();j++ ){
-	if(j<1) cout<<newset[i].getChildRunId(j)<<std::endl;
+	if(j<1) std::cout<<newset[i].getChildRunId(j)<<std::endl;
       }
     }
   }

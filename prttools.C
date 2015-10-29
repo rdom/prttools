@@ -37,6 +37,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "datainfo.C"
+
 #ifdef prt__sim
    class PrtEvent;
    class PrtHit;
@@ -57,6 +59,7 @@ TH2F*    fhDigi[15];
 TPad*    fhPads[15], *fhPglobal;
 TCanvas* cDigi;
 TSpectrum *prt_spect = new TSpectrum(2);
+DataInfo prt_data_info;
 
 const Int_t nmcp = 15, npix = 64;
 const Int_t maxmch(nmcp*npix);
