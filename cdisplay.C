@@ -46,6 +46,7 @@ void init(){
   if(gMode>=100 && !gSystem->GetPathInfo(insim,id,size,flags,modtime)){
     std::cout<<"Add Sim file: "<<insim <<std::endl;
     fCh->Add(insim);
+    fNEntries = fCh->GetEntries();
   }
 
   TString workers = "workers=4";
@@ -274,13 +275,13 @@ Bool_t MSelector::Process(Long64_t entry){
     if(gsTotMean!="0"){
       timeDiff += 0.3*(tot - gTotMean[mcp][pix]);
     }
-
+    
     if(triggerLe!=-1 || gTrigger==0) {
       Double_t offset = 284.89;
       if(bsim){
 	hSTime[mcp][pix]->Fill(timeDiff);
 	hLes->Fill(le);
-	//continue;
+	continue;
       }
       //timeDiff-=offset;
       if(gMode==1){
@@ -821,7 +822,7 @@ void MyMainFrame::DoExport(){
 	  cExport->cd();
 	  TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
 	  normalize(hh,2);
-	  hPTime[m][p]->Draw();
+	  hSTime[m][p]->Draw();
 	  prt_fit(hPTime[m][p]);
 	  hPTime[m][p]->Draw("same");
 	  if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
