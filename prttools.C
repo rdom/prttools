@@ -119,18 +119,19 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
     if(peakSearch == 2){
       nfound = prt_spect->Search(h,4,"",0.1);
       std::cout<<"nfound  "<<nfound <<std::endl;
-      Float_t *xpeaks = prt_spect->GetPositionX();
       if(nfound==1){
 	gaust =new TF1("gaust","gaus(0)",xmax-range,xmax+range);
 	gaust->SetNpx(500);
-	gaust->SetParameter(1,xpeaks[0]);
+	gaust->SetParameter(1,prt_spect->GetPositionX()[0]);
       }else if(nfound==2) {
-	if(xpeaks[0]>xpeaks[1]) {
-	  xxmax = xpeaks[0];
-	  xxmin = xpeaks[1];
+	Double_t p1 = prt_spect->GetPositionX()[0];
+	Double_t p2 = prt_spect->GetPositionX()[1];
+	if(p1>p2) {
+	  xxmax = p1;
+	  xxmin = p2;
 	}else {
-	  xxmax = xpeaks[1];
-	  xxmin = xpeaks[0];
+	  xxmax = p1;
+	  xxmin = p2;
 	}
 	gaust =new TF1("gaust","gaus(0)+gaus(3)",xmax-range,xmax+range);
 	gaust->SetNpx(500);
