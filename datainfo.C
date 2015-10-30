@@ -1054,7 +1054,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 }
 
 void p_exportinfo(TString name="alias.html"){
-  ofstream out;
+  std::ofstream out;
   out.open(name);
 
   for(Int_t i=0; i<gg_nstudies; i++){
@@ -1111,7 +1111,7 @@ void p_exportinfo(TString name="alias.html"){
 }
 
 void p_export(TString name="data.info"){
-  ofstream out;
+  std::ofstream out;
   out.open(name);
 
   for(UInt_t k = 0; k != dataArray.size(); k++) {  
