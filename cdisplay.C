@@ -164,7 +164,7 @@ void MSelector::SlaveBegin(TTree *){
   }
 
   hTot=new TH1F("hTotA","",500,min2,max2);
-  hLe=new TH1F("hLeA","",4000,200,400);
+  hLe=new TH1F("hLeA","",2000,0,100);
   hLes=new TH1F("hLeAs","",2000,0,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",2000,0,2000);
@@ -632,14 +632,16 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
     cT->SetLogy(1);
     hLe->Draw();
     hLes->Draw("same");
-    for(Int_t i=0; i<maxMult; i++){
-      Int_t colorid = i+1;
-      if(colorid ==5) colorid=9;
-      if(colorid ==3) colorid=8;
-      if(hTotM[i]->GetEntries()>0){
-	hLeM[i]->SetLineColor(colorid);
-	if(i==0) hLeM[i]->SetLineWidth(2);
-	hLeM[i]->Draw("same");
+    if(gMode!=100){
+      for(Int_t i=0; i<maxMult; i++){
+	Int_t colorid = i+1;
+	if(colorid ==5) colorid=9;
+	if(colorid ==3) colorid=8;
+	if(hTotM[i]->GetEntries()>0){
+	  hLeM[i]->SetLineColor(colorid);
+	  if(i==0) hLeM[i]->SetLineWidth(2);
+	  hLeM[i]->Draw("same");
+	}
       }
     }
     histname=hLe->GetName();
