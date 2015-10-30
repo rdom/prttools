@@ -665,14 +665,14 @@ Int_t shiftHist(TH1F *hist, Double_t double_shift){
 } 
 
 void writeInfo(TString filename){
-  ofstream myfile;
+  std::ofstream myfile;
   myfile.open (filename);
   myfile << fInfo+"\n";
   myfile.close();
 }
 
 void writeString(TString filename, TString str){
-  ofstream myfile;
+  std::ofstream myfile;
   myfile.open (filename);
   myfile << str+"\n";
   myfile.close();
