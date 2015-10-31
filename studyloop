@@ -178,22 +178,22 @@ if [ ${run} == "3" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
 		datapath="/d/proc/jun15/${allstudies[k]}"
-		hadd -f ${datapath}/spr_${datapath}S.root ${datapath}/reco_beam_*S_spr.root 
+		hadd -f ${datapath}/spr_${allstudies[k]}S.root ${datapath}/reco_beam_*S_spr.root 
 	    done
 	else
 	    datapath="/d/proc/jun15/${study}"
-	    hadd -f ${datapath}/spr_${datapath}S.root ${datapath}/reco_beam_*S_spr.root 
+	    hadd -f ${datapath}/spr_${study}S.root ${datapath}/reco_beam_*S_spr.root 
 	fi
     fi
     if [ ${level} == "4" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
 		datapath="/d/proc/jun15/${allstudies[k]}"
-		hadd -f ${datapath}/spr_${datapath}R.root ${datapath}/reco_beam_*R_spr.root 
+		hadd -f ${datapath}/spr_${allstudies[k]}R.root ${datapath}/reco_beam_*R_spr.root 
 	    done
 	else
 	    datapath="/d/proc/jun15/${study}"
-	    hadd -f ${datapath}/spr_${datapath}R.root ${datapath}/reco_beam_*R_spr.root 
+	    hadd -f ${datapath}/spr_${study}R.root ${datapath}/reco_beam_*R_spr.root 
 	fi
     fi
     
