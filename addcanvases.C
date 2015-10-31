@@ -1,5 +1,5 @@
 #include "prttools.C"
-void addcanvases(TString f1n="spr_150S.root" TString f2n="spr_150R.root"){
+void addcanvases(TString f1n="spr_150S.root", TString f2n="spr_150R.root"){
   const Int_t narr = 20;
   gStyle->SetOptStat(0); 
   gStyle->SetOptTitle(0); 
