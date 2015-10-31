@@ -114,21 +114,21 @@ processOneSim (){
 	statusline="run study $1"
 	for ((fk=1;fk<${#file[@]};fk++)); do
 	    if [ ${level} == "0" ]; then
-		./prtdirc -o "${1}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 10000 -b 1  > "${1}/${file[fk]}.log" && \
-		    ./prtdirc -o "${1}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${1}/${file[fk]}.log" && \
-		    ./prtdirc -s 2 -i "${1}/${file[fk]}S.root" -u "${1}/lut_${file[fk]}S.root" -o "${1}/reco_${file[fk]}S.root" -e 0 -t1 10   >> "${1}/${file[fk]}.log" &
+		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 10000 -b 1  > "${datapath}/${file[fk]}.log" && \
+		    ./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${datapath}/${file[fk]}.log" && \
+		    ./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 0 -t1 10   >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "1" ]; then
-		./prtdirc -o "${1}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 100 -b 1  > "${1}/${file[fk]}.log" &
+		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 100 -b 1  > "${datapath}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "2" ]; then
-		./prtdirc -o "${1}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${1}/${file[fk]}.log" &
+		./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "3" ]; then
-		./prtdirc -s 2 -i "${1}/${file[fk]}S.root" -u "${1}/lut_${file[fk]}S.root" -o "${1}/reco_${file[fk]}S.root" -e 1000 -t1 2   >> "${1}/${file[fk]}.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 1000 -t1 2   >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "4" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${1}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}R.root" -e 1000 -t1 2   >> "${datapath}/${file[fk]}.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}R.root" -e 1000 -t1 2   >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    waitForMe $threads
 	done
@@ -177,19 +177,23 @@ if [ ${run} == "3" ]; then
     if [ ${level} == "3" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
-		hadd -f ${allstudies[k]}/spr_${allstudies[k]}S.root ${allstudies[k]}/reco_beam_*S_spr.root 
+		datapath="/d/proc/jun15/${allstudies[k]}"
+		hadd -f ${datapath}/spr_${datapath}S.root ${datapath}/reco_beam_*S_spr.root 
 	    done
 	else
-	    hadd -f ${study}/spr_${study}S.root ${study}/reco_beam_*S_spr.root 
+	    datapath="/d/proc/jun15/${study}"
+	    hadd -f ${datapath}/spr_${datapath}S.root ${datapath}/reco_beam_*S_spr.root 
 	fi
     fi
     if [ ${level} == "4" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
-		hadd -f ${allstudies[k]}/spr_${allstudies[k]}R.root ${allstudies[k]}/reco_beam_*R_spr.root 
+		datapath="/d/proc/jun15/${allstudies[k]}"
+		hadd -f ${datapath}/spr_${datapath}R.root ${datapath}/reco_beam_*R_spr.root 
 	    done
 	else
-	    hadd -f ${study}/spr_${study}R.root ${study}/reco_beam_*R_spr.root 
+	    datapath="/d/proc/jun15/${study}"
+	    hadd -f ${datapath}/spr_${datapath}R.root ${datapath}/reco_beam_*R_spr.root 
 	fi
     fi
     
