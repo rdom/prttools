@@ -17,7 +17,7 @@ TGraph *gGrDiff[maxch];
 TCanvas *cTime;
 
 const Int_t maxMult = 30;
-Int_t mult[maxch]={0},gComboId(0), gTrigger(0), gMode(0), layout(0);
+Int_t mult[maxch]={0},gComboId(0), gTrigger(0), gMode(0), layout(2);
 Double_t gTimeCutMin(-10000),gTimeCutMax(10000),gTofMin(0),gTofMax(0);
 Double_t gMultCutMin(0),gMultCutMax(0),gTimeCuts[nmcp][npix][2], gTotMean[nmcp][npix];
 TString ginFile(""), gPath(""), gInfo(""),gsTimeCuts("0"), gsTotMean("0");
@@ -189,6 +189,7 @@ void MSelector::SlaveBegin(TTree *){
 
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
+  if(fEvent->GetParticle()!=2212) return kTRUE; 
   
   Double_t offset=0;
   if(gMode==1){
