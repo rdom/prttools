@@ -727,11 +727,11 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
 	
 	while((obj = next())){
 	  if(obj->InheritsFrom("TH1")){
-	    TH1F *h = (TH1F*)obj;
-	    h->GetXaxis()->SetTitleSize(0.05);
-	    h->GetYaxis()->SetTitleSize(0.05);
-	    h->GetXaxis()->SetTitleOffset(0.85);
-	    h->GetYaxis()->SetTitleOffset(0.85);
+	    TH1F *hh = (TH1F*)obj;
+	    hh->GetXaxis()->SetTitleSize(0.05);
+	    hh->GetYaxis()->SetTitleSize(0.05);
+	    hh->GetXaxis()->SetTitleOffset(0.85);
+	    hh->GetYaxis()->SetTitleOffset(0.85);
 	  }
 	  if(obj->InheritsFrom("TF1")){
 	    TF1 *f = (TF1*)obj;
