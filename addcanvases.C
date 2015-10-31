@@ -1,7 +1,7 @@
 #include "prttools.C"
 void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
 
-  f2n = f1n; f2n.ReplaceAll("S.root","C.root");
+  f2n = f1n; f2n.ReplaceAll("S.root","R.root");
 
   TString outdir=f1n;outdir.Remove(outdir.Last('/'));
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
