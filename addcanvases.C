@@ -1,5 +1,12 @@
 #include "prttools.C"
-void addcanvases(TString f1n="spr_150S.root", TString f2n="spr_150R.root"){
+void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
+
+  f2n = f1n; f2n.ReplaceAll("S.root","C.root");
+
+  TString outdir=f1n;outdir.Remove(outdir.Last('/'));
+  TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
+  fSavePath = outdir+sstudy;
+  
   const Int_t narr = 20;
   gStyle->SetOptStat(0); 
   gStyle->SetOptTitle(0); 
@@ -68,6 +75,5 @@ void addcanvases(TString f1n="spr_150S.root", TString f2n="spr_150R.root"){
   }
   std::cout<<"save all  " <<std::endl;
 
-  fSavePath = "data/anoa";
   canvasSave(0,1);
 }
