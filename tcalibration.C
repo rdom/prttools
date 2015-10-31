@@ -85,6 +85,13 @@ void TTSelector::Begin(TTree *){
 	}
 	continue;
       }
+      if(name.Contains("off")){ // read event offsets
+	name.Remove(0,4);
+	if(ginFile.Contains(name)){
+	  gr->GetPoint(0,x,gEvtOffset);
+	}
+	continue;
+      }
       
       long long  ch = name.Atoll();
       Double_t x,y;
@@ -113,10 +120,6 @@ void TTSelector::Begin(TTree *){
 	}
       }else if(ch >= 20000 && ch < 30000){ // read LE offsets 3
 	gLeO[ch-20000] = new TGraph(*gr);
-      }else if(ch > 100000){ // read event offsets
-	if(ginFile.Contains(name)){
-	  gr->GetPoint(0,x,gEvtOffset);
-	}
       }
     }
     f.Close();

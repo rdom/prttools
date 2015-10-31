@@ -43,7 +43,7 @@ void procOffsets(TString path="/data.local/data/jun15/beam_15180221900C.root"){
   TFile efile(path+ ".off.root","RECREATE");
   TGraph *gr = new TGraph();
   gr->SetPoint(0,xmax1-xmax2,  xmax1-xmax2);
-  gr->SetName(fileid);
+  gr->SetName("off_"+fileid);
   gr->Write();
   efile.Write();
   efile.Close();
