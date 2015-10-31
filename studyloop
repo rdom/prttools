@@ -126,15 +126,9 @@ processOneSim (){
 	    fi
 	    if [ ${level} == "3" ]; then
 		./prtdirc -s 2 -i "${1}/${file[fk]}S.root" -u "${1}/lut_${file[fk]}S.root" -o "${1}/reco_${file[fk]}S.root" -e 1000 -t1 2   >> "${1}/${file[fk]}.log" &
-		waitForMe $threads
-		rm spr_${1}S.root
-		hadd spr_${1}S.root ${1}/reco_beam_*S_spr.root 
 	    fi
 	    if [ ${level} == "4" ]; then
 		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${1}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}R.root" -e 1000 -t1 2   >> "${datapath}/${file[fk]}.log" &
-		waitForMe $threads
-		rm spr_${1}R.root
-		hadd spr_${1}R.root ${1}/reco_beam_*S_spr.root 	
 	    fi
 	    waitForMe $threads
 	done
@@ -179,8 +173,31 @@ if [ ${run} == "3" ]; then
     else
 	processOneSim $study 
     fi
-    cd - > /dev/null 
     waitForMe "1"
+    if [ ${level} == "3" ]; then
+	if (( $study == 0 )); then
+	    for ((k=1;k<${#allstudies[@]};k++)); do
+		rm ${allstudies[k]}/spr_${allstudies[k]}S.root
+		hadd ${allstudies[k]}/spr_${allstudies[k]}S.root ${allstudies[k]}/reco_beam_*S_spr.root 
+	    done
+	else
+	    rm ${study}/spr_${study}S.root
+	    hadd ${study}/spr_${study}S.root ${study}/reco_beam_*S_spr.root 
+	fi
+    fi
+    if [ ${level} == "3" ]; then
+	if (( $study == 0 )); then
+	    for ((k=1;k<${#allstudies[@]};k++)); do
+		rm ${allstudies[k]}/spr_${allstudies[k]}R.root
+		hadd ${allstudies[k]}/spr_${allstudies[k]}R.root ${allstudies[k]}/reco_beam_*R_spr.root 
+	    done
+	else
+	    rm ${study}/spr_${study}R.root
+	    hadd ${study}/spr_${study}R.root ${study}/reco_beam_*R_spr.root 
+	fi
+    fi
+    
+    cd - > /dev/null 
     printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s]     \n"
 else
     cd ~/dirc/prttools > /dev/null 
