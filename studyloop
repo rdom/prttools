@@ -177,23 +177,19 @@ if [ ${run} == "3" ]; then
     if [ ${level} == "3" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
-		rm ${allstudies[k]}/spr_${allstudies[k]}S.root
-		hadd ${allstudies[k]}/spr_${allstudies[k]}S.root ${allstudies[k]}/reco_beam_*S_spr.root 
+		hadd -f ${allstudies[k]}/spr_${allstudies[k]}S.root ${allstudies[k]}/reco_beam_*S_spr.root 
 	    done
 	else
-	    rm ${study}/spr_${study}S.root
-	    hadd ${study}/spr_${study}S.root ${study}/reco_beam_*S_spr.root 
+	    hadd -f ${study}/spr_${study}S.root ${study}/reco_beam_*S_spr.root 
 	fi
     fi
     if [ ${level} == "4" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
-		rm ${allstudies[k]}/spr_${allstudies[k]}R.root
-		hadd ${allstudies[k]}/spr_${allstudies[k]}R.root ${allstudies[k]}/reco_beam_*R_spr.root 
+		hadd -f ${allstudies[k]}/spr_${allstudies[k]}R.root ${allstudies[k]}/reco_beam_*R_spr.root 
 	    done
 	else
-	    rm ${study}/spr_${study}R.root
-	    hadd ${study}/spr_${study}R.root ${study}/reco_beam_*R_spr.root 
+	    hadd -f ${study}/spr_${study}R.root ${study}/reco_beam_*R_spr.root 
 	fi
     fi
     
@@ -215,8 +211,7 @@ else
 	waitForMe "1" && sleep 2
 	for ((k=1;k<${#allstudies[@]};k++)); do
 	    cd ${allstudies[k]}
-	    rm -f res_${allstudies[k]}.root
-	    hadd res_${allstudies[k]}.root *.root.res.root
+	    hadd -f res_${allstudies[k]}.root *.root.res.root
 	    rm -f *.root.res.root
 	    cd -
 	done
@@ -225,8 +220,7 @@ else
 
 	waitForMe "1" && sleep 2
 	cd $study
-	rm -f res_${study}.root
-	hadd res_${study}.root *.root.res.root
+	hadd -f res_${study}.root *.root.res.root
 	rm -f *.root.res.root
 	cd -
     fi
