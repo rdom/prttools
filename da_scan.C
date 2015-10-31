@@ -97,7 +97,7 @@ void da_scan(TString inFile = "r_spr.root"){
   gTrr->Draw("APL");
   canvasAdd(c3);
 
-  canvasSave(0,1);
+  canvasSave(1,0);
    
   file->cd();
   c1->Write();
