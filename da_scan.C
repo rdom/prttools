@@ -1,8 +1,9 @@
 #include "prttools.C"
 void da_scan(TString inFile = "r_spr.root"){
-  TString outdir=inFile.Remove(inFile.Last('/'));
-  TString sfile=inFile.Remove(0,inFile.Last('/')+1);
-  TString sstudy=outdir.Remove(0,inFile.Last('/'));
+  
+  TString outdir=inFile;outdir.Remove(outdir.Last('/'));
+  TString sfile=inFile; sfile.Remove(0,sfile.Last('/')+1);
+  TString sstudy=outdir.Remove(0,outdir.Last('/'));
   fSavePath = outdir+sstudy;
   TString outFile=outdir+"/c"+sfile;
 
