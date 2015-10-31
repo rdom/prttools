@@ -3,7 +3,7 @@ void da_scan(TString inFile = "r_spr.root"){
   
   TString outdir=inFile;outdir.Remove(outdir.Last('/'));
   TString sfile=inFile; sfile.Remove(0,sfile.Last('/')+1);
-  TString sstudy=outdir.Remove(0,outdir.Last('/'));
+  TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
   fSavePath = outdir+sstudy;
   TString outFile=outdir+"/c"+sfile;
 
@@ -50,7 +50,7 @@ void da_scan(TString inFile = "r_spr.root"){
   gNph->SetMarkerSize(0.7);
   gTrr->SetMarkerSize(0.7);
   gNph->GetYaxis()->SetRangeUser(0,150);
-  gSpr->GetYaxis()->SetRangeUser(0,12);
+  gSpr->GetYaxis()->SetRangeUser(0,20);
   gTrr->GetYaxis()->SetRangeUser(0,2);
 
   gSpr->GetYaxis()->SetTitle("SPR [mrad]");
