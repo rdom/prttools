@@ -20,7 +20,8 @@ show_help(){
         0 - run sim, lut, reco (default)
         1 - run sim only
         2 - run lut simulation only
-        3 - run reco only
+        3 - run sim reco only
+        4 - run data reco only 
      -j
         number of threads 
      -s 
@@ -125,10 +126,10 @@ processOneSim (){
 		waitForMe $threads
 	    fi
 	    if [ ${level} == "3" ]; then
-		./prtdirc -s 2 -i "${1}/${file[fk]}S.root" -u "${1}/lut_${file[fk]}S.root" -o "${1}/reco_${file[fk]}S.root" -e 1000 -t1 2   >> "${1}/${file[fk]}.log" &
+		./prtdirc -s 2 -i "${1}/${file[fk]}S.root" -u "${1}/lut_${file[fk]}S.root" -o "${1}/reco_${file[fk]}S.root" -e 1000 -t1 1   >> "${1}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "4" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${1}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 1000 -t1 2   >> "${datapath}/${file[fk]}.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${1}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}R.root" -e 1000 -t1 1   >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    waitForMe $threads
 	done
