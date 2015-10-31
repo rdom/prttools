@@ -2,7 +2,7 @@
 void da_scan(TString inFile = "r_spr.root"){
   TString outdir=inFile.Remove(inFile.Last('/'));
   TString sfile=inFile.Remove(0,inFile.Last('/')+1);
-  TString sstudy=outdirRemove(0,inFile.Last('/'));
+  TString sstudy=outdir.Remove(0,inFile.Last('/'));
   fSavePath = outdir+sstudy;
   TString outFile=outdir+"/c"+sfile;
 
