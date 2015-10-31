@@ -77,6 +77,7 @@ void TTSelector::Begin(TTree *){
     while ((key = (TKey*)nextkey())) {
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
+      Double_t x,y;
       if(name.Contains("tof")){
 	name.Remove(0,4);
 	if(ginFile.Contains(name)){
@@ -94,7 +95,6 @@ void TTSelector::Begin(TTree *){
       }
       
       long long  ch = name.Atoll();
-      Double_t x,y;
       if(ch <10000){ // spline calibration
 	gGrIn[ch]= new TGraph(*gr);
       }else if(ch == 10000){ // line calibration
