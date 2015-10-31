@@ -111,7 +111,7 @@ void TTSelector::SlaveBegin(TTree *){
 
   hCh = new TH1F("hCh","hCh;channel [#];entries [#]",3000,0,3000);
   fOutput->Add(hCh);
-  hRefDiff = new TH1F("hRefDiff","ch-ref. resolution;sigma [ns];entries [#]",500,0,1);
+  hRefDiff = new TH1F("hRefDiff","ch-ref. resolution;sigma [ns];entries [#]",500,0,0.05);
   for(Int_t i=0; i<maxtdc; i++){
     hSigma[i] = new TH1F(Form("hSigma%d",i),"ch-ref. resolution;sigma [ns];entries [#]",200,0,0.1);
     fOutput->Add(hSigma[i]);
@@ -119,7 +119,7 @@ void TTSelector::SlaveBegin(TTree *){
   fOutput->Add(hRefDiff);
   CreateMap();
 
- if(gcFile!="0"){
+if(gcFile!="0"){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
     TKey *key;
@@ -127,10 +127,15 @@ void TTSelector::SlaveBegin(TTree *){
     while ((key = (TKey*)nextkey())) {
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
-      long long  ch = name.Atoll();
-      std::cout<<name<<"  ch  "<<ch <<std::endl;
-      
       Double_t x,y;
+      if(name.Contains("tof")){
+	continue;
+      }
+      if(name.Contains("off")){ // read event offsets
+	continue;
+      }
+      
+      long long  ch = name.Atoll();
       if(ch <10000){ // spline calibration
 	gGrIn[ch]= new TGraph(*gr);
       }else if(ch == 10000){ // line calibration
@@ -156,10 +161,6 @@ void TTSelector::SlaveBegin(TTree *){
 	}
       }else if(ch >= 20000 && ch < 30000){ // read LE offsets 3
 	gLeO[ch-20000] = new TGraph(*gr);
-      }else if(ch > 100000){ // read event offsets
-	if(ginFile.Contains(name)){
-	  gr->GetPoint(0,x,gEvtOffset);
-	}
       }
     }
     f.Close();
@@ -205,7 +206,10 @@ Bool_t TTSelector::Process(Long64_t entry){
     timeL[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0"){
       //spline calib
-      timeL[i]-= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
+      //timeL[i]-= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
+      Double_t xx,yy;
+      gGrIn[AddRefChannels(ch+1,tdc)]->GetPoint(Hits_nFineTime[i],xx,yy); timeL[i] -=yy;//fast
+      
       //linear calib
       // Double_t max = (Double_t) gMaxIn[AddRefChannels(ch+1,tdc)]-2;
       // timeL[i] -= 5*(Hits_nFineTime[i]-31)/(max-31);

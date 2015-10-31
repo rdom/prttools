@@ -88,9 +88,7 @@ void TTSelector::Begin(TTree *){
       }
       if(name.Contains("off")){ // read event offsets
 	name.Remove(0,4);
-	if(ginFile.Contains(name)){
-	  gr->GetPoint(0,x,gEvtOffset);
-	}
+	if(ginFile.Contains(name)) gr->GetPoint(0,x,gEvtOffset);
 	continue;
       }
       
@@ -156,7 +154,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   if(entry%10000==0) std::cout<<"event # "<< entry <<std::endl;
   GetEntry(entry);
-  
+
   fEvent = new PrtEvent();
   if(gMode==5){
     fEvent->SetAngle(prt_data_info.getAngle());
@@ -182,7 +180,10 @@ Bool_t TTSelector::Process(Long64_t entry){
     time[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0") {
       //spline calib
-      time[i] -= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
+      //time[i] -= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1); //slow
+      Double_t xx,yy;
+      gGrIn[AddRefChannels(ch+1,tdc)]->GetPoint(Hits_nFineTime[i],xx,yy); time[i] -=yy;//fast
+
       //linear calib
       // Double_t max = (Double_t) gMaxIn[AddRefChannels(ch+1,tdc)]-2;
       // time[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);

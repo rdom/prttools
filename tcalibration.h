@@ -146,39 +146,41 @@ void TTSelector::Init(TTree *tree){
   fChain = tree;
   fChain->SetMakeClass(1);
 
-  fChain->SetBranchAddress("fUniqueID", &fUniqueID, &b_event_fUniqueID);
-  fChain->SetBranchAddress("fBits", &fBits, &b_event_fBits);
-  fChain->SetBranchAddress("nEvtSize", &nEvtSize, &b_event_nEvtSize);
-  fChain->SetBranchAddress("nEvtDecoding", &nEvtDecoding, &b_event_nEvtDecoding);
-  fChain->SetBranchAddress("nEvtId", &nEvtId, &b_event_nEvtId);
-  fChain->SetBranchAddress("nEvtSeqNr", &nEvtSeqNr, &b_event_nEvtSeqNr);
-  fChain->SetBranchAddress("nEvtDate", &nEvtDate, &b_event_nEvtDate);
-  fChain->SetBranchAddress("nEvtTime", &nEvtTime, &b_event_nEvtTime);
-  fChain->SetBranchAddress("nEvtRun", &nEvtRun, &b_event_nEvtRun);
-  fChain->SetBranchAddress("nEvtPad", &nEvtPad, &b_event_nEvtPad);
-  fChain->SetBranchAddress("nSubEvtSize", &nSubEvtSize, &b_event_nSubEvtSize);
-  fChain->SetBranchAddress("nSubEvtDecoding", &nSubEvtDecoding, &b_event_nSubEvtDecoding);
-  fChain->SetBranchAddress("nSubEvtId", &nSubEvtId, &b_event_nSubEvtId);
-  fChain->SetBranchAddress("nSubEvtTrigger", &nSubEvtTrigger, &b_event_nSubEvtTrigger);
-  fChain->SetBranchAddress("nSebErrCode", &nSebErrCode, &b_event_nSebErrCode);
-  fChain->SetBranchAddress("nTrbs", &nTrbs, &b_event_nTrbs);
-  fChain->SetBranchAddress("nTdcs", &nTdcs, &b_event_nTdcs);
-  fChain->SetBranchAddress("nSubEvtDecError", &nSubEvtDecError, &b_event_nSubEvtDecError);
+  // fChain->SetBranchAddress("fUniqueID", &fUniqueID, &b_event_fUniqueID);
+  // fChain->SetBranchAddress("fBits", &fBits, &b_event_fBits);
+  // fChain->SetBranchAddress("nEvtSize", &nEvtSize, &b_event_nEvtSize);
+  // fChain->SetBranchAddress("nEvtDecoding", &nEvtDecoding, &b_event_nEvtDecoding);
+  // fChain->SetBranchAddress("nEvtId", &nEvtId, &b_event_nEvtId);
+  // fChain->SetBranchAddress("nEvtSeqNr", &nEvtSeqNr, &b_event_nEvtSeqNr);
+  // fChain->SetBranchAddress("nEvtDate", &nEvtDate, &b_event_nEvtDate);
+  // fChain->SetBranchAddress("nEvtTime", &nEvtTime, &b_event_nEvtTime);
+  // fChain->SetBranchAddress("nEvtRun", &nEvtRun, &b_event_nEvtRun);
+  // fChain->SetBranchAddress("nEvtPad", &nEvtPad, &b_event_nEvtPad);
+  // fChain->SetBranchAddress("nSubEvtSize", &nSubEvtSize, &b_event_nSubEvtSize);
+  // fChain->SetBranchAddress("nSubEvtDecoding", &nSubEvtDecoding, &b_event_nSubEvtDecoding);
+  // fChain->SetBranchAddress("nSubEvtId", &nSubEvtId, &b_event_nSubEvtId);
+  // fChain->SetBranchAddress("nSubEvtTrigger", &nSubEvtTrigger, &b_event_nSubEvtTrigger);
+  // fChain->SetBranchAddress("nSebErrCode", &nSebErrCode, &b_event_nSebErrCode);
+  // fChain->SetBranchAddress("nTrbs", &nTrbs, &b_event_nTrbs);
+  // fChain->SetBranchAddress("nTdcs", &nTdcs, &b_event_nTdcs);
+  // fChain->SetBranchAddress("nSubEvtDecError", &nSubEvtDecError, &b_event_nSubEvtDecError);
+  // fChain->SetBranchAddress("Hits.fUniqueID", Hits_fUniqueID, &b_Hits_fUniqueID);
+  // fChain->SetBranchAddress("Hits.fBits", Hits_fBits, &b_Hits_fBits);
+  // fChain->SetBranchAddress("Hits.nSubEvtId", Hits_nSubEvtId, &b_Hits_nSubEvtId);
+  // fChain->SetBranchAddress("Hits.bIsCalibrated", Hits_bIsCalibrated, &b_Hits_bIsCalibrated);
+  // fChain->SetBranchAddress("Hits.bIsRefChannel", Hits_bIsRefChannel, &b_Hits_bIsRefChannel);
+  // fChain->SetBranchAddress("Hits.bVerboseMode", Hits_bVerboseMode, &b_Hits_bVerboseMode);
+
   fChain->SetBranchAddress("Hits", &Hits_, &b_event_Hits_);
-  fChain->SetBranchAddress("Hits.fUniqueID", Hits_fUniqueID, &b_Hits_fUniqueID);
-  fChain->SetBranchAddress("Hits.fBits", Hits_fBits, &b_Hits_fBits);
   fChain->SetBranchAddress("Hits.nTrbAddress", Hits_nTrbAddress, &b_Hits_nTrbAddress);
   fChain->SetBranchAddress("Hits.nTdcChannel", Hits_nTdcChannel, &b_Hits_nTdcChannel);
-  fChain->SetBranchAddress("Hits.nSubEvtId", Hits_nSubEvtId, &b_Hits_nSubEvtId);
   fChain->SetBranchAddress("Hits.nTdcErrCode", Hits_nTdcErrCode, &b_Hits_nTdcErrCode);
   fChain->SetBranchAddress("Hits.nSignalEdge", Hits_nSignalEdge, &b_Hits_nSignalEdge);
   fChain->SetBranchAddress("Hits.nEpochCounter", Hits_nEpochCounter, &b_Hits_nEpochCounter);
   fChain->SetBranchAddress("Hits.nCoarseTime", Hits_nCoarseTime, &b_Hits_nCoarseTime);
   fChain->SetBranchAddress("Hits.nFineTime", Hits_nFineTime, &b_Hits_nFineTime);
   fChain->SetBranchAddress("Hits.fTime", Hits_fTime, &b_Hits_fTime);
-  fChain->SetBranchAddress("Hits.bIsCalibrated", Hits_bIsCalibrated, &b_Hits_bIsCalibrated);
-  fChain->SetBranchAddress("Hits.bIsRefChannel", Hits_bIsRefChannel, &b_Hits_bIsRefChannel);
-  fChain->SetBranchAddress("Hits.bVerboseMode", Hits_bVerboseMode, &b_Hits_bVerboseMode);
+  
 }
 
 Bool_t TTSelector::Notify(){
