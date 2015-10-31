@@ -185,7 +185,7 @@ if [ ${run} == "3" ]; then
 	    hadd ${study}/spr_${study}S.root ${study}/reco_beam_*S_spr.root 
 	fi
     fi
-    if [ ${level} == "3" ]; then
+    if [ ${level} == "4" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
 		rm ${allstudies[k]}/spr_${allstudies[k]}R.root
