@@ -103,7 +103,7 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
   gaust->SetNpx(500);
   gaust->SetLineColor(2);
   Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-range),h->GetXaxis()->FindBin(xmax+range));
-  Double_t xxmin, xxmax, sigma1(0), mean1(0), sigma2, mean2;
+  Double_t xxmin, xxmax, sigma1(0), mean1(0), sigma2(0), mean2(0);
   xxmax = xmax;
   xxmin = xxmax;
   Int_t nfound(1);
