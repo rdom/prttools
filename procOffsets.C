@@ -6,7 +6,11 @@
 void procOffsets(TString path="/data.local/data/jun15/beam_15180221900C.root",Int_t rawdata=1){
   
   if(path=="") return;
-
+  TString fileid(path);
+  fileid.Remove(0,fileid.Last('/')+1);
+  fileid.Remove(fileid.Last('.')-4);
+  prt_data_info = getDataInfo(fileid);
+ 
   Int_t h1a(200),h1b(400),h2a(0),h2b(100);
 
   if(rawdata==1){
@@ -18,7 +22,7 @@ void procOffsets(TString path="/data.local/data/jun15/beam_15180221900C.root",In
   
   TString outdir=path;outdir.Remove(outdir.Last('/'));
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
-  fSavePath = outdir+sstudy;
+  fSavePath = outdir+Form("/%d/%d",prt_data_info.getStudyId(),prt_data_info.getFileId());
 
   
   TString insim = path; insim.ReplaceAll("C.root","S.root");
@@ -68,9 +72,6 @@ void procOffsets(TString path="/data.local/data/jun15/beam_15180221900C.root",In
   canvasSave(1,0);
 
   if(rawdata==0){
-    TString fileid = path;
-    fileid.Remove(0,fileid.Last('_')+1);
-    fileid.Remove(fileid.Last('C'));
     double xmax1 = hLeD->GetXaxis()->GetBinCenter(hLeD->GetMaximumBin());
     double xmax2 = hLeS->GetXaxis()->GetBinCenter(hLeS->GetMaximumBin());
     TFile efile(path+ ".off.root","RECREATE");
