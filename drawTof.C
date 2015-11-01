@@ -2,7 +2,6 @@
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
-#include "datainfo.C"
 #include <TEllipse.h>
 #include <TKey.h>
 
@@ -47,10 +46,10 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   TString fileid(infile);
   fileid.Remove(0,fileid.Last('/')+1);
   fileid.Remove(fileid.Last('.')-1);
-  DataInfo di = getDataInfo(fileid);
-  Int_t momentum = di.getMomentum();
-  Int_t studyId = di.getStudyId();
-  fSavePath = Form("tof/%d/%d",studyId,di.getFileId());
+  prt_data_info = getDataInfo(fileid);
+  Int_t momentum = prt_data_info.getMomentum();
+  Int_t studyId = prt_data_info.getStudyId();
+  fSavePath = Form("tof/%d/%d",studyId,prt_data_info.getFileId());
   PrtInit(infile,1);
   std::cout<<"ppp  "<<fSavePath <<std::endl;
   if(studyId<0) return;
