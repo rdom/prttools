@@ -760,7 +760,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(174,"beam_15187064331",1,4,125.0,378,85.0,70.5,15.5,10.0));
       dataArray.push_back(DataInfo(174,"beam_15187071510",1,4,125.0,378,85.0,70.5,15.5,9.00));
       dataArray.push_back(DataInfo(174,"beam_15187075151",1,4,125.0,378,85.0,70.5,15.5,8.00));
-      dataArray.push_back(DataInfo(174,"beam_15186160145",1,4,125.0,378,85.0,70.5,15.5,7.00)); // from 154
+      dataArray.push_back(DataInfo(174,"beam_15186160146",1,4,125.0,378,85.0,70.5,15.5,7.00)); // from 154
       dataArray.push_back(DataInfo(174,"beam_15187081410",1,4,125.0,378,85.0,70.5,15.5,6.00));
       dataArray.push_back(DataInfo(174,"beam_15187085029",1,4,125.0,378,85.0,70.5,15.5,5.00));
       dataArray.push_back(DataInfo(174,"beam_15187093204",1,4,125.0,378,85.0,70.5,15.5,4.00));
@@ -799,7 +799,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(179,"beam_15189053808",1,0,125.0,378,85.0,67.0,17,10.));
       dataArray.push_back(DataInfo(179,"beam_15189054854",1,0,125.0,378,85.0,67.0,17,9.0));
       dataArray.push_back(DataInfo(179,"beam_15189060129",1,0,125.0,378,85.0,67.0,17,8.0));
-      dataArray.push_back(DataInfo(179,"beam_15189043006",1,0,125.0,380,85.0,67.0,17,7.0)); // from 159
+      dataArray.push_back(DataInfo(179,"beam_15189043007",1,0,125.0,380,85.0,67.0,17,7.0)); // from 159
       dataArray.push_back(DataInfo(179,"beam_15189063013",1,0,125.0,378,85.0,67.0,17,6.0));
       dataArray.push_back(DataInfo(179,"beam_15189064836",1,0,125.0,378,85.0,67.0,17,5.0));
       dataArray.push_back(DataInfo(179,"beam_15189071238",1,0,125.0,378,85.0,67.0,17,4.0));
