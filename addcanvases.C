@@ -48,6 +48,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
     carr1[i]->Draw();
     leg->AddEntry(carr1[i],"sim","lp");
     leg->Draw();
+    carr1[i]->SetName("mix_"+carr1[i]->GetName());
     canvasAdd(carr1[i]);
     TIter next(carr2[i]->GetListOfPrimitives());
     TObject *obj;

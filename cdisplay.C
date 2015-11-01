@@ -276,7 +276,7 @@ Bool_t MSelector::Process(Long64_t entry){
     if(gsTotMean!="0"){
       timeDiff += 0.3*(tot - gTotMean[mcp][pix]);
     }
-    
+    // if(timeDiff>30 || timeDiff<10 ) continue;
     if(triggerLe!=-1 || gTrigger==0) {
       Double_t offset = 284.89;
       if(bsim){
