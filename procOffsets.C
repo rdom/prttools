@@ -11,13 +11,14 @@ void procOffsets(TString path="",Int_t rawdata=1){
   fileid.Remove(fileid.Last('.')-4);
   prt_data_info = getDataInfo(fileid);
  
-  Int_t h1a(200),h1b(400),h2a(0),h2b(100);
+  Int_t h1a(200),h1b(400),h2a(0),h2b(100),hbin(5000);
 
   if(rawdata==1){
     h1a=0;
     h1b=50;
     h2a=0;
     h2b=50;
+    hbin=2000;
   }
   
   TString outdir=path;outdir.Remove(outdir.Last('/'));
@@ -30,8 +31,8 @@ void procOffsets(TString path="",Int_t rawdata=1){
   fCh->Add(insim);
   fNEntries = fCh->GetEntries();
 
-  TH1F * hLeD  = new TH1F("leD","LE beam data ; LE [ns]; entries [#]",2000,h1a,h1b);
-  TH1F * hLeS  = new TH1F("leS","LE simulation; LE [ns]; entries [#]",2000,h2a,h2b);
+  TH1F * hLeD  = new TH1F("leD","LE beam data ; LE [ns]; entries [#]",hbin,h1a,h1b);
+  TH1F * hLeS  = new TH1F("leS","LE simulation; LE [ns]; entries [#]",hbin,h2a,h2b);
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
 
