@@ -180,17 +180,17 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   std::cout<<"p1  "<<r.X() << "   p1 "<< r.Z() << " t1 "<< tot1 <<"  t2 "<< tot2<<std::endl;
 
   
-  fileid=infile;
-  fileid.Remove(0,fileid.Last('_')+1);
-  fileid.Remove(fileid.Last('C'));
-  TFile efile(infile+".tof.root","RECREATE");
-  TGraph *gr = new TGraph();
-  gr->SetPoint(0,r.X(),r.Z());
-  gr->SetPoint(1,tot1,tot2);
-  gr->SetName("tof_"+fileid);
-  gr->Write();
-  efile.Write();
-  efile.Close();
+  // fileid=infile;
+  // fileid.Remove(0,fileid.Last('_')+1);
+  // fileid.Remove(fileid.Last('C'));
+  // TFile efile(infile+".tof.root","RECREATE");
+  // TGraph *gr = new TGraph();
+  // gr->SetPoint(0,r.X(),r.Z());
+  // gr->SetPoint(1,tot1,tot2);
+  // gr->SetName("tof_"+fileid);
+  // gr->Write();
+  // efile.Write();
+  // efile.Close();
   
   
   // canvasAdd("tot",800,400);
