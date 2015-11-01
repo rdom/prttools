@@ -22,7 +22,7 @@ void procOffsets(TString path="/data.local/data/jun15/beam_15180221900C.root",In
   
   TString outdir=path;outdir.Remove(outdir.Last('/'));
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
-  fSavePath = outdir+Form("/%d/%d",prt_data_info.getStudyId(),prt_data_info.getFileId());
+  fSavePath = outdir+Form("/%da/%d",prt_data_info.getStudyId(),prt_data_info.getFileId());
 
   
   TString insim = path; insim.ReplaceAll("C.root","S.root");
