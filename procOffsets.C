@@ -57,8 +57,8 @@ void procOffsets(TString path="/data.local/data/jun15/beam_15180221900C.root",In
     }
   }
   canvasAdd("offset",800,400);
+  hLeS->SetLineColor(kRed);
   hLeS->Draw();
-  hLeD->SetLineColor(kRed);
   hLeD->Draw("same");
   TLegend *leg = new TLegend(0.62,0.7,0.92,0.9);
   leg->SetFillColor(0);
