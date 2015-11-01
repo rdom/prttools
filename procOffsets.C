@@ -3,7 +3,7 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
-void procOffsets(TString path="/data.local/data/jun15/beam_15180221900C.root",Int_t rawdata=1){
+void procOffsets(TString path="",Int_t rawdata=1){
   
   if(path=="") return;
   TString fileid(path);
