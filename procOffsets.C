@@ -9,6 +9,8 @@ void procOffsets(TString path="",Int_t rawdata=1){
   TString fileid(path);
   fileid.Remove(0,fileid.Last('/')+1);
   fileid.Remove(fileid.Last('.')-4);
+  std::cout<<"fileid "<< fileid <<std::endl;
+  
   prt_data_info = getDataInfo(fileid);
  
   Int_t h1a(200),h1b(400),h2a(0),h2b(100),hbin(5000);
@@ -39,7 +41,7 @@ void procOffsets(TString path="",Int_t rawdata=1){
   PrtHit fHit;
   Int_t maxent(0);
   for (Int_t ievent=0; ievent<fNEntries; ievent++){
-    PrtNextEvent(ievent,1000);
+    PrtNextEvent(ievent,10000);
     if(fEvent->GetParticle()!=2212) continue;
     bool bsim(false);
     TString current_file_name  = fCh->GetCurrentFile()->GetName();

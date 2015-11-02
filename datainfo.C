@@ -967,7 +967,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
   if(format==1){ // path 
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<< newset[i].getStudyId()<<"/"<<i<<std::endl; 
+      std::cout<< newset[i].getStudyId()<<"/"<<newset[i].getFileId()<<std::endl; 
     }
   }
 
