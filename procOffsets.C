@@ -8,7 +8,7 @@ void procOffsets(TString path="",Int_t rawdata=1){
   if(path=="") return;
   TString fileid(path);
   fileid.Remove(0,fileid.Last('/')+1);
-  fileid.Remove(fileid.Last('.')-4);
+  fileid.Remove(fileid.Last('.')-1);
   std::cout<<"fileid "<< fileid <<std::endl;
   
   prt_data_info = getDataInfo(fileid);
