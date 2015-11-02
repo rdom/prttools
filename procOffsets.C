@@ -3,19 +3,18 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
-void procOffsets(TString path="",Int_t rawdata=1){
+void procOffsets(TString path="",Int_t corrected=1){
   
   if(path=="") return;
   TString fileid(path);
   fileid.Remove(0,fileid.Last('/')+1);
   fileid.Remove(fileid.Last('.')-1);
-  std::cout<<"fileid "<< fileid <<std::endl;
   
   prt_data_info = getDataInfo(fileid);
  
   Int_t h1a(200),h1b(400),h2a(0),h2b(100),hbin(5000);
 
-  if(rawdata==1){
+  if(corrected==1){
     h1a=0;
     h1b=50;
     h2a=0;
@@ -74,7 +73,7 @@ void procOffsets(TString path="",Int_t rawdata=1){
     
   canvasSave(1,0);
 
-  if(rawdata==0){
+  if(corrected==0){
     double xmax1 = hLeD->GetXaxis()->GetBinCenter(hLeD->GetMaximumBin());
     double xmax2 = hLeS->GetXaxis()->GetBinCenter(hLeS->GetMaximumBin());
     TFile efile(path+ ".off.root","RECREATE");
