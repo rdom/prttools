@@ -46,7 +46,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
     carr2[i]->Draw();
     TH1F *tt = new TH1F(); tt->SetMarkerStyle(20);
     leg->AddEntry(tt,"beam data","lp");
-    carr2[i]->SetName(Form("mix_%c",carr2[i]->GetName()));
+    carr2[i]->SetName(Form("mix_%s",carr2[i]->GetName()));
     canvasAdd(carr2[i]);
 
     TIter next(carr1[i]->GetListOfPrimitives());
