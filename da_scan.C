@@ -37,7 +37,7 @@ void da_scan(TString inFile = "r_spr.root"){
     gSpr->SetPoint(it,theta,TMath::Abs(spr));
     gNph->SetPoint(it,theta,nph);
     gTrr->SetPoint(it,theta,TMath::Abs(trr));
-    it++
+    it++;
   }
   gSpr->Sort();
   gNph->Sort();
