@@ -122,7 +122,7 @@ processOneSim (){
 		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 100 -b 1  > "${datapath}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "2" ]; then
-		./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${datapath}/${file[fk]}.log" &
+		./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 500000  -b 1 >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "3" ]; then
 		./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 10000 -t1 1   >> "${datapath}/${file[fk]}.log" &
