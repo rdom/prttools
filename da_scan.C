@@ -90,13 +90,13 @@ void da_scan(TString inFile = "r_spr.root"){
   gTrr->GetXaxis()->SetTitle("#theta_{track} [#circ]");
 
   TFile *file = new TFile(outFile,"RECREATE");
-  TCanvas* c1 = new TCanvas("spr","spr",800,500);c1->SetBottomMargin(0.12);
+  TCanvas* c1 = new TCanvas("spr","spr",800,400);c1->SetBottomMargin(0.12);
   gSpr->Draw("APL");
   canvasAdd(c1);
-  TCanvas* c2 = new TCanvas("nph","nph",800,500);c2->SetBottomMargin(0.12);
+  TCanvas* c2 = new TCanvas("nph","nph",800,400);c2->SetBottomMargin(0.12);
   gNph->Draw("APL");
   canvasAdd(c2);
-  TCanvas* c3 = new TCanvas("trr","trr",800,500);c3->SetBottomMargin(0.12);
+  TCanvas* c3 = new TCanvas("trr","trr",800,400);c3->SetBottomMargin(0.12);
   gTrr->Draw("APL");
   canvasAdd(c3);
 
