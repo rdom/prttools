@@ -3,7 +3,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
 
   f2n = f1n; f2n.ReplaceAll("S.root","R.root");
   std::cout<<"reading  "<<f1n <<std::endl;
-  // std::cout<<"reading  "<<f2n <<std::endl;
+  std::cout<<"reading  "<<f2n <<std::endl;
   
   
   TString outdir=f1n;outdir.Remove(outdir.Last('/'));
@@ -38,19 +38,18 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
     it2++;
   }
 
-  for(Int_t i=0; i<it1; i++){
+  for(Int_t i=0; i<it2; i++){
     TLegend *leg = new TLegend(0.2,0.7,0.5,0.9);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
     leg->SetBorderSize(0);
-    carr1[i]->Draw();
-    leg->AddEntry(carr1[i],"sim","lp");
-    carr1[i]->SetName(Form("mix_%c",carr1[i]->GetName()));
-    canvasAdd(carr1[i]);
+    carr2[i]->Draw();
+    TH1F *tt = new TH1F(); tt->SetMarkerStyle(20);
+    leg->AddEntry(tt,"beam data","lp");
+    carr2[i]->SetName(Form("mix_%c",carr2[i]->GetName()));
+    canvasAdd(carr2[i]);
 
-    std::cout<<"carr1[i]  "<<carr1[i]->GetName() <<std::endl;
-    
-    TIter next(carr2[i]->GetListOfPrimitives());
+    TIter next(carr1[i]->GetListOfPrimitives());
     TObject *obj2;
     while((obj = next()) ){
       // if(obj->InheritsFrom("TH1F")){
@@ -65,15 +64,15 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
 	std::cout<<"name "<< h->GetName() <<std::endl;      
 	h->SetLineColor(32);
 	h->SetMarkerColor(4);
+	h->SetMarkerSize(0.7);
 	//	h->SetLineWidth(2);
 	h->Draw("same PL");
-	leg->AddEntry(h,"beam data","lp");
+	leg->AddEntry(h,"simulation","lp");
 	leg->Draw();
       }
 
     }
   }
   std::cout<<"save all  " <<std::endl;
-
-  // canvasSave(0,1);
+  canvasSave(1,0);
 }
