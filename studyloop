@@ -116,7 +116,7 @@ processOneSim (){
 	    if [ ${level} == "0" ]; then
 		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 10000 -b 1  > "${datapath}/${file[fk]}.log" && \
 		    ./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${datapath}/${file[fk]}.log" && \
-		    ./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 0 -t1 10   >> "${datapath}/${file[fk]}.log" &
+		    ./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 0 -t1 1   >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "1" ]; then
 		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 100 -b 1  > "${datapath}/${file[fk]}.log" &
@@ -125,10 +125,10 @@ processOneSim (){
 		./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 100000  -b 1 >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "3" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 1000 -t1 2   >> "${datapath}/${file[fk]}.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 1000 -t1 1   >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    if [ ${level} == "4" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}R.root" -e 1000 -t1 2   >> "${datapath}/${file[fk]}.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}R.root" -e 1000 -t1 1   >> "${datapath}/${file[fk]}.log" &
 	    fi
 	    waitForMe $threads
 	done

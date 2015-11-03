@@ -44,7 +44,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
     leg->SetFillStyle(0);
     leg->SetBorderSize(0);
     carr2[i]->Draw();
-    TH1F *tt = new TH1F(); tt->SetMarkerStyle(20);
+    TH1F *tt = new TH1F(); tt->SetMarkerStyle(20);tt->SetMarkerSize(0.8);
     leg->AddEntry(tt,"beam data","lp");
     carr2[i]->SetName(Form("mix_%s",carr2[i]->GetName()));
     canvasAdd(carr2[i]);
@@ -64,7 +64,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
 	std::cout<<"name "<< h->GetName() <<std::endl;      
 	h->SetLineColor(32);
 	h->SetMarkerColor(4);
-	h->SetMarkerSize(0.7);
+	h->SetMarkerSize(0.8);
 	//	h->SetLineWidth(2);
 	h->Draw("same PL");
 	leg->AddEntry(h,"simulation","lp");
