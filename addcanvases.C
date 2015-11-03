@@ -8,7 +8,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
   
   TString outdir=f1n;outdir.Remove(outdir.Last('/'));
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
-  fSavePath = outdir+sstudy;
+  fSavePath = outdir+sstudy+"a";
   
   const Int_t narr = 20;
   gStyle->SetOptStat(0); 
