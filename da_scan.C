@@ -29,12 +29,15 @@ void da_scan(TString inFile = "r_spr.root"){
   Int_t nent = ch.GetEntries();
   std::cout<<"# entries  "<< nent <<std::endl;
   std::cout<<"infor  "<< ch.GetTree()->GetTitle()<<std::endl;
-  
+
+  Int_t it(0);
   for (Int_t i = 0; i < nent; i++) {
     ch.GetEvent(i);
-    gSpr->SetPoint(i,theta,TMath::Abs(spr));
-    gNph->SetPoint(i,theta,nph);
-    gTrr->SetPoint(i,theta,TMath::Abs(trr));
+    if(spr==0) continue;
+    gSpr->SetPoint(it,theta,TMath::Abs(spr));
+    gNph->SetPoint(it,theta,nph);
+    gTrr->SetPoint(it,theta,TMath::Abs(trr));
+    it++
   }
   gSpr->Sort();
   gNph->Sort();
