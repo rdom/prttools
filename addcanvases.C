@@ -2,7 +2,10 @@
 void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
 
   f2n = f1n; f2n.ReplaceAll("S.root","R.root");
-
+  std::cout<<"reading  "<<f1n <<std::endl;
+  // std::cout<<"reading  "<<f2n <<std::endl;
+  
+  
   TString outdir=f1n;outdir.Remove(outdir.Last('/'));
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
   fSavePath = outdir+sstudy;
@@ -16,7 +19,6 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
   TKey *key1;
   Int_t it1 = 0;
   TCanvas *carr1[narr];
-
   while((key1 = (TKey*)next1())) {
     TClass *cl = gROOT->GetClass(key1->GetClassName());
     if (!cl->InheritsFrom("TCanvas")) continue;
@@ -29,7 +31,6 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
   TKey *key2;
   Int_t it2 = 0;
   TCanvas *carr2[narr];
-
   while ((key2 = (TKey*)next2())) {
     TClass *cl = gROOT->GetClass(key2->GetClassName());
     if (!cl->InheritsFrom("TCanvas")) continue;
@@ -37,23 +38,21 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
     it2++;
   }
 
- 
-
-
-  for(Int_t i=0; i<it2; i++){
+  for(Int_t i=0; i<it1; i++){
     TLegend *leg = new TLegend(0.2,0.7,0.5,0.9);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
     leg->SetBorderSize(0);
     carr1[i]->Draw();
     leg->AddEntry(carr1[i],"sim","lp");
-    leg->Draw();
-    carr1[i]->SetName("mix_"+carr1[i]->GetName());
+    carr1[i]->SetName(Form("mix_%c",carr1[i]->GetName()));
     canvasAdd(carr1[i]);
-    TIter next(carr2[i]->GetListOfPrimitives());
-    TObject *obj;
 
-    while((obj = next())){
+    std::cout<<"carr1[i]  "<<carr1[i]->GetName() <<std::endl;
+    
+    TIter next(carr2[i]->GetListOfPrimitives());
+    TObject *obj2;
+    while((obj = next()) ){
       // if(obj->InheritsFrom("TH1F")){
       // 	TH1F *h = (TH1F*)obj;
       // 	std::cout<<"name "<< h->GetName() <<std::endl;      
@@ -67,7 +66,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
 	h->SetLineColor(32);
 	h->SetMarkerColor(4);
 	//	h->SetLineWidth(2);
-        h->Draw("same PL");
+	h->Draw("same PL");
 	leg->AddEntry(h,"beam data","lp");
 	leg->Draw();
       }
@@ -76,5 +75,5 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
   }
   std::cout<<"save all  " <<std::endl;
 
-  canvasSave(0,1);
+  // canvasSave(0,1);
 }
