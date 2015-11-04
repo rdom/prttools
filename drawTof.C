@@ -69,7 +69,11 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   if(momentum<=5) l2=186;
 
     
-  TH1F * hMult  = new TH1F("mult","mult",1000,-1000,1000);
+  TH1F * hMult1  = new TH1F("mult1","mult",10,0,10);
+  TH1F * hMult2  = new TH1F("mult2","mult",10,0,10);
+  TH1F * hMult3  = new TH1F("mult2","mult",10,0,10);
+  TH1F * hMult4  = new TH1F("mult2","mult",10,0,10);
+    
   TH1F * hTof1  = new TH1F("tof1 ","tof1;TOT2-TOF1 [ns]; entries [#]",1000,-1000,1000);
   TH1F * hTof2  = new TH1F("tof2 ","tof2;TOT2-TOF1 [ns]; entries [#]",1000,-1000,1000);
   TH1F * hTof  = new TH1F("tof ","tof;TOT2-TOF1 [ns]; entries [#]",   1000,le1,le2);
@@ -91,26 +95,39 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
     
     Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false);
     Double_t tot1(0),tot2(0),tof1(0),tof2(0);
-
+    Int_t mult1(0), mult2(0), mult3(0), mult4(0);
+    
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
-      if(fHit.GetChannel()==1344) btrig = true;
-      if(fHit.GetChannel()==1248) bmcpout = true;
-
+      if(fHit.GetChannel()==1344) {
+	btrig = true;
+	mult3++;
+      }
+      if(fHit.GetChannel()==1248){
+	bmcpout = true;
+	mult4++;
+      }
       if(fHit.GetChannel()==960){
 	btof1 = true;
-	tof1 = fHit.GetLeadTime();
+	tof1=fHit.GetLeadTime();
 	tot1=fHit.GetTotTime();
+	mult1++;
       }
       if(fHit.GetChannel()==1104) {
 	btof2 = true;
 	tof2 = fHit.GetLeadTime();
 	tot2=fHit.GetTotTime();
+	mult2++;
       }
     }
     
     if(!(btrig && btof1 && btof2 && bmcpout)) continue;
- 
+
+    hMult1->Fill(mult1);
+    hMult2->Fill(mult2);
+    hMult3->Fill(mult3);
+    hMult4->Fill(mult4);
+    
     hTof1->Fill(tof1);
     hTof2->Fill(tof2);
 
@@ -193,8 +210,14 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   efile.Close();
   
   
-  // canvasAdd("tot",800,400);
-  // hTot->Draw();
+  canvasAdd("mult",800,400);
+  hMult1->Draw();
+  hMult2->SetLineColor(2);
+  hMult2->Draw("same");
+  hMult3->SetLineColor(3);
+  hMult3->Draw("same");
+  hMult4->SetLineColor(4);
+  hMult4->Draw("same");
   
   canvasSave(1,0);
 }

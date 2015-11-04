@@ -146,8 +146,8 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
   Double_t time[10000], timeLe(0),timeT[10000],timeTot(0);
-  Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false);
- 
+  Int_t mult1(0), mult2(0), mult3(0), mult4(0);
+  
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   Bool_t trbdata = current_file_name.Contains("trb");
   TObjArray *sarr = current_file_name.Tokenize("_");
@@ -172,10 +172,10 @@ Bool_t TTSelector::Process(Long64_t entry){
     tdc = map_tdc[Hits_nTrbAddress[i]];
     ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
     
-    if(ch==1344) btrig = true;
-    if(ch==960)  btof1 = true;
-    if(ch==1104) btof2 = true;
-    if(ch==1248) bmcpout = true;
+    if(ch==1344) mult1=0;
+    if(ch==960)  mult2=0;
+    if(ch==1104) mult3=0;
+    if(ch==1248) mult4=0;
     
     time[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0") {
@@ -203,7 +203,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   if(gMode==5){
-    if(!(btrig && btof1 && btof2 && bmcpout)){
+    if(mult1!=1 || mult2!=1 || mult3!=1 || mult4!=1){
       fEvent->Clear();
       delete fEvent;
       return kTRUE;
@@ -230,7 +230,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       Double_t time = tof2-tof1;
       time += (tot1-tof1tot)*tan(walktheta);
       time += (tot2-tof2tot)*tan(-walktheta);
-
+      toftime = time;
       if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)){
 	tofpid=212;
 	mass=0.13957018;
@@ -282,7 +282,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeLe -= gLeOffArr[ch];
 	Double_t mom = 7;
 	timeLe += 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
-      }
+      }   
       
       if(gMode==5){
 	timeLe-=gEvtOffset;
