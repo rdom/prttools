@@ -172,10 +172,10 @@ Bool_t TTSelector::Process(Long64_t entry){
     tdc = map_tdc[Hits_nTrbAddress[i]];
     ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
     
-    if(ch==1344) mult1=0;
-    if(ch==960)  mult2=0;
-    if(ch==1104) mult3=0;
-    if(ch==1248) mult4=0;
+    if(ch==1344) mult1++;
+    if(ch==960)  mult2++;
+    if(ch==1104) mult3++;
+    if(ch==1248) mult4++;
     
     time[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0") {
