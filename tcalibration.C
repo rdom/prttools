@@ -201,6 +201,9 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
   }
 
+  std::cout<<mult1<<" "<<mult2 <<"  "<< mult3<<" "<<mult4 <<std::endl;
+  
+
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   if(gMode==5){
     if(mult1!=1 || mult2!=1 || mult3!=1 || mult4!=1){
@@ -208,7 +211,8 @@ Bool_t TTSelector::Process(Long64_t entry){
       delete fEvent;
       return kTRUE;
     }
-
+ std::cout<<"PASSS " <<std::endl;
+ 
     for(Int_t i=0; i<Hits_ && i<10000; i++){
       if(Hits_nTdcErrCode[i]!=0) continue;
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
