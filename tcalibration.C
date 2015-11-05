@@ -172,11 +172,6 @@ Bool_t TTSelector::Process(Long64_t entry){
     tdc = map_tdc[Hits_nTrbAddress[i]];
     ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
     
-    if(ch==1344) mult1++;
-    if(ch==960)  mult2++;
-    if(ch==1104) mult3++;
-    if(ch==1248) mult4++;
-    
     time[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0") {
       //spline calib
@@ -195,14 +190,15 @@ Bool_t TTSelector::Process(Long64_t entry){
 	tdcRefTime[tdc] = time[i];
 	if(gTrigger/48==tdc) grTime0 = time[i];
       }
+      if(ch==1344) mult1++;
+      if(ch==960)  mult2++;
+      if(ch==1104) mult3++;
+      if(ch==1248) mult4++;
     }else{
       timeT[i]=time[i];
       grTime2=time[i];
     }
   }
-
-  std::cout<<mult1<<" "<<mult2 <<"  "<< mult3<<" "<<mult4 <<std::endl;
-  
 
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   if(gMode==5){
@@ -211,7 +207,6 @@ Bool_t TTSelector::Process(Long64_t entry){
       delete fEvent;
       return kTRUE;
     }
- std::cout<<"PASSS " <<std::endl;
  
     for(Int_t i=0; i<Hits_ && i<10000; i++){
       if(Hits_nTdcErrCode[i]!=0) continue;
