@@ -214,7 +214,7 @@ else
 	done
 	waitForMe "1" && sleep 2
 	for ((k=1;k<${#allstudies[@]};k++)); do
-	    cd ${allstudies[k]}
+	    cd "/d/proc/jun15/${allstudies[k]}"
 	    hadd -f res_${allstudies[k]}.root *.root.res.root
 	    rm -f *.root.res.root
 	    cd -
@@ -223,7 +223,7 @@ else
 	processOneReco $study
 
 	waitForMe "1" && sleep 2
-	cd $study
+	cd "/d/proc/jun15/$study"
 	hadd -f res_${study}.root *.root.res.root
 	rm -f *.root.res.root
 	cd -
