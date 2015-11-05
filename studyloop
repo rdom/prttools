@@ -135,7 +135,7 @@ processOneSim (){
 }
 
 processOneReco (){
-    if [ -d $1 ]; then
+    if [ -d "/d/proc/jun15/$1" ]; then
 	OIFS="$IFS"
 	IFS=$'\n'
 	
@@ -152,7 +152,7 @@ processOneReco (){
 	statusline="run study $1"
 	cd ~/dirc/prttools > /dev/null 
 	for ((fk=1;fk<${#file[@]};fk++)); do
-	    root -l -q -b loadprtlibs.C procData.C+"(/d/proc/jun15/${reco[fk]})" > log 2> log &
+	    root -l -q -b loadprtlibs.C procData.C+"(${reco[fk]})" > log 2> log &
 	    waitForMe $threads
 	done
 	cd - > /dev/null 
