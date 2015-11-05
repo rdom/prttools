@@ -206,9 +206,9 @@ Bool_t TTSelector::Process(Long64_t entry){
     timeL[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0"){
       //spline calib
-      //timeL[i]-= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
+      timeL[i]-= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
       Double_t xx,yy;
-      gGrIn[AddRefChannels(ch+1,tdc)]->GetPoint(Hits_nFineTime[i],xx,yy); timeL[i] -=yy;//fast
+      //gGrIn[AddRefChannels(ch+1,tdc)]->GetPoint(Hits_nFineTime[i],xx,yy); timeL[i] -=yy;//fast
       
       //linear calib
       // Double_t max = (Double_t) gMaxIn[AddRefChannels(ch+1,tdc)]-2;
