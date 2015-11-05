@@ -47,7 +47,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
     PrtNextEvent(ievent,1000);
     Int_t counts(0);
     Double_t tot(0),time(0);
-    if(fEvent->GetParticle()!=2212) continue;
+    // if(fEvent->GetParticle()!=2212) continue;
  
     for(Int_t i=0; i<fEvent->GetHitSize(); i++){
       fHit = fEvent->GetHit(i);
