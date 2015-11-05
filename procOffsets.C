@@ -79,6 +79,9 @@ void procOffsets(TString path="",Int_t corrected=1){
     TFile efile(path+ ".off.root","RECREATE");
     TGraph *gr = new TGraph();
     gr->SetPoint(0,xmax1-xmax2,  xmax1-xmax2);
+    fileid=infile;
+    fileid.Remove(0,fileid.Last('_')+1);
+    fileid.Remove(fileid.Last('C'));
     gr->SetName("off_"+fileid);
     gr->Write();
     efile.Write();

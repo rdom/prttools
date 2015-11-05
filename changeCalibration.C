@@ -8,7 +8,8 @@ void changeCalibration(TString ifile="calib.root", TString ofile="newcalib.root"
   while ((key = (TKey*)nextkey())) {
     TGraph *gr = (TGraph*)key->ReadObj();
     TString name = gr->GetName();
-    if(name.Contains("off")) continue;
+    if(name.Contains("15188171757")) continue;
+    //if(name.Contains("off")) continue;
     // if(name.Contains("off_15189043006")){
     //   gr->SetName("off_15189043007");
     //   gr->Write();

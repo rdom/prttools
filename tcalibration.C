@@ -224,7 +224,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     	tot2 = timeT[i+1] - time[i];
       }
     }
-    
+
     if(tof1!=0 && tof2!=0) {
       Double_t time = tof2-tof1;
       time += (tot1-tof1tot)*tan(walktheta);
@@ -237,6 +237,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	tofpid=2212;
     	mass = 0.938272046;
       }
+      std::cout<<time<<" "<< tot1 <<" "<<tot2 <<"  "<<tofpid  <<"  c "<< c1y<<" "<<tof1le <<std::endl;
+      
     }
     
     if(tofpid==0){
@@ -245,7 +247,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       return kTRUE;
     }
   }
-
+      
   PrtHit hit;
   Int_t nrhits=0;
   if((grTime0>0 && grTime1>0) || gTrigger==0){
