@@ -325,7 +325,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode == 5) gTrigger=960;
+  if(gMode >= 5) gTrigger=960;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);
