@@ -237,8 +237,6 @@ Bool_t TTSelector::Process(Long64_t entry){
 	tofpid=2212;
     	mass = 0.938272046;
       }
-      std::cout<<time<<" "<< tot1 <<" "<<tot2 <<"  "<<tofpid  <<"  c "<< c1y<<" "<<tof1le <<std::endl;
-      
     }
     
     if(tofpid==0){
