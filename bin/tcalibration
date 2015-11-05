@@ -21,7 +21,7 @@ show_help(){
      -j
         number of threads 
      -m
-        mode: 0 - do not subtract tdc ref channel, 1 - do subtraction  (default)"
+        mode: 0 - do not subtract tdc ref channel, 1 - do subtraction  (default), 5 - final, 6 - offsets"
 
     echo "$help" 
 }
