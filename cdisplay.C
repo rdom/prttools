@@ -189,7 +189,7 @@ void MSelector::SlaveBegin(TTree *){
 
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
-  //if(fEvent->GetParticle()!=2212) return kTRUE; 
+  if(fEvent->GetParticle()!=2212) return kTRUE; 
   
   Double_t offset=0;
   if(gMode==1){
@@ -420,7 +420,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	normalize(hh,2);
 	hh[0]->Draw();
 	prt_fit(hh[0],1,1);
-	if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
+	if(gMode>=100 &&  hh[0]->GetEntries()>10) hh[1]->Draw("same");
       }
       if(gComboId==2) hPTot[mcp][pix]->Draw();   
       if(gComboId==5) hPMult[mcp][pix]->Draw();      
@@ -576,7 +576,11 @@ void MyMainFrame::DoDraw(){
 
   fCheckBtn1->SetState(kButtonUp);
 
-  drawDigi("m,p,v\n",layout);
+  // drawDigi("m,p,v\n",layout);
+  drawDigi("m,p,v\n",3);
+  cDigi->cd();
+  (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
+
   updatePlot(gComboId);
 
   if(gMode==10) {

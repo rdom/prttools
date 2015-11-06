@@ -37,12 +37,12 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
     if(ch/48==9) wcorr=0;
     if(ch/48==13) wcorr=0;
       
-    if(fabs(min)<0.8) walk=-min*tan(wcorr*TMath::Pi()/180.);  // 10
-    if(tot<10) walk-=(10-tot)*tan(6*TMath::Pi()/180.);
+    if(fabs(min)<0.8) walk=-min*tan(wcorr*TMath::Pi()/180.);
+    if(tot<10) walk-=(10-tot)*tan(6*TMath::Pi()/180.); //10
   }
 
   if(type==1){ //walk of the 1345
-    walk += (38.85-tot)*tan(25*TMath::Pi()/180.); 
+    walk += (38.85-tot)*tan(25*TMath::Pi()/180.);
   }
   
   return walk;
@@ -111,7 +111,7 @@ void TTSelector::SlaveBegin(TTree *){
 
   hCh = new TH1F("hCh","hCh;channel [#];entries [#]",3000,0,3000);
   fOutput->Add(hCh);
-  hRefDiff = new TH1F("hRefDiff","ch-ref. resolution;sigma [ns];entries [#]",500,0,0.05);
+  hRefDiff = new TH1F("hRefDiff","ch-ref. resolution;sigma [ns];entries [#]",200,0,1);//0.05
   for(Int_t i=0; i<maxtdc; i++){
     hSigma[i] = new TH1F(Form("hSigma%d",i),"ch-ref. resolution;sigma [ns];entries [#]",200,0,0.1);
     fOutput->Add(hSigma[i]);
@@ -206,9 +206,9 @@ Bool_t TTSelector::Process(Long64_t entry){
     timeL[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0"){
       //spline calib
-      timeL[i]-= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
+      //timeL[i]-= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
       Double_t xx,yy;
-      //gGrIn[AddRefChannels(ch+1,tdc)]->GetPoint(Hits_nFineTime[i],xx,yy); timeL[i] -=yy;//fast
+      gGrIn[AddRefChannels(ch+1,tdc)]->GetPoint(Hits_nFineTime[i],xx,yy); timeL[i] -=yy;//fast
       
       //linear calib
       // Double_t max = (Double_t) gMaxIn[AddRefChannels(ch+1,tdc)]-2;
@@ -260,14 +260,14 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  timeTe = timeT[i+1]-tdcRefTime[tdc]-triggerLe;
 	  Double_t tot = timeT[i+1]-timeL[i];
 
-	  if(!calib){
-	    if(tot<0 || timeLe<20 || timeLe>40) continue;
-	    tot += 30-gTotO[ch];
-	    //timeLe += getTotWalk(tot,ch);
-	    //timeLe += getTotWalk(triggerTot,ch,1);
-	    //if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
-	    timeLe -= gLeOffArr[ch];
-	  }
+	  // if(!calib){
+	  //   if(tot<0 || timeLe<20 || timeLe>40) continue;
+	  //   tot += 30-gTotO[ch];
+	  //   timeLe += getTotWalk(tot,ch);
+	  //   timeLe += getTotWalk(triggerTot,ch,1);
+	  //   //if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
+	  //   timeLe -= gLeOffArr[ch];
+	  // }
 	  
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
 	  TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
@@ -404,10 +404,10 @@ TString drawHist(Int_t m, Int_t p){
   if(gComboId==7){
     hRefDiff->Draw();
     histname=hRefDiff->GetName();
-    for(Int_t i=0; i<4; i++){
-      hSigma[i]->SetLineColor(i+1);
-      hSigma[i]->Draw("same");
-    }
+    // for(Int_t i=0; i<4; i++){
+    //   hSigma[i]->SetLineColor(i+1);
+    //   hSigma[i]->Draw("same");
+    // }
   }
 
   return histname;
@@ -811,7 +811,11 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   ch->Process(selector,option,entries);
 
-  drawDigi("m,p,v\n",2);  
+  //drawDigi("m,p,v\n",2);
+  drawDigi("m,p,v\n",3,-2,-2);
+  cDigi->cd();
+  (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
+
   updatePlot(0); //gComboId
 
   cDigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,

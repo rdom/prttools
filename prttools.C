@@ -32,6 +32,8 @@
 #include "TApplication.h"
 #include <TLegend.h>
 #include <TAxis.h>
+#include <TPaletteAxis.h>
+
 
 #include <iostream>
 #include <fstream>
