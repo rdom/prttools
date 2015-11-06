@@ -63,7 +63,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
 	TGraph *h = (TGraph*)obj;
 	std::cout<<"name "<< h->GetName() <<std::endl;      
 	h->SetLineColor(32);
-	h->SetMarkerColor(4);
+	h->SetMarkerColor(2);
 	h->SetMarkerSize(0.8);
 	//	h->SetLineWidth(2);
 	h->Draw("same PL");
