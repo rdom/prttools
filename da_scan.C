@@ -4,7 +4,8 @@ void da_scan(TString inFile = "r_spr.root"){
   TString outdir=inFile;outdir.Remove(outdir.Last('/'));
   TString sfile=inFile; sfile.Remove(0,sfile.Last('/')+1);
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
-  fSavePath = outdir+sstudy+"a";
+  fSavePath = outdir+sstudy+"r";
+  if(inFile.Contains("S_spr.root"))  fSavePath = outdir+sstudy+"s";
   TString outFile=outdir+"/c"+sfile;
 
   TChain ch("dirc"); ch.Add(inFile);
