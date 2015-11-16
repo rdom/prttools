@@ -189,7 +189,7 @@ void MSelector::SlaveBegin(TTree *){
 
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
-  if(fEvent->GetParticle()!=2212) return kTRUE; 
+  if(fEvent->GetParticle()!=212) return kTRUE; 
   
   Double_t offset=0;
   if(gMode==1){
@@ -417,7 +417,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       cTime->cd();
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
-	normalize(hh,2);
+	if(gMode>=100) normalize(hh,2);
 	hh[0]->Draw();
 	prt_fit(hh[0],1,1);
 	if(gMode>=100 &&  hh[0]->GetEntries()>10) hh[1]->Draw("same");
