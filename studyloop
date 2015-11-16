@@ -158,7 +158,7 @@ processOneReco (){
 }  
 
 start_time=$(date +%s)
-if [ ${level} < "6" ]; then
+if [ ${level} -lt "6" ]; then
     cd ~/dirc/prtdirc/build > /dev/null 
     if (( $study == 0 )); then
 	OIFS="$IFS"
