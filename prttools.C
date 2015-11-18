@@ -781,9 +781,10 @@ void canvasDel(TString name="c"){
   TIter next(gg_canvasList);
   TCanvas *c=0;
   while((c = (TCanvas*) next())){
-    if(c->GetName()==name) gg_canvasList->Remove(c);
+    if(c->GetName()==name || name=="*") gg_canvasList->Remove(c);
   }
 }
+
 
 // style = 0 - for web blog
 // style = 1 - for talk 

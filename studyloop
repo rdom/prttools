@@ -112,13 +112,13 @@ processOneSim (){
 		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 100 -b 1  > "${datapath}/${file[fk]}S.log" &
 	    fi
 	    if [ ${level} -eq "5" ]; then
-		./prtdirc -o "${datapath}/lut_${file[fk]}S10M.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 10000000  -b 1 > "${datapath}/${file[fk]}L.log" &
+		./prtdirc -o "${datapath}/lut_${file[fk]}S05M.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 500000  -b 1 > "${datapath}/${file[fk]}L.log" &
 	    fi
 	    if [ ${level} -eq "6" ]; then
 		./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S10M_avr.root" -o "${datapath}/reco_${file[fk]}S.root" -f -1 -e 5000 -t1 1.5   > "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "7" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S10M_avr.root" -o "${datapath}/reco_${file[fk]}R.root" -f -1 -e 5000 -t1 1.5   > "${datapath}/${file[fk]}RR.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S05M.root" -o "${datapath}/reco_${file[fk]}R.root" -f -1 -e 1 -t1 1.5   > "${datapath}/${file[fk]}RR.log" &
 	    fi
 	    waitForMe $threads
 	done
