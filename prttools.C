@@ -527,7 +527,6 @@ void SetRootPalette(Int_t pal = 0){
 void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
 
   SetRootPalette(1);
-  gSystem->Load("../build/libprtdirclib.so");
   delete fCh;
 
   fCh = new TChain("data");
