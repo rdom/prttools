@@ -734,6 +734,13 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
 	    hh->GetXaxis()->SetTitleOffset(0.85);
 	    hh->GetYaxis()->SetTitleOffset(0.85);
 	  }
+	  if(obj->InheritsFrom("TGraph")){
+	    TGraph *gg = (TGraph*)obj;
+	    gg->GetXaxis()->SetTitleSize(0.05);
+	    gg->GetYaxis()->SetTitleSize(0.05);
+	    gg->GetXaxis()->SetTitleOffset(0.85);
+	    gg->GetYaxis()->SetTitleOffset(0.85);
+	  }
 	  if(obj->InheritsFrom("TF1")){
 	    TF1 *f = (TF1*)obj;
 	    f->SetNpx(500);

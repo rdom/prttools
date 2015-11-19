@@ -1,14 +1,16 @@
 #include "prttools.C"
-void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
-
-  f2n = f1n; f2n.ReplaceAll("S.root","R.root");
-  std::cout<<"reading  "<<f1n <<std::endl;
-  std::cout<<"reading  "<<f2n <<std::endl;
-  
+void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root", Int_t data=-1){
   
   TString outdir=f1n;outdir.Remove(outdir.Last('/'));
-  TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
-  fSavePath = outdir+sstudy+"a";
+  fSavePath = outdir;
+  if(data==-1) {
+    f2n = f1n; f2n.ReplaceAll("S.root","R.root");
+    TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
+    fSavePath = outdir+sstudy+"a";
+  }
+  
+  std::cout<<"reading  "<<f1n <<std::endl;
+  std::cout<<"reading  "<<f2n <<std::endl;
   
   const Int_t narr = 20;
   gStyle->SetOptStat(0); 
@@ -39,7 +41,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root"){
   }
 
   for(Int_t i=0; i<it2; i++){
-    TLegend *leg = new TLegend(0.2,0.7,0.5,0.9);
+    TLegend *leg = new TLegend(0.5,0.7,0.8,0.9);
     leg->SetFillColor(0);
     leg->SetFillStyle(0);
     leg->SetBorderSize(0);
