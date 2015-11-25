@@ -109,8 +109,8 @@ processOneSim (){
 		    ./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 0 -t1 1   >> "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "4" ]; then
-		./prtdirc -o "${datapath}/${file[fk]}Sx1.root" ${args[fk]} -x "proton" -e 1000 -b 1  > "${datapath}/${file[fk]}S.log" &
-		./prtdirc -o "${datapath}/${file[fk]}Sx2.root" ${args[fk]} -x "pi+" -e 1000 -b 1  > "${datapath}/${file[fk]}S.log" &
+		./prtdirc -o "${datapath}/${file[fk]}S1x.root" ${args[fk]} -x "proton" -e 5000 -b 1  > "${datapath}/${file[fk]}S.log" &
+		./prtdirc -o "${datapath}/${file[fk]}S2x.root" ${args[fk]} -x "pi+" -e 5000 -b 1  > "${datapath}/${file[fk]}S.log" &
 	    fi
 	    if [ ${level} -eq "5" ]; then
 		./prtdirc -o "${datapath}/lut_${file[fk]}S05M.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 500000  -b 1 > "${datapath}/${file[fk]}L.log" &
