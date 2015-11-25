@@ -391,7 +391,7 @@ void MyMainFrame::DoExportOffsets(){
 }
 
 TLine *gLine1 = new TLine(0,0,0,1000);
-Bool_t lock = false;
+Bool_t glock= false;
 void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
   if(gComboId==0 || gComboId==2 || gComboId==5 || gComboId==4 || gComboId==10 || gComboId==11 || gComboId==7){
     TCanvas *c = (TCanvas *) gTQSender;
@@ -401,9 +401,9 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
     Float_t y = pad->AbsPixeltoY(gy);
     x = pad->PadtoX(x);
     y = pad->PadtoY(y);
-    if(event ==1 && lock) lock = false;
-    else if(event ==1) lock = true;
-    if(lock) return;
+    if(event ==1 && glock) glock = false;
+    else if(event ==1) glock = true;
+    if(glock) return;
 
     if (selected->InheritsFrom(TH2::Class())){
       TH2F *hDigi = (TH2F *) selected;

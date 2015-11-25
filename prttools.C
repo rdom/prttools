@@ -40,8 +40,8 @@
 #include <sstream>
 
 
-#ifdef prt__sim || prt__beam
-#include "datainfo.C"
+#if defined(prt__sim) || defined(prt__beam)
+   #include "datainfo.C"
    class PrtEvent;
    class PrtHit;
    PrtEvent* prt_event = 0;
