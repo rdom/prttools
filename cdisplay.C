@@ -29,7 +29,7 @@ TH2F *hLeTot[nmcp][npix],*hShape[nmcp][npix];
 
 void MSelector::Init(TTree *tree){
   fChain = tree; 
-  fChain->SetBranchAddress("PrtEvent", &fEvent);
+  fChain->SetBranchAddress("PrtEvent", &prt_event);
 }
 
 void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
@@ -189,8 +189,8 @@ void MSelector::SlaveBegin(TTree *){
 
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
-  //if(fEvent->GetParticle()!=2212) return kTRUE;
-  //if(fEvent->GetParticle()!=211) return kTRUE; 
+  //if(prt_event->GetParticle()!=2212) return kTRUE;
+  //if(prt_event->GetParticle()!=211) return kTRUE; 
   
   Double_t offset=0;
   if(gMode==1){
@@ -202,7 +202,7 @@ Bool_t MSelector::Process(Long64_t entry){
 	TString soffset = ((TObjString *) sarr->At(1))->GetName();
 	offset = soffset.Atof()/400.;
       }
-    }else offset = fEvent->GetTest1();
+    }else offset = prt_event->GetTest1();
   }
   TString fileid("");
   bool bsim(false);
@@ -219,10 +219,10 @@ Bool_t MSelector::Process(Long64_t entry){
   Int_t thitCount1(0), thitCount2(0), hitCount1(0), hitCount2(0);
   memset(mult, 0, sizeof(mult));
 
-  Int_t nhits = fEvent->GetHitSize();
+  Int_t nhits = prt_event->GetHitSize();
   if(gTrigger>-1){
     for(Int_t h=0; h<nhits; h++){
-      hit = fEvent->GetHit(h);
+      hit = prt_event->GetHit(h);
       ch  = hit.GetChannel();
       mult[ch]++;
 
@@ -240,7 +240,7 @@ Bool_t MSelector::Process(Long64_t entry){
   }
 
   for(Int_t h=0; h<nhits; h++){
-    hit = fEvent->GetHit(h);
+    hit = prt_event->GetHit(h);
     ch  = hit.GetChannel();
     mcp = hit.GetMcpId();
     if(ch==-1) ch = map_mpc[mcp][ hit.GetPixelId()-1];
