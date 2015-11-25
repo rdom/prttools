@@ -64,7 +64,7 @@ private:
   TGCheckButton        *fCheckBtn4;
   TGTextButton         *fBtnMore;
 
-public   
+public:   
   TGCheckButton        *fCheckBtn2;
   TGNumberEntry        *fNumber2;
   
