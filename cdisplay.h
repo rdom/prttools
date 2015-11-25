@@ -49,7 +49,6 @@ private:
   TRootEmbeddedCanvas  *fTime;
   TGStatusBar          *fStatusBar;
   TGNumberEntry        *fNumber;
-  TGNumberEntry        *fNumber2;
   TGLabel              *fLabel;
   TGLabel              *fLabel1;
   TGComboBox           *fComboMode;
@@ -61,11 +60,14 @@ private:
   TGTextEntry          *fEdit4;
   TGTextEntry          *fEdit5;
   TGCheckButton        *fCheckBtn1;
-  TGCheckButton        *fCheckBtn2;
   TGCheckButton        *fCheckBtn3;
   TGCheckButton        *fCheckBtn4;
   TGTextButton         *fBtnMore;
 
+public   
+  TGCheckButton        *fCheckBtn2;
+  TGNumberEntry        *fNumber2;
+  
 public:
   MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h);
   virtual ~MyMainFrame();
