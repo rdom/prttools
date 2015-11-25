@@ -238,7 +238,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 	for(int j=0; j<nrow; j++){
 	  if(j==1) shift = -0.028;
 	  else shift = 0;
-	  fhPads[padi] =  new TPad(Form("P%Double_t",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
+	  fhPads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
 	  fhPads[padi]->SetFillColor(kCyan-8);
 	  fhPads[padi]->SetMargin(0.04,0.04,0.04,0.04);
 	  fhPads[padi]->Draw();
@@ -540,7 +540,7 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
     if(gROOT->GetApplication()){
       TIter next(gROOT->GetApplication()->InputFiles());
       TObjString *os=0;
-      while(os = (TObjString*)next()){
+      while((os = (TObjString*)next())){
 	fInfo += os->GetString()+" ";
       }
       fInfo += "\n";
@@ -592,7 +592,7 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
       fInfo += "beam test";
       TIter next(gROOT->GetApplication()->InputFiles());
       TObjString *os=0;
-      while(os = (TObjString*)next()){
+      while((os = (TObjString*)next())){
 	fInfo += os->GetString()+" ";
       }
       fInfo += "\n";
