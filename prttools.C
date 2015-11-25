@@ -39,19 +39,14 @@
 #include <fstream>
 #include <sstream>
 
+
+#ifdef prt__sim || prt__beam
 #include "datainfo.C"
-
-#ifdef prt__sim
    class PrtEvent;
    class PrtHit;
-   PrtEvent* fEvent = 0;
+   PrtEvent* prt_event = 0;
+   DataInfo prt_data_info;
 #endif 
-
-#ifdef prt__beam
-   class PrtEvent;
-   class PrtHit;
-   PrtEvent* fEvent = 0;
-#endif  
 
 
 TChain*  fCh = 0;
@@ -61,7 +56,6 @@ TH2F*    fhDigi[15];
 TPad*    fhPads[15], *fhPglobal;
 TCanvas* cDigi;
 TSpectrum *prt_spect = new TSpectrum(2);
-DataInfo prt_data_info;
 
 const Int_t nmcp = 15, npix = 64;
 const Int_t maxmch(nmcp*npix);
@@ -532,7 +526,7 @@ void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
   fCh = new TChain("data");
 
   fCh->Add(inFile);
-  fCh->SetBranchAddress("PrtEvent", &fEvent);
+  fCh->SetBranchAddress("PrtEvent", &prt_event);
   
   fNEntries = fCh->GetEntries();
   std::cout<<"Entries in chain:  "<<fNEntries <<std::endl;
@@ -541,7 +535,7 @@ void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
 
 void PrtNextEvent(Int_t ievent, Int_t printstep){
   fCh->GetEntry(ievent);
-  if(ievent%printstep==0 && ievent!=0) cout<<"Event # "<<ievent<< " # hits "<<fEvent->GetHitSize()<<endl;
+  if(ievent%printstep==0 && ievent!=0) std::cout<<"Event # "<<ievent<< " # hits "<<prt_event->GetHitSize()<<std::endl;
   if(ievent == 0){
     if(gROOT->GetApplication()){
       TIter next(gROOT->GetApplication()->InputFiles());
@@ -551,12 +545,12 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
       }
       fInfo += "\n";
     }
-    fInfo += fEvent->PrintInfo();
-    fMomentum = fEvent->GetMomentum().Mag() +0.01;
-    fAngle = fEvent->GetAngle() + 0.01;
-    fParticle =  fEvent->GetParticle();
-    fTest1 = fEvent->GetTest1();
-    fTest2 = fEvent->GetTest2();
+    fInfo += prt_event->PrintInfo();
+    fMomentum = prt_event->GetMomentum().Mag() +0.01;
+    fAngle = prt_event->GetAngle() + 0.01;
+    fParticle =  prt_event->GetParticle();
+    fTest1 = prt_event->GetTest1();
+    fTest2 = prt_event->GetTest2();
   }
 }
 #endif
@@ -570,7 +564,7 @@ void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
   fCh = new TChain("data");
 
   fCh->Add(inFile);
-  fCh->SetBranchAddress("PrtEvent", &fEvent);
+  fCh->SetBranchAddress("PrtEvent", &prt_event);
   
   fCh->SetBranchStatus("fHitArray.fLocalPos", 0);
   fCh->SetBranchStatus("fHitArray.fGlobalPos", 0);
@@ -592,7 +586,7 @@ void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
 
 void PrtNextEvent(Int_t ievent, Int_t printstep){
   fCh->GetEntry(ievent);
-  if(ievent%printstep==0 && ievent!=0) cout<<"Event # "<<ievent<< " # hits "<<fEvent->GetHitSize()<<endl;
+  if(ievent%printstep==0 && ievent!=0) cout<<"Event # "<<ievent<< " # hits "<<prt_event->GetHitSize()<<endl;
   if(ievent == 0){
     if(gROOT->GetApplication()){
       fInfo += "beam test";
@@ -603,12 +597,12 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
       }
       fInfo += "\n";
     }
-    fInfo += fEvent->PrintInfo();
-    fMomentum = fEvent->GetMomentum().Mag() +0.01;
-    fAngle = fEvent->GetAngle() + 0.01;
-    fParticle =  fEvent->GetParticle();
-    fTest1 = fEvent->GetTest1();
-    fTest2 = fEvent->GetTest2();
+    fInfo += prt_event->PrintInfo();
+    fMomentum = prt_event->GetMomentum().Mag() +0.01;
+    fAngle = prt_event->GetAngle() + 0.01;
+    fParticle =  prt_event->GetParticle();
+    fTest1 = prt_event->GetTest1();
+    fTest2 = prt_event->GetTest2();
   }
 }
 #endif

@@ -189,7 +189,8 @@ void MSelector::SlaveBegin(TTree *){
 
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
-  if(fEvent->GetParticle()!=212) return kTRUE; 
+  //if(fEvent->GetParticle()!=2212) return kTRUE;
+  //if(fEvent->GetParticle()!=211) return kTRUE; 
   
   Double_t offset=0;
   if(gMode==1){

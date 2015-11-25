@@ -76,5 +76,5 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root", Int_
     }
   }
   std::cout<<"save all  " <<std::endl;
-  canvasSave(0,0);
+  canvasSave(0,3);
 }
