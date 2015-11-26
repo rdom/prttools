@@ -809,11 +809,11 @@ void waitPrimitive(TString name){
   while((c = (TCanvas*) next())){
     std::cout<<"c->GetName()  "<<c->GetName() <<std::endl;
     
-    // if(std::string(c->GetName())==name){
-    //   c->Modified(); 
-    //   c->Update(); 
-    //   c->WaitPrimitive();
-    // }
+    if(std::string(c->GetName())==name){
+      c->Modified(); 
+      c->Update(); 
+      //c->WaitPrimitive();
+    }
   }
 }
 
