@@ -34,7 +34,7 @@ void da_scan(TString inFile = "r_spr.root"){
   Int_t it(0);
   for (Int_t i = 0; i < nent; i++) {
     ch.GetEvent(i);
-    if(spr==0) continue;
+    if(spr==0 || theta>156) continue;
     gSpr->SetPoint(it,theta,TMath::Abs(spr));
     gNph->SetPoint(it,theta,nph);
     gTrr->SetPoint(it,theta,TMath::Abs(trr));
