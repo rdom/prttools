@@ -57,13 +57,13 @@ void da_scan(TString inFile = "r_spr.root"){
   gSpr->GetYaxis()->SetRangeUser(0,30);
   gTrr->GetYaxis()->SetRangeUser(0,5);
 
-  gNph->GetXaxis()->SetLimits(0,175);
-  gSpr->GetXaxis()->SetLimits(0,175);
-  gTrr->GetXaxis()->SetLimits(0,175);
+  gNph->GetXaxis()->SetLimits(10,165);
+  gSpr->GetXaxis()->SetLimits(10,165);
+  gTrr->GetXaxis()->SetLimits(10,165);
   
-  gNph->GetXaxis()->SetRangeUser(0,175);
-  gSpr->GetXaxis()->SetRangeUser(0,175);
-  gTrr->GetXaxis()->SetRangeUser(0,175);
+  gNph->GetXaxis()->SetRangeUser(10,165);
+  gSpr->GetXaxis()->SetRangeUser(10,165);
+  gTrr->GetXaxis()->SetRangeUser(10,165);
 
   gSpr->GetYaxis()->SetTitle("SPR [mrad]");
   gNph->GetYaxis()->SetTitle("multiplicity [#]");
