@@ -57,6 +57,14 @@ void da_scan(TString inFile = "r_spr.root"){
   gSpr->GetYaxis()->SetRangeUser(0,30);
   gTrr->GetYaxis()->SetRangeUser(0,5);
 
+  gNph->GetXaxis()->SetLimits(0,175);
+  gSpr->GetXaxis()->SetLimits(0,175);
+  gTrr->GetXaxis()->SetLimits(0,175);
+  
+  gNph->GetXaxis()->SetRangeUser(0,175);
+  gSpr->GetXaxis()->SetRangeUser(0,175);
+  gTrr->GetXaxis()->SetRangeUser(0,175);
+
   gSpr->GetYaxis()->SetTitle("SPR [mrad]");
   gNph->GetYaxis()->SetTitle("multiplicity [#]");
   gTrr->GetYaxis()->SetTitle("#sigma_{#theta_{C} tr} [mrad]");
@@ -93,15 +101,12 @@ void da_scan(TString inFile = "r_spr.root"){
   TFile *file = new TFile(outFile,"RECREATE");
   TCanvas* c1 = new TCanvas("spr","spr",800,400);c1->SetBottomMargin(0.12);
   gSpr->Draw("APL");
-  gSpr->GetXaxis()->SetRangeUser(0,175);
   canvasAdd(c1);
   TCanvas* c2 = new TCanvas("nph","nph",800,400);c2->SetBottomMargin(0.12);
   gNph->Draw("APL");
-  gNph->GetXaxis()->SetRangeUser(0,175);
   canvasAdd(c2);
   TCanvas* c3 = new TCanvas("trr","trr",800,400);c3->SetBottomMargin(0.12);
   gTrr->Draw("APL");
-  gTrr->GetXaxis()->SetRangeUser(0,175);
   canvasAdd(c3);
 
   canvasSave(1,0);
