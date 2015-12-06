@@ -314,7 +314,8 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
     else np = p;
     
     fhPads[p]->cd();
-    fhDigi[np]->Draw("col+text");
+    //fhDigi[np]->Draw("col+text");
+    fhDigi[np]->Draw("col");
     if(maxz==-1)  max = fhDigi[np]->GetBinContent(fhDigi[np]->GetMaximumBin());
     fhDigi[np]->SetMaximum(max);
     fhDigi[np]->SetMinimum(minz);
