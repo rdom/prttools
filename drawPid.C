@@ -2,7 +2,7 @@
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
-void drawPid(TString inFile = "", TString outFile="c_pid.root"){
+void drawPid(TString inFile = ""){
   if(inFile=="") return;
 
   TString fileid(inFile);
@@ -46,7 +46,7 @@ void drawPid(TString inFile = "", TString outFile="c_pid.root"){
  
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
-
+  prt_normalize(hP,hPi);
   canvasAdd("mix_canglepid",800,400);
   hP->SetLineColor(2);
   hP->Draw();
