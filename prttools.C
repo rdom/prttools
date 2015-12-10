@@ -804,7 +804,7 @@ void canvasSave(Int_t what=0, Int_t style=0){
   }
 }
 
-void waitPrimitive(TString name){
+void waitPrimitive(TString name, TString prim=""){
   TIter next(gg_canvasList);
   TCanvas *c=0;
   while((c = (TCanvas*) next())){
@@ -813,7 +813,7 @@ void waitPrimitive(TString name){
     if(TString(c->GetName())==name){
       c->Modified(); 
       c->Update(); 
-      c->WaitPrimitive();
+      c->WaitPrimitive(prim);
     }
   }
 }
@@ -836,3 +836,13 @@ void normalize(TH1F* hists[],Int_t size){
     hists[i]->GetYaxis()->SetRangeUser(min,max);
   }
 }
+
+void prt_normalize(TH1F* h1,TH1F* h2){
+  Int_t max = (h1->GetMaximum()>h2->GetMaximum())? h1->GetMaximum() : h2->GetMaximum();
+  max += max*0.1;
+  h1->GetYaxis()->SetRangeUser(0,max);
+  h2->GetYaxis()->SetRangeUser(0,max);
+}
+
+
+
