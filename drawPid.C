@@ -2,13 +2,12 @@
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
-void drawPid(TString inFile = "../build/reco_spr.root", TString outFile="c_pid.root"){
-
-  //fSavePath = "data/temp/pid";
+void drawPid(TString inFile = "", TString outFile="c_pid.root"){
+  if(inFile=="") return;
 
   TString fileid(inFile);
-  fileid.Remove(0,fileid.Last('/')+1);
-  fileid.Remove(fileid.Last('.')-1);
+  fileid.Remove(0,fileid.Last('/')+1+5);
+  fileid.Remove(fileid.Last('.')-1-5);
   prt_data_info = getDataInfo(fileid);
   TString outdir=inFile;outdir.Remove(outdir.Last('/'));
   fSavePath = outdir+Form("/%da/%d",prt_data_info.getStudyId(),prt_data_info.getFileId());
@@ -17,8 +16,8 @@ void drawPid(TString inFile = "../build/reco_spr.root", TString outFile="c_pid.r
   Int_t tofPid;
   Double_t cangle,spr,trr,nph,par1,par2,par3,par4,par5,par6,test1,test2,theta,phi; 
   
-  TH1F *hPi = new TH1F("hPi","hPi;#theta_{c} [rad]; entries [#]",500,0.6,0.9);
-  TH1F *hP  = new TH1F("hP ","hP ;#theta_{c} [rad]; entries [#]",500,0.6,0.9);
+  TH1F *hPi = new TH1F("hPi","hPi;#theta_{c} [rad]; entries [#]",500,0.65,0.9);
+  TH1F *hP  = new TH1F("hP ","hP ;#theta_{c} [rad]; entries [#]",500,0.65,0.9);
 
   
   ch.SetBranchAddress("tofPid",&tofPid);
