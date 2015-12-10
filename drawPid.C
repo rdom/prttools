@@ -10,7 +10,8 @@ void drawPid(TString inFile = ""){
   fileid.Remove(fileid.Last('.')-1-5);
   prt_data_info = getDataInfo(fileid);
   TString outdir=inFile;outdir.Remove(outdir.Last('/'));
-  fSavePath = outdir+Form("/%da/%d",prt_data_info.getStudyId(),prt_data_info.getFileId());
+  if(inFile.Contains("R_spr.root"))   fSavePath = outdir+Form("/%dr/%d",prt_data_info.getStudyId(),prt_data_info.getFileId());
+  else  fSavePath = outdir+Form("/%ds/%d",prt_data_info.getStudyId(),prt_data_info.getFileId());
 
   TChain ch("dirc"); ch.Add(inFile);
   Int_t tofPid;
