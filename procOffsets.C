@@ -12,7 +12,7 @@ void procOffsets(TString path="",Int_t corrected=1){
   
   prt_data_info = getDataInfo(fileid);
  
-  Int_t h1a(200),h1b(400),h2a(0),h2b(100),hbin(5000);
+  Int_t h1a(0),h1b(400),h2a(0),h2b(400),hbin(5000);//h1a(200),h1b(400)
 
   if(corrected==1){
     h1a=0;
@@ -41,16 +41,16 @@ void procOffsets(TString path="",Int_t corrected=1){
   Int_t maxent(0);
   for (Int_t ievent=0; ievent<fNEntries; ievent++){
     PrtNextEvent(ievent,10000);
-    if(fEvent->GetParticle()!=2212) continue;
+    if(prt_event->GetParticle()!=2212) continue;
     bool bsim(false);
     TString current_file_name  = fCh->GetCurrentFile()->GetName();
     if(current_file_name.Contains("S.root")) bsim = true;
     else maxent++;
-    if(!bsim && maxent>10000) continue;
+    //if(!bsim && maxent>10000) continue;
     
     Double_t time(0);
-    for(Int_t i=0; i<fEvent->GetHitSize(); i++){
-      fHit = fEvent->GetHit(i);
+    for(Int_t i=0; i<prt_event->GetHitSize(); i++){
+      fHit = prt_event->GetHit(i);
 
       if(fHit.GetChannel()<960 ){
 	if(!bsim) hLeD->Fill(fHit.GetLeadTime());
@@ -86,5 +86,7 @@ void procOffsets(TString path="",Int_t corrected=1){
     gr->Write();
     efile.Write();
     efile.Close();
+    std::cout<<"new offset "<< xmax1-xmax2 <<std::endl;
+    
   }
 }

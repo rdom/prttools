@@ -37,10 +37,9 @@ void changeCalibration(TString ifile="calib.root", TString ofile="newcalib.root"
     // if(name.Contains("15189050257"))continue;
     // if(name.Contains("15188205503"))continue;
     // if(name.Contains("15189051255"))continue;
+   
+    if(name.Contains("off_")) continue;
     
-    if(name.Contains("off_15188171757"))continue;
-    
-    //if(name.Contains("off")) continue;
     // if(name.Contains("off_15189043006")){
     //   gr->SetName("off_15189043007");
     //   gr->Write();

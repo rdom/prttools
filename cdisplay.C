@@ -24,7 +24,7 @@ TString ginFile(""), gPath(""), gInfo(""),gsTimeCuts("0"), gsTotMean("0");
 
 TH1F *hTotM[maxMult], *hLeM[maxMult];
 TH1F *hTot,*hLe,*hLes,*hMult,*hCh,*hTof,*hMultEvtNum1,*hMultEvtNum2;
-TH1F *hPTime[nmcp][npix],*hSTime[nmcp][npix],*hPTot[nmcp][npix],*hPMult[nmcp][npix],*hEMult[nmcp+1];
+TH1F *hPTime[nmcp][npix],*hPiTime[nmcp][npix],*hSTime[nmcp][npix],*hPTot[nmcp][npix],*hPMult[nmcp][npix],*hEMult[nmcp+1];
 TH2F *hLeTot[nmcp][npix],*hShape[nmcp][npix];
 
 void MSelector::Init(TTree *tree){
@@ -137,6 +137,8 @@ void MSelector::SlaveBegin(TTree *){
 
     for(Int_t p=0; p<npix; p++){     
       hPTime[m][p]   = new TH1F(Form("le_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
+      hPiTime[m][p]   = new TH1F(Form("lepi_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
+      hPiTime[m][p]->SetLineColor(4);
       hSTime[m][p]   = new TH1F(Form("les_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
       hPTot[m][p]   = new TH1F(Form("tot_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins2,min2,max2);
       hPMult[m][p]   = new TH1F(Form("mult_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  50,0,50);
@@ -152,11 +154,13 @@ void MSelector::SlaveBegin(TTree *){
       }
 
       axisTime800x500(hPTime[m][p]);
+      axisTime800x500(hPiTime[m][p]);
       axisTime800x500(hPTot[m][p],"TOT time, [ns]");
       axisTime800x500(hPMult[m][p],"multiplicity, [#]");
       hSTime[m][p]->SetLineColor(2);
 
       fOutput->Add(hPTime[m][p]);
+      fOutput->Add(hPiTime[m][p]);
       fOutput->Add(hSTime[m][p]);
       fOutput->Add(hPTot[m][p]);
       fOutput->Add(hPMult[m][p]);
@@ -189,6 +193,7 @@ void MSelector::SlaveBegin(TTree *){
 
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
+  Int_t particleId=prt_event->GetParticle();
   //if(prt_event->GetParticle()!=2212) return kTRUE;
   //if(prt_event->GetParticle()!=211) return kTRUE; 
   
@@ -294,8 +299,13 @@ Bool_t MSelector::Process(Long64_t entry){
       }
       
       fhDigi[mcp]->Fill(col, row);
-      hPTime[mcp][pix]->Fill(timeDiff);
-      hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
+      if(particleId==2212){
+	hPTime[mcp][pix]->Fill(timeDiff);
+	hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
+      }else{
+	hPiTime[mcp][pix]->Fill(timeDiff);
+	hPiTime[mcp][pix]->SetTitle(Form("%d " ,ch));
+      }
     }
     hPTot[mcp][pix]->Fill(tot);
     hPTot[mcp][pix]->SetTitle(Form("mcp %d, pixel %d, channel %d",mcp, pix, ch));
@@ -420,6 +430,8 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
 	if(gMode>=100) normalize(hh,2);
 	hh[0]->Draw();
+	hPiTime[mcp][pix]->SetLineColor(4);
+	hPiTime[mcp][pix]->Draw("same");
 	prt_fit(hh[0],1,1);
 	if(gMode>=100 &&  hh[0]->GetEntries()>10) hh[1]->Draw("same");
       }
@@ -477,6 +489,7 @@ void MyMainFrame::InterestChanged(){
     TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
     normalize(hh,2);
     hh[0]->Draw();
+    hPiTime[mcp][pix]->Draw("same");
     prt_fit(hh[0],1,1);
     if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
   }
@@ -503,7 +516,8 @@ void MSelector::Terminate(){
     fhDigi[m] = dynamic_cast<TH2F *>(TProof::GetOutput(Form("mcp%d",m), fOutput));
     hEMult[m] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("emult_m%d",m), fOutput)); 
     for(Int_t p=0; p<npix; p++){
-      hPTime[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("le_mcp%dpix%d",m,p), fOutput)); 
+      hPTime[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("le_mcp%dpix%d",m,p), fOutput));
+      hPiTime[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("lepi_mcp%dpix%d",m,p), fOutput)); 
       hSTime[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("les_mcp%dpix%d",m,p), fOutput)); 
       hPTot[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("tot_mcp%dpix%d",m,p), fOutput)); 
       hPMult[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("mult_mcp%dpix%d",m,p), fOutput)); 
@@ -543,6 +557,7 @@ void MyMainFrame::DoDraw(){
     if(hEMult[m]) hEMult[m]->Reset();
     for(Int_t p=0; p<npix; p++){
       if(hPTime[m][p]) hPTime[m][p]->Reset();
+      if(hPiTime[m][p]) hPiTime[m][p]->Reset();
       if(hSTime[m][p]) hSTime[m][p]->Reset();
       if(hPTot[m][p]) hPTot[m][p]->Reset();
       if(hPMult[m][p]) hPMult[m][p]->Reset();
@@ -783,6 +798,7 @@ void MyMainFrame::DoExport(){
 	  TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
 	  normalize(hh,2);
 	  hh[0]->Draw();
+	  hPiTime[m][p]->Draw("same");
 	  prt_fit(hh[0],1,1);
 	  if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
 	  histname=hPTime[m][p]->GetName();

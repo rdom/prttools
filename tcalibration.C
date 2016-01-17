@@ -1,10 +1,12 @@
 // tcalibration - routine for the prtdirc data calibration 
 // original author: Roman Dzhygadlo - GSI Darmstad
 
+#include "datainfo.C"
 #define TTSelector_cxx
 #include "prttools.C"
 #include "tcalibration.h"
- 
+
+DataInfo prt_data_info;
 TString ginFile(""), goutFile(""), gcFile("");
 Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[maxch];
 Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[960][10],gLeOffArr[960],gEvtOffset(0);
@@ -279,15 +281,17 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//timeLe += getTotWalk(triggerTot,ch,1);
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
 	timeLe -= gLeOffArr[ch];
-	Double_t mom = 7;
-	timeLe += 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
+	Double_t mom = prt_data_info.getMomentum();
+	timeLe -= 24.109/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9;
       }   
       
       if(gMode==5){
 	timeLe-=gEvtOffset;
 	if(ch>960 && ch != 1104 && ch != 1344 && ch != 1248) continue;
-	if(ch<960 && (timeLe<0 || timeLe>100)) continue;
+	if(ch<=960 && (timeLe<0 || timeLe>100)) continue;
       }
+
+      //if(ch<960)std::cout<<"timeLe "<< timeLe<<std::endl;
       
       if(gMode!=5 || tofpid!=0){
 	hit.SetTdc(tdc);
