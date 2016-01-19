@@ -429,6 +429,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
 	if(gMode>=100) normalize(hh,2);
+	//prt_normalize(hh[0],hPiTime[mcp][pix]);
 	hh[0]->Draw();
 	hPiTime[mcp][pix]->SetLineColor(4);
 	hPiTime[mcp][pix]->Draw("same");

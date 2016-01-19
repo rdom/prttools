@@ -798,6 +798,7 @@ void canvasDel(TString name="c"){
   TCanvas *c=0;
   while((c = (TCanvas*) next())){
     if(c->GetName()==name || name=="*") gg_canvasList->Remove(c);
+    c->Delete();
   }
 }
 
@@ -849,7 +850,7 @@ void normalize(TH1F* hists[],Int_t size){
 }
 
 void prt_normalize(TH1F* h1,TH1F* h2){
-  Int_t max = (h1->GetMaximum()>h2->GetMaximum())? h1->GetMaximum() : h2->GetMaximum();
+  Double_t max = (h1->GetMaximum()>h2->GetMaximum())? h1->GetMaximum() : h2->GetMaximum();
   max += max*0.1;
   h1->GetYaxis()->SetRangeUser(0,max);
   h2->GetYaxis()->SetRangeUser(0,max);

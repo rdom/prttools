@@ -41,7 +41,9 @@ TF1 * fitpdf(TH1F *h){
 }
 
 void createPdf(TString path="/data.local/data/jun15/beam_15177050804S"){//beam_15177135523S.root
-  path="/data.local/data/jun15/beam_15177050804S"; // bar L3 55deg
+  //path="/data.local/data/jun15/hits_151_7"; // bar L3 55deg
+  path="/data.local/data/jun15/hits_153_1_0ps";
+  // path="/data.local/data/jun15/beam_15177050804S"; // bar L3 55deg
   // path="/data.local/data/jun15/beam_15183032354S"; // plate 55deg
   fSavePath = "data/pdf";
   PrtInit(path+".root",1);
@@ -51,8 +53,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S"){//beam_1
   TH1F *hlef[960], *hles[960];
 
   for(Int_t i=0; i<960; i++){
-    hlef[i] = new TH1F(Form("lef_%d",i),"lef", 800,0,40);
-    hles[i] = new TH1F(Form("les_%d",i),"les", 800,0,40);
+    hlef[i] = new TH1F(Form("lef_%d",i),"lef", 500,0,50);
+    hles[i] = new TH1F(Form("les_%d",i),"les", 500,0,50);
   }
   
   Double_t time;
@@ -87,8 +89,9 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S"){//beam_1
     TFile efile(path+ ".pdf.root","RECREATE");
 
     for(Int_t i=0; i<960; i++){
-      hlef[i]->Scale(1/(Double_t)totalf);
-      hles[i]->Scale(1/(Double_t)totals);
+      // hlef[i]->Scale(1000/(Double_t)totalf);
+      // hles[i]->Scale(1000/(Double_t)totals);
+
       // hlef[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));
       // hles[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));
 
@@ -112,22 +115,24 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S"){//beam_1
       hlef[i]->Write();
       hles[i]->Write();
       
-      // if(false){
-      // 	cExport->cd();
-      // 	//	canvasAdd(Form("pdf_%d",i),800,500);
-      // 	cExport->SetName(Form("pdf_%d",i));
-      // 	//canvasAdd(cExport);
-      // 	hlef[i]->GetYaxis()->SetRangeUser(0,1.5);
-      // 	hlef[i]->Draw();
-      // 	hles[i]->SetLineColor(4);
-      // 	hles[i]->Draw("same");
-      // 	// f->Draw();
-      // 	s->SetLineColor(4);
-      // 	s->Draw("same");
-      // 	cExport->Print(fSavePath+Form("/pdf_%d.png",i));
-      // 	//canvasSave(1,0);
-      // 	//canvasDel(cExport->GetName());
-      // }
+      if(false){
+      	cExport->cd();
+      	//	canvasAdd(Form("pdf_%d",i),800,500);
+      	cExport->SetName(Form("pdf_%d",i));
+      	//canvasAdd(cExport);
+      	//hlef[i]->GetYaxis()->SetRangeUser(0,1.5);
+	prt_normalize(hlef[i],hles[i]);
+	hlef[i]->SetLineColor(2);
+      	hlef[i]->Draw();
+      	hles[i]->SetLineColor(4);
+      	hles[i]->Draw("same");
+      	// // f->Draw();
+      	// s->SetLineColor(4);
+      	// s->Draw("same");
+      	cExport->Print(fSavePath+Form("/pdf_%d.png",i));
+      	//canvasSave(1,0);
+      	//canvasDel(cExport->GetName());
+      }
     }
     
     efile.Write();
