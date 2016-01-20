@@ -286,9 +286,9 @@ Bool_t TTSelector::Process(Long64_t entry){
       }   
       
       if(gMode==5){
-	// timeLe-=gEvtOffset;
-	// if(ch>960 && ch != 1104 && ch != 1344 && ch != 1248) continue;
-	// if(ch<=960 && (timeLe<0 || timeLe>100)) continue;
+	timeLe-=gEvtOffset;
+	if(ch>960 && ch != 1104 && ch != 1344 && ch != 1248) continue;
+	if(ch<=960 && (timeLe<0 || timeLe>100)) continue;
       }
 
       //if(ch<960)std::cout<<"timeLe "<< timeLe<<std::endl;
