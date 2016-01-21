@@ -40,7 +40,8 @@ TF1 * fitpdf(TH1F *h){
   return gaust;
 }
 
-void createPdf(TString path="/data.local/data/jun15/beam_15177050804S"){//beam_15177135523S.root
+void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//beam_15177135523S.root
+  path.ReplaceAll(".root","");
   fSavePath = "data/pdf";
   PrtInit(path+".root",1);
   gStyle->SetOptStat(0);
