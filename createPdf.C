@@ -41,10 +41,6 @@ TF1 * fitpdf(TH1F *h){
 }
 
 void createPdf(TString path="/data.local/data/jun15/beam_15177050804S"){//beam_15177135523S.root
-  //path="/data.local/data/jun15/hits_151_7"; // bar L3 55deg
-  path="/data.local/data/jun15/hits_153_1_0ps";
-  // path="/data.local/data/jun15/beam_15177050804S"; // bar L3 55deg
-  // path="/data.local/data/jun15/beam_15183032354S"; // plate 55deg
   fSavePath = "data/pdf";
   PrtInit(path+".root",1);
   gStyle->SetOptStat(0);
