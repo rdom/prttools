@@ -50,8 +50,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
   TH1F *hlef[960], *hles[960];
 
   for(Int_t i=0; i<960; i++){
-    hlef[i] = new TH1F(Form("lef_%d",i),"lef", 500,0,50);
-    hles[i] = new TH1F(Form("les_%d",i),"les", 500,0,50);
+    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
+    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
   }
   
   Double_t time;
@@ -73,6 +73,9 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
 	//totals++;
 	hles[ch]->Fill(time);
       }
+      Int_t mcpid = fHit.GetMcpId();
+      Int_t pixid = fHit.GetPixelId()-1;
+      fhDigi[mcpid]->Fill(pixid%8, pixid/8);
     }
     if(prt_event->GetParticle()==2212) totalf++;
     if(prt_event->GetParticle()==211)totals++;
@@ -85,6 +88,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
   if(totalf>0 && totals>0) {
     TFile efile(path+ ".pdf.root","RECREATE");
 
+    std::cout<<"totalf  "<<totalf << "   totals " << totals<<std::endl;
+    
     for(Int_t i=0; i<960; i++){
       // hlef[i]->Scale(1000/(Double_t)totalf);
       // hles[i]->Scale(1000/(Double_t)totals);
@@ -112,13 +117,15 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
       hlef[i]->Write();
       hles[i]->Write();
       
-      if(false){
+      if(true){
       	cExport->cd();
       	//	canvasAdd(Form("pdf_%d",i),800,500);
       	cExport->SetName(Form("pdf_%d",i));
       	//canvasAdd(cExport);
       	//hlef[i]->GetYaxis()->SetRangeUser(0,1.5);
 	prt_normalize(hlef[i],hles[i]);
+	axisTime800x500(hlef[i]);
+	axisTime800x500(hles[i]);
 	hlef[i]->SetLineColor(2);
       	hlef[i]->Draw();
       	hles[i]->SetLineColor(4);
@@ -126,7 +133,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
       	// // f->Draw();
       	// s->SetLineColor(4);
       	// s->Draw("same");
-      	cExport->Print(fSavePath+Form("/pdf_%d.png",i));
+      	cExport->Print(fSavePath+Form("/pdf_mcp%d_pix_%d.png",map_mcp[i],map_pix[i]));
       	//canvasSave(1,0);
       	//canvasDel(cExport->GetName());
       }
@@ -143,6 +150,10 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
   hlef[308]->Draw();
   hles[308]->SetLineColor(4);
   hles[308]->Draw("same");
-
+  
+  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",2,-2,-2));
+  cDigi->SetName("hits");
+  canvasAdd(cDigi);
+  
   canvasSave(1,0);
 }

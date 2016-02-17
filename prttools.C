@@ -220,7 +220,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   cDigi->cd();
   // TPad * pp = new TPad("P","T",0.06,0.135,0.93,0.865);
   if(!fhPglobal){
-    Double_t tt =(layoutId==3)? 0.88: 0.96; 
+    Double_t tt =(layoutId==3 || layoutId==5)? 0.88: 0.96; 
     fhPglobal = new TPad("P","T",0.04,0.04,tt,0.96);
     fhPglobal->SetFillStyle(0);
     fhPglobal->Draw();
@@ -228,7 +228,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   fhPglobal->cd();
   
   Int_t nrow = 3, ncol = 5;
- 
+
   if(layoutId > 1){
     float bw = 0.02, bh = 0.01, shift = 0,shiftw=0.02;
     float tbw = bw, tbh = bh;
@@ -238,6 +238,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 	for(int j=0; j<nrow; j++){
 	  if(j==1) shift = -0.028;
 	  else shift = 0;
+	  if(layoutId == 5) {shift =0; shiftw=0.001; tbw=0.001; tbh=0.001;}
 	  fhPads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
 	  fhPads[padi]->SetFillColor(kCyan-8);
 	  fhPads[padi]->SetMargin(0.04,0.04,0.04,0.04);
@@ -322,6 +323,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
     for(Int_t i=1; i<=8; i++){
       for(Int_t j=1; j<=8; j++){
   	Double_t weight = (double)(fhDigi[np]->GetBinContent(i,j))/(double)max *255;
+	if(weight>255) weight=255;
   	if(weight > 0) digidata += Form("%d,%d,%d\n", np, (j-1)*8+i-1, (Int_t)weight);
       }
     }
@@ -398,12 +400,12 @@ void axisTime800x500(TH2 * hist){
   hist->SetLineColor(1);
 }
 
-void axisTime800x500(TH1 * hist, TString xtitle = "time, [ns]"){
+void axisTime800x500(TH1 * hist, TString xtitle = "time [ns]"){
   TGaxis::SetMaxDigits(3);
   hist->GetXaxis()->SetTitle(xtitle);
   hist->GetXaxis()->SetTitleSize(0.05);
   hist->GetXaxis()->SetTitleOffset(0.8);
-  hist->GetYaxis()->SetTitle("entries, [#]");
+  hist->GetYaxis()->SetTitle("entries [#]");
   hist->GetYaxis()->SetTitleSize(0.05);
   hist->GetYaxis()->SetTitleOffset(0.7);
   hist->SetLineColor(1);
@@ -463,11 +465,11 @@ void SetRootPalette(Int_t pal = 0){
   const Int_t NCont = 255;
   gStyle->SetNumberContours(NCont);
 
-  if (pal < 1 && pal> 14) return;
+  if (pal < 1 && pal> 15) return;
   else pal--;
 
   Double_t stops[NRGBs] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
-  Double_t red[14][NRGBs]   = {{ 0.00, 0.00, 0.87, 1.00, 0.51 },
+  Double_t red[15][NRGBs]   = {{ 0.00, 0.00, 0.87, 1.00, 0.51 },
 			       { 0.51, 1.00, 0.87, 0.00, 0.00 },
 			       { 0.17, 0.39, 0.62, 0.79, 1.00 },
 			       { 1.00, 0.79, 0.62, 0.39, 0.17 },
@@ -480,9 +482,10 @@ void SetRootPalette(Int_t pal = 0){
 			       { 0.75, 1.00, 0.24, 0.00, 0.00 },
 			       { 0.00, 0.00, 0.24, 1.00, 0.75 },
 			       { 0.00, 0.34, 0.61, 0.84, 1.00 },
-			       { 1.00, 0.84, 0.61, 0.34, 0.00 }
+			       { 1.00, 0.84, 0.61, 0.34, 0.00 },
+			       { 0.00, 0.00, 0.80, 1.00, 0.80 }
   };
-  Double_t green[14][NRGBs] = {{ 0.00, 0.81, 1.00, 0.20, 0.00 },		    
+  Double_t green[15][NRGBs] = {{ 0.00, 0.81, 1.00, 0.20, 0.00 },		    
 			       { 0.00, 0.20, 1.00, 0.81, 0.00 },
 			       { 0.01, 0.02, 0.39, 0.68, 1.00 },
 			       { 1.00, 0.68, 0.39, 0.02, 0.01 },
@@ -495,9 +498,10 @@ void SetRootPalette(Int_t pal = 0){
 			       { 0.24, 1.00, 0.75, 0.18, 0.00 },
 			       { 0.00, 0.18, 0.75, 1.00, 0.24 },
 			       { 0.00, 0.34, 0.61, 0.84, 1.00 },
-			       { 1.00, 0.84, 0.61, 0.34, 0.00 }
+			       { 1.00, 0.84, 0.61, 0.34, 0.00 },
+			       { 0.00, 0.85, 1.00, 0.30, 0.00 }
   };
-  Double_t blue[14][NRGBs]  = {{ 0.51, 1.00, 0.12, 0.00, 0.00 },
+  Double_t blue[15][NRGBs]  = {{ 0.51, 1.00, 0.12, 0.00, 0.00 },
 			       { 0.00, 0.00, 0.12, 1.00, 0.51 },
 			       { 0.00, 0.09, 0.18, 0.09, 0.00 },
 			       { 0.00, 0.09, 0.18, 0.09, 0.00 },
@@ -510,7 +514,8 @@ void SetRootPalette(Int_t pal = 0){
 			       { 0.00, 0.62, 1.00, 0.68, 0.12 },
 			       { 0.12, 0.68, 1.00, 0.62, 0.00 },
 			       { 0.00, 0.34, 0.61, 0.84, 1.00 },
-			       { 1.00, 0.84, 0.61, 0.34, 0.00 }
+			       { 1.00, 0.84, 0.61, 0.34, 0.00 },
+			       { 0.60, 1.00, 0.10, 0.00, 0.00 }
   };
 
 
@@ -724,8 +729,12 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
 	while((obj = next())){
 	  if(obj->InheritsFrom("TH1")){
 	    TH1F *hh = (TH1F*)obj;
-	    hh->GetXaxis()->SetTitleSize(0.05);
-	    hh->GetYaxis()->SetTitleSize(0.05);
+	    hh->GetXaxis()->SetTitleSize(0.06);
+	    hh->GetYaxis()->SetTitleSize(0.06);
+
+	    hh->GetXaxis()->SetLabelSize(0.05);
+	    hh->GetYaxis()->SetLabelSize(0.05);
+	    
 	    hh->GetXaxis()->SetTitleOffset(0.85);
 	    hh->GetYaxis()->SetTitleOffset(0.85);
 	  }
@@ -750,6 +759,7 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
       cc->Update();
     
       cc->Print(path+"/"+name+".png");
+      if(what==0) cc->Print(path+"/"+name+".eps");
       if(what==0) cc->Print(path+"/"+name+".pdf");
       if(what==0) cc->Print(path+"/"+name+".root");
     }else{
