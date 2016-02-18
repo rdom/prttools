@@ -296,7 +296,8 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
     for(Int_t i=0; i<tbins; i++){
       integral = h->Integral(0,i);
       if(integral>5) {
-	minz = h->GetBinCenter(i);
+	if(minz>-3) minz = h->GetBinCenter(i);
+	else minz=0;
 	break;
       } 
     }
