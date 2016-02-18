@@ -278,7 +278,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
     max = maxz;
   }
 
-  if(maxz==-2 && minz==-2){ // optimize range
+  if(maxz==-2 && minz<-1){ // optimize range
     for(Int_t p=0; p<nrow*ncol;p++){
       tmax = fhDigi[p]->GetMaximum();
       if(max<tmax) max = tmax;
