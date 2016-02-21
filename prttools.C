@@ -764,6 +764,7 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
       if(what==0) cc->Print(path+"/"+name+".pdf");
       if(what==0) cc->Print(path+"/"+name+".root");
     }else{
+      c->SetCanvasSize(w,h);
       c->Print(path+"/"+name+".png");
       if(what==0) c->Print(path+"/"+name+".pdf");
       if(what==0) c->Print(path+"/"+name+".root");
