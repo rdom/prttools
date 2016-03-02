@@ -41,7 +41,11 @@
 
 
 #if defined(prt__sim) || defined(prt__beam)
-   #include "datainfo.C"
+
+#if defined(prt__beam)
+     #include "datainfo.C"
+#endif
+
    class PrtEvent;
    class PrtHit;
    PrtEvent* prt_event = 0;

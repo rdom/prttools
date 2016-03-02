@@ -42,7 +42,7 @@ TF1 * fitpdf(TH1F *h){
 
 void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//beam_15177135523S.root
   path.ReplaceAll(".root","");
-  fSavePath = "data/pdf";
+  fSavePath = "data/pdf2";
   PrtInit(path+".root",1);
   gStyle->SetOptStat(0);
   CreateMap();
@@ -50,8 +50,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
   TH1F *hlef[960], *hles[960];
 
   for(Int_t i=0; i<960; i++){
-    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
-    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
+    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 200,0,50);
+    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 200,0,50);
   }
   
   Double_t time;
@@ -63,7 +63,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){
       fHit = prt_event->GetHit(i);
       ch=map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
-      time = fHit.GetLeadTime();
+      time = fHit.GetLeadTime()+gRandom->Gaus(0,0.3);
       
       if(prt_event->GetParticle()==2212){
 	//totalf++;
@@ -91,8 +91,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
     std::cout<<"totalf  "<<totalf << "   totals " << totals<<std::endl;
     
     for(Int_t i=0; i<960; i++){
-      // hlef[i]->Scale(1000/(Double_t)totalf);
-      // hles[i]->Scale(1000/(Double_t)totals);
+      hlef[i]->Scale(1/(Double_t)totalf);
+      hles[i]->Scale(1/(Double_t)totals);
 
       // hlef[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));
       // hles[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));
@@ -117,7 +117,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
       hlef[i]->Write();
       hles[i]->Write();
       
-      if(true){
+      if(false){
       	cExport->cd();
       	//	canvasAdd(Form("pdf_%d",i),800,500);
       	cExport->SetName(Form("pdf_%d",i));
