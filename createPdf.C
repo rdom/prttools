@@ -65,7 +65,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){
       fHit = prt_event->GetHit(i);
       ch=map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
-      time = fHit.GetLeadTime()+gRandom->Gaus(0,0.3);
+      time = fHit.GetLeadTime(); //+gRandom->Gaus(0,0.3);
       
       if(prt_event->GetParticle()==2212){
 	//totalf++;

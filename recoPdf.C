@@ -20,7 +20,7 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
 
   TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 500,0,50);
   TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 500,0,50);
-  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 200,0,50);
+  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 500,0,50);
   
   TF1 *pdff[960],*pdfs[960];
   TH1F *hpdff[960],*hpdfs[960];
@@ -28,7 +28,10 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
   // TFile f("/data.local/data/jun15/scan_tr/hh1521_04.pdf1.root");
   //TFile f("/data.local/data/jun15/scan_tr/hh1522_03M.pdf1.root");
   // TFile f("/data.local/data/jun15/hh1613_sa.pdf.root"); //plate
-  TFile f("/data.local/data/jun15/hh151_37_s.pdf.root"); //plate
+
+  //TFile f("/data.local/data/jun15/hh151_37_s.pdf.root");
+  TFile f("/data.local/data/jun15/beam_15177135523C.pdf.root");
+  
     Int_t integ1(0), integ2(0);
   for(Int_t i=0; i<960; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
@@ -42,7 +45,7 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
   TVirtualFitter *fitter;
   Double_t time,timeres(-1);
   PrtHit fHit;
-  Int_t totalf(0),totals(0), ch, entries = 10000; //fCh->GetEntries();
+  Int_t totalf(0),totals(0), ch, entries = fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
     timeres = prt_event->GetTimeRes();
@@ -57,9 +60,9 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
       // if(prt_event->GetParticle()==2212) time -= 0.35;
       // if(time<10 || time >30) continue;
 
-      // if(prt_event->GetParticle()==211) time += 0.2; //fix offset
-      // if(prt_event->GetParticle()==2212) time -= 0.35;
-      // if(time<10 || time >30) continue;
+      if(prt_event->GetParticle()==211) time -= 0.05; //fix offset
+      if(prt_event->GetParticle()==2212) time -= 0.05;
+      //if(time>7) continue;
       
       
       //std::cout<<ch<<" "<< hpdff[ch]->FindBin(time)<<std::endl;
