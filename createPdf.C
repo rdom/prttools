@@ -41,8 +41,10 @@ TF1 * fitpdf(TH1F *h){
 }
 
 void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//beam_15177135523S.root
+  path="/data.local/data/jun15/beam_15177135523S.root";
+  
   path.ReplaceAll(".root","");
-  fSavePath = "data/pdf2";
+  fSavePath = "data/pdf3";
   PrtInit(path+".root",1);
   gStyle->SetOptStat(0);
   CreateMap();
@@ -50,8 +52,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
   TH1F *hlef[960], *hles[960];
 
   for(Int_t i=0; i<960; i++){
-    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 200,0,50);
-    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 200,0,50);
+    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
+    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
   }
   
   Double_t time;

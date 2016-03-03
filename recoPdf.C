@@ -7,7 +7,7 @@
 
 void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
   path.ReplaceAll(".root","");
-  fSavePath = "data/recopdf";
+  fSavePath = "data/recopdf_151";
   PrtInit(path+".root",1);
   gStyle->SetOptStat(0);
   CreateMap();
@@ -20,19 +20,23 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
 
   TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 500,0,50);
   TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 500,0,50);
+  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 200,0,50);
   
   TF1 *pdff[960],*pdfs[960];
   TH1F *hpdff[960],*hpdfs[960];
   //  TFile f(path+".pdf.root");
   // TFile f("/data.local/data/jun15/scan_tr/hh1521_04.pdf1.root");
   //TFile f("/data.local/data/jun15/scan_tr/hh1522_03M.pdf1.root");
-  TFile f("/data.local/data/jun15/hh1613_sa.pdf.root"); //plate
+  // TFile f("/data.local/data/jun15/hh1613_sa.pdf.root"); //plate
+  TFile f("/data.local/data/jun15/hh151_37_s.pdf.root"); //plate
     Int_t integ1(0), integ2(0);
   for(Int_t i=0; i<960; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
     integ1+= hpdff[i]->Integral();
     integ2+= hpdfs[i]->Integral();
+    hl3->Add(hpdff[i]);
+    hl3->Add(hpdfs[i]);
   }
 
   TVirtualFitter *fitter;
@@ -49,9 +53,14 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
       ch=map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
       time = fHit.GetLeadTime();
 
-      if(prt_event->GetParticle()==211) time += 0.2; //fix offset
-      if(prt_event->GetParticle()==2212) time -= 0.35;
-      if(time<10 || time >30) continue;
+      // if(prt_event->GetParticle()==211) time += 0.2; //fix offset
+      // if(prt_event->GetParticle()==2212) time -= 0.35;
+      // if(time<10 || time >30) continue;
+
+      // if(prt_event->GetParticle()==211) time += 0.2; //fix offset
+      // if(prt_event->GetParticle()==2212) time -= 0.35;
+      // if(time<10 || time >30) continue;
+      
       
       //std::cout<<ch<<" "<< hpdff[ch]->FindBin(time)<<std::endl;
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time)); 
@@ -83,6 +92,7 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
       if(prt_event->GetParticle()==211) hl2->Fill(time);
 
     }
+    if(sumf==sums) continue;
     sum = sumf-sums;
     
     //std::cout<<"sum ===========  "<<sum  << "  "<< sumf<< "  "<< sums<<std::endl;
@@ -118,10 +128,16 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
   hlls->SetLineColor(4);
   hlls->Draw("same");
 
+  hl1->Scale(1/hl1->GetMaximum());
+  hl2->Scale(1/hl2->GetMaximum());
+  hl3->Scale(1/hl3->GetMaximum());
+
   prt_normalize(hl1,hl2);
   canvasAdd("hl",800,500);
   hl1->Draw();
   hl2->SetLineColor(4);
   hl2->Draw("same");
+  hl3->SetLineColor(2);
+  hl3->Draw("same");
   canvasSave(1,0);
 }
