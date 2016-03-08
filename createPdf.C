@@ -59,7 +59,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
   Double_t time;
   PrtHit fHit;
   Int_t totalf(0),totals(0), ch, entries = fCh->GetEntries();
-  for (Int_t ievent=0; ievent<entries; ievent++){
+  for (Int_t ievent=10000; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
 
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){

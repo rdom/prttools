@@ -14,8 +14,8 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
   TGaxis::SetMaxDigits(4);
   
   TCanvas *cc = new TCanvas("cc","cc");
-  TH1F *hllf= new TH1F("hllf","hllf;ln L(p) - ln L(#pi); entries [#]",100,-100,100);
-  TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",100,-100,100);
+  TH1F *hllf= new TH1F("hllf","hllf;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
+  TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
 
 
   TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 500,0,50);
@@ -45,7 +45,7 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
   TVirtualFitter *fitter;
   Double_t time,timeres(-1);
   PrtHit fHit;
-  Int_t totalf(0),totals(0), ch, entries = fCh->GetEntries();
+  Int_t totalf(0),totals(0), ch, entries = 10000; //fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
     timeres = prt_event->GetTimeRes();
@@ -60,9 +60,9 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
       // if(prt_event->GetParticle()==2212) time -= 0.35;
       // if(time<10 || time >30) continue;
 
-      if(prt_event->GetParticle()==211) time -= 0.05; //fix offset
-      if(prt_event->GetParticle()==2212) time -= 0.05;
-      //if(time>7) continue;
+      // if(prt_event->GetParticle()==211) time -= 0.05; //fix offset
+      // if(prt_event->GetParticle()==2212) time -= 0.05;
+      if(time>20) continue;
       
       
       //std::cout<<ch<<" "<< hpdff[ch]->FindBin(time)<<std::endl;
@@ -70,7 +70,7 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
 
       //      if(aminf==0 || amins==0) continue;
-      Double_t noise = 1e-5; //1e-7;
+      Double_t noise = 1e-3; //1e-7;
       sumf+=-TMath::Log((aminf+noise));
       sums+=-TMath::Log((amins+noise));    
 
@@ -95,7 +95,7 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
       if(prt_event->GetParticle()==211) hl2->Fill(time);
 
     }
-    if(sumf==sums) continue;
+    if(fabs(sumf-sums)<0.3) continue;
     sum = sumf-sums;
     
     //std::cout<<"sum ===========  "<<sum  << "  "<< sumf<< "  "<< sums<<std::endl;
