@@ -71,8 +71,8 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
 
       //      if(aminf==0 || amins==0) continue;
       Double_t noise = 1e-3; //1e-7;
-      sumf+=-TMath::Log((aminf+noise));
-      sums+=-TMath::Log((amins+noise));    
+      sumf+=TMath::Log((aminf+noise));
+      sums+=TMath::Log((amins+noise));    
 
 
       // std::cout<< aminf<< " "<<amins <<std::endl;

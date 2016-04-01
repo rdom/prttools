@@ -219,13 +219,16 @@ Bool_t badcannel(Int_t ch){
   return false;
 }
 
+// layoutId == 5  - 5 row's design for the PANDA Barrel DIRC
+// layoutId == 6  - new 3.6 row's design for the PANDA Barrel DIRC 
 TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
   if(!cDigi) cDigi = new TCanvas("cDigi","cDigi",0,0,800,400);
   cDigi->cd();
   // TPad * pp = new TPad("P","T",0.06,0.135,0.93,0.865);
   if(!fhPglobal){
-    Double_t tt =(layoutId==3 || layoutId==5)? 0.88: 0.96; 
+    Double_t tt =(layoutId==3 || layoutId==5)? 0.88: 0.96;
     fhPglobal = new TPad("P","T",0.04,0.04,tt,0.96);
+    if(layoutId==6) fhPglobal = new TPad("P","T",0.12,0.02,0.78,0.98);
     fhPglobal->SetFillStyle(0);
     fhPglobal->Draw();
   }
@@ -233,8 +236,10 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   
   Int_t nrow = 3, ncol = 5;
 
+
+  if(layoutId ==6) ncol=4;
   if(layoutId > 1){
-    float bw = 0.02, bh = 0.01, shift = 0,shiftw=0.02;
+    float bw = 0.02, bh = 0.01, shift = 0,shiftw=0.02,shifth=0;
     float tbw = bw, tbh = bh;
     Int_t padi = 0;
     if(!fhPads[0]){
@@ -242,8 +247,14 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 	for(int j=0; j<nrow; j++){
 	  if(j==1) shift = -0.028;
 	  else shift = 0;
+	  shifth=0;
 	  if(layoutId == 5) {shift =0; shiftw=0.001; tbw=0.001; tbh=0.001;}
-	  fhPads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
+	  if(layoutId == 6) {
+	    if(ii==0 && j == nrow-1) continue;
+	    shift =0; shiftw=0.001; tbw=0.001; tbh=0.001;
+	    if(ii==0) shifth=0.167;
+	  }
+	  fhPads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh+shifth, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh+shifth, 21);
 	  fhPads[padi]->SetFillColor(kCyan-8);
 	  fhPads[padi]->SetMargin(0.04,0.04,0.04,0.04);
 	  fhPads[padi]->Draw();
@@ -318,6 +329,8 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   for(Int_t p=0; p<nrow*ncol;p++){
     if(layoutId == 1 || layoutId == 4)  np =p%3*5 + p/3;
     else np = p;
+
+    if(layoutId == 6 && p>10) continue;
     
     fhPads[p]->cd();
     //fhDigi[np]->Draw("col+text");
