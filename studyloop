@@ -110,8 +110,10 @@ processOneSim (){
 	    fi
 	    if [ ${level} -eq "4" ]; then
 		#./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]}  -x proton -e 5000 -b 1  > "${datapath}/${file[fk]}S.log" &
-		./prtdirc -o "${datapath}/${file[fk]}S1x.root" ${args[fk]} -x proton -e 20000 -b 1  > "${datapath}/${file[fk]}S.log" &
-		./prtdirc -o "${datapath}/${file[fk]}S2x.root" ${args[fk]} -x pi+    -e 20000 -b 1  > "${datapath}/${file[fk]}S.log" &
+		#./prtdirc -o "${datapath}/${file[fk]}S1x.root" ${args[fk]} -x proton -tr 0.2 -e 1000 -b 1  > "${datapath}/${file[fk]}S.log" &
+		#./prtdirc -o "${datapath}/${file[fk]}S2x.root" ${args[fk]} -x pi+    -tr 0.2 -e 1000 -b 1  > "${datapath}/${file[fk]}S.log" &
+		./prtdirc -o "${datapath}/${file[fk]}Spdf1x.root" ${args[fk]} -x proton -tr 0.0 -e 20000 -b 1  > "${datapath}/${file[fk]}S1xpdf.log" &
+		./prtdirc -o "${datapath}/${file[fk]}Spdf2x.root" ${args[fk]} -x pi+    -tr 0.0 -e 20000 -b 1  > "${datapath}/${file[fk]}S2xpdf.log" &
 	    fi
 	    if [ ${level} -eq "5" ]; then
 		./prtdirc -o "${datapath}/lut_${file[fk]}S10M.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 10000000  -b 1 > "${datapath}/${file[fk]}L.log" &
