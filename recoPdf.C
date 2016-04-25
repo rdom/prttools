@@ -63,8 +63,8 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   for(Int_t i=0; i<960; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
-    hpdff[i]->Rebin(3);
-    hpdfs[i]->Rebin(3);
+    hpdff[i]->Rebin(2);
+    hpdfs[i]->Rebin(2);
     integ1+= hpdff[i]->Integral();
     integ2+= hpdfs[i]->Integral();
     hl3->Add(hpdff[i]);
@@ -107,13 +107,11 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
       // if(prt_event->GetParticle()==211) time += 0.2; //fix offset
       // if(prt_event->GetParticle()==2212) time -= 0.35;
       // if(time<10 || time >30) continue;
-
       // if(prt_event->GetParticle()==211) time -= 0.05; //fix offset
       // if(prt_event->GetParticle()==2212) time -= 0.05;
-      if(time<10 || time>150) continue;
+
       
-      
-      //std::cout<<ch<<" "<< hpdff[ch]->FindBin(time)<<std::endl;
+      if(time<5 || time>150) continue;
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
 
