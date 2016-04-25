@@ -50,9 +50,9 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
 
 
-  TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 500,0,150);
-  TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 500,0,150);
-  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 500,0,150);
+  TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 500,0,100);
+  TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 500,0,100);
+  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 500,0,100);
   
   TF1 *pdff[960],*pdfs[960];
   TH1F *hpdff[960],*hpdfs[960];
