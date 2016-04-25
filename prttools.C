@@ -517,7 +517,7 @@ void SetRootPalette(Int_t pal = 0){
 			       { 0.00, 0.18, 0.75, 1.00, 0.24 },
 			       { 0.00, 0.34, 0.61, 0.84, 1.00 },
 			       { 1.00, 0.84, 0.61, 0.34, 0.00 },
-			       { 0.00, 0.85, 1.00, 0.30, 0.00 }
+			       { 0.00, 0.85, 1.00, 0.30, 0.00 }		
   };
   Double_t blue[15][NRGBs]  = {{ 0.51, 1.00, 0.12, 0.00, 0.00 },
 			       { 0.00, 0.00, 0.12, 1.00, 0.51 },
@@ -754,7 +754,7 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
 	    hh->GetYaxis()->SetLabelSize(0.05);
 	    
 	    hh->GetXaxis()->SetTitleOffset(0.85);
-	    hh->GetYaxis()->SetTitleOffset(0.85);
+	    hh->GetYaxis()->SetTitleOffset(0.7);
 	  }
 	  if(obj->InheritsFrom("TGraph")){
 	    TGraph *gg = (TGraph*)obj;

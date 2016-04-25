@@ -40,7 +40,38 @@ TF1 * fitpdf(TH1F *h){
   return gaust;
 }
 
-void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//beam_15177135523S.root
+
+Int_t mcpdata[15][65];
+Int_t cluster[15][65];
+Int_t lneighbours[65];
+Int_t lsize(0);
+
+Int_t getneighbours(Int_t m, Int_t p){
+  for(Int_t i=0; i<65; i++) if(p==lneighbours[i]) return -1;
+  lneighbours[lsize]=p;
+  lsize++;
+  for(Int_t t=0; t<65; t++){
+    if(mcpdata[m][t]){
+      for(Int_t i=0; i<65; i++) if(t==lneighbours[i]) continue;
+      if((t==p-1 && p%8!=0) || (t==p+1 && p%8!=7) ||
+	 (t==p+8 && p<57) || (t==p-8 && p>8)) getneighbours(m,t);
+    }
+  }
+  return lsize;
+}
+
+void getclusters(){
+  for(Int_t m=0; m<15; m++){
+    for(Int_t p=0; p<65; p++){
+      if(mcpdata[m][p])  cluster[m][p] = getneighbours(m,p);
+      lsize=0;
+      for(Int_t i=0; i<65; i++) lneighbours[i]=0;
+    }
+  }
+}
+
+
+void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//beam_15177135523S.root
   //  path="/data.local/data/jun15/beam_15177135523S.root";
   
   path.ReplaceAll(".root","");
@@ -52,8 +83,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
   TH1F *hlef[960], *hles[960];
 
   for(Int_t i=0; i<960; i++){
-    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
-    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
+    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 1500,0,150);
+    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 1500,0,150);
   }
   
   Double_t time;
@@ -62,16 +93,31 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
   for (Int_t ievent=10000; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
 
-    for(Int_t i=0; i<prt_event->GetHitSize(); i++){
+
+    Int_t nHits =prt_event->GetHitSize();
+    //clusters search
+    for(Int_t h=0; h<nHits; h++) {
+      Int_t mid=prt_event->GetHit(h).GetMcpId();
+      Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
+      mcpdata[mid][pid]=1;
+    }
+    getclusters();
+    
+    for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       ch=map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
       time = fHit.GetLeadTime(); //+gRandom->Gaus(0,0.3);
+
+      Int_t mid=prt_event->GetHit(i).GetMcpId();
+      Int_t pid=prt_event->GetHit(i).GetPixelId()-1;
+      if(cluster[mid][pid]>6)continue;
       
+       
       if(prt_event->GetParticle()==2212){
 	//totalf++;
 	hlef[ch]->Fill(time);
       }
-      if(prt_event->GetParticle()==211){
+      if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212){
 	//totals++;
 	hles[ch]->Fill(time);
       }
@@ -80,7 +126,14 @@ void createPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){//b
       fhDigi[mcpid]->Fill(pixid%8, pixid/8);
     }
     if(prt_event->GetParticle()==2212) totalf++;
-    if(prt_event->GetParticle()==211)totals++;
+    if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) totals++;
+
+    for(Int_t j=0; j<15; j++){
+      for(Int_t i=0; i<65; i++){
+	mcpdata[j][i]=0;
+	cluster[j][i]=0;
+      }
+    }
   }
 
   std::cout<<"#1 "<< totalf <<"  #2 "<<totals <<std::endl;

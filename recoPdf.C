@@ -5,7 +5,39 @@
 #include <TVirtualFitter.h>
 #include <TKey.h>
 
-void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
+
+Int_t mcpdata[15][65];
+Int_t cluster[15][65];
+Int_t lneighbours[65];
+Int_t lsize(0);
+
+Int_t getneighbours(Int_t m, Int_t p){
+  for(Int_t i=0; i<65; i++) if(p==lneighbours[i]) return -1;
+  lneighbours[lsize]=p;
+  lsize++;
+  for(Int_t t=0; t<65; t++){
+    if(mcpdata[m][t]){
+      for(Int_t i=0; i<65; i++) if(t==lneighbours[i]) continue;
+      if((t==p-1 && p%8!=0) || (t==p+1 && p%8!=7) ||
+	 (t==p+8 && p<57) || (t==p-8 && p>8)) getneighbours(m,t);
+    }
+  }
+  return lsize;
+}
+
+void getclusters(){
+  for(Int_t m=0; m<15; m++){
+    for(Int_t p=0; p<65; p++){
+      if(mcpdata[m][p])  cluster[m][p] = getneighbours(m,p);
+      lsize=0;
+      for(Int_t i=0; i<65; i++) lneighbours[i]=0;
+    }
+  }
+}
+
+
+
+void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="$HOME/proc/152/beam_15183022858C.root"){
   path.ReplaceAll(".root","");
   fSavePath = "data/recopdf_151";
   PrtInit(path+".root",1);
@@ -18,51 +50,67 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
   TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
 
 
-  TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 500,0,50);
-  TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 500,0,50);
-  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 500,0,50);
+  TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 500,0,150);
+  TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 500,0,150);
+  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 500,0,150);
   
   TF1 *pdff[960],*pdfs[960];
   TH1F *hpdff[960],*hpdfs[960];
-  //  TFile f(path+".pdf.root");
-  // TFile f("/data.local/data/jun15/scan_tr/hh1521_04.pdf1.root");
-  //TFile f("/data.local/data/jun15/scan_tr/hh1522_03M.pdf1.root");
-  // TFile f("/data.local/data/jun15/hh1613_sa.pdf.root"); //plate
-
-  //TFile f("/data.local/data/jun15/hh151_37_s.pdf.root");
-  TFile f("/data.local/data/jun15/beam_15177135523C.pdf.root");
+  //TFile f(path+".pdf.root");
+  TFile f(pdf.ReplaceAll(".root",".pdf.root"));
   
-    Int_t integ1(0), integ2(0);
+  Int_t integ1(0), integ2(0);
   for(Int_t i=0; i<960; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
+    hpdff[i]->Rebin(3);
+    hpdfs[i]->Rebin(3);
     integ1+= hpdff[i]->Integral();
     integ2+= hpdfs[i]->Integral();
     hl3->Add(hpdff[i]);
     hl3->Add(hpdfs[i]);
   }
 
+  Double_t theta(0);
   TVirtualFitter *fitter;
   Double_t time,timeres(-1);
   PrtHit fHit;
   Int_t totalf(0),totals(0), ch, entries = 10000; //fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
+    if(ievent==0){
+      theta = prt_event->GetAngle();
+    }
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
-    //  if(prt_event->GetHitSize()<5) continue; 
-    for(Int_t i=0; i<prt_event->GetHitSize(); i++){
+
+    Int_t nHits =prt_event->GetHitSize();
+    //clusters search
+    for(Int_t h=0; h<nHits; h++) {
+      Int_t mid=prt_event->GetHit(h).GetMcpId();
+      Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
+      mcpdata[mid][pid]=1;
+    }
+    getclusters();
+    
+    for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       ch=map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
       time = fHit.GetLeadTime();
-
+      
+      Int_t mid=prt_event->GetHit(i).GetMcpId();
+      Int_t pid=prt_event->GetHit(i).GetPixelId()-1;
+      if(cluster[mid][pid]>6) {
+	std::cout<<"cluster[mid][pid]  "<< cluster[mid][pid] <<std::endl;	
+	continue;
+      }
       // if(prt_event->GetParticle()==211) time += 0.2; //fix offset
       // if(prt_event->GetParticle()==2212) time -= 0.35;
       // if(time<10 || time >30) continue;
 
       // if(prt_event->GetParticle()==211) time -= 0.05; //fix offset
       // if(prt_event->GetParticle()==2212) time -= 0.05;
-      if(time>20) continue;
+      if(time<10 || time>150) continue;
       
       
       //std::cout<<ch<<" "<< hpdff[ch]->FindBin(time)<<std::endl;
@@ -70,7 +118,7 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
 
       //      if(aminf==0 || amins==0) continue;
-      Double_t noise = 1e-3; //1e-7;
+      Double_t noise = 1e-4; //1e-7;
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
@@ -92,7 +140,7 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
 
 
       if(prt_event->GetParticle()==2212) hl1->Fill(time);
-      if(prt_event->GetParticle()==211) hl2->Fill(time);
+      if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) hl2->Fill(time);
 
     }
     if(fabs(sumf-sums)<0.3) continue;
@@ -102,7 +150,14 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
     
     if(prt_event->GetParticle()==2212) hllf->Fill(sum);
     if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212)  hlls->Fill(sum);
-    
+
+    for(Int_t j=0; j<15; j++){
+      for(Int_t i=0; i<65; i++){
+	mcpdata[j][i]=0;
+	cluster[j][i]=0;
+      }
+    }
+     
   }
   
   prt_normalize(hllf,hlls);
@@ -143,4 +198,12 @@ void recoPdf(TString path="/data.local/data/jun15/beam_15177050804S.root"){
   hl3->SetLineColor(2);
   hl3->Draw("same");
   canvasSave(1,0);
+
+
+  TFile fc(Form("reco_ti_%1.1f.root",theta),"recreate");
+  TTree *tc = new TTree("reco","reco");
+  tc->Branch("theta",&theta,"theta/D");
+  tc->Branch("sep",&sep,"sep/D");
+  tc->Fill();
+  tc->Write();
 }
