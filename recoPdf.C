@@ -38,9 +38,8 @@ void getclusters(){
 
 
 void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="$HOME/proc/152/beam_15183022858C.root", Double_t sigma=1){
-  path.ReplaceAll(".root","");
   fSavePath = "data/recopdf_151";
-  PrtInit(path+".root",1);
+  PrtInit(path,1);
   gStyle->SetOptStat(0);
   CreateMap();
   TGaxis::SetMaxDigits(4);
