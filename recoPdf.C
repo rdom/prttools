@@ -4,7 +4,7 @@
 #include "prttools.C"
 #include <TVirtualFitter.h>
 #include <TKey.h>
-
+#include <TRandom.h>
 
 Int_t mcpdata[15][65];
 Int_t cluster[15][65];
@@ -37,7 +37,7 @@ void getclusters(){
 
 
 
-void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="$HOME/proc/152/beam_15183022858C.root"){
+void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="$HOME/proc/152/beam_15183022858C.root", Double_t sigma=1){
   path.ReplaceAll(".root","");
   fSavePath = "data/recopdf_151";
   PrtInit(path+".root",1);
@@ -53,7 +53,8 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 500,0,100);
   TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 500,0,100);
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 500,0,100);
-  
+
+  TRandom rand;
   TF1 *pdff[960],*pdfs[960];
   TH1F *hpdff[960],*hpdfs[960];
   //TFile f(path+".pdf.root");
@@ -63,8 +64,8 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   for(Int_t i=0; i<960; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
-    hpdff[i]->Rebin(2);
-    hpdfs[i]->Rebin(2);
+    hpdff[i]->Rebin((Int_t)sigma);
+    hpdfs[i]->Rebin((Int_t)sigma);
     integ1+= hpdff[i]->Integral();
     integ2+= hpdfs[i]->Integral();
     hl3->Add(hpdff[i]);
@@ -85,25 +86,28 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
 
     Int_t nHits =prt_event->GetHitSize();
-    //clusters search
-    for(Int_t h=0; h<nHits; h++) {
-      Int_t mid=prt_event->GetHit(h).GetMcpId();
-      Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
-      mcpdata[mid][pid]=1;
-    }
-    getclusters();
+
+    
+    // //clusters search
+    // for(Int_t h=0; h<nHits; h++) {
+    //   Int_t mid=prt_event->GetHit(h).GetMcpId();
+    //   Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
+    //   mcpdata[mid][pid]=1;
+    // }
+    // getclusters();
     
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       ch=map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
-      time = fHit.GetLeadTime();
+      time = fHit.GetLeadTime()+ rand.Gaus(0,sigma/10.);
       
       Int_t mid=prt_event->GetHit(i).GetMcpId();
       Int_t pid=prt_event->GetHit(i).GetPixelId()-1;
-      if(cluster[mid][pid]>6) {
-	std::cout<<"cluster[mid][pid]  "<< cluster[mid][pid] <<std::endl;	
-	continue;
-      }
+      // if(cluster[mid][pid]>6) {
+      // 	std::cout<<"cluster[mid][pid]  "<< cluster[mid][pid] <<std::endl;	
+      // 	continue;
+      // }
+      
       // if(prt_event->GetParticle()==211) time += 0.2; //fix offset
       // if(prt_event->GetParticle()==2212) time -= 0.35;
       // if(time<10 || time >30) continue;
@@ -160,7 +164,9 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   
   prt_normalize(hllf,hlls);
  
-
+  TString name = Form("_ti_%1.1f_%1.1f.root",theta,sigma);
+  canvasAdd("ll"+name,800,400);
+  
   TF1 *ff;
   Double_t m1,m2,s1,s2; 
   if(hllf->GetEntries()>10){
@@ -178,7 +184,8 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   Double_t sep = (fabs(m1-m2))/(0.5*(s1+s2));
   std::cout<<path<<" separation "<< sep <<std::endl;
   hllf->SetTitle(Form("separation = %1.2f",sep));
-  canvasAdd("ll",800,400);
+
+  
   hllf->SetLineColor(2);
   hllf->Draw();
   hlls->SetLineColor(4);
@@ -189,7 +196,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   hl3->Scale(1/hl3->GetMaximum());
 
   prt_normalize(hl1,hl2);
-  canvasAdd("hl",800,500);
+  canvasAdd("hl"+name,800,500);
   hl1->Draw();
   hl2->SetLineColor(4);
   hl2->Draw("same");
@@ -198,10 +205,12 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   canvasSave(1,0);
 
 
-  TFile fc(Form("reco_ti_%1.1f.root",theta),"recreate");
+  TFile fc("reco"+name,"recreate");
   TTree *tc = new TTree("reco","reco");
   tc->Branch("theta",&theta,"theta/D");
   tc->Branch("sep",&sep,"sep/D");
+  tc->Branch("sigma",&sigma,"sigma/D");
+  sigma/=10.;
   tc->Fill();
   tc->Write();
 }
