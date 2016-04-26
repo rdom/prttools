@@ -87,13 +87,13 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
     Int_t nHits =prt_event->GetHitSize();
 
     
-    //clusters search
-    for(Int_t h=0; h<nHits; h++) {
-      Int_t mid=prt_event->GetHit(h).GetMcpId();
-      Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
-      mcpdata[mid][pid]=1;
-    }
-    getclusters();
+    // //clusters search
+    // for(Int_t h=0; h<nHits; h++) {
+    //   Int_t mid=prt_event->GetHit(h).GetMcpId();
+    //   Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
+    //   mcpdata[mid][pid]=1;
+    // }
+    // getclusters();
     
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
@@ -102,10 +102,10 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
       
       Int_t mid=prt_event->GetHit(i).GetMcpId();
       Int_t pid=prt_event->GetHit(i).GetPixelId()-1;
-      if(cluster[mid][pid]>6) {
-      	std::cout<<"cluster[mid][pid]  "<< cluster[mid][pid] <<std::endl;	
-      	continue;
-      }
+      // if(cluster[mid][pid]>6) {
+      // 	std::cout<<"cluster[mid][pid]  "<< cluster[mid][pid] <<std::endl;	
+      // 	continue;
+      // }
       
       // if(prt_event->GetParticle()==211) time += 0.2; //fix offset
       // if(prt_event->GetParticle()==2212) time -= 0.35;
