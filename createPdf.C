@@ -40,7 +40,6 @@ TF1 * fitpdf(TH1F *h){
   return gaust;
 }
 
-
 Int_t mcpdata[15][65];
 Int_t cluster[15][65];
 Int_t lneighbours[65];
@@ -70,13 +69,11 @@ void getclusters(){
   }
 }
 
-
 void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//beam_15177135523S.root
   //  path="/data.local/data/jun15/beam_15177135523S.root";
   
-  path.ReplaceAll(".root","");
   fSavePath = "data/pdf3";
-  PrtInit(path+".root",1);
+  PrtInit(path,1);
   gStyle->SetOptStat(0);
   CreateMap();
 
@@ -90,9 +87,9 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
   Double_t time;
   PrtHit fHit;
   Int_t totalf(0),totals(0), ch, entries = fCh->GetEntries();
-  for (Int_t ievent=10000; ievent<entries; ievent++){
+  Int_t start = (path.Contains("C.root"))? 10000 : 0; 
+  for (Int_t ievent=start; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
-
 
     Int_t nHits =prt_event->GetHitSize();
     //clusters search
@@ -101,7 +98,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
       Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
       mcpdata[mid][pid]=1;
     }
-    getclusters();
+    //getclusters();
     
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
@@ -110,8 +107,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
 
       Int_t mid=prt_event->GetHit(i).GetMcpId();
       Int_t pid=prt_event->GetHit(i).GetPixelId()-1;
-      if(cluster[mid][pid]>6)continue;
-      
+      //if(cluster[mid][pid]>6)continue;
        
       if(prt_event->GetParticle()==2212){
 	//totalf++;
@@ -141,9 +137,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
   TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
   
   if(totalf>0 && totals>0) {
-    TFile efile(path+ ".pdf.root","RECREATE");
-
-    std::cout<<"totalf  "<<totalf << "   totals " << totals<<std::endl;
+    path.ReplaceAll(".root",".pdf.root");
+    TFile efile(path,"RECREATE");
     
     for(Int_t i=0; i<960; i++){
       hlef[i]->Scale(1/(Double_t)totalf);
