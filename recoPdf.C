@@ -70,7 +70,8 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
     hl3->Add(hpdff[i]);
     hl3->Add(hpdfs[i]);
   }
-
+  if(path.Contains("C.root")) sigma=0;
+  
   Double_t theta(0);
   TVirtualFitter *fitter;
   Double_t time,timeres(-1);
@@ -163,7 +164,6 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   
   prt_normalize(hllf,hlls);
 
-  if(path.Contains("C.root")) sigma=10;
   TString name = Form("_ti_%1.1f_%1.1f.root",theta,sigma);
   canvasAdd("ll"+name,800,400);
   
