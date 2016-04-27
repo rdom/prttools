@@ -37,8 +37,9 @@ void getclusters(){
 
 
 
-void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
+//void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
 //void recoPdf(TString path="$HOME/proc/152/beam_15183013641SF.root", TString pdf="$HOME/proc/152/beam_15183013641SF.root", Double_t sigma=1){
+void recoPdf(TString path="$HOME/proc/152/beam_15183013641C.root", TString pdf="$HOME/proc/152/beam_15183013641C.root", Double_t sigma=1){
   if(path=="") return;
   Int_t studyId;
   TString str = path;
@@ -50,7 +51,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
   CreateMap();
   TGaxis::SetMaxDigits(4);
   
-  //TCanvas *cc = new TCanvas("cc","cc");
+  TCanvas *cc = new TCanvas("cc","cc");
   TH1F *hllf= new TH1F("hllf","hllf;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
   TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
 
@@ -93,10 +94,8 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
     }
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
-
     Int_t nHits =prt_event->GetHitSize();
 
-    
     // //clusters search
     // for(Int_t h=0; h<nHits; h++) {
     //   Int_t mid=prt_event->GetHit(h).GetMcpId();
@@ -107,11 +106,11 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
     
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
-      ch=map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
+      ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
       time = fHit.GetLeadTime() + rand.Gaus(0,sigma/10.);
       
-      Int_t mid=prt_event->GetHit(i).GetMcpId();
-      Int_t pid=prt_event->GetHit(i).GetPixelId()-1;
+      // Int_t mid=fHit.GetMcpId();
+      // Int_t pid=fHit.GetPixelId()-1;
       // if(cluster[mid][pid]>6) {
       // 	std::cout<<"cluster[mid][pid]  "<< cluster[mid][pid] <<std::endl;	
       // 	continue;
@@ -122,17 +121,15 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
       // if(time<10 || time >30) continue;
       // if(prt_event->GetParticle()==211) time -= 0.05; //fix offset
       // if(prt_event->GetParticle()==2212) time -= 0.05;
-
       
-      if(time<5 || time>150) continue;
+      if(time<5 || time>100) continue;
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
 
       //      if(aminf==0 || amins==0) continue;
-      Double_t noise = 1e-3; //1e-7;
+      Double_t noise = 1e-5; //1e-7;
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
-
 
       // std::cout<< aminf<< " "<<amins <<std::endl;
       // //  if(aminf>amins)
@@ -149,13 +146,12 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
       // 	cc->WaitPrimitive();
       // }
 
-
       if(prt_event->GetParticle()==2212) hl1->Fill(time);
       if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) hl2->Fill(time);
 
     }
-    if(fabs(sumf-sums)<0.3) continue;
     sum = sumf-sums;
+    if(fabs(sum)<0.1) continue;
     
     //std::cout<<"sum ===========  "<<sum  << "  "<< sumf<< "  "<< sums<<std::endl;
     

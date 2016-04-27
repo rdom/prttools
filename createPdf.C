@@ -92,12 +92,12 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
     PrtNextEvent(ievent,1000);
 
     Int_t nHits =prt_event->GetHitSize();
-    //clusters search
-    for(Int_t h=0; h<nHits; h++) {
-      Int_t mid=prt_event->GetHit(h).GetMcpId();
-      Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
-      mcpdata[mid][pid]=1;
-    }
+    // //clusters search
+    // for(Int_t h=0; h<nHits; h++) {
+    //   Int_t mid=prt_event->GetHit(h).GetMcpId();
+    //   Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
+    //   mcpdata[mid][pid]=1;
+    // }
     //getclusters();
     
     for(Int_t i=0; i<nHits; i++){
@@ -105,8 +105,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
       ch=map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
       time = fHit.GetLeadTime(); //+gRandom->Gaus(0,0.3);
 
-      Int_t mid=prt_event->GetHit(i).GetMcpId();
-      Int_t pid=prt_event->GetHit(i).GetPixelId()-1;
+      // Int_t mid=prt_event->GetHit(i).GetMcpId();
+      // Int_t pid=prt_event->GetHit(i).GetPixelId()-1;
       //if(cluster[mid][pid]>6)continue;
        
       if(prt_event->GetParticle()==2212){
