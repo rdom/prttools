@@ -39,7 +39,7 @@ void getclusters(){
 
 //void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
 //void recoPdf(TString path="$HOME/proc/152/beam_15183013641SF.root", TString pdf="$HOME/proc/152/beam_15183013641SF.root", Double_t sigma=1){
-void recoPdf(TString path="$HOME/proc/152/beam_15183013641C.root", TString pdf="$HOME/proc/152/beam_15183013641C.root", Double_t sigma=1){
+void recoPdf(TString path="$HOME/proc/152/beam_15183013641C.root", TString pdf="$HOME/proc/152/beam_15183013641C.root", Double_t sigma=0){
   if(path=="") return;
   Int_t studyId;
   TString str = path;
@@ -127,7 +127,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183013641C.root", TString pdf="
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
 
       //      if(aminf==0 || amins==0) continue;
-      Double_t noise = 1e-5; //1e-7;
+      Double_t noise = 1e-3; //1e-7;
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
