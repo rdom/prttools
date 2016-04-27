@@ -37,17 +37,18 @@ void getclusters(){
 
 
 
-void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="$HOME/proc/152/beam_15183022858C.root", Double_t sigma=1){
+void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
+//void recoPdf(TString path="$HOME/proc/152/beam_15183013641SF.root", TString pdf="$HOME/proc/152/beam_15183013641SF.root", Double_t sigma=1){
   if(path=="") return;
   Int_t studyId;
-  sscanf(path, "%*[^0-9]%d",&studyId);
+  sscanf(path, "%*[^0-9]%d{3}",&studyId);
   fSavePath = Form("data/recopdf_%d",studyId);
   PrtInit(path,1);
   gStyle->SetOptStat(0);
   CreateMap();
   TGaxis::SetMaxDigits(4);
   
-  TCanvas *cc = new TCanvas("cc","cc");
+  //TCanvas *cc = new TCanvas("cc","cc");
   TH1F *hllf= new TH1F("hllf","hllf;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
   TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
 
@@ -105,7 +106,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       ch=map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
-      time = fHit.GetLeadTime()+ rand.Gaus(0,sigma/10.);
+      time = fHit.GetLeadTime() + rand.Gaus(0,sigma/10.);
       
       Int_t mid=prt_event->GetHit(i).GetMcpId();
       Int_t pid=prt_event->GetHit(i).GetPixelId()-1;
@@ -126,7 +127,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
 
       //      if(aminf==0 || amins==0) continue;
-      Double_t noise = 1e-4; //1e-7;
+      Double_t noise = 1e-3; //1e-7;
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
@@ -167,12 +168,12 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
     }
      
   }
-  
-  prt_normalize(hllf,hlls);
 
   TString name = Form("tis_%d_%1.1f_%1.1f.root",studyId,theta,sigma);
   if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f.root",studyId,theta,sigma);
   canvasAdd("ll_"+name,800,400);
+
+  prt_normalize(hllf,hlls);
   
   TF1 *ff;
   Double_t m1,m2,s1,s2; 
