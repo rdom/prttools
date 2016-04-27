@@ -38,7 +38,8 @@ void getclusters(){
 
 
 void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="$HOME/proc/152/beam_15183022858C.root", Double_t sigma=1){
-  if(path==0) return;
+  if(path=="") return;
+  sscanf(name, "lut_e%d_b%d_l%d", &fEvType,&fRadType,&fLensType);
   fSavePath = "data/recopdf_151";
   PrtInit(path,1);
   gStyle->SetOptStat(0);
@@ -165,8 +166,9 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   
   prt_normalize(hllf,hlls);
 
-  TString name = Form("_ti_%1.1f_%1.1f.root",theta,sigma);
-  canvasAdd("ll"+name,800,400);
+  TString name = Form("tis_%1.1f_%1.1f.root",theta,sigma);
+  if(path.Contains("C.root")) name = Form("tid_%1.1f_%1.1f.root",theta,sigma);
+  canvasAdd("ll_"+name,800,400);
   
   TF1 *ff;
   Double_t m1,m2,s1,s2; 
@@ -197,7 +199,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   hl3->Scale(1/hl3->GetMaximum());
 
   prt_normalize(hl1,hl2);
-  canvasAdd("hl"+name,800,500);
+  canvasAdd("hl_"+name,800,500);
   hl1->Draw();
   hl2->SetLineColor(4);
   hl2->Draw("same");
@@ -206,7 +208,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   canvasSave(1,0);
 
 
-  TFile fc("reco"+name,"recreate");
+  TFile fc("reco_"+name,"recreate");
   TTree *tc = new TTree("reco","reco");
   tc->Branch("theta",&theta,"theta/D");
   tc->Branch("sep",&sep,"sep/D");
