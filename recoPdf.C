@@ -68,13 +68,13 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183013641C.root", TString pdf="
   else  pdf.ReplaceAll(".root",".pdf.root");
   TFile f(pdf);
   
-  hl3->Rebin((Int_t)sigma);
+  if(sigma >0) hl3->Rebin((Int_t)sigma);
   Int_t integ1(0), integ2(0);
   for(Int_t i=0; i<960; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
-    hpdff[i]->Rebin((Int_t)sigma);
-    hpdfs[i]->Rebin((Int_t)sigma);
+    if(sigma >0) hpdff[i]->Rebin((Int_t)sigma);
+    if(sigma >0) hpdfs[i]->Rebin((Int_t)sigma);
     integ1+= hpdff[i]->Integral();
     integ2+= hpdfs[i]->Integral();
     hl3->Add(hpdff[i]);
@@ -211,7 +211,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183013641C.root", TString pdf="
   canvasSave(1,0);
 
 
-  TFile fc("reco_"+name,"recreate");
+  TFile fc(fSavePath+"/reco_"+name,"recreate");
   TTree *tc = new TTree("reco","reco");
   tc->Branch("theta",&theta,"theta/D");
   tc->Branch("sep",&sep,"sep/D");
