@@ -41,7 +41,9 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
 //void recoPdf(TString path="$HOME/proc/152/beam_15183013641SF.root", TString pdf="$HOME/proc/152/beam_15183013641SF.root", Double_t sigma=1){
   if(path=="") return;
   Int_t studyId;
-  sscanf(path, "%*[^0-9]%d{3}",&studyId);
+  TString str = path;
+  str.ReplaceAll("jun15","");
+  sscanf(str, "%*[^0-9]%d{3}",&studyId);
   fSavePath = Form("data/recopdf_%d",studyId);
   PrtInit(path,1);
   gStyle->SetOptStat(0);
