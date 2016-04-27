@@ -39,8 +39,9 @@ void getclusters(){
 
 void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="$HOME/proc/152/beam_15183022858C.root", Double_t sigma=1){
   if(path=="") return;
-  sscanf(name, "lut_e%d_b%d_l%d", &fEvType,&fRadType,&fLensType);
-  fSavePath = "data/recopdf_151";
+  Int_t studyId;
+  sscanf(path, "%*[^0-9]%d",&studyId);
+  fSavePath = Form("data/recopdf_%d",studyId);
   PrtInit(path,1);
   gStyle->SetOptStat(0);
   CreateMap();
@@ -51,16 +52,19 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
 
 
-  TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 500,0,100);
-  TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 500,0,100);
-  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 500,0,100);
+  TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 1000,0,100);
+  TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 1000,0,100);
+  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,100);
 
   TRandom rand;
   TF1 *pdff[960],*pdfs[960];
   TH1F *hpdff[960],*hpdfs[960];
-  //TFile f(path+".pdf.root");
-  TFile f(pdf.ReplaceAll(".root",".pdf.root"));
+  if(path.Contains("F.root")) pdf.ReplaceAll("F.root","P.pdf.root");
   
+  else  pdf.ReplaceAll(".root",".pdf.root");
+  TFile f(pdf);
+  
+  hl3->Rebin((Int_t)sigma);
   Int_t integ1(0), integ2(0);
   for(Int_t i=0; i<960; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
@@ -166,8 +170,8 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
   
   prt_normalize(hllf,hlls);
 
-  TString name = Form("tis_%1.1f_%1.1f.root",theta,sigma);
-  if(path.Contains("C.root")) name = Form("tid_%1.1f_%1.1f.root",theta,sigma);
+  TString name = Form("tis_%d_%1.1f_%1.1f.root",studyId,theta,sigma);
+  if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f.root",studyId,theta,sigma);
   canvasAdd("ll_"+name,800,400);
   
   TF1 *ff;
