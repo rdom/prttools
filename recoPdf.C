@@ -86,7 +86,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
   TVirtualFitter *fitter;
   Double_t time,timeres(-1);
   PrtHit fHit;
-  Int_t totalf(0),totals(0), ch, entries = 8000; //fCh->GetEntries();
+  Int_t totalf(0),totals(0), ch, entries = 10000; //fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
     if(ievent==0){
