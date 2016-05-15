@@ -87,7 +87,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
   Double_t time;
   PrtHit fHit;
   Int_t totalf(0),totals(0), ch, entries = fCh->GetEntries();
-  Int_t start = (path.Contains("C.root"))? 10000 : 0; 
+  Int_t start = (path.Contains("C.root"))? 50000 : 0; 
   for (Int_t ievent=start; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
 

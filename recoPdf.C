@@ -39,7 +39,9 @@ void getclusters(){
 
 //void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
 //void recoPdf(TString path="$HOME/proc/152/beam_15183013641SF.root", TString pdf="$HOME/proc/152/beam_15183013641SF.root", Double_t sigma=1){
-void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
+//void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
+//void recoPdf(TString path="$HOME/proc/152/beam_15183021251C.root", TString pdf="$HOME/proc/152/beam_15183021251C.root", Double_t sigma=1){
+void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="$HOME/proc/152/beam_15183022858C.root", Double_t sigma=2){
   if(path=="") return;
   Int_t studyId;
   TString str = path;
@@ -47,7 +49,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
   sscanf(str, "%*[^0-9]%d{3}",&studyId);
   fSavePath = Form("data/recopdf_%d",studyId);
   PrtInit(path,1);
-  gStyle->SetOptStat(0);
+  // gStyle->SetOptStat(0);
   CreateMap();
   TGaxis::SetMaxDigits(4);
   
@@ -86,7 +88,7 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
   TVirtualFitter *fitter;
   Double_t time,timeres(-1);
   PrtHit fHit;
-  Int_t totalf(0),totals(0), ch, entries = 10000; //fCh->GetEntries();
+  Int_t totalf(0),totals(0), ch, entries = 50000; //fCh->GetEntries(); // [50000-rest] - is for pdf generation
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
     if(ievent==0){
@@ -103,6 +105,37 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
     //   mcpdata[mid][pid]=1;
     // }
     // getclusters();
+
+    if(prt_event->GetType()==0){
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<175.6 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>175.1 ) continue;
+      // }
+
+      Bool_t tof1(false), tof2(false);
+      Bool_t hodo1(false), hodo2(false);
+      for(Int_t h=0; h<nHits; h++) {
+  	fHit = prt_event->GetHit(h);
+  	Int_t gch=fHit.GetChannel();
+	
+	if(gch>1031 && gch<1034)
+	  tof1=true;
+
+	//if(gch>1060)
+	  tof2=true;
+
+	  if(gch>1301 && gch<1305) 
+	    hodo1=true;
+	  //	  if(gch>1313 && gch<1320)
+	    hodo2=true;
+
+	  if(tof1 && tof2 && hodo1 && hodo2) goto goodch;
+      }
+
+      continue;
+    }
+
+  goodch:
     
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
@@ -116,13 +149,8 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
       // 	continue;
       // }
       
-      // if(prt_event->GetParticle()==211) time += 0.2; //fix offset
-      // if(prt_event->GetParticle()==2212) time -= 0.35;
-      // if(time<10 || time >30) continue;
-      // if(prt_event->GetParticle()==211) time -= 0.05; //fix offset
-      // if(prt_event->GetParticle()==2212) time -= 0.05;
-      
-      if(time<5 || time>100) continue;
+      //      if(time<5 || time>100) continue;
+      if(time<10 || time>60) continue;
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
 
@@ -158,12 +186,12 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf=
     if(prt_event->GetParticle()==2212) hllf->Fill(sum);
     if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212)  hlls->Fill(sum);
 
-    for(Int_t j=0; j<15; j++){
-      for(Int_t i=0; i<65; i++){
-	mcpdata[j][i]=0;
-	cluster[j][i]=0;
-      }
-    }
+    // for(Int_t j=0; j<15; j++){
+    //   for(Int_t i=0; i<65; i++){
+    // 	mcpdata[j][i]=0;
+    // 	cluster[j][i]=0;
+    //   }
+    // }
      
   }
 

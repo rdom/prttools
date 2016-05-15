@@ -52,7 +52,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root", Int_
     canvasAdd(carr2[i]);
 
     TIter next(carr1[i]->GetListOfPrimitives());
-    TObject *obj2;
+    TObject *obj;
     while((obj = next()) ){
       // if(obj->InheritsFrom("TH1F")){
       // 	TH1F *h = (TH1F*)obj;
@@ -63,6 +63,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root", Int_
       // }
       if(obj->InheritsFrom("TGraph")){
 	TGraph *h = (TGraph*)obj;
+	h->SetName("g2");
 	std::cout<<"name "<< h->GetName() <<std::endl;      
 	h->SetLineColor(32);
 	h->SetMarkerColor(2);
