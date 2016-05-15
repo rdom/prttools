@@ -153,7 +153,7 @@ void recoPdf(TString path="$HOME/pros/152/beam_15182235455C.root", TString pdf="
       // 	continue;
       // }
       //      time+=0.05;
-      if(time<5 || time>100) continue;
+      //if(time<5 || time>100) continue;
 
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
