@@ -40,8 +40,12 @@ void getclusters(){
 //void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
 //void recoPdf(TString path="$HOME/proc/152/beam_15183013641SF.root", TString pdf="$HOME/proc/152/beam_15183013641SF.root", Double_t sigma=1){
 //void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
-//void recoPdf(TString path="$HOME/proc/152/beam_15183021251C.root", TString pdf="$HOME/proc/152/beam_15183021251C.root", Double_t sigma=1){
-void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="$HOME/proc/152/beam_15183022858C.root", Double_t sigma=2){
+
+//void recoPdf(TString path="$HOME/pros/152/beam_15183021251C.root", TString pdf="$HOME/pros/152/beam_15183021251C.root", Double_t sigma=4){
+//void recoPdf(TString path="$HOME/pros/152/beam_15183022858C.root", TString pdf="$HOME/pros/152/beam_15183022858C.root", Double_t sigma=2){
+//void recoPdf(TString path="$HOME/pros/152/beam_15183015512C.root", TString pdf="$HOME/pros/152/beam_15183015512C.root", Double_t sigma=2){
+void recoPdf(TString path="$HOME/pros/152/beam_15182235455C.root", TString pdf="$HOME/pros/152/beam_15182235455C.root", Double_t sigma=4){ //100deg
+  
   if(path=="") return;
   Int_t studyId;
   TString str = path;
@@ -148,9 +152,9 @@ void recoPdf(TString path="$HOME/proc/152/beam_15183022858C.root", TString pdf="
       // 	std::cout<<"cluster[mid][pid]  "<< cluster[mid][pid] <<std::endl;	
       // 	continue;
       // }
-      
-      //      if(time<5 || time>100) continue;
-      if(time<10 || time>60) continue;
+      //      time+=0.05;
+      if(time<5 || time>100) continue;
+
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
 
