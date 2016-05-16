@@ -754,7 +754,7 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
 	    hh->GetYaxis()->SetLabelSize(0.05);
 	    
 	    hh->GetXaxis()->SetTitleOffset(0.85);
-	    hh->GetYaxis()->SetTitleOffset(0.7);
+	    hh->GetYaxis()->SetTitleOffset(0.76);
 	  }
 	  if(obj->InheritsFrom("TGraph")){
 	    TGraph *gg = (TGraph*)obj;

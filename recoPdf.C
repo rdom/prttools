@@ -44,7 +44,7 @@ void getclusters(){
 //void recoPdf(TString path="$HOME/pros/152/beam_15183021251C.root", TString pdf="$HOME/pros/152/beam_15183021251C.root", Double_t sigma=4){
 //void recoPdf(TString path="$HOME/pros/152/beam_15183022858C.root", TString pdf="$HOME/pros/152/beam_15183022858C.root", Double_t sigma=2){
 //void recoPdf(TString path="$HOME/pros/152/beam_15183015512C.root", TString pdf="$HOME/pros/152/beam_15183015512C.root", Double_t sigma=2){
-void recoPdf(TString path="$HOME/pros/152/beam_15182235455C.root", TString pdf="$HOME/pros/152/beam_15182235455C.root", Double_t sigma=4){ //100deg
+void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf="$HOME/pros/152/beam_15182235455SF.root", Double_t sigma=2){ //100deg
   
   if(path=="") return;
   Int_t studyId;
@@ -101,7 +101,7 @@ void recoPdf(TString path="$HOME/pros/152/beam_15182235455C.root", TString pdf="
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nHits =prt_event->GetHitSize();
-
+    
     // //clusters search
     // for(Int_t h=0; h<nHits; h++) {
     //   Int_t mid=prt_event->GetHit(h).GetMcpId();
@@ -145,6 +145,16 @@ void recoPdf(TString path="$HOME/pros/152/beam_15182235455C.root", TString pdf="
       fHit = prt_event->GetHit(i);
       ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
       time = fHit.GetLeadTime() + rand.Gaus(0,sigma/10.);
+
+      { //time cuts
+	Double_t cut1(11);
+	if(studyId==157 || studyId==155) cut1=8;
+	if(theta<=80){
+	  if(time<cut1 || time>45) continue;
+	}else if(theta>94){
+	  if(time<3 || time>20) continue;
+	}
+      }
       
       // Int_t mid=fHit.GetMcpId();
       // Int_t pid=fHit.GetPixelId()-1;
@@ -153,7 +163,6 @@ void recoPdf(TString path="$HOME/pros/152/beam_15182235455C.root", TString pdf="
       // 	continue;
       // }
       //      time+=0.05;
-      //if(time<5 || time>100) continue;
 
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
