@@ -262,6 +262,7 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="
   tc->Branch("theta",&theta,"theta/D");
   tc->Branch("sep",&sep,"sep/D");
   tc->Branch("sigma",&sigma,"sigma/D");
+  tc->Branch("mom",&mom,"mom/D");
   sigma/=10.;
   tc->Fill();
   tc->Write();
