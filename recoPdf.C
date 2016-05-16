@@ -93,6 +93,7 @@ void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf=
   Double_t time,timeres(-1);
   PrtHit fHit;
   Int_t totalf(0),totals(0), ch, entries = 50000; //fCh->GetEntries(); // [50000-rest] - is for pdf generation
+  if(path.Contains("F.root")) entries = 10000;
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
     if(ievent==0){
