@@ -46,7 +46,10 @@ void getclusters(){
 //void recoPdf(TString path="$HOME/pros/152/beam_15183015512C.root", TString pdf="$HOME/pros/152/beam_15183015512C.root", Double_t sigma=2){
 //void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf="$HOME/pros/152/beam_15182235455SF.root", Double_t sigma=2){ //100deg
 
-void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="$HOME/pros/170/beam_15179051932C.root", Double_t sigma=2){ //170 5GeV/c
+void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="$HOME/pros/170/beam_15179061046C.root", Double_t sigma=2){ //170 2GeV/c
+//void recoPdf(TString path="$HOME/pros/170/beam_15179023137C.root", TString pdf="$HOME/pros/170/beam_15179023137C.root", Double_t sigma=2){ //170 3GeV/c
+
+//void recoPdf(TString path="$HOME/pros/170/beam_15179044540C.root", TString pdf="$HOME/pros/170/beam_15179044540C.root", Double_t sigma=2){ //170 7GeV/c
   
   if(path=="") return;
   Int_t studyId;
@@ -60,13 +63,16 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="
   TGaxis::SetMaxDigits(4);
   
   TCanvas *cc = new TCanvas("cc","cc");
-  TH1F *hllf= new TH1F("hllf","hllf;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
-  TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",200,-50,50);
-
+  TH1F *hllf= new TH1F("hllf","hllf;ln L(p) - ln L(#pi); entries [#]",100,-50,50);
+  TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",100,-50,50);
 
   TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 1000,0,100);
   TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 1000,0,100);
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,100);
+  
+  TH1F *hnph1 = new TH1F("hnph1",";photon yield [#]; entries [#]", 150,0,150);
+  TH1F *hnph2 = new TH1F("hnph2",";photon yield [#]; entries [#]", 150,0,150);
+
 
   TRandom rand;
   TF1 *pdff[960],*pdfs[960];
@@ -89,6 +95,16 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="
     hl3->Add(hpdfs[i]);
   }
   if(path.Contains("C.root")) sigma=0;
+
+  TF1 *F1 = new TF1("gaus0","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
+  TF1 *F2 = new TF1("gaus1","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
+  F1->SetParameter(0,1);
+  F2->SetParameter(0,1);
+      
+  F1->SetParameter(1,63);
+  F2->SetParameter(1,50);
+  F1->SetParameter(2,11);
+  F2->SetParameter(2,9);
   
   Double_t theta(0);
   TVirtualFitter *fitter;
@@ -106,6 +122,11 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nHits =prt_event->GetHitSize();
+
+    if(mom<40 && nHits<30) continue;
+    if(prt_event->GetParticle()==2212) hnph1->Fill(nHits);
+    if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) hnph2->Fill(nHits);
+
     
     // //clusters search
     // for(Int_t h=0; h<nHits; h++) {
@@ -131,14 +152,14 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="
 	  tof1=true;
 
 	//if(gch>1060)
-	  tof2=true;
-
-	  if(gch>1301 && gch<1305) 
-	    hodo1=true;
-	  //	  if(gch>1313 && gch<1320)
-	    hodo2=true;
-
-	  if(tof1 && tof2 && hodo1 && hodo2) goto goodch;
+	   tof2=true;
+	
+	if(gch>1301 && gch<1305) 
+	  hodo1=true;
+	// if(gch>1313 && gch<1320)
+	  hodo2=true;
+	    
+	if(tof1 && tof2 && hodo1 && hodo2) goto goodch;
       }
 
       continue;
@@ -146,6 +167,7 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="
 
   goodch:
     
+      
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
@@ -167,37 +189,25 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="
       // 	std::cout<<"cluster[mid][pid]  "<< cluster[mid][pid] <<std::endl;	
       // 	continue;
       // }
-      //      time+=0.05;
 
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time)); 
-      amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));
-
-      //      if(aminf==0 || amins==0) continue;
+      amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));   
+    
+      // if(aminf==0 || amins==0) continue;
       Double_t noise = 1e-3; //1e-7;
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
-      // std::cout<< aminf<< " "<<amins <<std::endl;
-      // //  if(aminf>amins)
-      // //	if(aminf==0 || amins==0)
-      // 	{
-      // 	  prt_normalize(hpdff[ch],hpdfs[ch]);
-      // 	hpdff[ch]->SetLineColor(2);
-      // 	hpdff[ch]->Draw();
-      // 	hpdfs[ch]->SetLineColor(4);
-      // 	hpdfs[ch]->Draw("same");
-      // 	TLine *line = new TLine(time,0,time,1000);
-      // 	line->Draw("same");
-      // 	cc->Update();
-      // 	cc->WaitPrimitive();
-      // }
-
       if(prt_event->GetParticle()==2212) hl1->Fill(time);
       if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) hl2->Fill(time);
-
     }
+
     sum = sumf-sums;
     if(fabs(sum)<0.1) continue;
+    
+    // sumf += 10*TMath::Log(F2->Eval(nHits));
+    // sums += 10*TMath::Log(F1->Eval(nHits));
+    // sum = sumf-sums;
     
     //std::cout<<"sum ===========  "<<sum  << "  "<< sumf<< "  "<< sums<<std::endl;
     
@@ -254,6 +264,16 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="
   hl2->Draw("same");
   hl3->SetLineColor(2);
   hl3->Draw("same");
+
+  canvasAdd("hnph_"+name,800,500);
+  prt_normalize(hnph1,hnph2);
+  hnph1->SetLineColor(4);
+  hnph1->Draw();
+  hnph2->SetLineColor(2);
+  hnph2->Draw("same");
+
+  
+  
   canvasSave(1,0);
 
 
