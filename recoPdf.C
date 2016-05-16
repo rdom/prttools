@@ -230,21 +230,25 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="
   prt_normalize(hllf,hlls);
   
   TF1 *ff;
-  Double_t m1,m2,s1,s2; 
+  Double_t m1,m2,s1,s2,dm1,dm2,ds1,ds2; 
   if(hllf->GetEntries()>10){
     hllf->Fit("gaus","Sq");
     ff = hllf->GetFunction("gaus");
     m1=ff->GetParameter(1);
     s1=ff->GetParameter(2);
+    dm1=ff->GetParError(1);
+    ds1=ff->GetParError(2);
   }
   if(hlls->GetEntries()>10){
     hlls->Fit("gaus","Sq");
     ff = hlls->GetFunction("gaus");
     m2=ff->GetParameter(1);
     s2=ff->GetParameter(2);
+    dm2=ff->GetParError(1);
+    ds2=ff->GetParError(2);
   }
   Double_t sep = (fabs(m1-m2))/(0.5*(s1+s2));
-  std::cout<<path<<" separation "<< sep <<std::endl;
+  
   hllf->SetTitle(Form("separation = %1.2f",sep));
 
   
@@ -276,11 +280,24 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="
   
   canvasSave(1,0);
 
+  Double_t e1,e2,e3,e4;
+
+  std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl;
+  
+  
+  e1=2/(s1+s2)*dm1;
+  e2=2/(s1+s2)*dm2;
+  e3=-((2*(m1 + m2))/((s1 + s2)*(s1 + s2)))*ds1;
+  e4=-((2*(m1 + m2))/((s1 + s2)*(s1 + s2)))*ds2;
+
+  Double_t esep=sqrt(e1*e1+e2*e2+e3*e3+e4*e4);
+  std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
 
   TFile fc(fSavePath+"/reco_"+name,"recreate");
   TTree *tc = new TTree("reco","reco");
   tc->Branch("theta",&theta,"theta/D");
   tc->Branch("sep",&sep,"sep/D");
+  tc->Branch("esep",&esep,"esep/D");
   tc->Branch("sigma",&sigma,"sigma/D");
   tc->Branch("mom",&mom,"mom/D");
   sigma/=10.;
