@@ -177,9 +177,9 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="
 	Double_t cut1(11);
 	if(studyId==157 || studyId==155) cut1=8;
 	if(theta<=80){
-	  if(time<cut1 || time>45) continue;
+	  if(time<cut1 || time>75) continue; //45
 	}else if(theta>94){
-	  if(time<3 || time>40) continue;
+	  if(time<3 || time>70) continue; //40
 	}
       }
       
