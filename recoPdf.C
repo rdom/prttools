@@ -44,7 +44,9 @@ void getclusters(){
 //void recoPdf(TString path="$HOME/pros/152/beam_15183021251C.root", TString pdf="$HOME/pros/152/beam_15183021251C.root", Double_t sigma=4){
 //void recoPdf(TString path="$HOME/pros/152/beam_15183022858C.root", TString pdf="$HOME/pros/152/beam_15183022858C.root", Double_t sigma=2){
 //void recoPdf(TString path="$HOME/pros/152/beam_15183015512C.root", TString pdf="$HOME/pros/152/beam_15183015512C.root", Double_t sigma=2){
-void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf="$HOME/pros/152/beam_15182235455SF.root", Double_t sigma=2){ //100deg
+//void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf="$HOME/pros/152/beam_15182235455SF.root", Double_t sigma=2){ //100deg
+
+void recoPdf(TString path="$HOME/pros/170/beam_15179051932C.root", TString pdf="$HOME/pros/170/beam_15179051932C.root", Double_t sigma=2){ //170 5GeV/c
   
   if(path=="") return;
   Int_t studyId;
@@ -90,7 +92,7 @@ void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf=
   
   Double_t theta(0);
   TVirtualFitter *fitter;
-  Double_t time,timeres(-1);
+  Double_t mom,time,timeres(-1);
   PrtHit fHit;
   Int_t totalf(0),totals(0), ch, entries = 50000; //fCh->GetEntries(); // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = 10000;
@@ -98,7 +100,9 @@ void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf=
     PrtNextEvent(ievent,1000);
     if(ievent==0){
       theta = prt_event->GetAngle();
+      mom=prt_event->GetMomentum().Mag();
     }
+    
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nHits =prt_event->GetHitSize();
@@ -153,7 +157,7 @@ void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf=
 	if(theta<=80){
 	  if(time<cut1 || time>45) continue;
 	}else if(theta>94){
-	  if(time<3 || time>20) continue;
+	  if(time<3 || time>40) continue;
 	}
       }
       
@@ -209,8 +213,8 @@ void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf=
      
   }
 
-  TString name = Form("tis_%d_%1.1f_%1.1f.root",studyId,theta,sigma);
-  if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f.root",studyId,theta,sigma);
+  TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
+  if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
   canvasAdd("ll_"+name,800,400);
 
   prt_normalize(hllf,hlls);
