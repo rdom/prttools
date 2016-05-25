@@ -42,14 +42,18 @@ void getclusters(){
 //void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
 
 //void recoPdf(TString path="$HOME/pros/152/beam_15183021251C.root", TString pdf="$HOME/pros/152/beam_15183021251C.root", Double_t sigma=4){
-//void recoPdf(TString path="$HOME/pros/152/beam_15183022858C.root", TString pdf="$HOME/pros/152/beam_15183022858C.root", Double_t sigma=2){
+//void recoPdf(TString path="$HOME/pros/152/beam_15183022858C.root", TString pdf="$HOME/pros/152/beam_15183022858C.root", Double_t sigma=4){ // 25 deg
+
+void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="$HOME/pros/151/beam_15177040631C.root", Double_t sigma=4){ // 25 deg
+
 //void recoPdf(TString path="$HOME/pros/152/beam_15183015512C.root", TString pdf="$HOME/pros/152/beam_15183015512C.root", Double_t sigma=2){
 //void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf="$HOME/pros/152/beam_15182235455SF.root", Double_t sigma=2){ //100deg
 
-void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="$HOME/pros/170/beam_15179061046C.root", Double_t sigma=2){ //170 2GeV/c
+//void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="$HOME/pros/170/beam_15179061046C.root", Double_t sigma=2){ //170 2GeV/c
 //void recoPdf(TString path="$HOME/pros/170/beam_15179023137C.root", TString pdf="$HOME/pros/170/beam_15179023137C.root", Double_t sigma=2){ //170 3GeV/c
 
 //void recoPdf(TString path="$HOME/pros/170/beam_15179044540C.root", TString pdf="$HOME/pros/170/beam_15179044540C.root", Double_t sigma=2){ //170 7GeV/c
+
   
   if(path=="") return;
   Int_t studyId;
@@ -62,16 +66,16 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="
   CreateMap();
   TGaxis::SetMaxDigits(4);
   
-  TCanvas *cc = new TCanvas("cc","cc");
-  TH1F *hllf= new TH1F("hllf","hllf;ln L(p) - ln L(#pi); entries [#]",100,-50,50);
-  TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",100,-50,50);
+  // TCanvas *cc = new TCanvas("cc","cc");
+  TH1F *hllf= new TH1F("hllf","hllf;ln L(p) - ln L(#pi); entries [#]",110,-30,30);
+  TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",110,-30,30);
 
   TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 1000,0,100);
   TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 1000,0,100);
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,100);
   
-  TH1F *hnph1 = new TH1F("hnph1",";photon yield [#]; entries [#]", 150,0,150);
-  TH1F *hnph2 = new TH1F("hnph2",";photon yield [#]; entries [#]", 150,0,150);
+  TH1F *hnph1 = new TH1F("hnph1",";photon yield [#]; entries [#]", 250,0,250);
+  TH1F *hnph2 = new TH1F("hnph2",";photon yield [#]; entries [#]", 250,0,250);
 
 
   TRandom rand;
@@ -154,7 +158,7 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="
 	//if(gch>1060)
 	   tof2=true;
 	
-	if(gch>1301 && gch<1305) 
+	   if(gch>1302 && gch<1305) //5
 	  hodo1=true;
 	// if(gch>1313 && gch<1320)
 	  hodo2=true;
@@ -172,7 +176,7 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="
       fHit = prt_event->GetHit(i);
       ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
       time = fHit.GetLeadTime() + rand.Gaus(0,sigma/10.);
-
+      
       { //time cuts
 	Double_t cut1(11);
 	if(studyId==157 || studyId==155) cut1=8;
@@ -202,8 +206,9 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="
       if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) hl2->Fill(time);
     }
 
-    sum = sumf-sums;
-    if(fabs(sum)<0.1) continue;
+    sum = sumf-sums; 
+    if(fabs(sum)<0.04) continue;
+    sum -= 1.8; 
     
     // sumf += 10*TMath::Log(F2->Eval(nHits));
     // sums += 10*TMath::Log(F1->Eval(nHits));
@@ -225,10 +230,13 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="
 
   TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
   if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
-  canvasAdd("ll_"+name,800,400);
+  canvasAdd("ll_"+name,800,500);
 
+  gStyle->SetOptStat(0);
+  gStyle->SetOptTitle(0);
   prt_normalize(hllf,hlls);
-  
+  hllf->GetYaxis()->SetNdivisions(9,5,0);
+   
   TF1 *ff;
   Double_t m1,m2,s1,s2,dm1,dm2,ds1,ds2; 
   if(hllf->GetEntries()>10){
@@ -250,35 +258,44 @@ void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="
   Double_t sep = (fabs(m1-m2))/(0.5*(s1+s2));
   
   hllf->SetTitle(Form("separation = %1.2f",sep));
-
   
   hllf->SetLineColor(2);
   hllf->Draw();
   hlls->SetLineColor(4);
   hlls->Draw("same");
 
+  TLegend *leg = new TLegend(0.6,0.7,0.8,0.87);
+  leg->SetFillColor(0);
+  leg->SetFillStyle(0);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->AddEntry(hlls,"pions ","lp");
+  leg->AddEntry(hllf,"protons","lp");
+  leg->Draw();
+  
+  canvasAdd("hl_"+name,800,500);
+
+
   hl1->Scale(1/hl1->GetMaximum());
   hl2->Scale(1/hl2->GetMaximum());
   hl3->Scale(1/hl3->GetMaximum());
 
   prt_normalize(hl1,hl2);
-  canvasAdd("hl_"+name,800,500);
+  
   hl1->Draw();
   hl2->SetLineColor(4);
   hl2->Draw("same");
   hl3->SetLineColor(2);
   hl3->Draw("same");
-
+  
   canvasAdd("hnph_"+name,800,500);
   prt_normalize(hnph1,hnph2);
   hnph1->SetLineColor(4);
   hnph1->Draw();
   hnph2->SetLineColor(2);
   hnph2->Draw("same");
-
   
-  
-  canvasSave(1,0);
+  canvasSave(0,0);
 
   Double_t e1,e2,e3,e4;
 

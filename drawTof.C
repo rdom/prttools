@@ -97,8 +97,8 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
     Double_t tot1(0),tot2(0),tof1(0),tof2(0);
     Int_t mult1(0), mult2(0), mult3(0), mult4(0);
     
-    for(Int_t i=0; i<fEvent->GetHitSize(); i++){
-      fHit = fEvent->GetHit(i);
+    for(Int_t i=0; i<prt_event->GetHitSize(); i++){
+      fHit = prt_event->GetHit(i);
       if(fHit.GetChannel()==1344) {
 	btrig = true;
 	mult3++;

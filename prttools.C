@@ -33,6 +33,7 @@
 #include <TLegend.h>
 #include <TAxis.h>
 #include <TPaletteAxis.h>
+#include <TRandom.h>
 
 
 #include <iostream>
@@ -52,7 +53,7 @@
    DataInfo prt_data_info;
 #endif 
 
-
+TRandom prt_rand;
 TChain*  fCh = 0;
 Int_t    fNEntries(0),fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0);
 TString  fSavePath(""),fInfo(""),fPath;
@@ -857,6 +858,16 @@ void waitPrimitive(TString name, TString prim=""){
       c->WaitPrimitive(prim);
     }
   }
+}
+
+Double_t prt_integral(TH1F *h,Double_t xmin, Double_t xmax){
+  TAxis *axis = h->GetXaxis();
+  Int_t bmin = axis->FindBin(xmin); //in your case xmin=-1.5
+  Int_t bmax = axis->FindBin(xmax); //in your case xmax=0.8
+  Double_t integral = h->Integral(bmin,bmax);
+  integral -= h->GetBinContent(bmin)*(xmin-axis->GetBinLowEdge(bmin))/axis->GetBinWidth(bmin);
+  integral -= h->GetBinContent(bmax)*(axis->GetBinUpEdge(bmax)-xmax)/axis->GetBinWidth(bmax);
+  return integral;
 }
 
 void normalize(TH1F* hists[],Int_t size){
