@@ -82,7 +82,6 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
   TF1 *pdff[960],*pdfs[960];
   TH1F *hpdff[960],*hpdfs[960];
   if(path.Contains("F.root")) pdf.ReplaceAll("F.root","P.pdf.root");
-  
   else  pdf.ReplaceAll(".root",".pdf.root");
   TFile f(pdf);
   

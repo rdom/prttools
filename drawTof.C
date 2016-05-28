@@ -123,6 +123,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
     
     if(!(btrig && btof1 && btof2 && bmcpout)) continue;
 
+    if(fabs(tot1-tof1tot)>0.5 ||fabs(tot2-tof2tot)>0.5 )  continue;
     hMult1->Fill(mult1);
     hMult2->Fill(mult2);
     hMult3->Fill(mult3);
