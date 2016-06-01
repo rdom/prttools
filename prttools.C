@@ -76,6 +76,12 @@ Int_t map_pix[maxch];
 Int_t map_row[maxch];
 Int_t map_col[maxch];
 
+
+Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
+Double_t prt_mass[] = {0.000511,0.1056584,0.139570,0.49368,0.9382723};
+Double_t prt_particleArray[3000];
+
+
 // const Int_t tdcnum=16;
 // TString tdcsid[tdcnum] ={"10","11","12","13",
 // 			 "20","21","22","23",
@@ -187,6 +193,11 @@ void CreateMap(){
     map_row[ch] = row;
     map_col[ch] = col;
   }
+
+  for(Int_t i=0; i<5; i++){
+    prt_particleArray[prt_pdg[i]]=i;
+  }
+  prt_particleArray[212]=2;
 }
 
 Int_t GetChannelNumber(Int_t tdc, Int_t tdcChannel){
@@ -577,6 +588,7 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
     fTest1 = prt_event->GetTest1();
     fTest2 = prt_event->GetTest2();
   }
+  prt_pid=prt_particleArray[prt_event->GetParticle()];
 }
 #endif
 
@@ -629,6 +641,7 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
     fTest1 = prt_event->GetTest1();
     fTest2 = prt_event->GetTest2();
   }
+  prt_pid=prt_particleArray[prt_event->GetParticle()];
 }
 #endif
 

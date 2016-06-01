@@ -6,37 +6,6 @@
 #include <TKey.h>
 #include <TRandom.h>
 
-Int_t mcpdata[15][65];
-Int_t cluster[15][65];
-Int_t lneighbours[65];
-Int_t lsize(0);
-
-Int_t getneighbours(Int_t m, Int_t p){
-  for(Int_t i=0; i<65; i++) if(p==lneighbours[i]) return -1;
-  lneighbours[lsize]=p;
-  lsize++;
-  for(Int_t t=0; t<65; t++){
-    if(mcpdata[m][t]){
-      for(Int_t i=0; i<65; i++) if(t==lneighbours[i]) continue;
-      if((t==p-1 && p%8!=0) || (t==p+1 && p%8!=7) ||
-	 (t==p+8 && p<57) || (t==p-8 && p>8)) getneighbours(m,t);
-    }
-  }
-  return lsize;
-}
-
-void getclusters(){
-  for(Int_t m=0; m<15; m++){
-    for(Int_t p=0; p<65; p++){
-      if(mcpdata[m][p])  cluster[m][p] = getneighbours(m,p);
-      lsize=0;
-      for(Int_t i=0; i<65; i++) lneighbours[i]=0;
-    }
-  }
-}
-
-
-
 //void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
 //void recoPdf(TString path="$HOME/proc/152/beam_15183013641SF.root", TString pdf="$HOME/proc/152/beam_15183013641SF.root", Double_t sigma=1){
 //void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
@@ -44,8 +13,11 @@ void getclusters(){
 //void recoPdf(TString path="$HOME/pros/152/beam_15183021251C.root", TString pdf="$HOME/pros/152/beam_15183021251C.root", Double_t sigma=4){
 //void recoPdf(TString path="$HOME/pros/152/beam_15183022858C.root", TString pdf="$HOME/pros/152/beam_15183022858C.root", Double_t sigma=4){ // 25 deg
 
-void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="$HOME/pros/151/beam_15177040631C.root", Double_t sigma=4){ // 25 deg
+//void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="$HOME/pros/151/beam_15177040631C.root", Double_t sigma=4){ // 25 deg
 
+//void recoPdf(TString path="$HOME/pros/153/beam_15184203911SF.root", TString pdf="$HOME/pros/153/beam_15184203911SF.root", Double_t sigma=2){ // 150 deg
+void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdf="$HOME/simo/build/beam_15184203911SF.root", Double_t sigma=3){ // 150 deg
+//void recoPdf(TString path="$HOME/pros/153/beam_15185000456SF.root", TString pdf="$HOME/pros/153/beam_15185000456SF.root", Double_t sigma=2){ // 30 deg
 //void recoPdf(TString path="$HOME/pros/152/beam_15183015512C.root", TString pdf="$HOME/pros/152/beam_15183015512C.root", Double_t sigma=2){
 //void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf="$HOME/pros/152/beam_15182235455SF.root", Double_t sigma=2){ //100deg
 
@@ -67,20 +39,17 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
   TGaxis::SetMaxDigits(4);
   
   // TCanvas *cc = new TCanvas("cc","cc");
-  TH1F *hllf= new TH1F("hllf","hllf;ln L(p) - ln L(#pi); entries [#]",110,-30,30);
-  TH1F *hlls= new TH1F("hlls","hlls;ln L(p) - ln L(#pi); entries [#]",110,-30,30);
 
-  TH1F *hl1 = new TH1F("hl1","pdf;LE time [ns]; entries [#]", 1000,0,100);
-  TH1F *hl2 = new TH1F("hl2","pdf;LE time [ns]; entries [#]", 1000,0,100);
+  TH1F *hpdff[960],*hpdfs[960], *hl[5],*hnph[5],*hll[5];
+  for(Int_t i=0; i<5; i++){
+    hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,100);
+    hnph[i] = new TH1F(Form("hnph_%d",i),";photon yield [#]; entries [#]", 250,0,250);
+    hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",110,-30,30);
+  }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,100);
-  
-  TH1F *hnph1 = new TH1F("hnph1",";photon yield [#]; entries [#]", 250,0,250);
-  TH1F *hnph2 = new TH1F("hnph2",";photon yield [#]; entries [#]", 250,0,250);
-
 
   TRandom rand;
   TF1 *pdff[960],*pdfs[960];
-  TH1F *hpdff[960],*hpdfs[960];
   if(path.Contains("F.root")) pdf.ReplaceAll("F.root","P.pdf.root");
   else  pdf.ReplaceAll(".root",".pdf.root");
   TFile f(pdf);
@@ -111,10 +80,10 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
   
   Double_t theta(0);
   TVirtualFitter *fitter;
-  Double_t mom,time,timeres(-1);
+  Double_t mom,nph,time,timeres(-1);
   PrtHit fHit;
   Int_t totalf(0),totals(0), ch, entries = 50000; //fCh->GetEntries(); // [50000-rest] - is for pdf generation
-  if(path.Contains("F.root")) entries = 10000;
+  if(path.Contains("F.root")) entries = fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
     if(ievent==0){
@@ -126,18 +95,7 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nHits =prt_event->GetHitSize();
 
-    if(mom<40 && nHits<30) continue;
-    if(prt_event->GetParticle()==2212) hnph1->Fill(nHits);
-    if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) hnph2->Fill(nHits);
-
-    
-    // //clusters search
-    // for(Int_t h=0; h<nHits; h++) {
-    //   Int_t mid=prt_event->GetHit(h).GetMcpId();
-    //   Int_t pid=prt_event->GetHit(h).GetPixelId()-1;
-    //   mcpdata[mid][pid]=1;
-    // }
-    // getclusters();
+    if(nHits<10) continue;
 
     if(prt_event->GetType()==0){
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
@@ -151,15 +109,15 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
   	fHit = prt_event->GetHit(h);
   	Int_t gch=fHit.GetChannel();
 	
-	if(gch>1031 && gch<1034)
+	if(gch>1031 && gch<1034) //34
 	  tof1=true;
 
 	//if(gch>1060)
 	   tof2=true;
 	
-	   if(gch>1302 && gch<1305) //5
+	if(gch>1302 && gch<1305) //5
 	  hodo1=true;
-	// if(gch>1313 && gch<1320)
+        if(gch>1313 && gch<1320) //20
 	  hodo2=true;
 	    
 	if(tof1 && tof2 && hodo1 && hodo2) goto goodch;
@@ -169,12 +127,13 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
     }
 
   goodch:
+
+    hnph[prt_pid]->Fill(nHits);
     
-      
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
-      time = fHit.GetLeadTime() + rand.Gaus(0,sigma/10.);
+      time = fHit.GetLeadTime()+rand.Gaus(0,sigma/10.);
       
       { //time cuts
 	Double_t cut1(11);
@@ -182,49 +141,29 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
 	if(theta<=80){
 	  if(time<cut1 || time>75) continue; //45
 	}else if(theta>94){
-	  if(time<3 || time>70) continue; //40
+	  if(time<3 || time>40) continue; //40
 	}
       }
-      
-      // Int_t mid=fHit.GetMcpId();
-      // Int_t pid=fHit.GetPixelId()-1;
-      // if(cluster[mid][pid]>6) {
-      // 	std::cout<<"cluster[mid][pid]  "<< cluster[mid][pid] <<std::endl;	
-      // 	continue;
-      // }
 
-      aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time)); 
-      amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time));   
+      aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.)); 
+      amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.));   
     
       // if(aminf==0 || amins==0) continue;
-      Double_t noise = 1e-3; //1e-7;
+      Double_t noise = nHits * 1e-5; //1e-7;
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
-      if(prt_event->GetParticle()==2212) hl1->Fill(time);
-      if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) hl2->Fill(time);
+      hl[prt_pid]->Fill(time);
     }
 
     sum = sumf-sums; 
     if(fabs(sum)<0.04) continue;
-    sum -= 1.8; 
     
     // sumf += 10*TMath::Log(F2->Eval(nHits));
     // sums += 10*TMath::Log(F1->Eval(nHits));
     // sum = sumf-sums;
     
-    //std::cout<<"sum ===========  "<<sum  << "  "<< sumf<< "  "<< sums<<std::endl;
-    
-    if(prt_event->GetParticle()==2212) hllf->Fill(sum);
-    if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212)  hlls->Fill(sum);
-
-    // for(Int_t j=0; j<15; j++){
-    //   for(Int_t i=0; i<65; i++){
-    // 	mcpdata[j][i]=0;
-    // 	cluster[j][i]=0;
-    //   }
-    // }
-     
+    hll[prt_pid]->Fill(sum);
   }
 
   TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
@@ -233,22 +172,22 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
 
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
-  prt_normalize(hllf,hlls);
-  hllf->GetYaxis()->SetNdivisions(9,5,0);
+  prt_normalize(hll[4],hll[2]);
+  hll[4]->GetYaxis()->SetNdivisions(9,5,0);
    
   TF1 *ff;
   Double_t m1,m2,s1,s2,dm1,dm2,ds1,ds2; 
-  if(hllf->GetEntries()>10){
-    hllf->Fit("gaus","Sq");
-    ff = hllf->GetFunction("gaus");
+  if(hll[4]->GetEntries()>10){
+    hll[4]->Fit("gaus","Sq");
+    ff = hll[4]->GetFunction("gaus");
     m1=ff->GetParameter(1);
     s1=ff->GetParameter(2);
     dm1=ff->GetParError(1);
     ds1=ff->GetParError(2);
   }
-  if(hlls->GetEntries()>10){
-    hlls->Fit("gaus","Sq");
-    ff = hlls->GetFunction("gaus");
+  if(hll[2]->GetEntries()>10){
+    hll[2]->Fit("gaus","Sq");
+    ff = hll[2]->GetFunction("gaus");
     m2=ff->GetParameter(1);
     s2=ff->GetParameter(2);
     dm2=ff->GetParError(1);
@@ -256,46 +195,51 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
   }
   Double_t sep = (fabs(m1-m2))/(0.5*(s1+s2));
   
-  hllf->SetTitle(Form("separation = %1.2f",sep));
+  hll[4]->SetTitle(Form("separation = %1.2f",sep));
   
-  hllf->SetLineColor(2);
-  hllf->Draw();
-  hlls->SetLineColor(4);
-  hlls->Draw("same");
+  hll[4]->SetLineColor(2);
+  hll[4]->Draw();
+  hll[2]->SetLineColor(4);
+  hll[2]->Draw("same");
 
   TLegend *leg = new TLegend(0.6,0.7,0.8,0.87);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
-  leg->AddEntry(hlls,"pions ","lp");
-  leg->AddEntry(hllf,"protons","lp");
+  leg->AddEntry(hll[2],"pions ","lp");
+  leg->AddEntry(hll[4],"protons","lp");
   leg->Draw();
   
   canvasAdd("hl_"+name,800,500);
 
 
-  hl1->Scale(1/hl1->GetMaximum());
-  hl2->Scale(1/hl2->GetMaximum());
-  hl3->Scale(1/hl3->GetMaximum());
+  // hl[4]->Scale(1/hl[4]->GetMaximum());
+  // hl[2]->Scale(1/hl[2]->GetMaximum());
+  // hl3->Scale(1/hl3->GetMaximum());
 
-  prt_normalize(hl1,hl2);
+  prt_normalize(hl[4],hl[2]);
   
-  hl1->Draw();
-  hl2->SetLineColor(4);
-  hl2->Draw("same");
+  hl[4]->Draw();
+  hl[2]->SetLineColor(4);
+  hl[2]->Draw("same");
   hl3->SetLineColor(2);
   hl3->Draw("same");
   
   canvasAdd("hnph_"+name,800,500);
-  prt_normalize(hnph1,hnph2);
-  hnph1->SetLineColor(4);
-  hnph1->Draw();
-  hnph2->SetLineColor(2);
-  hnph2->Draw("same");
+  prt_normalize(hnph[4],hnph[2]);
+  hnph[4]->Fit("gaus");
+  ff = hnph[4]->GetFunction("gaus");
+  nph=ff->GetParameter(1);
+  
+  hnph[4]->SetLineColor(4);
+  hnph[4]->Draw();
+  hnph[2]->SetLineColor(2);
+  hnph[2]->Draw("same");
   
   canvasSave(0,0);
 
+  
   Double_t e1,e2,e3,e4;
 
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl;
@@ -316,6 +260,7 @@ void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="
   tc->Branch("esep",&esep,"esep/D");
   tc->Branch("sigma",&sigma,"sigma/D");
   tc->Branch("mom",&mom,"mom/D");
+  tc->Branch("nph",&nph,"nph/D");
   sigma/=10.;
   tc->Fill();
   tc->Write();
