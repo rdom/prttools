@@ -95,7 +95,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nHits =prt_event->GetHitSize();
 
-    if(nHits<10) continue;
+    if(nHits<5) continue;
 
     if(prt_event->GetType()==0){
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
