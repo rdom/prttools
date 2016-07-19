@@ -147,8 +147,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
     efile.Close();
   }
 
-
-  
+ 
   canvasAdd("le",800,500);
   hlef[308]->SetLineColor(2);
   hlef[308]->Draw();

@@ -299,7 +299,7 @@ Bool_t MSelector::Process(Long64_t entry){
       }
       
       fhDigi[mcp]->Fill(col, row);
-      if(particleId==2212){
+      if(particleId==2212 || gMode==1){
 	hPTime[mcp][pix]->Fill(timeDiff);
 	hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
       }else{
@@ -431,8 +431,10 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	if(gMode>=100) normalize(hh,2);
 	//prt_normalize(hh[0],hPiTime[mcp][pix]);
 	hh[0]->Draw();
-	hPiTime[mcp][pix]->SetLineColor(4);
-	hPiTime[mcp][pix]->Draw("same");
+	if(gMode!=1){
+	  hPiTime[mcp][pix]->SetLineColor(4);
+	  hPiTime[mcp][pix]->Draw("same");
+	}
 	prt_fit(hh[0],1,1);
 	if(gMode>=100 &&  hh[0]->GetEntries()>10) hh[1]->Draw("same");
       }
