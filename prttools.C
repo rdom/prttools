@@ -168,7 +168,7 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
       sigma2 = (nfound==1) ? gaust->GetParameter(2) : gaust->GetParameter(5);
     }
   }
-  //  delete gaust;
+  delete gaust;
   return TVector3(mean1,sigma1,mean2);
 }
 

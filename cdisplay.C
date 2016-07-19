@@ -430,13 +430,13 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	//TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
 	//if(gMode>=100) normalize(hh,2);
 	//prt_normalize(hh[0],hPiTime[mcp][pix]);
+	prt_fit(hPTime[mcp][pix],1,1);
 	hPTime[mcp][pix]->Draw();
 	if(gMode!=1){
 	  hPiTime[mcp][pix]->SetLineColor(4);
 	  hPiTime[mcp][pix]->Draw("same");
 	}
-	prt_fit(hPTime[mcp][pix],1,1);
-	hPTime[mcp][pix]->Draw("same");
+	//hPTime[mcp][pix]->Draw("same");
 	//if(gMode>=100 &&  hh[0]->GetEntries()>10) hh[1]->Draw("same");
       }
       if(gComboId==2) hPTot[mcp][pix]->Draw();   
