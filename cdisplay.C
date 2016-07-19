@@ -436,7 +436,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	  hPiTime[mcp][pix]->Draw("same");
 	}
 	prt_fit(hPTime[mcp][pix],1,1);
-	//hh[0]->Draw("same");
+	hPTime[mcp][pix]->Draw("same");
 	//if(gMode>=100 &&  hh[0]->GetEntries()>10) hh[1]->Draw("same");
       }
       if(gComboId==2) hPTot[mcp][pix]->Draw();   
