@@ -63,7 +63,7 @@ void TTSelector::SlaveBegin(TTree *){
     std::cout<<" fileList[i]  "<<fileList[i-5] <<std::endl;
   }
 
-  Int_t totb(200), totl(0), toth(12);
+  Int_t totb(200), totl(0), toth(100); //12
   Int_t leb(400), le1(20), le2(40);
   if(fileList[0].Contains("trb")){
     gTrigger=0;
