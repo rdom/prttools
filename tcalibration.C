@@ -276,7 +276,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 
       if(ch<960) {
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
-	timeTot += 30-gTotO[ch];
+	//	timeTot += 30-gTotO[ch];
+	timeTot -= 30;
 	timeLe += getTotWalk(timeTot,ch);
 	//timeLe += getTotWalk(triggerTot,ch,1);
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
