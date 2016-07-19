@@ -284,7 +284,7 @@ Bool_t MSelector::Process(Long64_t entry){
     }
     // if(timeDiff>30 || timeDiff<10 ) continue;
     if(triggerLe!=-1 || gTrigger==0) {
-      Double_t offset = 284.89;
+      //Double_t offset = 284.89;
       if(bsim){
 	hSTime[mcp][pix]->Fill(timeDiff);
 	hLes->Fill(le);
@@ -435,7 +435,8 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	  hPiTime[mcp][pix]->SetLineColor(4);
 	  hPiTime[mcp][pix]->Draw("same");
 	}
-	prt_fit(hh[0],1,1);
+	//prt_fit(hh[0],1,1);
+	prt_fit(hPTime[mcp][pix],1,1);
 	hh[0]->Draw("same");
 	if(gMode>=100 &&  hh[0]->GetEntries()>10) hh[1]->Draw("same");
       }
