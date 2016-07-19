@@ -299,7 +299,7 @@ Bool_t MSelector::Process(Long64_t entry){
       }
       
       fhDigi[mcp]->Fill(col, row);
-      if(particleId==2212 || gMode==1){
+      if(particleId==2212 || true){
 	hPTime[mcp][pix]->Fill(timeDiff);
 	hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
       }else{
@@ -1208,8 +1208,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   HideFrame(fHm);
 
 
-  fEdit1->SetText("600 0 60");
-  fEdit2->SetText("400 0 12");
+  fEdit1->SetText("600 0 100");
+  fEdit2->SetText("400 0 50");
   if(gMode>=100) fEdit1->SetText("600 0 50");
   
   
