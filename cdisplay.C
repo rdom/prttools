@@ -597,7 +597,7 @@ void MyMainFrame::DoDraw(){
   fCheckBtn1->SetState(kButtonUp);
 
   // drawDigi("m,p,v\n",layout);
-  drawDigi("m,p,v\n",3);
+  drawDigi("m,p,v\n",3,-2,-2);
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
 
@@ -1210,7 +1210,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 
 
   fEdit1->SetText("600 40 100");
-  fEdit2->SetText("400 0 50");
+  fEdit2->SetText("400 0 30");
   if(gMode>=100) fEdit1->SetText("600 0 50");
   
   
