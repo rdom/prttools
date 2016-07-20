@@ -597,7 +597,7 @@ void MyMainFrame::DoDraw(){
   fCheckBtn1->SetState(kButtonUp);
 
   // drawDigi("m,p,v\n",layout);
-  drawDigi("m,p,v\n",3,-2,-2);
+  drawDigi("m,p,v\n",3);
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
 
@@ -790,7 +790,7 @@ void MyMainFrame::DoExport(){
   filedir.Remove(filedir.Last('/'));
   fSavePath = filedir+"/plots";
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  writeString("digi.csv", drawDigi("m,p,v\n",layout));
+  writeString("digi.csv", drawDigi("m,p,v\n",layout),-2,-2);
   
   pbar->Reset();
   Float_t total = (nmcp-1)*(npix-1);
