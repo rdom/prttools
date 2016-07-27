@@ -232,15 +232,18 @@ Bool_t badcannel(Int_t ch){
 }
 
 // layoutId == 5  - 5 row's design for the PANDA Barrel DIRC
-// layoutId == 6  - new 3.6 row's design for the PANDA Barrel DIRC 
+// layoutId == 6  - new 3.6 row's design for the PANDA Barrel DIRC
+// layoutId == 7  - cern 2016 
+
 TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
   if(!cDigi) cDigi = new TCanvas("cDigi","cDigi",0,0,800,400);
   cDigi->cd();
   // TPad * pp = new TPad("P","T",0.06,0.135,0.93,0.865);
   if(!fhPglobal){
-    Double_t tt =(layoutId==3 || layoutId==5)? 0.88: 0.96;
-    fhPglobal = new TPad("P","T",0.04,0.04,tt,0.96);
+    fhPglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
+    if(layoutId==3 ||  layoutId==5) fhPglobal = new TPad("P","T",0.04,0.04,0.88,0.96);
     if(layoutId==6) fhPglobal = new TPad("P","T",0.12,0.02,0.78,0.98);
+    if(layoutId==7) fhPglobal = new TPad("P","T",0.2,0.02,0.75,0.98);
     fhPglobal->SetFillStyle(0);
     fhPglobal->Draw();
   }
@@ -250,6 +253,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 
 
   if(layoutId ==6) ncol=4;
+  if(layoutId ==7) ncol=3;
   if(layoutId > 1){
     float bw = 0.02, bh = 0.01, shift = 0,shiftw=0.02,shifth=0;
     float tbw = bw, tbh = bh;
@@ -266,9 +270,13 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 	    shift =0; shiftw=0.001; tbw=0.001; tbh=0.001;
 	    if(ii==0) shifth=0.167;
 	  }
+	  if(layoutId == 7) {
+	    shift = -0.01; shiftw=0.01; tbw=0.03; tbh=0.0015;
+	    if(j==1) shift += 0.015;
+	  }
 	  fhPads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh+shifth, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh+shifth, 21);
 	  fhPads[padi]->SetFillColor(kCyan-8);
-	  fhPads[padi]->SetMargin(0.04,0.04,0.04,0.04);
+	  fhPads[padi]->SetMargin(0.055,0.055,0.055,0.055);
 	  fhPads[padi]->Draw();
 	  padi++;
 	}
@@ -588,7 +596,9 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
     fTest1 = prt_event->GetTest1();
     fTest2 = prt_event->GetTest2();
   }
-  prt_pid=prt_particleArray[prt_event->GetParticle()];
+  if(prt_event->GetParticle()<3000 && prt_event->GetParticle()>0){
+    prt_pid=prt_particleArray[prt_event->GetParticle()];
+  }
 }
 #endif
 

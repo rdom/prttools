@@ -1,3 +1,6 @@
+#ifndef PrtDataInfo
+#define PrtDataInfo
+
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -1213,3 +1216,5 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   // p_hadd();
 }
 
+
+#endif
