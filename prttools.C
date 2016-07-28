@@ -173,6 +173,7 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
 }
 
 void CreateMap(){
+  TGaxis::SetMaxDigits(3);
   Int_t seqid =-1;
   for(Int_t i=0; i<prt_maxnametdc; i++) map_tdc[i]=-1;
   for(Int_t i=0; i<tdcnum; i++){
