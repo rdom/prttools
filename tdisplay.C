@@ -811,8 +811,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   ch->Process(selector,option,entries);
 
-  //drawDigi("m,p,v\n",2);
-  drawDigi("m,p,v\n",3,-2,-2);
+  drawDigi("m,p,v\n",3);
+  //drawDigi("m,p,v\n",3,-2,-2);
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
 
