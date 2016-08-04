@@ -42,7 +42,7 @@ TF1 * fitpdf(TH1F *h){
 
 void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//beam_15177135523S.root
   //  path="/data.local/data/jun15/beam_15177135523S.root";
-  path="~/simo/build/beam_15184203911SP.root";
+  //path="~/simo/build/beam_15184203911SP.root";
   
   fSavePath = "data/pdf3";
   PrtInit(path,1);
