@@ -154,7 +154,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
   hles[308]->SetLineColor(4);
   hles[308]->Draw("same");
   
-  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",2,-2,-2));
+  //  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",2,-2,-2));
+  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",7,0,0));
   cDigi->SetName("hits");
   canvasAdd(cDigi);
   
