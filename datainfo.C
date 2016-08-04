@@ -54,6 +54,7 @@ public:
     if(_studyId>100 && _studyId<170 &&_angle<d._angle) return true; //angle
     if(_studyId>169 && _studyId<180 && _momentum < d._momentum) return true; //momentum
     if(_studyId>179 && _studyId<190 && _z < d._z) return true; //z
+    if(_studyId>=200 && _angle<d._angle) return true; //angle
     return false; 
   }
 
@@ -116,7 +117,7 @@ public:
 Int_t gg_alias=0;
 std::vector<DataInfo> dataArray;
 std::vector<DataInfo> aliasArray;
-const Int_t gg_nstudies = 200;
+const Int_t gg_nstudies = 300;
 Int_t gg_studyArray[gg_nstudies];
 TString study[gg_nstudies];
 void datainfo_init(){
@@ -824,6 +825,41 @@ void datainfo_init(){
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
       dataArray.push_back(DataInfo(181,"beam_15187121519",1,4,125,930 ,85.0,70.5,15.5,7.0));
     }
+      
+  }
+
+  { // 2016
+    study[200]="Simulations for 2016, plate, no lens";
+    {
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
+      dataArray.push_back(DataInfo(200,"sim_00",2,0,20.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_01",2,0,25.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_02",2,0,30.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_03",2,0,35.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_04",2,0,40.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_05",2,0,45.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_06",2,0,50.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_07",2,0,55.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_08",2,0,60.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_09",2,0,65.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_10",2,0,70.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_11",2,0,75.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_12",2,0,80.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_13",2,0,85.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_14",2,0,90.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_15",2,0,95.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_16",2,0,100.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_17",2,0,105.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_18",2,0,110.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_19",2,0,115.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_20",2,0,120.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_21",2,0,125.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_22",2,0,130.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_23",2,0,135.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_24",2,0,140.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_25",2,0,145.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_26",2,0,150.0,378,85.0,0.00,0,7.0));
+    }
   }
 }
 
@@ -851,12 +887,12 @@ void createAliases(){
     
     for(UInt_t j = 0; j != dataArray.size(); j++) {
       if(dataArray[i] == dataArray[j] && dataArray[i].getRunId() != dataArray[j].getRunId()){
-	dataArray[j].setAliasId(dataArray[i].getAliasId());
+    	dataArray[j].setAliasId(dataArray[i].getAliasId());
        	same += " "+dataArray[j].getRunId();
       }
     }
   }
-
+  
   for(UInt_t i = 0; i != dataArray.size(); i++) {
     TString aid = dataArray[i].getAliasId();
     for(UInt_t j = 0; j != dataArray.size(); j++) {
@@ -877,7 +913,8 @@ void createAliases(){
       }
     }
   }
-  std::sort(aliasArray.begin(), aliasArray.end());
+
+  //std::sort(aliasArray.begin(), aliasArray.end());
 
   for(Int_t i=0; i<gg_nstudies; i++){
     std::vector<DataInfo> newset= getStudy(i);
@@ -890,7 +927,7 @@ void createAliases(){
       }
     }
   }
-
+  
   for(UInt_t k = 0; k != aliasArray.size(); k++) {
     Double_t offset =0;
     if("00000000001" == aliasArray[k].getAliasId()) offset = 72.080000;
@@ -989,7 +1026,10 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 	       <<" -gx "<<newset[i].getX()<<" -gsx "<<newset[i].getXstep()<<" -gsy "<<newset[i].getYstep()
 	       <<" -z 10 ";
 
-      if(newset[i].getStudyId()>=150) std::cout<<" -g 2015 -c 2015 "<<std::endl;
+      if(newset[i].getStudyId()>=150){
+	if(newset[i].getStudyId()<200) std::cout<<" -g 2015 -c 2015 "<<std::endl;
+	else std::cout<<" -g 2016 -c 2016 "<<std::endl;
+      }
       else  std::cout<<" "<<std::endl;
     }
   }
@@ -1165,14 +1205,14 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   p_print(newset, format);
 
   if(format==8){
-    for(Int_t i=studyId; i<200; i++){
+    for(Int_t i=studyId; i<gg_nstudies; i++){
       std::vector<DataInfo> newset= getStudy(i);
       if(newset.size()>0){
 	p_print(newset, format);
 	std::cout<<Form("desc[%d]=\"",i)<<study[i]<<"\";" <<std::endl;
       }
     }
-    for(Int_t i=studyId; i<200; i++){
+    for(Int_t i=studyId; i<gg_nstudies; i++){
       std::vector<DataInfo> newset= getStudy(i);
       if(newset.size()>0){
 	std::cout<<Form("<option value=%d> %d ",i,i)<<study[i]<<"</option>" <<std::endl;
@@ -1181,7 +1221,7 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   }
 
   if(format==10){ //cp all
-    for(Int_t i=0; i<200; i++){
+    for(Int_t i=0; i<gg_nstudies; i++){
       std::vector<DataInfo> newset= getStudy(i);
       if(newset.size()>0){
 	std::cout<<"mkdir ../proc/"<<i <<std::endl;
@@ -1193,7 +1233,7 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   }
 
   if(format==11){ //print all ID starting from studyId
-    for(Int_t i=studyId; i<200; i++){
+    for(Int_t i=studyId; i<gg_nstudies; i++){
       std::vector<DataInfo> newset= getStudy(i);
       if(newset.size()>0){
 	std::cout<<i<<std::endl;
