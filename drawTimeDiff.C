@@ -1,6 +1,6 @@
-#define prt__sim
+#define prt__beam
 #include "../prtdirc/src/PrtHit.h"
-#include "../prtdirc/src/PrtEvent.h" 
+#include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
 void drawTimeDiff(TString infile="fileC0.root", Int_t triggerCh = 1776){
@@ -13,18 +13,18 @@ void drawTimeDiff(TString infile="fileC0.root", Int_t triggerCh = 1776){
     PrtNextEvent(ievent,1000);
     triggerTime=  0;
 
-    Int_t nhits = fEvent->GetHitSize();
-    for(Int_t h=0; h<fEvent->GetHitSize(); h++){
-      fHit = fEvent->GetHit(h);
+    Int_t nhits = prt_event->GetHitSize();
+    for(Int_t h=0; h<prt_event->GetHitSize(); h++){
+      fHit = prt_event->GetHit(h);
       if(triggerCh==fHit.GetChannel()) {
 	triggerTime = fHit.GetLeadTime();
 	break;
       }
     }
 
-    for(Int_t h=0; h<fEvent->GetHitSize(); h++){
-      fHit = fEvent->GetHit(h);
-      Int_t ch = fHit.GetChannel();
+    for(Int_t h=0; h<prt_event->GetHitSize(); h++){
+      fHit = prt_event->GetHit(h);
+      Int_t ch = fHit.GetChannel();      
       hTimeDiff->Fill(fHit.GetLeadTime() - triggerTime);
     }
   }
