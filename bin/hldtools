@@ -139,9 +139,9 @@ cd $HOME/dirc/mz-unpacker
 waitForMe (){
     while : 
     do
+	sleep .1
 	activth=$(ps aux | grep "[r]oot.exe" | grep "Convert.C" | grep "$2" | wc -l)
 	printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
-	sleep .1
 	if [ "$activth" -lt "$1" ]; then 
 	    break  
 	fi
