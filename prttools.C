@@ -218,16 +218,16 @@ Int_t AddRefChannels(Int_t ch,Int_t tdcSeqId){
 Bool_t badcannel(Int_t ch){
   if(ch<0) return true;
   
-  // bad pixels july15
+  // // bad pixels july15
 
-  if(ch==202) return true;
-  if(ch==204) return true;
-  if(ch==206) return true;
-  if(ch==830) return true;
-  if(ch==831) return true;
-  if(ch==828) return true;
-  if(ch==815) return true;
-  if(ch>383 && ch<400) return true; //dead chain
+  // if(ch==202) return true;
+  // if(ch==204) return true;
+  // if(ch==206) return true;
+  // if(ch==830) return true;
+  // if(ch==831) return true;
+  // if(ch==828) return true;
+  // if(ch==815) return true;
+  // if(ch>383 && ch<400) return true; //dead chain
 	
   return false;
 }
