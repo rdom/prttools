@@ -17,7 +17,7 @@ TGraph *gGrDiff[maxch];
 TCanvas *cTime;
 
 const Int_t maxMult = 30;
-Int_t mult[maxch]={0},gComboId(0), gTrigger(0), gMode(0), layout(2);
+Int_t mult[maxch]={0},gComboId(0), gTrigger(0), gMode(0), layout(3); //2for2015
 Double_t gTimeCutMin(-10000),gTimeCutMax(10000),gTofMin(0),gTofMax(0);
 Double_t gMultCutMin(0),gMultCutMax(0),gTimeCuts[nmcp][npix][2], gTotMean[nmcp][npix];
 TString ginFile(""), gPath(""), gInfo(""),gsTimeCuts("0"), gsTotMean("0");
@@ -205,7 +205,7 @@ Bool_t MSelector::Process(Long64_t entry){
     if(sarr->GetEntries()==3){
       if(current_file_name.Contains("th_")){
 	TString soffset = ((TObjString *) sarr->At(1))->GetName();
-	offset = soffset.Atof()/400.;
+	offset = soffset.Atof()/600.;
       }
     }else offset = prt_event->GetTest1();
   }
@@ -596,8 +596,7 @@ void MyMainFrame::DoDraw(){
 
   fCheckBtn1->SetState(kButtonUp);
 
-  // drawDigi("m,p,v\n",layout);
-  drawDigi("m,p,v\n",3);
+  drawDigi("m,p,v\n",layout);
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
 
