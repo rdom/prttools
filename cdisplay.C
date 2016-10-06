@@ -1209,8 +1209,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   HideFrame(fHm);
 
 
-  fEdit1->SetText("600 40 100");
-  fEdit2->SetText("400 0 30");
+  fEdit1->SetText("600 20 40");
+  fEdit2->SetText("400 0 10");
   if(gMode>=100) fEdit1->SetText("600 0 50");
   
   
