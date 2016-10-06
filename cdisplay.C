@@ -1213,6 +1213,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(gMode>=100) fEdit1->SetText("600 0 50");
   
   
+  if(ginFile.Contains("th_")) fEdit1->SetText("400 10 40");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   
   fEdit3->SetText("0 0");
