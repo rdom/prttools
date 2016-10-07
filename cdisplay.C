@@ -205,7 +205,7 @@ Bool_t MSelector::Process(Long64_t entry){
     if(sarr->GetEntries()==3){
       if(current_file_name.Contains("th_")){
 	TString soffset = ((TObjString *) sarr->At(1))->GetName();
-	offset = soffset.Atof()/600.;
+	offset = soffset.Atof()/400.;
       }
     }else offset = prt_event->GetTest1();
   }
