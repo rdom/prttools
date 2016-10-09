@@ -6,26 +6,7 @@
 #include <TKey.h>
 #include <TRandom.h>
 
-//void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
-//void recoPdf(TString path="$HOME/proc/152/beam_15183013641SF.root", TString pdf="$HOME/proc/152/beam_15183013641SF.root", Double_t sigma=1){
-//void recoPdf(TString path="$HOME/proc/152/beam_15183021251SF.root", TString pdf="$HOME/proc/152/beam_15183021251SF.root", Double_t sigma=1){
-
-//void recoPdf(TString path="$HOME/pros/152/beam_15183021251C.root", TString pdf="$HOME/pros/152/beam_15183021251C.root", Double_t sigma=4){
-//void recoPdf(TString path="$HOME/pros/152/beam_15183022858C.root", TString pdf="$HOME/pros/152/beam_15183022858C.root", Double_t sigma=4){ // 25 deg
-
-//void recoPdf(TString path="$HOME/pros/151/beam_15177040631C.root", TString pdf="$HOME/pros/151/beam_15177040631C.root", Double_t sigma=4){ // 25 deg
-
-//void recoPdf(TString path="$HOME/pros/153/beam_15184203911SF.root", TString pdf="$HOME/pros/153/beam_15184203911SF.root", Double_t sigma=2){ // 150 deg
-void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdf="$HOME/simo/build/beam_15184203911SF.root", Double_t sigma=3){ // 150 deg
-//void recoPdf(TString path="$HOME/pros/153/beam_15185000456SF.root", TString pdf="$HOME/pros/153/beam_15185000456SF.root", Double_t sigma=2){ // 30 deg
-//void recoPdf(TString path="$HOME/pros/152/beam_15183015512C.root", TString pdf="$HOME/pros/152/beam_15183015512C.root", Double_t sigma=2){
-//void recoPdf(TString path="$HOME/pros/152/beam_15182235455SF.root", TString pdf="$HOME/pros/152/beam_15182235455SF.root", Double_t sigma=2){ //100deg
-
-//void recoPdf(TString path="$HOME/pros/170/beam_15179061046C.root", TString pdf="$HOME/pros/170/beam_15179061046C.root", Double_t sigma=2){ //170 2GeV/c
-//void recoPdf(TString path="$HOME/pros/170/beam_15179023137C.root", TString pdf="$HOME/pros/170/beam_15179023137C.root", Double_t sigma=2){ //170 3GeV/c
-
-//void recoPdf(TString path="$HOME/pros/170/beam_15179044540C.root", TString pdf="$HOME/pros/170/beam_15179044540C.root", Double_t sigma=2){ //170 7GeV/c
-
+void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdf="$HOME/simo/build/beam_15184203911SF.root", Double_t sigma=3){ 
   
   if(path=="") return;
   Int_t studyId;
