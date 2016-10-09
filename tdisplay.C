@@ -76,7 +76,7 @@ void TTSelector::SlaveBegin(TTree *){
   }
   if(fileList[0].Contains("pico")){
     gTrigger=1351; //1345
-    totb=1000; totl=0; toth=12;
+    totb=240; totl=0; toth=12;
     leb = 400; le1=10; le2=40; //20 40
   }
   
