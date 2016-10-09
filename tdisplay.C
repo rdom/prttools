@@ -76,6 +76,7 @@ void TTSelector::SlaveBegin(TTree *){
   }
   if(fileList[0].Contains("pico")){
     gTrigger=1351; //1345
+    totb=1000; totl=0; toth=12;
     leb = 400; le1=10; le2=40; //20 40
   }
   
@@ -261,8 +262,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  Double_t tot = timeT[i+1]-timeL[i];
 
 	  // if(!calib){
-	  //   if(tot<0 || timeLe<20 || timeLe>40) continue;
-	  //   tot += 30-gTotO[ch];
+	  if(tot<0 || timeLe<20 || timeLe>40) continue;
+	  tot += 30-gTotO[ch];
 	  //   timeLe += getTotWalk(tot,ch);
 	  //   timeLe += getTotWalk(triggerTot,ch,1);
 	  //   //if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
