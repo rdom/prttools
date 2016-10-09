@@ -53,21 +53,22 @@
    DataInfo prt_data_info;
 #endif 
 
-TRandom prt_rand;
-TChain*  fCh = 0;
-Int_t    fNEntries(0),fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0);
-TString  fSavePath(""),fInfo(""),fPath;
-TH2F*    fhDigi[15];
-TPad*    fhPads[15], *fhPglobal;
-TCanvas* cDigi;
-TSpectrum *prt_spect = new TSpectrum(2);
-
-const Int_t nmcp = 15, npix = 64;
+const Int_t nmcp = 9, npix = 64;
 const Int_t maxmch(nmcp*npix);
 const Int_t maxch =1500;
 const Int_t prt_maxnametdc=10000;
 const Int_t ctdc = 48; //41
 const Int_t maxtdc=maxch/48;
+
+TRandom prt_rand;
+TChain*  fCh = 0;
+Int_t    fNEntries(0),fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0);
+TString  fSavePath(""),fInfo(""),fPath;
+TH2F*    fhDigi[nmcp];
+TPad*    fhPads[nmcp], *fhPglobal;
+TCanvas* cDigi;
+TSpectrum *prt_spect = new TSpectrum(2);
+
 
 Int_t map_tdc[prt_maxnametdc];
 Int_t map_mpc[nmcp][npix];

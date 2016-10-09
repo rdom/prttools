@@ -788,6 +788,7 @@ void MyMainFrame::DoExport(){
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
   fSavePath = filedir+"/plots";
+  createDir();
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
   writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",layout,-2,-2));
   
