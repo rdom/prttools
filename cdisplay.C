@@ -789,7 +789,7 @@ void MyMainFrame::DoExport(){
   filedir.Remove(filedir.Last('/'));
   fSavePath = filedir+"/plots";
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  writeString("digi.csv", drawDigi("m,p,v\n",layout,-2,-2));
+  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",layout,-2,-2));
   
   pbar->Reset();
   Float_t total = (nmcp-1)*(npix-1);
