@@ -586,7 +586,7 @@ void MyMainFrame::DoDraw(){
   if(gTrigger<0) gTrigger=0;
 
   Int_t tmax, max=0;
-  for(Int_t p=0; p<15;p++){
+  for(Int_t p=0; p<nmcp;p++){
     tmax = fhDigi[p]->GetMaximum();
     if(max<tmax) max = tmax;
   }
@@ -790,7 +790,7 @@ void MyMainFrame::DoExport(){
   fSavePath = filedir+"/plots";
   createDir();
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",layout,-2,-2));
+  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",layout)); //layout,-2,-2
   
   pbar->Reset();
   Float_t total = (nmcp-1)*(npix-1);
@@ -949,7 +949,7 @@ void MyMainFrame::DoCheckBtnClecked3(){
   }
 }
 
-TH2F* fhDigi_temp[15];
+TH2F* fhDigi_temp[nmcp];
 void MyMainFrame::DoCheckBtnClecked4(){
   if(fCheckBtn4->GetState() == kButtonDown){
     TVector3 res;
@@ -976,7 +976,7 @@ void MyMainFrame::DoCheckBtnClecked4(){
   }
 }
 
-TH2F* fhDigi_history[15];
+TH2F* fhDigi_history[nmcp];
 void MyMainFrame::DoHistory(){
     for(Int_t m=0; m<nmcp; m++){
       fhDigi_temp[m] = (TH2F*)fhDigi[m]->Clone();

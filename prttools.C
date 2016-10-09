@@ -349,7 +349,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
   }
  
   for(Int_t p=0; p<nrow*ncol;p++){
-    if(layoutId == 1 || layoutId == 4)  np =p%3*5 + p/3;
+    if(layoutId == 1 || layoutId == 4)  np =p%nrow*ncol + p/3;
     else np = p;
 
     if(layoutId == 6 && p>10) continue;
@@ -375,7 +375,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 
 void initDigi(Int_t type=0){
   if(type == 0){
-    for(Int_t m=0; m<3*5;m++){	
+    for(Int_t m=0; m<nmcp;m++){	
       fhDigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),8,0.,8.,8,0.,8.);
       fhDigi[m]->SetStats(0);
       fhDigi[m]->SetTitle(0);
@@ -392,7 +392,7 @@ void initDigi(Int_t type=0){
 }
 
 void resetDigi(){
-    for(Int_t m=0; m<3*5;m++){	
+    for(Int_t m=0; m<nmcp;m++){	
       fhDigi[m]->Reset("M");
     }
 }
