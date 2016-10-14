@@ -263,7 +263,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  Double_t tot = timeT[i+1]-timeL[i];
 
 	  // if(!calib){
-	  if(tot<0 || timeLe<20 || timeLe>40) continue;
+	  //if(tot<0 || timeLe<20 || timeLe>40) continue;
 	  tot += 30-gTotO[ch];
 	  //   timeLe += getTotWalk(tot,ch);
 	  //   timeLe += getTotWalk(triggerTot,ch,1);
