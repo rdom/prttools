@@ -859,8 +859,17 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(200,"sim_24",2,0,140.0,378,85.0,0.00,0,7.0));
       dataArray.push_back(DataInfo(200,"sim_25",2,0,145.0,378,85.0,0.00,0,7.0));
       dataArray.push_back(DataInfo(200,"sim_26",2,0,150.0,378,85.0,0.00,0,7.0));
-    }    
-      
+    }
+
+    study[201]="sim Oct 16, plate, no lens";
+    for(Int_t a=20; a<140; a++){
+      dataArray.push_back(DataInfo(201,Form("sim_%d",a),2,0,a,378,85.0,0.00,0,7.0));
+    }
+    
+    study[202]="sim Oct 16, plate, lens 2";
+    for(Int_t a=20; a<140; a++){
+      dataArray.push_back(DataInfo(202,Form("sim_%d",a),2,2,a,378,85.0,0.00,0,7.0));
+    }   
   }
 }
 
