@@ -6,6 +6,7 @@
 #include "tdisplay.h"
 
 const Int_t maxfiles = 150;
+const Int_t mcp_layout=7;
 Int_t gSetup=2015, gTrigger, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
 TString ginFile(""),gcFile(""), fileList[maxfiles];
 TH1F *hCh, *hRefDiff, *hFine[maxfiles][maxch], *hTot[maxfiles][maxch],
@@ -456,7 +457,7 @@ void MyMainFrame::DoExport(Int_t type){
     fSavePath = filedir+"/plots";
   
     std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-    writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",2));
+    writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",mcp_layout));
     Float_t total = (nmcp-1)*(npix-1);
     if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
       for(Int_t m=0; m<nmcp; m++){
@@ -812,7 +813,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   ch->Process(selector,option,entries);
 
-  drawDigi("m,p,v\n",3);
+  drawDigi("m,p,v\n",mcp_layout);
   //drawDigi("m,p,v\n",3,-2,-2);
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
