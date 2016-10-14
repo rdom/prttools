@@ -774,7 +774,6 @@ void MyMainFrame::DoSavePng(){
   
   canvasAdd(cExport);
   canvasSave(1,0);
-  canvasDel(cExport->GetName());
   gROOT->SetBatch(0);
   std::cout<<"Save current png .. done"<<std::endl;
   
@@ -788,7 +787,11 @@ void MyMainFrame::DoExport(){
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
   fSavePath = filedir+"/plots";
-  createDir();
+  
+  canvasAdd("digi",800,400);
+  cDigi->DrawClonePad();
+  canvasSave(1,0);    
+  
   std::cout<<"Exporting into  "<<fSavePath <<std::endl;
   writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",layout)); //layout,-2,-2
   
@@ -802,9 +805,9 @@ void MyMainFrame::DoExport(){
 	  TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
 	  normalize(hh,2);
 	  hh[0]->Draw();
-	  hPiTime[m][p]->Draw("same");
 	  prt_fit(hh[0],1,1);
-	  if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
+	  if(hPiTime[m][p]->GetEntries()>10) hPiTime[m][p]->Draw("same");
+	  if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
 	}
 	if(gComboId==2){
@@ -827,7 +830,6 @@ void MyMainFrame::DoExport(){
 	cExport->SetName(histname);
 	canvasAdd(cExport);
 	canvasSave(1,0);
-	canvasDel(cExport->GetName());
 	
 	pbar->SetPosition(100*(m*p)/total);
 	gSystem->ProcessEvents();
@@ -838,42 +840,25 @@ void MyMainFrame::DoExport(){
     cExport->SetName(histname);
     canvasAdd(cExport);
     canvasSave(1,0);
-    canvasDel(cExport->GetName());
   }
-  //  cExport = (TCanvas *) cDigi->DrawClone();
-  //  cExport->SetCanvasSize(800,400);
 
-  if(gMode==10 || gMode==100){
-    if( gMode==100){
-      for(Int_t m=0; m<nmcp; m++){
-	for(Int_t p=0; p<npix; p++){
-	  cExport->cd();
-	  TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
-	  normalize(hh,2);
-	  hSTime[m][p]->Draw();
-	  prt_fit(hPTime[m][p]);
-	  hPTime[m][p]->Draw("same");
-	  if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
-	  histname=hPTime[m][p]->GetName();
+  if( gMode==100){
+    for(Int_t m=0; m<nmcp; m++){
+      for(Int_t p=0; p<npix; p++){
+	cExport->cd();
+	TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
+	normalize(hh,2);
+	hSTime[m][p]->Draw();
+	prt_fit(hPTime[m][p],1,1);
+	hPTime[m][p]->Draw("same");
+	if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
+	histname=hPTime[m][p]->GetName();
 
-	  cExport->SetName(histname);
-	  canvasAdd(cExport);
-	  canvasSave(1,0);
-	  canvasDel(cExport->GetName());
-	}
+	cExport->SetName(histname);
+	canvasAdd(cExport);
+	canvasSave(1,0);
       }
     }
-    cDigi->SetName("digi");
-    canvasAdd(cDigi);
-    canvasSave(1,0);
-    canvasDel(cDigi->GetName());
-    writeString("digi.csv", drawDigi("m,p,v\n",layout));
-
-  }else{
-    cDigi->SetName("digi");
-    canvasAdd(cDigi);
-    canvasSave(1,0);
-    canvasDel(cDigi->GetName());
   }
 
   gROOT->SetBatch(0);
@@ -1214,7 +1199,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(gMode>=100) fEdit1->SetText("600 0 50");
   
   
-  if(ginFile.Contains("th_")) fEdit1->SetText("400 10 40");
+  if(ginFile.Contains("th_")) fEdit1->SetText("400 20 40");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   
   fEdit3->SetText("0 0");

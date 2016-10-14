@@ -868,6 +868,7 @@ void canvasSave(Int_t what=0, Int_t style=0){
   TString path = createDir();
   while((c = (TCanvas*) next())){
     save(c, path, c->GetName(), what,style);
+    gg_canvasList->Remove(c);
   }
 }
 
