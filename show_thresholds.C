@@ -1,13 +1,13 @@
 #include "prttools.C"
 
-Int_t tharr[tdcmax];
+Int_t tharr[maxch];
 
 Double_t min(1000000),max(0);
 TCanvas *cTemp;
 TH1F* hLow = new TH1F("hLow",";channel [#];threshold [?]",1000,0,1000);
 TH1F* hHigh = new TH1F("hHigh",";channel [#];threshold [?]",1000,0,1000);
 
-void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t range = 0){
+void show_thresholds(TString infile1="padiwa_threshold_results_blockwise_2016_10_08b.log", TString infile2="",Int_t range = 0){
   fSavePath = "auto";
   CreateMap();
   initDigi();
@@ -67,6 +67,8 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t 
     
       Int_t tdcSeq = map_tdc[tdc];
       Int_t channel= tdcSeq*48 + chain*16 + ch;
+      std::cout<<"channel "<<channel <<std::endl;
+      
       Int_t mcp = channel/64;
       Int_t pix = channel%64;
       Int_t col = pix/2 - 8*(pix/16);
@@ -89,7 +91,7 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t 
     min = -range;
     max = range;
   }
-  drawDigi("m,p,v\n",3,max,min);
+  drawDigi("m,p,v\n",7,max,min);
 
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();   
@@ -127,7 +129,6 @@ void show_thresholds(TString infile1="thresholds.thr", TString infile2="",Int_t 
 //   // hHigh->Draw();
 //   //if(infile2 != "") hLow->Draw("same");
 // }
-
 // void mode2(){
 //   cTemp->Draw();
 // }

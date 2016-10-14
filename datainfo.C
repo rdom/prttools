@@ -20,6 +20,7 @@ class DataInfo {
   Double_t _ystep;
   Double_t _momentum;
   Double_t _simToffset;
+  Double_t _beamDimension;
 
   Int_t _fileId;
   Int_t _zId;
@@ -31,8 +32,8 @@ class DataInfo {
 
 public:
   DataInfo(){_studyId=-1;}; 	//the default constructor
-  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t m):
-    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0){
+  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t m, Double_t beamDimension=10):
+    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0),_beamDimension(beamDimension){
   };
 
   ~DataInfo() {}
@@ -43,7 +44,7 @@ public:
   };
 
   bool operator == (const DataInfo& d) const{
-    return _studyId == d._studyId && _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum;
+    return _studyId == d._studyId && _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum &&_beamDimension == d._beamDimension;
   }
 
   bool operator < (const DataInfo& d) const{
@@ -100,6 +101,7 @@ public:
   Double_t getXstep() const { return _xstep; }
   Double_t getYstep() const { return _ystep; }
   Double_t getMomentum() const { return _momentum; }
+  Double_t getBeamDimension() const { return _beamDimension; }
   TString getAliasId() const {return _aliasId; }
   Int_t getFileId(){return _fileId;}
   TString getChildRunId(Int_t ind){return _childRuns[ind];}
@@ -859,8 +861,23 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(200,"sim_24",2,0,140.0,378,85.0,0.00,0,7.0));
       dataArray.push_back(DataInfo(200,"sim_25",2,0,145.0,378,85.0,0.00,0,7.0));
       dataArray.push_back(DataInfo(200,"sim_26",2,0,150.0,378,85.0,0.00,0,7.0));
-    }    
-      
+    }
+
+    study[201]="sim Oct 16, plate, no lens";
+    for(Int_t a=20; a<140; a++){
+      dataArray.push_back(DataInfo(201,Form("sim_%d",a),2,0,a,378,85.0,0.00,0,7.0));
+    }
+    
+    study[202]="sim Oct 16, plate, lens 2";
+    for(Int_t a=20; a<140; a++){
+      dataArray.push_back(DataInfo(202,Form("sim_%d",a),2,2,a,378,85.0,0.00,0,7.0));
+    }   
+
+    study[205]="sim Oct 16, plate, lens 0, beam dimension scan";
+    for(Int_t z=0; z<=40; z+=5){
+      dataArray.push_back(DataInfo(205,Form("sim_%d",z),2,2,25,378,85.0,0.00,0,7.0,(Double_t)z));
+    }   
+    
   }
 }
 
@@ -1025,7 +1042,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 	       <<" -l "<<newset[i].getLensId()
 	       <<" -a "<<newset[i].getAngle()<<" -gz "<<newset[i].getZ()
 	       <<" -gx "<<newset[i].getX()<<" -gsx "<<newset[i].getXstep()<<" -gsy "<<newset[i].getYstep()
-	       <<" -z 10 ";
+	       <<" -z " <<newset[i].getBeamDimension();
 
       if(newset[i].getStudyId()>=150){
 	if(newset[i].getStudyId()<200) std::cout<<" -g 2015 -c 2015 "<<std::endl;
