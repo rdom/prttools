@@ -709,6 +709,10 @@ Int_t shiftHist(TH1F *hist, Double_t double_shift){
   return 1;
 } 
 
+void prt_addInfo(TString str){
+  fInfo += str+"\n";
+}
+
 void writeInfo(TString filename){
   std::ofstream myfile;
   myfile.open (filename);
@@ -746,6 +750,7 @@ TString prt_createDir(TString inpath=""){
   }else{
     gSystem->mkdir(fSavePath,kTRUE);
   }
+  
   writeInfo(finalpath+"/readme");
   return finalpath;
 }

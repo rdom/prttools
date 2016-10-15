@@ -1231,5 +1231,9 @@ void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TStr
   gMode=mode;
   gPath=path;
   gInfo=info;
+  prt_addInfo("Program = cdisplay");
+  prt_addInfo("In file = " + ginFile);
+  prt_addInfo("In path = " + gPath);
+  
   gMain = new MyMainFrame(gClient->GetRoot(), 800, 800);
 }
