@@ -765,7 +765,7 @@ void MyMainFrame::DoSavePng(){
   Int_t saveFlag = 1;
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
-  fSavePath = filedir+"/plots";
+  if(fSavePath == "") prt_createDir(filedir+"/auto");
   
   TObject *obj; 
   TIter next(cTime->GetListOfPrimitives());
@@ -779,6 +779,8 @@ void MyMainFrame::DoSavePng(){
   
 }
 
+
+
 void MyMainFrame::DoExport(){
   gROOT->SetBatch(1);
   TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
@@ -786,7 +788,7 @@ void MyMainFrame::DoExport(){
   Int_t saveFlag = 1;
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
-  fSavePath = filedir+"/plots";
+  if(fSavePath == "") prt_createDir(filedir+"/auto");
   
   canvasAdd("digi",800,400);
   cDigi->DrawClonePad();

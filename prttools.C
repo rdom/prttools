@@ -723,13 +723,14 @@ void writeString(TString filename, TString str){
   myfile.close();
 }
 
-TString createDir(){
+TString prt_createDir(TString inpath=""){
+  if(inpath != "") fSavePath = inpath;
   TString finalpath = fSavePath;
 
   if(finalpath =="") return "";
   
-  if(fSavePath == "auto") {
-    TString dir = "data";
+  if(fSavePath.EndsWith("auto")) {
+    TString dir = fSavePath.ReplaceAll("auto","data");
     gSystem->mkdir(dir);
     TDatime *time = new TDatime();
     TString path(""), stime = Form("%d.%d.%d", time->GetDay(),time->GetMonth(),time->GetYear()); 
@@ -741,6 +742,7 @@ TString createDir(){
     gSystem->Unlink(dir+"/last");
     gSystem->Symlink(path, dir+"/last");
     finalpath = dir+"/"+path;
+    fSavePath=finalpath;
   }else{
     gSystem->mkdir(fSavePath,kTRUE);
   }
@@ -816,7 +818,7 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
   }
 }
 
-TString createSubDir(TString dir="dir"){
+TString prt_createSubDir(TString dir="dir"){
   gSystem->mkdir(dir);
   return dir;
 }
@@ -865,7 +867,7 @@ void canvasDel(TString name="c"){
 void canvasSave(Int_t what=0, Int_t style=0){
   TIter next(gg_canvasList);
   TCanvas *c=0;
-  TString path = createDir();
+  TString path = prt_createDir();
   while((c = (TCanvas*) next())){
     save(c, path, c->GetName(), what,style);
     gg_canvasList->Remove(c);
