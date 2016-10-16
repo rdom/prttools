@@ -74,6 +74,7 @@ void TTSelector::SlaveBegin(TTree *){
   if(fileList[0].Contains("pilas")){
     gTrigger=1345;
     leb = 400; le1=70; le2=100;
+    totb=240; totl=0; toth=12;
   }
   if(fileList[0].Contains("pico")){
     gTrigger=1345; //1345 1351
