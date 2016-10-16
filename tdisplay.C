@@ -265,10 +265,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  if(!calib){
 	    //if(tot<0 || timeLe<20 || timeLe>40) continue;
 	    tot += 30 - gTotO[ch];
-	    timeLe += getTotWalk(tot,ch);
-	    timeLe += getTotWalk(triggerTot,ch,1);
-	    //if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
-	    timeLe -= gLeOffArr[ch];
+	    //timeLe += getTotWalk(tot,ch);
+	    //timeLe += getTotWalk(triggerTot,ch,1);
+	    ////if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
+	    //timeLe -= gLeOffArr[ch];
 	  }
 	  
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
