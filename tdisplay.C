@@ -68,7 +68,7 @@ void TTSelector::SlaveBegin(TTree *){
   Int_t leb(400), le1(20), le2(40);
   if(fileList[0].Contains("trb")){
     gTrigger=0;
-    totb=4000; totl=50; toth=120;
+    totb=4000; totl=50; toth=80;
     leb=4000, le1=-5, le2=5;
   }
   if(fileList[0].Contains("pilas")){
@@ -261,15 +261,15 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  //timeLe = tdcRefTime[tdc] - triggerLe;
 	  timeTe = timeT[i+1]-tdcRefTime[tdc]-triggerLe;
 	  Double_t tot = timeT[i+1]-timeL[i];
-
-	  // if(!calib){
-	  //if(tot<0 || timeLe<20 || timeLe>40) continue;
-	  tot += 30-gTotO[ch];
-	  //   timeLe += getTotWalk(tot,ch);
-	  //   timeLe += getTotWalk(triggerTot,ch,1);
-	  //   //if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
-	  //   timeLe -= gLeOffArr[ch];
-	  // }
+	  
+	  if(!calib){
+	    if(tot<0 || timeLe<20 || timeLe>40) continue;
+	    tot += 30 - gTotO[ch];
+	    timeLe += getTotWalk(tot,ch);
+	    timeLe += getTotWalk(triggerTot,ch,1);
+	    //if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
+	    timeLe -= gLeOffArr[ch];
+	  }
 	  
 	  fhDigi[mcp]->Fill(map_col[ch],map_row[ch]);
 	  TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
