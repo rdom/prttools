@@ -55,7 +55,7 @@
 
 const Int_t nmcp = 9, npix = 64;
 const Int_t maxmch(nmcp*npix);
-const Int_t maxch =1500;
+const Int_t maxch =1000;
 const Int_t prt_maxnametdc=10000;
 const Int_t ctdc = 48; //41
 const Int_t maxtdc=maxch/48;
@@ -102,6 +102,13 @@ TString tdcsid[tdcnum] ={"2000","2001","2002","2003","2004","2005","2006","2007"
 			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
 			 "2014","2015","2016","2018","2019","201a","201c","201d","202c","202d"
 };
+
+const Int_t tdcnum=20;  //oct2016
+TString tdcsid[tdcnum] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
+			 "200a","200b","200c",
+			                      "2018","201b","201c","201f","202c","202d","202d"
+};
+
 
 TF1 *gaust;
 TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1){
