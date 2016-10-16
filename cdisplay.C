@@ -78,8 +78,7 @@ void MSelector::SlaveBegin(TTree *){
   source>>gMode>>gTrigger>>bins1>>min1>>max1>>bins2>>min2>>max2>>gTimeCutMin>>gTimeCutMax>>gMultCutMin>>gMultCutMax>>gsTimeCuts>>gsTotMean>>gTofMin>>gTofMax;
 
   TObjArray *sarr = gsTimeCuts.Tokenize(";");
-
-  if(sarr->GetEntries()==1920){
+  if(sarr->GetEntries()>1){
     for (Int_t m=0; m <nmcp; m++) {
       for(Int_t p=0; p<npix; p++){
 	TString cut = ((TObjString *) sarr->At(2*(m*npix+p)))->GetName();
@@ -87,10 +86,11 @@ void MSelector::SlaveBegin(TTree *){
 	cut = ((TObjString *) sarr->At(2*(m*npix+p)+1))->GetName();
 	gTimeCuts[m][p][1] = cut.Atof();
       }
-    } 
+    }
   }
+  std::cout<<"sarr->GetEntries() "<<sarr->GetEntries() <<std::endl;
   sarr = gsTotMean.Tokenize(";");
-  if(sarr->GetEntries()==960){
+  if(sarr->GetEntries()>1){
     for (Int_t m=0; m <nmcp; m++) {
       for(Int_t p=0; p<npix; p++){
 	TString totmean = ((TObjString *) sarr->At(m*npix+p))->GetName();
@@ -98,7 +98,7 @@ void MSelector::SlaveBegin(TTree *){
 	std::cout<<"gTotMean[m][p]  "<<gTotMean[m][p] <<std::endl;
 	
       }
-    } 
+    }
   }
   
   for(Int_t i=0; i<maxMult; i++){
@@ -274,11 +274,11 @@ Bool_t MSelector::Process(Long64_t entry){
     if(badcannel(ch)) continue;
 
     Double_t timeDiff = le-triggerLe;
-      
+    
     if(gsTimeCuts!="0" && (timeDiff<gTimeCuts[mcp][pix][0] || timeDiff>gTimeCuts[mcp][pix][1])) continue;
     else if(gTimeCutMin!=gTimeCutMax &&  (timeDiff<gTimeCutMin || timeDiff>gTimeCutMax)) continue;
     hitCount2++;
-	
+    
     if(gsTotMean!="0"){
       timeDiff += 0.3*(tot - gTotMean[mcp][pix]);
     }
@@ -297,7 +297,7 @@ Bool_t MSelector::Process(Long64_t entry){
 	hShape[mcp][pix]->Fill(timeDiff,offset);
 	hShape[mcp][pix]->Fill(timeDiff + tot,offset);
       }
-      
+
       fhDigi[mcp]->Fill(col, row);
       if(particleId==2212 || true){
 	hPTime[mcp][pix]->Fill(timeDiff);
@@ -575,7 +575,7 @@ void MyMainFrame::DoDraw(){
   if(hTof) hTof->Reset(); 
 
   fHProg3->Reset();
-  //fNEntries = 100000;
+  //fNEntries = 10000;
 
   TString option = Form("%d %d %s %s %s %s %s %s %s",gMode,gTrigger,fEdit1->GetText(),fEdit2->GetText(),fEdit3->GetText(),fEdit4->GetText(),gsTimeCuts.Data(), gsTotMean.Data(),fEdit5->GetText());
 
@@ -778,8 +778,6 @@ void MyMainFrame::DoSavePng(){
   std::cout<<"Save current png .. done"<<std::endl;
   
 }
-
-
 
 void MyMainFrame::DoExport(){
   gROOT->SetBatch(1);
@@ -1196,7 +1194,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   HideFrame(fHm);
 
 
-  fEdit1->SetText("600 20 40");
+  fEdit1->SetText("600 80 120");
   fEdit2->SetText("400 0 10");
   if(gMode>=100) fEdit1->SetText("600 0 50");
   

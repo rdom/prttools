@@ -35,7 +35,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   prt_rand.SetSeed(445);
   
   for(Int_t i=0; i<ch.GetEntries(); i++){
-    mom=0;
+    //  mom=0;
     ch.GetEvent(i);
     if(theta>155) continue;
     Int_t sid = sigma*10;
