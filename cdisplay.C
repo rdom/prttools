@@ -17,7 +17,7 @@ TGraph *gGrDiff[maxch];
 TCanvas *cTime;
 
 const Int_t maxMult = 30;
-Int_t mult[maxch]={0},gComboId(0), gTrigger(0), gMode(0), layout(7); //3for2015
+Int_t mult[maxch]={0},gComboId(0), gTrigger(0), gMode(0), layout(7), gEntries(0); //3for2015
 Double_t gTimeCutMin(-10000),gTimeCutMax(10000),gTofMin(0),gTofMax(0);
 Double_t gMultCutMin(0),gMultCutMax(0),gTimeCuts[nmcp][npix][2], gTotMean[nmcp][npix];
 TString ginFile(""), gPath(""), gInfo(""),gsTimeCuts("0"), gsTotMean("0");
@@ -48,7 +48,8 @@ void init(){
     fCh->Add(insim);
     fNEntries = fCh->GetEntries();
   }
-
+  if(gEntries>0) fNEntries=gEntries;
+  
   TString workers = "workers=4";
   if(gSystem->GetFromPipe("whoami")=="hadaq" && fNEntries>1000000) workers = "workers=12";
 
@@ -1223,8 +1224,9 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TString path="", TString info="0"){
+void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TString path="", TString info="0",Int_t entries=0){
   ginFile = inFile;
+  gEntries=entries;
   gTrigger= trigger;
   gMode=mode;
   gPath=path;

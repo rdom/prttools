@@ -14,6 +14,8 @@ show_help(){
         reference channel id
      -l
         use latest *M.root file in current folder
+     -e 
+        number of events for processing  (0 - all events)
      -a
         advanced mode (more plots but needs more RAM)
         100 plot data (*C.root) and sim(*S.root) together 
@@ -29,7 +31,7 @@ show_help(){
 }
 
 OPTIND=1 
-while getopts "h?r:la:p:i:q" opt; do
+while getopts "h?r:le:a:p:i:q" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -38,6 +40,8 @@ while getopts "h?r:la:p:i:q" opt; do
 	r)  refChannel=$OPTARG
 	    ;;
 	l)  latestFile=1
+	    ;;
+	e)  events=$OPTARG
 	    ;;
 	a)  mode=$OPTARG
 	    ;;
@@ -51,6 +55,7 @@ while getopts "h?r:la:p:i:q" opt; do
 done
 refChannel=${refChannel:-0}
 mode=${mode:-0}
+events=${events:-0}
 path=${path:-0}
 info=${info:-0}
 shift $((OPTIND-1))
@@ -83,6 +88,6 @@ else
     if [ $quite ]; then
 	flags="-l -q"
     fi
-    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\")"
+    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\",$events)"
     cd -
 fi
