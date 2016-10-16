@@ -28,8 +28,8 @@ show_help(){
         batch processing option 
         1 run hldtools -j10 -d for undecoded .hld files in current folder.
         101 run hldtools -j10 -d for all .hld files in current folder.
-        2 run tcalibration -j10 -c calibf_june.root for not calibrated .hld.root files in current folder.
-        102 run tcalibration -j10 -c calibf_june.root for all .hld.root files in current folder 
+        2 run tcalibration -j10 -c calib_1610_2.root for not calibrated .hld.root files in current folder.
+        102 run tcalibration -j10 -c calib_1610_2.root for all .hld.root files in current folder 
         5 run on the cluster
         one needs to be logged in on hera  
      -s 
@@ -103,7 +103,8 @@ fi
 
 if (( $batchmode == 1 || $batchmode == 101 )); then
     lasthld=$(ls -tr *.hld | tail -n 1)
-    for x in $(ls *.hld); do
+#    for x in $(ls *.hld); do
+    for x in $(find -maxdepth 1 -name '*.hld' -mmin +1 | xargs echo); do
 	if [ ! -f "${x%.*}.hld.root" ] && [ "$x" != "$lasthld" ] || [ $batchmode == 101 ]; then
 	    hldtools -j10 -d $x
 	fi
@@ -113,8 +114,8 @@ fi
 
 if (( $batchmode == 2 || $batchmode == 102  )); then
     for x in $(ls *.hld.root); do
-	if [ ! -f  ${x%.*.*}"C0.root" ] || [ $batchmode == 102 ]; then
-	    tcalibration -j10 -c calibf_june.root $x
+	if [ ! -f  ${x%.*.*}"C.root" ] || [ $batchmode == 102 ]; then
+	    tcalibration -j10 -c /d/oct2016/laser/calib_1610_2.root $x
 	fi
     done
     exit 0
