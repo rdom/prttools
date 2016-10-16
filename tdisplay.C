@@ -68,7 +68,7 @@ void TTSelector::SlaveBegin(TTree *){
   Int_t leb(400), le1(20), le2(40);
   if(fileList[0].Contains("trb")){
     gTrigger=0;
-    totb=4000; totl=50; toth=80;
+    totb=4000; totl=50; toth=120;
     leb=4000, le1=-5, le2=5;
   }
   if(fileList[0].Contains("pilas")){
