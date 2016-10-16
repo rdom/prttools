@@ -6,10 +6,11 @@
 #include "prttools.C"
 #include "tcalibration.h"
 
+const Int_t maxdirc_ch=nmcp*48;
 DataInfo prt_data_info;
 TString ginFile(""), goutFile(""), gcFile("");
 Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[maxch];
-Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[960][10],gLeOffArr[960],gEvtOffset(0);
+Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[maxdirc_ch][10],gLeOffArr[maxdirc_ch],gEvtOffset(0);
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGrDiff[maxch];
 
 Double_t walktheta(-13.5*TMath::Pi()/180.);
@@ -32,7 +33,7 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
   Double_t minp(0), walk(0), d(0), min(100);
 
   if(type==0){
-    if(ch<960){
+    if(ch<maxdirc_ch){
       for(Int_t i=0; i<9; i++){
 	if(gTotP[ch][i]<0.00000001) continue;
 	d = gTotP[ch][i]-tot;
@@ -109,13 +110,13 @@ void TTSelector::Begin(TTree *){
 	  //std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
       }else if(ch == 10002){ // read tot peaks
-	for(Int_t i=0; i<960*10; i++){
+	for(Int_t i=0; i<maxdirc_ch*10; i++){
 	  gr->GetPoint(i,x,y);
 	  gTotP[i/10][i%10] = y;
 	  //std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
       }else if(ch == 10003){ // read LE offsets 1
-	for(Int_t i=0; i<960; i++){
+	for(Int_t i=0; i<maxdirc_ch; i++){
 	  gr->GetPoint(i,gLeOffArr[i],y);
 	}
       }else if(ch >= 20000 && ch < 30000){ // read LE offsets 3
@@ -161,7 +162,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   if(gMode==5){
     fEvent->SetAngle(prt_data_info.getAngle());
     fEvent->SetMomentum(TVector3(0,0,prt_data_info.getMomentum()));
-    fEvent->SetTrigger(960);
+    fEvent->SetTrigger(817);
     fEvent->SetGeometry(prt_data_info.getStudyId());
     fEvent->SetLens(prt_data_info.getLensId());
     fEvent->SetPrismStepX(prt_data_info.getXstep());
@@ -262,10 +263,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 
       if(gMode>0){
 	timeLe = time[i]-tdcRefTime[tdc];
-	if(gTrigger!=0 && ch<960) timeLe = timeLe - (grTime1-grTime0);
+	if(gTrigger!=0 && ch<maxdirc_ch) timeLe = timeLe - (grTime1-grTime0);
       }else {
 	timeLe = time[i];
-	if(gTrigger!=0 && ch<960) timeLe = timeLe - grTime1;
+	if(gTrigger!=0 && ch<maxdirc_ch) timeLe = timeLe - grTime1;
       }
       if(gTrigger!=0) {
 	triggerLe = grTime1 - grTime0;
@@ -274,7 +275,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	
       timeTot = timeT[i+1] - time[i];
 
-      if(ch<960) {
+      if(ch<maxdirc_ch) {
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
 	timeTot += 30-gTotO[ch];
 	//timeTot -= 30;
@@ -288,11 +289,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       if(gMode==5){
 	timeLe-=gEvtOffset;
-	//if(ch>960 && ch != 1104 && ch != 1344 && ch != 1248) continue;
-	if(ch<960 && (timeLe<0 || timeLe>100)) continue;
+	//if(ch>maxdirc_ch && ch != 1104 && ch != 1344 && ch != 1248) continue;
+	if(ch<maxdirc_ch && (timeLe<0 || timeLe>100)) continue;
       }
 
-      //if(ch<960)std::cout<<"timeLe "<< timeLe<<std::endl;
+      //if(ch<maxdirc_ch)std::cout<<"timeLe "<< timeLe<<std::endl;
       
       if(gMode!=5 || tofpid!=0){
 	hit.SetTdc(tdc);
@@ -330,7 +331,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode >= 5) gTrigger=960;
+  if(gMode >= 5) gTrigger=817;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);
