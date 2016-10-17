@@ -172,6 +172,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   
   for(Int_t i=0; i<Hits_ && i<10000; i++){
     tdc = map_tdc[Hits_nTrbAddress[i]];
+    if(tdc<0) continue;
     ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
     
     time[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
@@ -192,10 +193,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 	tdcRefTime[tdc] = time[i];
 	if(gTrigger/48==tdc) grTime0 = time[i];
       }
-      if(ch==1344) mult1++;
-      if(ch==960)  mult2++;
-      if(ch==1104) mult3++;
-      if(ch==1248) mult4++;
+      // if(ch==1344) mult1++;
+      // if(ch==960)  mult2++;
+      // if(ch==1104) mult3++;
+      // if(ch==1248) mult4++;
     }else{
       timeT[i]=time[i];
       grTime2=time[i];
@@ -273,7 +274,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       }
 	
       timeTot = timeT[i+1] - time[i];
-
+ 
       if(ch<maxch_dirc) {
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
 	timeTot += 30-gTotO[ch];
