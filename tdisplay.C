@@ -112,7 +112,7 @@ void TTSelector::SlaveBegin(TTree *){
     fOutput->Add(fhDigi[m]);
   }
 
-  hCh = new TH1F("hCh","hCh;channel [#];entries [#]",3000,0,3000);
+  hCh = new TH1F("hCh","hCh;channel [#];entries [#]",980,0,980);
   fOutput->Add(hCh);
   hRefDiff = new TH1F("hRefDiff","ch-ref. resolution;sigma [ns];entries [#]",200,0,1);//0.05
   for(Int_t i=0; i<maxtdc; i++){
