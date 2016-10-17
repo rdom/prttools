@@ -174,7 +174,7 @@ if(gcFile!="0"){
 
 Int_t mult[maxch]={0};
 Bool_t TTSelector::Process(Long64_t entry){
-  //  if(entry>10000) return kTRUE;
+  //if(entry>10000) return kTRUE;
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   Int_t tdc,ch,mcp,pix,col,row;
   Double_t triggerLe(0),triggerTot(0), grTime0(0), grTime1(0),grTime2(0),timeLe(0), timeTe(0), offset(0);
@@ -571,7 +571,9 @@ void Calibrate(){
   gTotOff = new TGraph();
   gLeOff = new TGraph();
   gTotPeaks = new TGraph();
- 
+
+  //for(Int_t i=0; i<9; i++) fhDigi[i]->Reset();	
+  
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
       TString title = Form("%s  %d", hFine[j][c]->GetTitle(), (Int_t)hFine[j][c]->GetEntries());
@@ -596,6 +598,16 @@ void Calibrate(){
       firstbin = hTot[j][c]->FindFirstBinAbove(threshold);
       Double_t xle = hTot[j][c]->GetXaxis()->GetBinCenter(firstbin);
       gTotOff->SetPoint(c, xle, hTot[j][c]->GetMean());
+
+      gGr[j][c]->Fit("pol1","","",50,400);
+      
+      // Double_t chi=gGr[j][c]->GetFunction("pol1")->GetChisquare();
+      // Int_t ch =c-1;
+      // if(ch%49==0) continue;
+      // ch= 48*(ch/49)+ch%49;
+      // Int_t m = ch/64;
+      // if(m<9) fhDigi[m]->Fill(map_col[ch],map_row[ch],chi);
+      
     }
   }
 

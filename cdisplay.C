@@ -172,7 +172,7 @@ void MSelector::SlaveBegin(TTree *){
   hLe=new TH1F("hLeA","",2000,0,100);
   hLes=new TH1F("hLeAs","",2000,0,100);
   hMult=new TH1F("hMultA","",50,0,50);
-  hCh=new TH1F("hChA","",980,0,980);
+  hCh=new TH1F("hChA","",980,0,0);
   hTof=new TH1F("hTof","",2000,150,250);
 
   axisTime800x500(hTot,"TOT time, [ns]");
@@ -431,7 +431,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	//TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
 	//if(gMode>=100) normalize(hh,2);
 	//prt_normalize(hh[0],hPiTime[mcp][pix]);
-	prt_fit(hPTime[mcp][pix],1,1);
+	prt_fit(hPTime[mcp][pix],0.5,1);
 	hPTime[mcp][pix]->Draw();
 	if(gMode!=1){
 	  hPiTime[mcp][pix]->SetLineColor(4);
