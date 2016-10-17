@@ -14,7 +14,7 @@ TH1F *hCh, *hRefDiff, *hFine[maxfiles][maxch], *hTot[maxfiles][maxch],
 TH2F *hLeTot[maxch], *hShape[nmcp][npix];
 TGraph *gMaxFine, *gLeOff, *gTotOff, *gTotPeaks;
 Int_t gMaxIn[maxch];
-Double_t  tdcRefTime[maxtdc], gTotO[maxch], gTotP[960][10],gLeOffArr[960],gEvtOffset(0);
+Double_t  tdcRefTime[maxtdc], gTotO[maxch], gTotP[maxch_dirc][10],gLeOffArr[maxch_dirc],gEvtOffset(0);
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGr[maxfiles][maxch], *gGrDiff[maxch];
 TCanvas *cTime;
 
@@ -22,7 +22,7 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
   Double_t minp(0), walk(0), d(0), min(100);
 
   if(type==0){
-    if(ch<960){
+    if(ch<maxch_dirc){
       for(Int_t i=0; i<9; i++){
 	if(gTotP[ch][i]<0.00000001) continue;
 	d = gTotP[ch][i]-tot;
@@ -153,13 +153,13 @@ if(gcFile!="0"){
 	  //std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
       }else if(ch == 10002){ // read tot peaks
-	for(Int_t i=0; i<960*10; i++){
+	for(Int_t i=0; i<maxch_dirc*10; i++){
 	  gr->GetPoint(i,x,y);
 	  gTotP[i/10][i%10] = y;
 	  //std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
       }else if(ch == 10003){ // read LE offsets 1
-	for(Int_t i=0; i<960; i++){
+	for(Int_t i=0; i<maxch_dirc; i++){
 	  gr->GetPoint(i,gLeOffArr[i],y);
 	}
       }else if(ch >= 20000 && ch < 30000){ // read LE offsets 3
@@ -219,7 +219,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
 
     if(Hits_nSignalEdge[i]==1){
-      if(ch>960) hh++;
+      if(ch>maxch_dirc) hh++;
       mult[ch]++;
       if(ch==gTrigger) grTime1 = timeL[i];
       if(Hits_nTdcChannel[i]==0) { //ref channel
@@ -599,7 +599,7 @@ void Calibrate(){
     }
   }
 
-  for(Int_t c=0; c<960; c++){
+  for(Int_t c=0; c<maxch_dirc; c++){
     if(hTot[0][c]->Integral()>100){
       Int_t nfound = spect->Search(hTot[0][c],3,"",0.1);
       std::cout<<"nfound  "<<nfound <<std::endl;

@@ -54,10 +54,11 @@
 #endif 
 
 const Int_t nmcp = 9, npix = 64;
-const Int_t maxmch(nmcp*npix);
-const Int_t maxch =960;
-const Int_t prt_maxnametdc=10000;
 const Int_t ctdc = 48; //41
+const Int_t maxmch(nmcp*npix);
+const Int_t maxch = 960;
+const Int_t maxch_dirc = nmcp*ctdc;
+const Int_t prt_maxnametdc=10000;
 const Int_t maxtdc=maxch/48;
 
 TRandom prt_rand;
@@ -68,7 +69,6 @@ TH2F*    fhDigi[nmcp];
 TPad*    fhPads[nmcp], *fhPglobal;
 TCanvas* cDigi;
 TSpectrum *prt_spect = new TSpectrum(2);
-
 
 Int_t map_tdc[prt_maxnametdc];
 Int_t map_mpc[nmcp][npix];
@@ -81,7 +81,6 @@ Int_t map_col[maxch];
 Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
 Double_t prt_mass[] = {0.000511,0.1056584,0.139570,0.49368,0.9382723};
 Double_t prt_particleArray[3000];
-
 
 // const Int_t tdcnum=16;
 // TString tdcsid[tdcnum] ={"10","11","12","13",

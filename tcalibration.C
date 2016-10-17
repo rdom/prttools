@@ -6,11 +6,10 @@
 #include "prttools.C"
 #include "tcalibration.h"
 
-const Int_t maxdirc_ch=nmcp*48;
 DataInfo prt_data_info;
 TString ginFile(""), goutFile(""), gcFile("");
 Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[maxch];
-Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[maxdirc_ch][10],gLeOffArr[maxdirc_ch],gEvtOffset(0);
+Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[maxch_dirc][10],gLeOffArr[maxch_dirc],gEvtOffset(0);
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGrDiff[maxch];
 
 Double_t walktheta(-13.5*TMath::Pi()/180.);
@@ -33,7 +32,7 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
   Double_t minp(0), walk(0), d(0), min(100);
 
   if(type==0){
-    if(ch<maxdirc_ch){
+    if(ch<maxch_dirc){
       for(Int_t i=0; i<9; i++){
 	if(gTotP[ch][i]<0.00000001) continue;
 	d = gTotP[ch][i]-tot;
@@ -110,13 +109,13 @@ void TTSelector::Begin(TTree *){
 	  //std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
       }else if(ch == 10002){ // read tot peaks
-	for(Int_t i=0; i<maxdirc_ch*10; i++){
+	for(Int_t i=0; i<maxch_dirc*10; i++){
 	  gr->GetPoint(i,x,y);
 	  gTotP[i/10][i%10] = y;
 	  //std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
       }else if(ch == 10003){ // read LE offsets 1
-	for(Int_t i=0; i<maxdirc_ch; i++){
+	for(Int_t i=0; i<maxch_dirc; i++){
 	  gr->GetPoint(i,gLeOffArr[i],y);
 	}
       }else if(ch >= 20000 && ch < 30000){ // read LE offsets 3
@@ -263,10 +262,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 
       if(gMode>0){
 	timeLe = time[i]-tdcRefTime[tdc];
-	if(gTrigger!=0 && ch<maxdirc_ch) timeLe = timeLe - (grTime1-grTime0);
+	if(gTrigger!=0 && ch<maxch_dirc) timeLe = timeLe - (grTime1-grTime0);
       }else {
 	timeLe = time[i];
-	if(gTrigger!=0 && ch<maxdirc_ch) timeLe = timeLe - grTime1;
+	if(gTrigger!=0 && ch<maxch_dirc) timeLe = timeLe - grTime1;
       }
       if(gTrigger!=0) {
 	triggerLe = grTime1 - grTime0;
@@ -275,7 +274,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	
       timeTot = timeT[i+1] - time[i];
 
-      if(ch<maxdirc_ch) {
+      if(ch<maxch_dirc) {
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
 	timeTot += 30-gTotO[ch];
 	//timeTot -= 30;
@@ -289,11 +288,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       if(gMode==5){
 	timeLe-=gEvtOffset;
-	//if(ch>maxdirc_ch && ch != 1104 && ch != 1344 && ch != 1248) continue;
-	if(ch<maxdirc_ch && (timeLe<0 || timeLe>100)) continue;
+	//if(ch>maxch_dirc && ch != 1104 && ch != 1344 && ch != 1248) continue;
+	if(ch<maxch_dirc && (timeLe<0 || timeLe>100)) continue;
       }
 
-      //if(ch<maxdirc_ch)std::cout<<"timeLe "<< timeLe<<std::endl;
+      //if(ch<maxch_dirc)std::cout<<"timeLe "<< timeLe<<std::endl;
       
       if(gMode!=5 || tofpid!=0){
 	hit.SetTdc(tdc);
