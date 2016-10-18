@@ -95,8 +95,8 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   
   
   canvasAdd("p_le"+ext,800,400);
-  prt_fit(hLe,0.3,100,100).X();
-  hLe->Draw();
+  prt_fit(hLeA,0.3,100,100).X();
+  hLeA->Draw();
   
   canvasAdd("p_tot"+ext,800,400);
   hTot->Draw();
