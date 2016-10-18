@@ -199,28 +199,30 @@ Bool_t MSelector::Process(Long64_t entry){
   //if(prt_event->GetParticle()!=211) return kTRUE; 
 
   Double_t timeres(0);
-  TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
-  current_file_name.Remove(0, current_file_name.Last('/')+1);
-  if(current_file_name.Contains("SF.root")) timeres=0.2;
-  if(current_file_name.Contains("SP.root")) timeres=0.2;
-  
-  Double_t offset=0;
-  if(gMode==1){
-    TObjArray *sarr = current_file_name.Tokenize("_");
-    if(sarr->GetEntries()==3){
-      if(current_file_name.Contains("th_")){
-	TString soffset = ((TObjString *) sarr->At(1))->GetName();
-	offset = soffset.Atof()/400.;
-      }
-    }else offset = prt_event->GetTest1();
-  }
   TString fileid("");
   bool bsim(false);
-  if(gMode==100 || gMode==101){
+  Double_t offset=0;
+  
+  if(gMode>0){
     TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
-    fileid = current_file_name;
-    fileid.Remove(0,fileid.Last('/')+1);
-    if(current_file_name.Contains("S.root")) bsim = true;
+    current_file_name.Remove(0, current_file_name.Last('/')+1);
+
+    if(gMode==1){
+      TObjArray *sarr = current_file_name.Tokenize("_");
+      if(sarr->GetEntries()==3){
+	if(current_file_name.Contains("th_")){
+	  TString soffset = ((TObjString *) sarr->At(1))->GetName();
+	  offset = soffset.Atof()/400.;
+	}
+      }else offset = prt_event->GetTest1();
+    }
+    if(gMode==100 || gMode==101){
+      fileid = current_file_name;
+      if(current_file_name.Contains("S.root")) bsim = true;
+      if(current_file_name.Contains("SF.root")) timeres=0.2;
+      if(current_file_name.Contains("SP.root")) timeres=0.2;
+    
+    }
   }
 
   Double_t le,tot, triggerLe(0), tof(0), tof1(0),tof2(0);

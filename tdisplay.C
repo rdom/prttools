@@ -572,7 +572,7 @@ void Calibrate(){
   gLeOff = new TGraph();
   gTotPeaks = new TGraph();
 
-  //for(Int_t i=0; i<9; i++) fhDigi[i]->Reset();	
+  if(gMode==5) for(Int_t i=0; i<9; i++) fhDigi[i]->Reset();	
   
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<maxch; c++){
@@ -600,14 +600,15 @@ void Calibrate(){
       gTotOff->SetPoint(c, xle, hTot[j][c]->GetMean());
 
       gGr[j][c]->Fit("pol1","","",50,400);
-      
-      // Double_t chi=gGr[j][c]->GetFunction("pol1")->GetChisquare();
-      // Int_t ch =c-1;
-      // if(ch%49==0) continue;
-      // ch= 48*(ch/49)+ch%49;
-      // Int_t m = ch/64;
-      // if(m<9) fhDigi[m]->Fill(map_col[ch],map_row[ch],chi);
-      
+
+      if(gMode==5){
+	Double_t chi=gGr[j][c]->GetFunction("pol1")->GetChisquare();
+	Int_t ch =c-1;
+	if(ch%49==0) continue;
+	ch= 48*(ch/49)+ch%49;
+	Int_t m = ch/64;
+	if(m<9) fhDigi[m]->Fill(map_col[ch],map_row[ch],chi);
+      }
     }
   }
 

@@ -18,6 +18,7 @@ show_help(){
         path to the file with calibration curves
      -a 
         mode, use \"-a 3\" for combining files
+        mode, use \"-a 5\" to plot FINE bin goodness
      -j
         number of proof threads (default 4) if <2 - no proof will be used"
     echo "$help" 
