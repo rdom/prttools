@@ -221,7 +221,7 @@ Bool_t MSelector::Process(Long64_t entry){
       if(current_file_name.Contains("S.root")) bsim = true;
       if(current_file_name.Contains("SF.root")) timeres=0.2;
       if(current_file_name.Contains("SP.root")) timeres=0.2;
-    
+      bsim = true;      
     }
   }
 
@@ -296,7 +296,7 @@ Bool_t MSelector::Process(Long64_t entry){
       if(bsim){
 	hSTime[mcp][pix]->Fill(timeDiff);
 	hLes->Fill(le);
-	continue;
+	//continue;
       }
       //timeDiff-=offset;
       if(gMode==1){
@@ -307,7 +307,7 @@ Bool_t MSelector::Process(Long64_t entry){
       }
 
       fhDigi[mcp]->Fill(col, row);
-      if(particleId==2212 || true){
+      if(particleId==2212 || !bsim){
 	hPTime[mcp][pix]->Fill(timeDiff);
 	hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
       }else{
@@ -435,10 +435,14 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       //    printf("Canvas %s: event=%d, x=%d, y=%d, p=%d, selected=%d\n", smcp.Data(), event, binx, biny, pix,smcp.Atoi());
       cTime->cd();
       if(gComboId==0) {
-	//TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
-	//if(gMode>=100) normalize(hh,2);
-	//prt_normalize(hh[0],hPiTime[mcp][pix]);
-	prt_fit(hPTime[mcp][pix],0.5,1);
+	TH1F * hh[] = {hPTime[mcp][pix],hPiTime[mcp][pix]}; 
+	if(gMode>=100) normalize(hh,2);
+	if(gMode==100){
+	  //prt_normalize(hPTime[mcp][pix],hPiTime[mcp][pix]);
+	  prt_fit(hPTime[mcp][pix],1,1);
+	}else{
+	  prt_fit(hPTime[mcp][pix],0.5,1);
+	}
 	hPTime[mcp][pix]->Draw();
 	if(gMode!=1){
 	  hPiTime[mcp][pix]->SetLineColor(4);
