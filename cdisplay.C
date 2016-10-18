@@ -202,6 +202,7 @@ Bool_t MSelector::Process(Long64_t entry){
   TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
   current_file_name.Remove(0, current_file_name.Last('/')+1);
   if(current_file_name.Contains("SF.root")) timeres=0.2;
+  if(current_file_name.Contains("SP.root")) timeres=0.2;
   
   Double_t offset=0;
   if(gMode==1){
