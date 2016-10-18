@@ -197,11 +197,14 @@ Bool_t MSelector::Process(Long64_t entry){
   Int_t particleId=prt_event->GetParticle();
   //if(prt_event->GetParticle()!=2212) return kTRUE;
   //if(prt_event->GetParticle()!=211) return kTRUE; 
+
+  Double_t timeres(0);
+  TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
+  current_file_name.Remove(0, current_file_name.Last('/')+1);
+  if(current_file_name.Contains("SF.root")) timeres=0.2;
   
   Double_t offset=0;
   if(gMode==1){
-    TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
-    current_file_name.Remove(0, current_file_name.Last('/')+1);
     TObjArray *sarr = current_file_name.Tokenize("_");
     if(sarr->GetEntries()==3){
       if(current_file_name.Contains("th_")){
@@ -217,7 +220,7 @@ Bool_t MSelector::Process(Long64_t entry){
     fileid = current_file_name;
     fileid.Remove(0,fileid.Last('/')+1);
     if(current_file_name.Contains("S.root")) bsim = true;
-  } 
+  }
 
   Double_t le,tot, triggerLe(0), tof(0), tof1(0),tof2(0);
   PrtHit hit;
@@ -270,6 +273,7 @@ Bool_t MSelector::Process(Long64_t entry){
     col = pix%8;
     
     le = hit.GetLeadTime();
+    if(timeres>0) le += prt_rand.Gaus(0,0.2);
     tot = hit.GetTotTime();   
 
     if(badcannel(ch)) continue;
