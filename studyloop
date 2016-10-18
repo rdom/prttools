@@ -141,7 +141,7 @@ processOneReco (){
 	if [ ${level} -eq "8" ]; then
 	    reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($1,6)" 2>/dev/null))  
 	else 
-	    reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($1,7)" | sed "s/S.root/SP.root/" 2>/dev/null))  
+	    reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($1,7)" | sed "s/S.root/SP.root" 2>/dev/null))  
 	fi
 	#path=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($1,1)" 2>/dev/null))
 	#info=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($1,2)" 2>/dev/null))
