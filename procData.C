@@ -93,8 +93,10 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   cExport->SetCanvasSize(800,400);
   for(Int_t i=0; i<maxch_dirc; i++){
     cExport->cd();
+    prt_normalize( hLe[i][0], hLe[i][1]);
     hLe[i][0]->Draw();
     hLe[i][1]->Draw("same");
+    
     cExport->SetName(Form("hLe_%d",i));
     canvasAdd(cExport);
     canvasSave(1,0);
