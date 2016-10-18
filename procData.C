@@ -47,14 +47,14 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
     PrtNextEvent(ievent,1000);
     Int_t counts(0);
     Double_t tot(0),time(0);
-    // if(fEvent->GetParticle()!=2212) continue;
+    // if(prt_event->GetParticle()!=2212) continue;
  
-    for(Int_t i=0; i<fEvent->GetHitSize(); i++){
-      fHit = fEvent->GetHit(i);
+    for(Int_t i=0; i<prt_event->GetHitSize(); i++){
+      fHit = prt_event->GetHit(i);
       Int_t ch = fHit.GetChannel();
       if(ch==-1) ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
       
-      if(ch<960 && !badcannel(ch)){
+      if(ch<maxch_dirc && !badcannel(ch)){
 	time = fHit.GetLeadTime()-offset;
 	tot = fHit.GetTotTime();
 	hLe->Fill(time);
