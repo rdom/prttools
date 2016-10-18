@@ -35,9 +35,18 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   tree->Branch("mult",&mult,"mult/D");
   
   TH1F * hMult  = new TH1F("mult","Mult;multiplicity [#];entries [#]",300,0,300);
-  TH1F * hLe  = new TH1F("le","LE; LE [ns]; entries [#]",1000,le1,le2);
+  TH1F * hLeA  = new TH1F("le","LE; LE [ns]; entries [#]",1000,le1,le2);
   TH1F * hTot  = new TH1F("tot","TOT; TOT [#]; entries [#]",1000,-2,15);
- 
+
+  Int_t colors[4]={2,4,2,4}
+  TH1F * hLe1[maxch_dirc][4];
+  for(Int_t t=0; t<4; t++){
+    for(Int_t i=0; i<maxch_dirc; i++){
+      hLe[i][t] = new TH1F(Form("le_ch_%d_%d",t,i),"LE; LE [ns]; entries [#]",1000,le1,le2);
+      hLe[i][t]->SetLineColor(colors[t]);
+    }    
+  }
+  
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit(1111);
  
@@ -45,19 +54,20 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   Int_t entries = fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
-    Int_t counts(0);
+    Int_t counts(0),pid(0);
     Double_t tot(0),time(0);
-    // if(prt_event->GetParticle()!=2212) continue;
- 
+    if(prt_event->GetParticle()==211) pid=1;
+    
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){
       fHit = prt_event->GetHit(i);
       Int_t ch = fHit.GetChannel();
-      if(ch==-1) ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
+      if(ch==-1) ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
       
       if(ch<maxch_dirc && !badcannel(ch)){
 	time = fHit.GetLeadTime()-offset;
 	tot = fHit.GetTotTime();
-	hLe->Fill(time);
+	hLe[ch][pid]->Fill(time);
+	hLeA->Fill(time);
 	hTot->Fill(tot);
 
 	if(time<le2 && time>le1){
@@ -73,6 +83,16 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   }
 
   TString ext = Form("_%d_%d",studyId,fileId);
+  TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
+  cExport->SetCanvasSize(800,400);
+  for(Int_t i=0; i<maxch_dirc; i++){
+    hLe[i][0]->Draw();
+    hLe[i][1]->Draw("same");
+    cExport->SetName(Form("hLe_%d",i));
+    canvasAdd(cExport);
+    canvasSave(1,0);
+  }  
+  
   
   canvasAdd("p_le"+ext,800,400);
   prt_fit(hLe,0.3,100,100).X();
@@ -85,7 +105,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   mult = prt_fit(hMult,20,20,100).X();
   hMult->Draw();
   
-  drawDigi("m,p,v\n",2,-2,-2);
+  drawDigi("m,p,v\n",7,-2,-2);
   cDigi->SetName("p_hits"+ext);
   canvasAdd(cDigi);  
   
