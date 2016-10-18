@@ -7,7 +7,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   
   if(infile=="") return;
 
-  Double_t mult(0),le1(0),le2(50),offset(0);
+  Double_t mult(0),le1(0),le2(25),offset(0),timeres(0);
   fSavePath = path+Form("/%ds/%d",studyId,fileId);
   
   if(infile.Contains("C.root")) { // beam data
@@ -16,6 +16,11 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
     // le2=330;
     fSavePath = path+Form("/%dr/%d",studyId,fileId);
   }
+  if(infile.Contains("SP.root")) { // PDF data
+    timeres=0.2;
+  }
+    
+  
   
   PrtInit(path+"/"+infile,1);
   CreateMap();
@@ -65,6 +70,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
       
       if(ch<maxch_dirc && !badcannel(ch)){
 	time = fHit.GetLeadTime()-offset;
+	if(timeres>0) time=prt_rand.Gaus(time,timeres);
 	tot = fHit.GetTotTime();
 	hLe[ch][pid]->Fill(time);
 	hLeA->Fill(time);
@@ -86,6 +92,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
   cExport->SetCanvasSize(800,400);
   for(Int_t i=0; i<maxch_dirc; i++){
+    cExport->cd();
     hLe[i][0]->Draw();
     hLe[i][1]->Draw("same");
     cExport->SetName(Form("hLe_%d",i));
