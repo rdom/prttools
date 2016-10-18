@@ -39,7 +39,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   TH1F * hTot  = new TH1F("tot","TOT; TOT [#]; entries [#]",1000,-2,15);
 
   Int_t colors[4]={2,4,2,4}
-  TH1F * hLe1[maxch_dirc][4];
+  TH1F * hLe[maxch_dirc][4];
   for(Int_t t=0; t<4; t++){
     for(Int_t i=0; i<maxch_dirc; i++){
       hLe[i][t] = new TH1F(Form("le_ch_%d_%d",t,i),"LE; LE [ns]; entries [#]",1000,le1,le2);
