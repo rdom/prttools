@@ -103,7 +103,7 @@ fi
 
 if (( $batchmode == 1 || $batchmode == 101 )); then
     lasthld=$(ls -tr *.hld | tail -n 1)
-#    for x in $(ls *.hld); do
+#   for x in $(ls *.hld); do
     for x in $(find -maxdepth 1 -name '*.hld' -mmin +1 | xargs echo); do
 	if [ ! -f "${x%.*}.hld.root" ] && [ "$x" != "$lasthld" ] || [ $batchmode == 101 ]; then
 	    hldtools -j10 -d $x
