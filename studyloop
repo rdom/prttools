@@ -24,7 +24,7 @@ show_help(){
         number of threads 
      -s 
         study
-        0 - all
+        0 - all 
         # - study id
      -n 
         silent run"
