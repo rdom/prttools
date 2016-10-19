@@ -159,7 +159,8 @@ void MSelector::SlaveBegin(TTree *){
       axisTime800x500(hPTot[m][p],"TOT time, [ns]");
       axisTime800x500(hPMult[m][p],"multiplicity, [#]");
       hSTime[m][p]->SetLineColor(2);
-
+      hPiTime[m][p]->SetLineColor(4);
+      
       fOutput->Add(hPTime[m][p]);
       fOutput->Add(hPiTime[m][p]);
       fOutput->Add(hSTime[m][p]);
@@ -445,7 +446,6 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	}
 	hPTime[mcp][pix]->Draw();
 	if(gMode!=1){
-	  hPiTime[mcp][pix]->SetLineColor(4);
 	  hPiTime[mcp][pix]->Draw("same");
 	}
 	//hPTime[mcp][pix]->Draw("same");
@@ -819,7 +819,7 @@ void MyMainFrame::DoExport(){
 	  hh[0]->Draw();
 	  prt_fit(hh[0],1,1);
 	  if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
-	  if(hh[2]->GetEntries()>10) hh[2]->Draw("same");
+	  //if(hh[2]->GetEntries()>10) hh[2]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
 	}
 	if(gComboId==2){
