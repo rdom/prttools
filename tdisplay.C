@@ -599,9 +599,8 @@ void Calibrate(){
       Double_t xle = hTot[j][c]->GetXaxis()->GetBinCenter(firstbin);
       gTotOff->SetPoint(c, xle, hTot[j][c]->GetMean());
 
-      gGr[j][c]->Fit("pol1","","",50,400);
-
       if(gMode==5){
+	gGr[j][c]->Fit("pol1","","",50,400);
 	Double_t chi=gGr[j][c]->GetFunction("pol1")->GetChisquare();
 	Int_t ch =c-1;
 	if(ch%49==0) continue;
