@@ -854,23 +854,23 @@ void MyMainFrame::DoExport(){
     canvasSave(1,0);
   }
 
-  if( gMode==100){
-    for(Int_t m=0; m<nmcp; m++){
-      for(Int_t p=0; p<npix; p++){
-	cExport->cd();
-	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; 
-	normalize(hh,2);
-	hh[0]->Draw();
-	prt_fit(hh[0],1,1);
-	hh[0]->Draw("same");
-	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
+  // if( gMode==100){
+  //   for(Int_t m=0; m<nmcp; m++){
+  //     for(Int_t p=0; p<npix; p++){
+  // 	cExport->cd();
+  // 	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; 
+  // 	normalize(hh,2);
+  // 	hh[0]->Draw();
+  // 	prt_fit(hh[0],1,1);
+  // 	hh[0]->Draw("same");
+  // 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
-	cExport->SetName(hh[0]->GetName());
-	canvasAdd(cExport);
-	canvasSave(1,0);
-      }
-    }
-  }
+  // 	cExport->SetName(hh[0]->GetName());
+  // 	canvasAdd(cExport);
+  // 	canvasSave(1,0);
+  //     }
+  //   }
+  // }
 
   gROOT->SetBatch(0);
   std::cout<<"Exporting .. Done"<<std::endl;
