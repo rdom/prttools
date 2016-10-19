@@ -495,6 +495,40 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
   }
 }
 
+void exec4event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
+  if(gComboId!=7) return;
+  TCanvas *c = (TCanvas *) gTQSender;
+  TPad *pad = (TPad *) c->GetSelectedPad();
+  if (!pad) return;
+  Float_t x = pad->AbsPixeltoX(gx);
+  Float_t y = pad->AbsPixeltoY(gy);
+  x = pad->PadtoX(x);
+  y = pad->PadtoY(y);
+  if (selected->InheritsFrom(TAxis::Class())) return;
+  
+  TH1F *hChannel = (TH1F *) pad->FindObject("hChA");
+    
+  Int_t ch = hChannel->GetXaxis()->FindBin(x);
+  cTime->cd();
+  gLine1->SetX1(ch+0.5);
+  gLine1->SetX2(ch+0.5);
+  gLine1->SetY1(cTime->GetUymin());
+  gLine1->SetY2(cTime->GetUymax());
+  gLine1->SetLineColor(kRed);
+  gLine1->Draw();
+  hCh->SetBit(TH1::kNoStats);
+  TPaveStats *ps = (TPaveStats*)hCh->GetListOfFunctions()->FindObject("stats");
+  TList *list = ps->GetListOfLines();
+  list->RemoveAll();
+
+  ps->AddText(Form("Entries %d",(Int_t)hCh->GetEntries()));
+  ps->AddText("TDC = 0x"+tdcsid[ch/48]);
+  ps->AddText(Form("Global ch = %d",ch));
+  ps->AddText(Form("TDC ch = %d",ch%48+1));
+  ps->AddText(Form("PADIWA ch =  %d",(ch%48)%16+1));
+  cTime->Update();
+}
+
 void MyMainFrame::InterestChanged(){
   Int_t ch = fNumber2->GetIntNumber();
   std::cout<<"ch of interest "<<ch <<std::endl;
@@ -1225,6 +1259,11 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 
   cDigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
 		 "exec3event(Int_t,Int_t,Int_t,TObject*)");
+
+
+  cTime->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
+		 "exec4event(Int_t,Int_t,Int_t,TObject*)");
+  
   MapWindow();  // Map main frame
 }
 
