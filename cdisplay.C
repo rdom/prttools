@@ -814,12 +814,12 @@ void MyMainFrame::DoExport(){
       for(Int_t p=0; p<npix; p++){
 	cExport->cd();
 	if(gComboId==0) {
-	  TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
-	  normalize(hh,2);
+	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p],hSTime[m][p]}; 
+	  normalize(hh,3);
 	  hh[0]->Draw();
 	  prt_fit(hh[0],1,1);
-	  if(hPiTime[m][p]->GetEntries()>10) hPiTime[m][p]->Draw("same");
 	  if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
+	  if(hh[2]->GetEntries()>10) hh[2]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
 	}
 	if(gComboId==2){
@@ -858,15 +858,14 @@ void MyMainFrame::DoExport(){
     for(Int_t m=0; m<nmcp; m++){
       for(Int_t p=0; p<npix; p++){
 	cExport->cd();
-	TH1F * hh[] = {hPTime[m][p],hSTime[m][p]}; 
+	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; 
 	normalize(hh,2);
-	hSTime[m][p]->Draw();
-	prt_fit(hPTime[m][p],1,1);
-	hPTime[m][p]->Draw("same");
-	if(hPTime[m][p]->GetEntries()>10) hSTime[m][p]->Draw("same");
-	histname=hPTime[m][p]->GetName();
+	hh[0]->Draw();
+	prt_fit(hh[0],1,1);
+	hh[0]->Draw("same");
+	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
-	cExport->SetName(histname);
+	cExport->SetName(hh[0]->GetName());
 	canvasAdd(cExport);
 	canvasSave(1,0);
       }
