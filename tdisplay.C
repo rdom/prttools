@@ -416,7 +416,7 @@ TString drawHist(Int_t m, Int_t p){
   return histname;
 }
 
-Bool_t lock = false;
+Bool_t tlock = false;
 void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
   // if(gComboId==0 || gComboId==1)
   {
@@ -427,9 +427,9 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
     Float_t y = pad->AbsPixeltoY(gy);
     x = pad->PadtoX(x);
     y = pad->PadtoY(y);
-    if(event ==1 && lock) lock = false;
-    else if(event ==1) lock = true;
-    if(lock) return;
+    if(event ==1 && tlock) tlock = false;
+    else if(event ==1) tlock = true;
+    if(tlock) return;
 
     if (selected->InheritsFrom(TH2::Class())){
       TH2F *hDigi = (TH2F *) selected;
@@ -615,10 +615,9 @@ void Calibrate(){
     if(hTot[0][c]->Integral()>100){
       Int_t nfound = spect->Search(hTot[0][c],3,"",0.1);
       std::cout<<"nfound  "<<nfound <<std::endl;
-      Float_t *xpeaks = spect->GetPositionX();
       Double_t peak(0);
       for(Int_t i=0; i<10; i++){
-	if(i<nfound) peak = xpeaks[i];
+	if(i<nfound) peak = spect->GetPositionX()[i];
 	else peak = 0;
 	std::cout<<i<<" xpeaks "<< peak <<std::endl;
 	gTotPeaks->SetPoint(c*10+i, 1, peak);
