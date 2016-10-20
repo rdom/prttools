@@ -5,7 +5,7 @@
 #include <TEllipse.h>
 #include <TKey.h>
 
-Double_t walktheta(-14*TMath::Pi()/180.);
+Double_t walktheta(-5*TMath::Pi()/180.);
 Double_t tof1le(0),tof2le(0),tof1tot(0),tof2tot(0);
 
 Double_t fr11[11]={0,0.5,0.5,0.3,0.3,0.4, 0.3,0.3,0.2,0.20,0.15};
@@ -49,13 +49,15 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   prt_data_info = getDataInfo(fileid);
   Int_t momentum = prt_data_info.getMomentum();
   Int_t studyId = prt_data_info.getStudyId();
+  if(studyId<0) studyId=1000;
   fSavePath = Form("tof/%d/%d",studyId,prt_data_info.getFileId());
   PrtInit(infile,1);
-  std::cout<<"ppp  "<<fSavePath <<std::endl;
+  std::cout<<"fSavePath  "<<fSavePath <<std::endl;
   if(studyId<0) return;
+  
+  Int_t le1(70), le2(75);
+  Int_t l1(70), l2(75);
 
-  Int_t le1(170), le2(186);
-  Int_t l1(174), l2(177);
 
   if(studyId==171 && momentum==7){
     tof1le=174.98;
@@ -65,8 +67,6 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   c2y=fr21[momentum];
   c1x=fr12[momentum];
   c2x=fr22[momentum];
-
-  if(momentum<=5) l2=186;
 
     
   TH1F * hMult1  = new TH1F("mult1","mult",10,0,10);
@@ -80,10 +80,10 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   TH1F * hTofC  = new TH1F("tofC ","tofC;TOF2-TOF1 [ns]; entries [#]",1000,le1,le2);
   TH1F * hTot  = new TH1F("tot ","tot;TOT1,TOT2 [ns]; entries [#]",   1000,0,100);
  
-  TH2F * hLeTot  = new TH2F("letot ","letot;TOF2-TOF1 [ns]; TOT1 [ns]",      500,l1,l2,200,40,44);
-  TH2F * hLeTotW  = new TH2F("letotW ","letotW;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,200,40,44);
-  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,200,40,44);
-  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,200,41,45);
+  TH2F * hLeTot  = new TH2F("letot ","letot;TOF2-TOF1 [ns]; TOT1 [ns]",      500,l1,l2,200,43,47);
+  TH2F * hLeTotW  = new TH2F("letotW ","letotW;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,200,43,47);
+  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,200,43,47);
+  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,200,43,47);
 
 
   gStyle->SetOptStat(1001111);
@@ -99,21 +99,21 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
     
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){
       fHit = prt_event->GetHit(i);
-      if(fHit.GetChannel()==1344) {
+      if(fHit.GetChannel()==818) {//trigger 1
 	btrig = true;
 	mult3++;
       }
-      if(fHit.GetChannel()==1248){
+      if(fHit.GetChannel()==821){ // trigger 2
 	bmcpout = true;
 	mult4++;
       }
-      if(fHit.GetChannel()==960){
+      if(fHit.GetChannel()==720){ //tof 1
 	btof1 = true;
 	tof1=fHit.GetLeadTime();
 	tot1=fHit.GetTotTime();
 	mult1++;
       }
-      if(fHit.GetChannel()==1104) {
+      if(fHit.GetChannel()==722){ //tof2
 	btof2 = true;
 	tof2 = fHit.GetLeadTime();
 	tot2=fHit.GetTotTime();
@@ -121,9 +121,9 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
       }
     }
     
-    if(!(btrig && btof1 && btof2 && bmcpout)) continue;
+    if(!(btrig && bmcpout && btof1 && btof2)) continue;
+    //if(fabs(tot1-tof1tot)>0.5 ||fabs(tot2-tof2tot)>0.5 )  continue;
 
-    if(fabs(tot1-tof1tot)>0.5 ||fabs(tot2-tof2tot)>0.5 )  continue;
     hMult1->Fill(mult1);
     hMult2->Fill(mult2);
     hMult3->Fill(mult3);
