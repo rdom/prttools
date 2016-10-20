@@ -74,16 +74,16 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   TH1F * hMult3  = new TH1F("mult3","mult",10,0,10);
   TH1F * hMult4  = new TH1F("mult4","mult",10,0,10);
     
-  TH1F * hTof1  = new TH1F("tof1 ","tof1;TOF2-TOF1 [ns]; entries [#]",1000,-1000,1000);
-  TH1F * hTof2  = new TH1F("tof2 ","tof2;TOF2-TOF1 [ns]; entries [#]",1000,-1000,1000);
-  TH1F * hTof  = new TH1F("tof ","tof;TOF2-TOF1 [ns]; entries [#]",   1000,le1,le2);
-  TH1F * hTofC  = new TH1F("tofC ","tofC;TOF2-TOF1 [ns]; entries [#]",1000,le1,le2);
-  TH1F * hTot  = new TH1F("tot ","tot;TOT1,TOT2 [ns]; entries [#]",   1000,0,100);
+  TH1F * hTof1  = new TH1F("tof1 ","tof1;TOF2-TOF1 [ns]; entries [#]",600,-1000,1000);
+  TH1F * hTof2  = new TH1F("tof2 ","tof2;TOF2-TOF1 [ns]; entries [#]",600,-1000,1000);
+  TH1F * hTof  = new TH1F("tof ","tof;TOF2-TOF1 [ns]; entries [#]",   600,le1,le2);
+  TH1F * hTofC  = new TH1F("tofC ","tofC;TOF2-TOF1 [ns]; entries [#]",600,le1,le2);
+  TH1F * hTot  = new TH1F("tot ","tot;TOT1,TOT2 [ns]; entries [#]",   600,0,100);
  
-  TH2F * hLeTot  = new TH2F("letot ","letot;TOF2-TOF1 [ns]; TOT1 [ns]",      500,l1,l2,200,43,47);
-  TH2F * hLeTotW  = new TH2F("letotW ","letotW;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,200,43,47);
-  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,200,43,47);
-  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,200,43,47);
+  TH2F * hLeTot  = new TH2F("letot ","letot;TOF2-TOF1 [ns]; TOT1 [ns]",      500,l1,l2,125,43,47);
+  TH2F * hLeTotW  = new TH2F("letotW ","letotW;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,43,47);
+  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,43,47);
+  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,125,43,47);
 
 
   gStyle->SetOptStat(1001111);
