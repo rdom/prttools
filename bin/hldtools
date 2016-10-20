@@ -88,7 +88,7 @@ fi
 calibrationOpt=1
 fileName=$1
 
-cd $ROOT5_PATH; source  bin/thisroot.sh; cd -
+cd $ROOT5_PATH; source  bin/thisroot.sh; cd - > /dev/null
 
 if [ $latestFile ]; then
     fileName=$(ls -t *.hld | head -1);
