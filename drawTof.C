@@ -58,7 +58,6 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   Int_t le1(70), le2(75);
   Int_t l1(70), l2(75);
 
-
   if(studyId==171 && momentum==7){
     tof1le=174.98;
     tof2le=175.74;
@@ -68,12 +67,15 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   c1x=fr12[momentum];
   c2x=fr22[momentum];
 
-    
-  TH1F * hMult1  = new TH1F("mult1","mult",10,0,10);
-  TH1F * hMult2  = new TH1F("mult2","mult",10,0,10);
-  TH1F * hMult3  = new TH1F("mult3","mult",10,0,10);
-  TH1F * hMult4  = new TH1F("mult4","mult",10,0,10);
-    
+  TH1F * hMult[4];
+
+  TString names[]={"trigger_1","trigger_2","tof_1","tof_2"};
+  Int_t colors[]={2,4,1,8};
+  for(Int_t i=0; i<4; i++){
+    hMult[i]  = new TH1F(names[i],";multiplicity [#]; entries [#]",10,0,10);
+    hMult[i]->SetLineColor(colors[i]);
+  }
+      
   TH1F * hTof1  = new TH1F("tof1 ","tof1;TOF2-TOF1 [ns]; entries [#]",600,-1000,1000);
   TH1F * hTof2  = new TH1F("tof2 ","tof2;TOF2-TOF1 [ns]; entries [#]",600,-1000,1000);
   TH1F * hTof  = new TH1F("tof ","tof;TOF2-TOF1 [ns]; entries [#]",   600,le1,le2);
@@ -101,33 +103,33 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
       fHit = prt_event->GetHit(i);
       if(fHit.GetChannel()==818) {//trigger 1
 	btrig = true;
-	mult3++;
+	mult1++;
       }
       if(fHit.GetChannel()==821){ // trigger 2
 	bmcpout = true;
-	mult4++;
+	mult2++;
       }
       if(fHit.GetChannel()==720){ //tof 1
 	btof1 = true;
 	tof1=fHit.GetLeadTime();
 	tot1=fHit.GetTotTime();
-	mult1++;
+	mult3++;
       }
       if(fHit.GetChannel()==722){ //tof2
 	btof2 = true;
 	tof2 = fHit.GetLeadTime();
 	tot2=fHit.GetTotTime();
-	mult2++;
+	mult4++;
       }
     }
     
     if(!(btrig && bmcpout && btof1 && btof2)) continue;
     //if(fabs(tot1-tof1tot)>0.5 ||fabs(tot2-tof2tot)>0.5 )  continue;
 
-    hMult1->Fill(mult1);
-    hMult2->Fill(mult2);
-    hMult3->Fill(mult3);
-    hMult4->Fill(mult4);
+    hMult[0]->Fill(mult1);
+    hMult[1]->Fill(mult2);
+    hMult[2]->Fill(mult3);
+    hMult[3]->Fill(mult4);
     
     hTof1->Fill(tof1);
     hTof2->Fill(tof2);
@@ -212,14 +214,19 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   
   
   canvasAdd("mult",800,400);
-  hMult1->Draw();
-  hMult2->SetLineColor(2);
-  hMult2->Draw("same");
-  hMult3->SetLineColor(3);
-  hMult3->Draw("same");
-  hMult4->SetLineColor(4);
-  hMult4->Draw("same");
-
+  hMult[0]->Draw();
+  for(Int_t i=1; i<4; i++){
+    hMult[i]->Draw("same");
+  }
+  
+  TLegend *leg = new TLegend(0.5,0.6,0.8,0.85);
+  leg->SetFillColor(0);
+  leg->SetFillStyle(0);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  for(Int_t i=0; i<4; i++) leg->AddEntry(hMult[i],names[i],"lp");
+  leg->Draw();
+  
   gStyle->SetOptTitle(0);
   canvasSave(0,0);
 }
