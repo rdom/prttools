@@ -86,13 +86,13 @@ if [ "$calibrationOpt" -eq 1 ]; then
     option=2
 fi
 calibrationOpt=1
-
 fileName=$1
+
+cd $ROOT5_PATH; source  bin/thisroot.sh; cd -
+
 if [ $latestFile ]; then
     fileName=$(ls -t *.hld | head -1);
 fi
-
-
 
 if (( $batchmode==5 )); then
     for x in $(find `pwd` -name '*.hld'); do
@@ -161,7 +161,7 @@ waitForMe (){
 }
 
 if [ "$threads" -gt 0 ]; then
-    total=$(root5 -l -q "GetHldEntries.C(\"$inDir\",\"$inName\")" | grep delmeme | cut -c 8-)
+    total=$(root -l -q "GetHldEntries.C(\"$inDir\",\"$inName\")" | grep delmeme | cut -c 8-)
     
     if (( $endEvent != 0)); then
 	total=$endEvent	
@@ -181,7 +181,7 @@ if [ "$threads" -gt 0 ]; then
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root5 -l -b -q "Convert.C(\"$inDir\",\"$inName\",\"${inName}${i}j.root\",${startEvent},${endEvent},1)" 1> /dev/null 2> /dev/null &
+	    root -l -b -q "Convert.C(\"$inDir\",\"$inName\",\"${inName}${i}j.root\",${startEvent},${endEvent},1)" 1> /dev/null 2> /dev/null &
 #	    waitForMe $threads
 	done
 
@@ -190,7 +190,8 @@ if [ "$threads" -gt 0 ]; then
 	
 	rm -f "$inDir$inName.root"
 	list="$inDir$inName"*j.root
-	hadd "$inDir$inName.root" $list >/dev/null 2>/dev/null
+	lt $list
+	hadd "$inDir$inName.root" $list # >/dev/null 2>/dev/null
 	rm $list
 	
 	printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s] \n"
@@ -199,7 +200,7 @@ if [ "$threads" -gt 0 ]; then
     if (( ($option == 2 || $option == 0 ) && calibrationOpt != 0 )); then  ####################################
 	statusline="Calib"
 	start_time=$(date +%s)
-	root5 -l -b -q "Convert.C(\"$inDir\",\"${inName}\",\"${inName}$i.root\",0,${total},2,${calibrationOpt})" > /dev/null &
+	root -l -b -q "Convert.C(\"$inDir\",\"${inName}\",\"${inName}$i.root\",0,${total},2,${calibrationOpt})" > /dev/null &
 	waitForMe "1" "${inName}"
 	printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s] \n"
     fi
@@ -214,7 +215,7 @@ if [ "$threads" -gt 0 ]; then
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root5 -l -b -q "Convert.C(\"$inDir\",\"$inName\",\"${fileId}.A${i}j.root\",${startEvent},${endEvent},3,${calibrationOpt})" > /dev/null & 
+	    root -l -b -q "Convert.C(\"$inDir\",\"$inName\",\"${fileId}.A${i}j.root\",${startEvent},${endEvent},3,${calibrationOpt})" > /dev/null & 
 	done
 
 	waitForMe "1" "${fileId}"
@@ -264,7 +265,6 @@ else
     if (( $endEvent != 0)); then
 	endEvent=1000	
     fi
-    root5 -l -b -q "Convert.C(\"$inDir\",\"$inName\",\"${inName}.root\",${startEvent},${endEvent},${option})"
+    root -l -b -q "Convert.C(\"$inDir\",\"$inName\",\"${inName}.root\",${startEvent},${endEvent},${option})"
 fi
-
 
