@@ -190,8 +190,7 @@ if [ "$threads" -gt 0 ]; then
 	
 	rm -f "$inDir$inName.root"
 	list="$inDir$inName"*j.root
-	lt $list
-	hadd "$inDir$inName.root" $list # >/dev/null 2>/dev/null
+	hadd "$inDir$inName.root" $list >/dev/null 2>/dev/null
 	rm $list
 	
 	printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s] \n"
