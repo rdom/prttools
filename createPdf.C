@@ -40,9 +40,9 @@ TF1 * fitpdf(TH1F *h){
   return gaust;
 }
 
-void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//beam_15177135523S.root
-  //  path="/data.local/data/jun15/beam_15177135523S.root";
-  //path="~/simo/build/beam_15184203911SP.root";
+void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){
+  // path="/data.local/data/jun15/beam_15177135523S.root";
+  // path="~/simo/build/beam_15184203911SP.root";
   if(path=="") return;
   
   fSavePath = "data/pdf3";
@@ -50,9 +50,9 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
   gStyle->SetOptStat(0);
   CreateMap();
 
-  TH1F *hlef[960], *hles[960];
+  TH1F *hlef[maxch_dirc], *hles[maxch_dirc];
 
-  for(Int_t i=0; i<960; i++){
+  for(Int_t i=0; i<maxch_dirc; i++){
     hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,100);
     hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,100);
   }
@@ -96,7 +96,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){//b
     path.ReplaceAll(".root",".pdf.root");
     TFile efile(path,"RECREATE");
     
-    for(Int_t i=0; i<960; i++){
+    for(Int_t i=0; i<maxch_dirc; i++){
       hlef[i]->Scale(1/(Double_t)totalf);
       hles[i]->Scale(1/(Double_t)totals);
 

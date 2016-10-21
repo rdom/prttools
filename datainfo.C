@@ -877,6 +877,13 @@ void datainfo_init(){
     for(Int_t z=0; z<=40; z+=5){
       dataArray.push_back(DataInfo(205,Form("sim_%d",z),2,2,25,378,85.0,0.00,0,7.0,(Double_t)z));
     }   
+
+    study[210]="Hight stat. run @ 7GeV and 25 degree", plate, no lens;
+    {
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum      
+      dataArray.push_back(DataInfo(210,"beam_15183214525",2,0,25.0,378,85.0,0.00,11,5.0));
+      
+    }
     
   }
 }
@@ -1066,7 +1073,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   
   if(format==6){ // reco
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"\"/d/proc/jun15/"<<newset[i].getStudyId()<<"\",\""<<newset[i].getChildRunId(0)<<"C.root\","
+      std::cout<<"\"/d/proc/oct16/"<<newset[i].getStudyId()<<"\",\""<<newset[i].getChildRunId(0)<<"C.root\","
 	       << newset[i].getStudyId() <<","<<i<<","<<newset[i].getMomentum() << ","<<newset[i].getRadiatorId()
 	       <<","<<newset[i].getLensId()
 	       <<","<<newset[i].getAngle()<<","<<newset[i].getZ()
@@ -1077,7 +1084,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   
   if(format==7){ // reco sim
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"\"/d/proc/jun15/"<<newset[i].getStudyId()<<"\",\""<<newset[i].getChildRunId(0)<<"S.root\","
+      std::cout<<"\"/d/proc/oct16/"<<newset[i].getStudyId()<<"\",\""<<newset[i].getChildRunId(0)<<"S.root\","
 	       << newset[i].getStudyId() <<","<<i<<","<<newset[i].getMomentum() << ","<<newset[i].getRadiatorId()
 	       <<","<<newset[i].getLensId()
 	       <<","<<newset[i].getAngle()<<","<<newset[i].getZ()

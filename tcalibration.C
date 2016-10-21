@@ -82,10 +82,10 @@ void TTSelector::Begin(TTree *){
       Double_t x,y;
       if(name.Contains("tof")){
 	name.Remove(0,4);
-	if(ginFile.Contains(name)){
+	//	if(ginFile.Contains(name)){
 	  gr->GetPoint(0,tof1le,tof2le);
-	  gr->GetPoint(1,tof1tot,tof2tot);
-	}
+	  gr->GetPoint(1,tof1tot,tof2tot);	  
+	  //	}
 	continue;
       }
       if(name.Contains("off")){ // read event offsets
@@ -131,10 +131,12 @@ void TTSelector::Begin(TTree *){
   prt_data_info = getDataInfo(fileid);
   Int_t momentum = prt_data_info.getMomentum();
   std::cout<<fileid<<" study id "<<prt_data_info.getStudyId() << " mom "<<momentum <<std::endl;
-   if(prt_data_info.getStudyId()==171 && momentum==7){
+  if(prt_data_info.getStudyId()==171 && momentum==7){
     tof1le=174.98;
     tof2le=175.74;
   }
+   
+  momentum=7;
   c1y=fr11[momentum];
   c2y=fr21[momentum];
   c1x=fr12[momentum];
@@ -144,7 +146,7 @@ void TTSelector::Begin(TTree *){
 }  
 
 Bool_t TTSelector::Process(Long64_t entry){
-  //  if(entry >10000 ) return kTRUE;
+  // if(entry >1000 ) return kTRUE;
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
   Double_t time[10000], timeLe(0),timeT[10000],timeTot(0);
@@ -161,7 +163,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   if(gMode==5){
     fEvent->SetAngle(prt_data_info.getAngle());
     fEvent->SetMomentum(TVector3(0,0,prt_data_info.getMomentum()));
-    fEvent->SetTrigger(817);
+    fEvent->SetTrigger(818);
     fEvent->SetGeometry(prt_data_info.getStudyId());
     fEvent->SetLens(prt_data_info.getLensId());
     fEvent->SetPrismStepX(prt_data_info.getXstep());
@@ -193,10 +195,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 	tdcRefTime[tdc] = time[i];
 	if(gTrigger/48==tdc) grTime0 = time[i];
       }
-      // if(ch==1344) mult1++;
-      // if(ch==960)  mult2++;
-      // if(ch==1104) mult3++;
-      // if(ch==1248) mult4++;
+      if(ch==818) mult1++;
+      //if(ch==821)  mult2++;
+      if(ch==720) mult3++;
+      if(ch==722) mult4++;
     }else{
       timeT[i]=time[i];
       grTime2=time[i];
@@ -205,11 +207,11 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   if(gMode==5){
-    if(mult1!=1 || mult2!=1 || mult3!=1 || mult4!=1){
-      fEvent->Clear();
-      delete fEvent;
-      return kTRUE;
-    }
+    // if(mult1!=1 /*|| mult2!=1 */ || mult3!=1 || mult4!=1){
+    //   fEvent->Clear();
+    //   delete fEvent;
+    //   return kTRUE;
+    // }
  
     for(Int_t i=0; i<Hits_ && i<10000; i++){
       if(Hits_nTdcErrCode[i]!=0) continue;
@@ -233,6 +235,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       time += (tot1-tof1tot)*tan(walktheta);
       time += (tot2-tof2tot)*tan(-walktheta);
       toftime = time;
+      
       if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)){
 	tofpid=211;
 	mass=0.13957018;
@@ -274,7 +277,8 @@ Bool_t TTSelector::Process(Long64_t entry){
       }
 	
       timeTot = timeT[i+1] - time[i];
- 
+
+      if(ch<maxch_dirc) std::cout<<"timeLe "<< timeLe<<std::endl;
       if(ch<maxch_dirc) {
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
 	timeTot += 30-gTotO[ch];
@@ -288,12 +292,12 @@ Bool_t TTSelector::Process(Long64_t entry){
       }   
       
       if(gMode==5){
-	timeLe-=gEvtOffset;
+	//timeLe-=gEvtOffset;
 	//if(ch>maxch_dirc && ch != 1104 && ch != 1344 && ch != 1248) continue;
-	if(ch<maxch_dirc && (timeLe<0 || timeLe>100)) continue;
+	//	if(ch<maxch_dirc && (timeLe<-180 || timeLe>-120)) continue;
       }
 
-      //if(ch<maxch_dirc)std::cout<<"timeLe "<< timeLe<<std::endl;
+      if(ch<maxch_dirc) std::cout<<"timeLe "<< timeLe<<std::endl;
       
       if(gMode!=5 || tofpid!=0){
 	hit.SetTdc(tdc);
@@ -331,7 +335,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode >= 5) gTrigger=817;
+  if(gMode >= 5) gTrigger=818;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);
