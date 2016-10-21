@@ -878,7 +878,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(205,Form("sim_%d",z),2,2,25,378,85.0,0.00,0,7.0,(Double_t)z));
     }   
 
-    study[210]="Hight stat. run @ 7GeV and 25 degree", plate, no lens;
+    study[210]="Hight stat. run @ 7GeV and 25 degree, plate, no lens";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum      
       dataArray.push_back(DataInfo(210,"beam_15183214525",2,0,25.0,378,85.0,0.00,11,5.0));
