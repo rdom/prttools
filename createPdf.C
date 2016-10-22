@@ -40,7 +40,7 @@ TF1 * fitpdf(TH1F *h){
   return gaust;
 }
 
-void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){
+void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Bool_t save=false){
   // path="/data.local/data/jun15/beam_15177135523S.root";
   // path="~/simo/build/beam_15184203911SP.root";
   if(path=="") return;
@@ -144,25 +144,18 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){
       hlef[i]->Write();
       hles[i]->Write();
       
-      if(false){
-      	cExport->cd();
-      	//	canvasAdd(Form("pdf_%d",i),800,500);
-      	cExport->SetName(Form("pdf_%d",i));
-      	//canvasAdd(cExport);
-      	//hlef[i]->GetYaxis()->SetRangeUser(0,1.5);
+      if(save){
+      	cExport->SetName(Form("pdf_mcp%d_pix_%d",map_mcp[i],map_pix[i]));
+      	hlef[i]->GetXaxis()->SetRangeUser(0,50);
+	hles[i]->GetXaxis()->SetRangeUser(0,50);
 	prt_normalize(hlef[i],hles[i]);
-	axisTime800x500(hlef[i]);
-	axisTime800x500(hles[i]);
 	hlef[i]->SetLineColor(2);
-      	hlef[i]->Draw();
       	hles[i]->SetLineColor(4);
+	hlef[i]->Draw();
       	hles[i]->Draw("same");
-      	// // f->Draw();
       	// s->SetLineColor(4);
       	// s->Draw("same");
-      	cExport->Print(fSavePath+Form("/pdf_mcp%d_pix_%d.png",map_mcp[i],map_pix[i]));
-      	//canvasSave(1,0);
-      	//canvasDel(cExport->GetName());
+      	canvasSave(1,0);
       }
     }
     

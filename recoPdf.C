@@ -6,7 +6,9 @@
 #include <TKey.h>
 #include <TRandom.h>
 
-void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdf="$HOME/simo/build/beam_15184203911SF.root", Double_t sigma=3){ 
+TLine *gLine = new TLine(0,0,0,1000);
+
+void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdfEnding=".h2Zpdf.root", Double_t sigma=3){ 
   
   if(path=="") return;
   Int_t studyId;
@@ -18,7 +20,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   CreateMap();
   TGaxis::SetMaxDigits(4);
   
-  // TCanvas *cc = new TCanvas("cc","cc");
+  TCanvas *cc = new TCanvas("cc","cc");
 
   TH1F *hpdff[maxch_dirc],*hpdfs[maxch_dirc], *hl[5],*hnph[5],*hll[5];
   for(Int_t i=0; i<5; i++){
@@ -30,8 +32,8 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 
   TRandom rand;
   TF1 *pdff[maxch_dirc],*pdfs[maxch_dirc];
-  if(path.Contains("F.root")) pdf.ReplaceAll("F.root","P.pdf.root");
-  else  pdf.ReplaceAll(".root",".pdf.root");
+  TString pdf = path;
+  pdf.ReplaceAll(".root",pdfEnding);
   TFile f(pdf);
   
   if(sigma >0) hl3->Rebin((Int_t)sigma);
@@ -39,6 +41,8 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   for(Int_t i=0; i<maxch_dirc; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
+    hpdff[i]->SetLineColor(2);
+    hpdfs[i]->SetLineColor(4);
     if(sigma >0) hpdff[i]->Rebin((Int_t)sigma);
     if(sigma >0) hpdfs[i]->Rebin((Int_t)sigma);
     integ1+= hpdff[i]->Integral();
@@ -110,19 +114,32 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
       time = fHit.GetLeadTime()+rand.Gaus(0,sigma/10.);
       
-      // { //time cuts
-      // 	Double_t cut1(11);
-      // 	if(studyId==157 || studyId==155) cut1=8;
-      // 	if(theta<=80){
-      // 	  if(time<cut1 || time>75) continue; //45
-      // 	}else if(theta>94){
-      // 	  if(time<3 || time>40) continue; //40
-      // 	}
-      // }
+      { //time cuts
+      	// Double_t cut1(11);
+      	// if(studyId==157 || studyId==155) cut1=8;
+      	// if(theta<=80){
+      	//   if(time<cut1 || time>75) continue; //45
+      	// }else if(theta>94){
+      	//   if(time<3 || time>40) continue; //40
+      	// }
+	if(time<9 || time >40) continue;				 
+      }
 
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.));   
-    
+
+      cc->cd();
+      hpdff[ch]->Draw();
+      hpdfs[ch]->Draw("same");
+      cc->Update();
+      gLine->SetX1(time);
+      gLine->SetX2(time);
+      gLine->SetY1(cc->GetUymin());
+      gLine->SetY2(cc->GetUymax());
+      gLine->Draw();
+      cc->Update();
+      cc->WaitPrimitive();
+      
       // if(aminf==0 || amins==0) continue;
       Double_t noise = nHits * 1e-5; //1e-7;
       sumf+=TMath::Log((aminf+noise));
