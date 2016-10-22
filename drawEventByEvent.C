@@ -30,6 +30,7 @@ void drawEventByEvent(TString infile="~/simo/laser/all_0910_2/th_800_16283152516
 	  time = hit.GetLeadTime();
 	  tot = hit.GetTotTime();
 	  ch  = hit.GetChannel();
+	  if(time<9 || time >30) continue;
 	  if(ch==-1) ch = map_mpc[mcp][ hit.GetPixelId()-1];
 	  if(badcannel(ch) || time <0) continue;
 	  if( mc || (tot>20 && tot<60 && time<-180 && time > -220)){

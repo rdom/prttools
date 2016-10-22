@@ -285,7 +285,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(timeTot)-30;
 	timeLe -= gLeOffArr[ch];
 	timeLe += prt_data_info.getSimTO();
-	timeLe-= (0.5973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree
+	timeLe-= (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree
       }   
       
       if(gMode==5){

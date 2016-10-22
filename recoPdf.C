@@ -51,6 +51,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     hl3->Add(hpdfs[i]);
   }
   if(path.Contains("C.root")) sigma=0;
+  if(path.Contains("Z.root")) sigma=0;
 
   TF1 *F1 = new TF1("gaus0","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
   TF1 *F2 = new TF1("gaus1","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
@@ -128,18 +129,20 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.));   
 
-      cc->cd();
-      hpdff[ch]->Draw();
-      hpdfs[ch]->Draw("same");
-      cc->Update();
-      gLine->SetX1(time);
-      gLine->SetX2(time);
-      gLine->SetY1(cc->GetUymin());
-      gLine->SetY2(cc->GetUymax());
-      gLine->Draw();
-      cc->Update();
-      cc->WaitPrimitive();
-      
+      if(false){
+	cc->cd();
+	hpdff[ch]->Draw();
+	hpdff[ch]->GetXaxis()->SetRangeUser(0,50);
+	hpdfs[ch]->Draw("same");
+	cc->Update();
+	gLine->SetX1(time);
+	gLine->SetX2(time);
+	gLine->SetY1(cc->GetUymin());
+	gLine->SetY2(cc->GetUymax());
+	gLine->Draw();
+	cc->Update();
+	cc->WaitPrimitive();
+      }
       // if(aminf==0 || amins==0) continue;
       Double_t noise = nHits * 1e-5; //1e-7;
       sumf+=TMath::Log((aminf+noise));
