@@ -90,24 +90,17 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   	fHit = prt_event->GetHit(h);
   	Int_t gch=fHit.GetChannel();
 	
-	if(gch>1031 && gch<1034) //34
+	//if(gch>1031 && gch<1034)
 	  tof1=true;
-
 	//if(gch>1060)
-	   tof2=true;
+	  tof2=true;
 	
-	if(gch>1302 && gch<1305) //5
-	  hodo1=true;
-        if(gch>1313 && gch<1320) //20
-	  hodo2=true;
-	    
-	if(tof1 && tof2 && hodo1 && hodo2) goto goodch;
+	if(gch>771 && gch<783) hodo1=true;
+        if(gch>786 && gch<797) hodo2=true;	   
       }
-
-      continue;
+      
+      if(!(tof1 && tof2 && hodo1 && hodo2)) continue;
     }
-
-  goodch:
 
     hnph[prt_pid]->Fill(nHits);
     
