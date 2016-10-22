@@ -170,11 +170,11 @@ void MSelector::SlaveBegin(TTree *){
   }
 
   hTot=new TH1F("hTotA","",500,min2,max2);
-  hLe=new TH1F("hLeA","",2000,-200,200);
+  hLe=new TH1F("hLeA","",2000,-300,300);
   hLes=new TH1F("hLeAs","",2000,0,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",980,0,980);
-  hTof=new TH1F("hTof","",2000,150,250);
+  hTof=new TH1F("hTof","",2000,50,80);
 
   axisTime800x500(hTot,"TOT time, [ns]");
   axisTime800x500(hLe,"LE time, [ns]");
@@ -308,7 +308,7 @@ Bool_t MSelector::Process(Long64_t entry){
       }
 
       fhDigi[mcp]->Fill(col, row);
-      if(particleId==2212 || !bsim){
+      if(particleId==2212 || particleId==0){
 	hPTime[mcp][pix]->Fill(timeDiff);
 	hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
       }else{
@@ -1245,7 +1245,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   
   if(ginFile.Contains("th_")) fEdit1->SetText("400 20 40");
-  if(ginFile.Contains("beam")) fEdit1->SetText("400 -180 -120");
+  if(ginFile.Contains("beam")) fEdit1->SetText("400 0 50");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   
   fEdit3->SetText("0 0");

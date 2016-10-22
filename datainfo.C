@@ -32,8 +32,8 @@ class DataInfo {
 
 public:
   DataInfo(){_studyId=-1;}; 	//the default constructor
-  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t m, Double_t beamDimension=10):
-    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0),_beamDimension(beamDimension){
+  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t m, Double_t beamDimension=10, Double_t simToffset=0):
+    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0),_beamDimension(beamDimension),_simToffset(simToffset){
   };
 
   ~DataInfo() {}
@@ -880,9 +880,52 @@ void datainfo_init(){
 
     study[210]="Hight stat. run @ 7GeV and 25 degree, plate, no lens";
     {
-      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum      
-      dataArray.push_back(DataInfo(210,"beam_15183214525",2,0,25.0,378,85.0,0.00,11,5.0));
-      
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
+      Double_t o = 198.1;
+      dataArray.push_back(DataInfo(210,"beam_16294203519",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294210028",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294212402",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294214010",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294215616",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294221303",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294222840",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294224422",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294225958",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294231537",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294233113",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16294234646",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295000236",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295002249",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295004406",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295010523",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295012713",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295014827",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295020806",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295022341",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295023835",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295025305",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295030759",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295032229",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295033723",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295035153",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295040653",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295042138",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295043614",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295045100",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295050535",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295052024",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295053524",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295054959",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295060423",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295061853",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295063336",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295064811",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295070235",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295071705",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295073148",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295074623",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295080036",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(210,"beam_16295081511",2,0,25.0,378,85.0,0.00,11,7.0,10,o));	
     }
     
   }
@@ -920,23 +963,27 @@ void createAliases(){
   
   for(UInt_t i = 0; i != dataArray.size(); i++) {
     TString aid = dataArray[i].getAliasId();
-    for(UInt_t j = 0; j != dataArray.size(); j++) {
-      if(aid==dataArray[j].getAliasId()){
-	bool found = false;
-	for(UInt_t k = 0; k != aliasArray.size(); k++) {
-	  if(aliasArray[k].getAliasId()==aid){
-	    aliasArray[k].addChildRunId(dataArray[j].getRunId());
-	    found = true;
-	    break;
-	  }
-	}
-	if(!found){
-	  DataInfo newdi = dataArray[i];
-	  newdi.addChildRunId(dataArray[j].getRunId());
-	  aliasArray.push_back(newdi);
-	}
-      }
-    }
+
+    aliasArray.push_back(dataArray[i]);
+	  
+    
+    // for(UInt_t j = 0; j != dataArray.size(); j++) {
+    //   if(aid==dataArray[j].getAliasId()){
+    // 	bool found = false;
+    // 	for(UInt_t k = 0; k != aliasArray.size(); k++) {
+    // 	  if(aliasArray[k].getAliasId()==aid){
+    // 	    aliasArray[k].addChildRunId(dataArray[j].getRunId());
+    // 	    found = true;
+    // 	    break;
+    // 	  }
+    // 	}
+    // 	if(!found){
+    // 	  DataInfo newdi = dataArray[i];
+    // 	  newdi.addChildRunId(dataArray[j].getRunId());
+    // 	  aliasArray.push_back(newdi);
+    // 	}
+    //   }
+    // }
   }
 
   //std::sort(aliasArray.begin(), aliasArray.end());
@@ -952,49 +999,6 @@ void createAliases(){
       }
     }
   }
-  
-  for(UInt_t k = 0; k != aliasArray.size(); k++) {
-    Double_t offset =0;
-    if("00000000001" == aliasArray[k].getAliasId()) offset = 72.080000;
-    if("00000000002" == aliasArray[k].getAliasId()) offset = 72.240000;
-    if("00000000003" == aliasArray[k].getAliasId()) offset = 72.240000;
-    if("00000000004" == aliasArray[k].getAliasId()) offset = 72.360000;
-    if("00000000005" == aliasArray[k].getAliasId()) offset = 72.400000;
-    if("00000000006" == aliasArray[k].getAliasId()) offset = 72.480000;
-    if("00000000007" == aliasArray[k].getAliasId()) offset = 72.200000;
-    if("00000000008" == aliasArray[k].getAliasId()) offset = 72.240000;
-    if("00000000009" == aliasArray[k].getAliasId()) offset = 72.160000;
-    if("00000000010" == aliasArray[k].getAliasId()) offset = 72.160000;
-    if("00000000011" == aliasArray[k].getAliasId()) offset = 73.560000;
-    if("00000000012" == aliasArray[k].getAliasId()) offset = 73.560000;
-    if("00000000013" == aliasArray[k].getAliasId()) offset = 72.960000;
-    if("00000000014" == aliasArray[k].getAliasId()) offset = 72.480000;
-    if("00000000015" == aliasArray[k].getAliasId()) offset = 72.120000;
-    if("00000000016" == aliasArray[k].getAliasId()) offset = 72.680000;
-    if("00000000017" == aliasArray[k].getAliasId()) offset = 72.040000;
-    if("00000000018" == aliasArray[k].getAliasId()) offset = 72.120000;
-    if("00000000019" == aliasArray[k].getAliasId()) offset = 72.040000;
-    if("00000000020" == aliasArray[k].getAliasId()) offset = 72.080000;
-    if("00000000021" == aliasArray[k].getAliasId()) offset = 72.040000;
-    if("00000000022" == aliasArray[k].getAliasId()) offset = 72.080000;
-    if("00000000023" == aliasArray[k].getAliasId()) offset = 72.080000;
-    if("00000000024" == aliasArray[k].getAliasId()) offset = 72.040000;
-    if("00000000025" == aliasArray[k].getAliasId()) offset = 72.080000;
-    if("00000000026" == aliasArray[k].getAliasId()) offset = 72.000000;
-    if("00000000027" == aliasArray[k].getAliasId()) offset = 72.040000;
-    if("00000000028" == aliasArray[k].getAliasId()) offset = 71.960000;
-    if("00000000029" == aliasArray[k].getAliasId()) offset = 71.920000;
-    if("00000000030" == aliasArray[k].getAliasId()) offset = 71.920000;
-    if("00000000031" == aliasArray[k].getAliasId()) offset = 71.960000;
-    if("00000000014" == aliasArray[k].getAliasId()) offset = 72.480000;
-    if("00000000002" == aliasArray[k].getAliasId()) offset = 72.240000;
-    if("00000000022" == aliasArray[k].getAliasId()) offset = 72.080000;
-    aliasArray[k].setSimTO(offset);
-
-  }
-
-  
-
 }
 
 void p_hadd(){
