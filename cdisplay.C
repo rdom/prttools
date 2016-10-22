@@ -436,10 +436,10 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       //    printf("Canvas %s: event=%d, x=%d, y=%d, p=%d, selected=%d\n", smcp.Data(), event, binx, biny, p,smcp.Atoi());
       cTime->cd();
       if(gComboId==0) {
-	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p],hSTime[m][p]};
-	normalize(hh,3);
-	hh[0]->Draw();
+	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]};
+	normalize(hh,2);
 	prt_fit(hh[0],1,1);
+	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
 	
@@ -846,10 +846,10 @@ void MyMainFrame::DoExport(){
       for(Int_t p=0; p<npix; p++){
 	cExport->cd();
 	if(gComboId==0) {
-	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p],hSTime[m][p]}; 
-	  normalize(hh,3);
-	  hh[0]->Draw();
+	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; //,hSTime[m][p]}; 
+	  normalize(hh,2);
 	  prt_fit(hh[0],1,1);
+	  hh[0]->Draw();
 	  if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 	  histname=hh[0]->GetName();
 	}
