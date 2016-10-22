@@ -436,13 +436,18 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       //    printf("Canvas %s: event=%d, x=%d, y=%d, p=%d, selected=%d\n", smcp.Data(), event, binx, biny, pix,smcp.Atoi());
       cTime->cd();
       if(gComboId==0) {
-	TH1F * hh[] = {hPTime[mcp][pix],hPiTime[mcp][pix]}; 
-	if(gMode>=100) normalize(hh,2);
-	if(gMode==100) prt_fit(hPTime[mcp][pix],1,1);
-	else prt_fit(hPTime[mcp][pix],0.5,1);
-	
-	hh[0]->Draw();       
+	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p],hSTime[m][p]};
+	normalize(hh,3);
+	hh[0]->Draw();
+	prt_fit(hh[0],1,1);
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
+
+	
+	// TH1F * hh[] = {hPTime[mcp][pix],hPiTime[mcp][pix]}; 
+	// if(gMode==100) prt_fit(hh[0],1,1);
+	// else prt_fit(hh[0],0.5,1);	
+	// hh[0]->Draw();       
+	// if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
       }
       if(gComboId==2) hPTot[mcp][pix]->Draw();   
       if(gComboId==5) hPMult[mcp][pix]->Draw();      
@@ -840,7 +845,7 @@ void MyMainFrame::DoExport(){
     for(Int_t m=0; m<nmcp; m++){
       for(Int_t p=0; p<npix; p++){
 	cExport->cd();
-	if(gComboId==0) {
+	if(gComboId==0) {1
 	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p],hSTime[m][p]}; 
 	  normalize(hh,3);
 	  hh[0]->Draw();
