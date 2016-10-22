@@ -442,12 +442,6 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
-	
-	// TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; 
-	// if(gMode==100) prt_fit(hh[0],1,1);
-	// else prt_fit(hh[0],0.5,1);	
-	// hh[0]->Draw();       
-	// if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
       }
       if(gComboId==2) hPTot[m][p]->Draw();   
       if(gComboId==5) hPMult[m][p]->Draw();      
