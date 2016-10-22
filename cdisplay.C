@@ -845,7 +845,7 @@ void MyMainFrame::DoExport(){
     for(Int_t m=0; m<nmcp; m++){
       for(Int_t p=0; p<npix; p++){
 	cExport->cd();
-	if(gComboId==0) {1
+	if(gComboId==0) {
 	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p],hSTime[m][p]}; 
 	  normalize(hh,3);
 	  hh[0]->Draw();
