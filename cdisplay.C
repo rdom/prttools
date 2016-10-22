@@ -438,17 +438,12 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[mcp][pix],hPiTime[mcp][pix]}; 
 	if(gMode>=100) normalize(hh,2);
-	if(gMode==100){
-	  //prt_normalize(hPTime[mcp][pix],hPiTime[mcp][pix]);
-	  prt_fit(hPTime[mcp][pix],1,1);
-	}else{
-	  prt_fit(hPTime[mcp][pix],0.5,1);
-	}
-	hPTime[mcp][pix]->Draw();
-	if(gMode!=1){
-	  hPiTime[mcp][pix]->Draw("same");
-	}
-	//hPTime[mcp][pix]->Draw("same");
+	if(gMode==100) prt_fit(hPTime[mcp][pix],1,1);
+	else prt_fit(hPTime[mcp][pix],0.5,1);
+	
+	hPTime[mcp][pix]->Draw();       
+	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
+	
 	//if(gMode>=100 &&  hh[0]->GetEntries()>10) hh[1]->Draw("same");
       }
       if(gComboId==2) hPTot[mcp][pix]->Draw();   
@@ -853,7 +848,6 @@ void MyMainFrame::DoExport(){
 	  hh[0]->Draw();
 	  prt_fit(hh[0],1,1);
 	  if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
-	  //if(hh[2]->GetEntries()>10) hh[2]->Draw("same");
 	  histname=hPTime[m][p]->GetName();
 	}
 	if(gComboId==2){
