@@ -910,9 +910,9 @@ Double_t prt_integral(TH1F *h,Double_t xmin, Double_t xmax){
 }
 
 void normalize(TH1F* hists[],Int_t size){
-  for(Int_t i=0; i<size; i++){
-    hists[i]->Scale(1/hists[i]->Integral(), "width"); 
-  }
+  // for(Int_t i=0; i<size; i++){
+  //   hists[i]->Scale(1/hists[i]->Integral(), "width"); 
+  // }
   
   Double_t max = 0;
   Double_t min = 0;
