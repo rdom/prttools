@@ -441,10 +441,8 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	if(gMode==100) prt_fit(hPTime[mcp][pix],1,1);
 	else prt_fit(hPTime[mcp][pix],0.5,1);
 	
-	hPTime[mcp][pix]->Draw();       
+	hh[0]->Draw();       
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
-	
-	//if(gMode>=100 &&  hh[0]->GetEntries()>10) hh[1]->Draw("same");
       }
       if(gComboId==2) hPTot[mcp][pix]->Draw();   
       if(gComboId==5) hPMult[mcp][pix]->Draw();      
@@ -848,7 +846,7 @@ void MyMainFrame::DoExport(){
 	  hh[0]->Draw();
 	  prt_fit(hh[0],1,1);
 	  if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
-	  histname=hPTime[m][p]->GetName();
+	  histname=hh[0]->GetName();
 	}
 	if(gComboId==2){
 	  hPTot[m][p]->Draw(); 
