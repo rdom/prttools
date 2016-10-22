@@ -430,10 +430,10 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       Int_t biny = hDigi->GetYaxis()->FindBin(y);
       TString smcp = selected->GetName();
       smcp = smcp(3,smcp.Sizeof());
-      Int_t mcp = smcp.Atoi();
-      Int_t pix = 8*(biny-1)+binx-1;
-      Int_t ch = map_mpc[mcp][pix];
-      //    printf("Canvas %s: event=%d, x=%d, y=%d, p=%d, selected=%d\n", smcp.Data(), event, binx, biny, pix,smcp.Atoi());
+      Int_t m = smcp.Atoi();
+      Int_t p = 8*(biny-1)+binx-1;
+      Int_t ch = map_mpc[m][p];
+      //    printf("Canvas %s: event=%d, x=%d, y=%d, p=%d, selected=%d\n", smcp.Data(), event, binx, biny, p,smcp.Atoi());
       cTime->cd();
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p],hSTime[m][p]};
@@ -443,18 +443,18 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
 	
-	// TH1F * hh[] = {hPTime[mcp][pix],hPiTime[mcp][pix]}; 
+	// TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; 
 	// if(gMode==100) prt_fit(hh[0],1,1);
 	// else prt_fit(hh[0],0.5,1);	
 	// hh[0]->Draw();       
 	// if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
       }
-      if(gComboId==2) hPTot[mcp][pix]->Draw();   
-      if(gComboId==5) hPMult[mcp][pix]->Draw();      
-      if(gComboId==4) hLeTot[mcp][pix]->Draw("colz");
-      if(gComboId==10) hShape[mcp][pix]->Draw("colz");
+      if(gComboId==2) hPTot[m][p]->Draw();   
+      if(gComboId==5) hPMult[m][p]->Draw();      
+      if(gComboId==4) hLeTot[m][p]->Draw("colz");
+      if(gComboId==10) hShape[m][p]->Draw("colz");
       if(gComboId==11){
-	hLeTot[mcp][pix]->Draw("colz");
+	hLeTot[m][p]->Draw("colz");
 	Double_t* xx = gGrDiff[ch]->GetX();
 	Double_t* yy = gGrDiff[ch]->GetY();
 
@@ -464,7 +464,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	gr->Draw("P same");
       }
       if(gMain->fCheckBtn2->GetState() == kButtonDown){
-	gMain->fEdit3->SetText(Form("%2.2f %2.2f", gTimeCuts[mcp][pix][0], gTimeCuts[mcp][pix][1]));
+	gMain->fEdit3->SetText(Form("%2.2f %2.2f", gTimeCuts[m][p][0], gTimeCuts[m][p][1]));
       }
       if(gComboId==7){
 	gLine1->SetX1(ch+0.5);
