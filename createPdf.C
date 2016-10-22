@@ -145,7 +145,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
       hles[i]->Write();
       
       if(save){
-      	cExport->SetName(Form("pdf_mcp%d_pix_%d",map_mcp[i],map_pix[i]));
+	cExport->cd();
       	hlef[i]->GetXaxis()->SetRangeUser(0,50);
 	hles[i]->GetXaxis()->SetRangeUser(0,50);
 	prt_normalize(hlef[i],hles[i]);
@@ -153,8 +153,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
       	hles[i]->SetLineColor(4);
 	hlef[i]->Draw();
       	hles[i]->Draw("same");
-      	// s->SetLineColor(4);
-      	// s->Draw("same");
+	cExport->SetName(Form("pdf_mcp%d_pix_%d",map_mcp[i],map_pix[i]));
 	canvasAdd(cExport);
       	canvasSave(1,0);
       }
