@@ -21,7 +21,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   
   // TCanvas *cc = new TCanvas("cc","cc");
 
-  TH1F *hpdff[960],*hpdfs[960], *hl[5],*hnph[5],*hll[5];
+  TH1F *hpdff[maxch_dirc],*hpdfs[maxch_dirc], *hl[5],*hnph[5],*hll[5];
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,100);
     hnph[i] = new TH1F(Form("hnph_%d",i),";photon yield [#]; entries [#]", 250,0,250);
@@ -30,14 +30,14 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,100);
 
   TRandom rand;
-  TF1 *pdff[960],*pdfs[960];
+  TF1 *pdff[maxch_dirc],*pdfs[maxch_dirc];
   if(path.Contains("F.root")) pdf.ReplaceAll("F.root","P.pdf.root");
   else  pdf.ReplaceAll(".root",".pdf.root");
   TFile f(pdf);
   
   if(sigma >0) hl3->Rebin((Int_t)sigma);
   Int_t integ1(0), integ2(0);
-  for(Int_t i=0; i<960; i++){
+  for(Int_t i=0; i<maxch_dirc; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
     if(sigma >0) hpdff[i]->Rebin((Int_t)sigma);
