@@ -155,6 +155,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
       	hles[i]->Draw("same");
       	// s->SetLineColor(4);
       	// s->Draw("same");
+	canvasAdd(cExport);
       	canvasSave(1,0);
       }
     }
