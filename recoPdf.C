@@ -10,9 +10,8 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   
   if(path=="") return;
   Int_t studyId;
-  TString str = path;
-  str.ReplaceAll("jun15","");
-  sscanf(str, "%*[^0-9]%d{3}",&studyId);
+  sscanf(path, "%*[^/]/%d{3}",&studyId);
+  
   fSavePath = Form("data/recopdf_%d",studyId);
   PrtInit(path,1);
   // gStyle->SetOptStat(0);
@@ -95,8 +94,10 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	//if(gch>1060)
 	  tof2=true;
 	
-	if(gch>771 && gch<783) hodo1=true;
-        if(gch>786 && gch<797) hodo2=true;	   
+	//if(gch>771 && gch<783)
+	  hodo1=true;
+	//if(gch>786 && gch<797)
+	  hodo2=true;	   
       }
       
       if(!(tof1 && tof2 && hodo1 && hodo2)) continue;
@@ -109,15 +110,15 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
       time = fHit.GetLeadTime()+rand.Gaus(0,sigma/10.);
       
-      { //time cuts
-	Double_t cut1(11);
-	if(studyId==157 || studyId==155) cut1=8;
-	if(theta<=80){
-	  if(time<cut1 || time>75) continue; //45
-	}else if(theta>94){
-	  if(time<3 || time>40) continue; //40
-	}
-      }
+      // { //time cuts
+      // 	Double_t cut1(11);
+      // 	if(studyId==157 || studyId==155) cut1=8;
+      // 	if(theta<=80){
+      // 	  if(time<cut1 || time>75) continue; //45
+      // 	}else if(theta>94){
+      // 	  if(time<3 || time>40) continue; //40
+      // 	}
+      // }
 
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.));   
@@ -131,7 +132,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     }
 
     sum = sumf-sums; 
-    if(fabs(sum)<0.04) continue;
+    // if(fabs(sum)<0.04) continue;
     
     // sumf += 10*TMath::Log(F2->Eval(nHits));
     // sums += 10*TMath::Log(F1->Eval(nHits));

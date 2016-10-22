@@ -65,6 +65,27 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root"){
     PrtNextEvent(ievent,1000);
 
     Int_t nHits =prt_event->GetHitSize();
+
+    if(prt_event->GetType()==0){
+      Bool_t tof1(false), tof2(false);
+      Bool_t hodo1(false), hodo2(false);
+      for(Int_t h=0; h<nHits; h++) {
+	fHit = prt_event->GetHit(h);
+	Int_t gch=fHit.GetChannel();
+
+	//if(gch>1031 && gch<1034)
+	tof1=true;
+	//if(gch>1060)
+	tof2=true;
+
+	if(gch>774 && gch<781)
+	  hodo1=true;
+	if(gch>787 && gch<796)
+	  hodo2=true;
+      }
+
+      if(!(tof1 && tof2 && hodo1 && hodo2)) continue;
+    }
     
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
