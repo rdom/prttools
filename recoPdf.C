@@ -67,7 +67,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   TVirtualFitter *fitter;
   Double_t mom,nph,time,timeres(-1);
   PrtHit fHit;
-  Int_t totalf(0),totals(0),mcp,pix,ch, entries = 50000; //fCh->GetEntries(); // [50000-rest] - is for pdf generation
+  Int_t totalf(0),totals(0),mcp,pix,ch, entries = fCh->GetEntries(); // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
@@ -99,9 +99,9 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	//if(gch>1060)
 	  tof2=true;
 	
-	if(gch>776 && gch<780)
+	  //if(gch>776 && gch<780)
 	  hodo1=true;
-	if(gch>790 && gch<794)
+	  //if(gch>790 && gch<794)
 	  hodo2=true;	   
       }
       
