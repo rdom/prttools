@@ -159,7 +159,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   if(gMode==5){
     Double_t mom = prt_data_info.getMomentum();
     Int_t studyId=prt_data_info.getStudyId();
-    simOffet = prt_data_info.getSimTO();
+    simOffset = prt_data_info.getSimTO();
     if(studyId<0) {
       mom=7;
       simOffset=0;
