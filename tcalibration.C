@@ -270,6 +270,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeLe = time[i];
 	if(gTrigger!=0 && ch<maxch_dirc) timeLe = timeLe - grTime1;
       }
+      
       if(gTrigger!=0) {
 	triggerLe = grTime1 - grTime0;
 	triggerTot=grTime2-grTime1;
@@ -284,8 +285,9 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//timeLe += getTotWalk(triggerTot,ch,1);
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(timeTot)-30;
 	timeLe -= gLeOffArr[ch];
+	timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree
 	timeLe += prt_data_info.getSimTO();
-	timeLe-= (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree
+
       }   
       
       if(gMode==5){
