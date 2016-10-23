@@ -108,7 +108,7 @@ if (( $batchmode == 1 || $batchmode == 101 )); then
 #   for x in $(ls *.hld); do
     for x in $(find -maxdepth 1 -name '*.hld' -mmin +1 | xargs echo); do
 	if [ ! -f "${x%.*}.hld.root" ] && [ "$x" != "$lasthld" ] || [ $batchmode == 101 ]; then
-	    hldtools -j10 -d $x
+	    hldtools -j5 -d $x
 	fi
     done
     exit 0
@@ -117,7 +117,7 @@ fi
 if (( $batchmode == 2 || $batchmode == 102  )); then
     for x in $(ls *.hld.root); do
 	if [ ! -f  ${x%.*.*}"C.root" ] || [ $batchmode == 102 ]; then
-	    tcalibration -j10 -r818 -c /d/oct2016/laser/calib_1910_1.root $x
+	    tcalibration -j5 -r720 -c /d/oct2016/laser/calib_2310_2.root $x
 	fi
     done
     exit 0
