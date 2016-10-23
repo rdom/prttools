@@ -8,7 +8,7 @@
 
 TLine *gLine = new TLine(0,0,0,1000);
 
-void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdfEnding=".h2Zpdf.root", Double_t sigma=3){ 
+void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdfEnding=".h2Zpdf.root", Double_t sigma=3,Bool_t debug=false){ 
   
   if(path=="") return;
   Int_t studyId;
@@ -109,6 +109,8 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     }
 
     hnph[prt_pid]->Fill(nHits);
+
+    if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
     
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
@@ -129,7 +131,10 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.));   
 
-      if(false){
+      if(debug){
+	TString x=(aminf>amins)? " <====== PROTON" : "";
+	std::cout<<"f "<<Form("%1.6f",aminf) <<"  s " << Form("%1.6f  ",amins)  <<x <<std::endl;
+	
 	cc->cd();
 	hpdff[ch]->Draw();
 	hpdff[ch]->GetXaxis()->SetRangeUser(0,50);
