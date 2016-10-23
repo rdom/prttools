@@ -67,7 +67,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   TVirtualFitter *fitter;
   Double_t mom,nph,time,timeres(-1);
   PrtHit fHit;
-  Int_t totalf(0),totals(0), ch, entries = 50000; //fCh->GetEntries(); // [50000-rest] - is for pdf generation
+  Int_t totalf(0),totals(0),mcp,pix,ch, entries = 50000; //fCh->GetEntries(); // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = fCh->GetEntries();
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
@@ -78,10 +78,10 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
-    Int_t nHits =prt_event->GetHitSize();
-
+    Int_t pid = prt_event->GetParticle();
+    Int_t nHits =prt_event->GetHitSize();    
     if(nHits<5) continue;
-
+    
     if(prt_event->GetType()==0){
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
       // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<175.6 ) continue;
@@ -114,8 +114,11 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
-      ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];
+      mcp = fHit.GetMcpId();
+      pix=fHit.GetPixelId()-1;
+      ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime()+rand.Gaus(0,sigma/10.);
+      if(mcp>6) continue;
       
       { //time cuts
       	// Double_t cut1(11);
@@ -133,7 +136,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 
       if(debug){
 	TString x=(aminf>amins)? " <====== PROTON" : "";
-	std::cout<<"f "<<Form("%1.6f",aminf) <<"  s " << Form("%1.6f  ",amins)  <<x <<std::endl;
+	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,pid)<<"  "<<x <<std::endl;
 	
 	cc->cd();
 	hpdff[ch]->Draw();

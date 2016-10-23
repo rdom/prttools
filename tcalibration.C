@@ -146,7 +146,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
   Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7);
-  Int_t mult1(0), mult2(0), mult3(0), mult4(0);
+  Int_t mult1(0), mult2(0), mult3(0), mult4(0), mult5(0);
   
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   Bool_t trbdata = current_file_name.Contains("trb");
@@ -195,9 +195,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(gTrigger/48==tdc) grTime0 = time[i];
       }
       if(ch==818) mult1++;
-      if(ch==821)  mult2++;
+      if(ch==821) mult2++;
       if(ch==720) mult3++;
       if(ch==722) mult4++;
+      if(ch==819) mult5++;
     }else{
       timeT[i]=time[i];
       grTime2=time[i];
@@ -206,7 +207,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   if(gMode==5){
-    if(mult1!=1 || mult2!=1 || mult3!=1 || mult4!=1){
+    if(mult1!=1 || mult2!=1 || mult3!=1 || mult4!=1 || mult5!=1){
       fEvent->Clear();
       delete fEvent;
       return kTRUE;
@@ -331,7 +332,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode == 5) gTrigger=818;
+  if(gMode == 5) gTrigger=819;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);
