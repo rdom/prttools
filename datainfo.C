@@ -881,7 +881,7 @@ void datainfo_init(){
     study[210]="Hight stat. run @ 7GeV and 25 degree, plate, no lens";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-      Double_t o = 180.17;
+      Double_t o = 185.3 + 12.59;
       dataArray.push_back(DataInfo(210,"beam_16294203519",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
       dataArray.push_back(DataInfo(210,"beam_16294210028",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
       dataArray.push_back(DataInfo(210,"beam_16294212402",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
