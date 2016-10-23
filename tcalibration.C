@@ -194,11 +194,11 @@ Bool_t TTSelector::Process(Long64_t entry){
 	tdcRefTime[tdc] = time[i];
 	if(gTrigger/48==tdc) grTime0 = time[i];
       }
-      if(ch==818) mult1++;
-      if(ch==821) mult2++;
-      if(ch==720) mult3++;
-      if(ch==722) mult4++;
-      if(ch==819) mult5++;
+      if(ch==818) mult1++; //trigger1
+      if(ch==821) mult2++; //trigger2
+      if(ch==720) mult3++; //tof1
+      if(ch==722) mult4++; //tof2
+      if(ch==819) mult5++; //trigger3
     }else{
       timeT[i]=time[i];
       grTime2=time[i];
@@ -286,7 +286,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//timeLe += getTotWalk(triggerTot,ch,1);
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(timeTot)-30;
 	timeLe -= gLeOffArr[ch];
-	timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree
+	timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1
+	timeLe += (22.776+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
 	timeLe += prt_data_info.getSimTO();
       }   
       
@@ -332,7 +333,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode == 5) gTrigger=819;
+  if(gMode == 5) gTrigger=720;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);
