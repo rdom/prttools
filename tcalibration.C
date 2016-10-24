@@ -9,7 +9,7 @@
 DataInfo prt_data_info;
 TString ginFile(""), goutFile(""), gcFile("");
 Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[maxch];
-Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[maxch_dirc][10],gLeOffArr[maxch_dirc],gEvtOffset(12.59 -59);
+Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[maxch_dirc][10],gLeOffArr[maxch_dirc],gEvtOffset(0);
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGrDiff[maxch];
 
 Double_t walktheta(-5*TMath::Pi()/180.);
@@ -145,7 +145,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   // if(entry >1000 ) return kTRUE;
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
-  Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(0);
+  Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(12.59-59);
   Int_t mult1(0), mult2(0), mult3(0), mult4(0), mult5(0);
   
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
@@ -161,16 +161,16 @@ Bool_t TTSelector::Process(Long64_t entry){
     if(studyId>0) {
       mom = prt_data_info.getMomentum();
       simOffset = prt_data_info.getSimTO();
+      fEvent->SetAngle(prt_data_info.getAngle());
+      fEvent->SetMomentum(TVector3(0,0,mom));
+      fEvent->SetTrigger(720);
+      fEvent->SetGeometry(studyId);
+      fEvent->SetLens(prt_data_info.getLensId());
+      fEvent->SetPrismStepX(prt_data_info.getXstep());
+      fEvent->SetPrismStepY(prt_data_info.getYstep());
+      fEvent->SetBeamX(prt_data_info.getX());
+      fEvent->SetBeamZ(prt_data_info.getZ());
     }
-    fEvent->SetAngle(prt_data_info.getAngle());
-    fEvent->SetMomentum(TVector3(0,0,prt_data_info.getMomentum()));
-    fEvent->SetTrigger(720);
-    fEvent->SetGeometry(studyId);
-    fEvent->SetLens(prt_data_info.getLensId());
-    fEvent->SetPrismStepX(prt_data_info.getXstep());
-    fEvent->SetPrismStepY(prt_data_info.getYstep());
-    fEvent->SetBeamX(prt_data_info.getX());
-    fEvent->SetBeamZ(prt_data_info.getZ());
   }
   
   for(Int_t i=0; i<Hits_ && i<10000; i++){
