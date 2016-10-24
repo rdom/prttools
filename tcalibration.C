@@ -144,8 +144,8 @@ void TTSelector::Begin(TTree *){
 Bool_t TTSelector::Process(Long64_t entry){
   // if(entry >1000 ) return kTRUE;
   Int_t tdc,ch,tofpid(0);
-  Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0), simOffset(0);
-  Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7);
+  Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
+  Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(0);
   Int_t mult1(0), mult2(0), mult3(0), mult4(0), mult5(0);
   
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
@@ -157,16 +157,14 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   fEvent = new PrtEvent();
   if(gMode==5){
-    Double_t mom = prt_data_info.getMomentum();
     Int_t studyId=prt_data_info.getStudyId();
-    simOffset = prt_data_info.getSimTO();
-    if(studyId<0) {
-      mom=7;
-      simOffset=0;
+    if(studyId>0) {
+      mom = prt_data_info.getMomentum();
+      simOffset = prt_data_info.getSimTO();
     }
     fEvent->SetAngle(prt_data_info.getAngle());
     fEvent->SetMomentum(TVector3(0,0,prt_data_info.getMomentum()));
-    fEvent->SetTrigger(818);
+    fEvent->SetTrigger(720);
     fEvent->SetGeometry(studyId);
     fEvent->SetLens(prt_data_info.getLensId());
     fEvent->SetPrismStepX(prt_data_info.getXstep());
