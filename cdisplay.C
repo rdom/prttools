@@ -104,7 +104,7 @@ void MSelector::SlaveBegin(TTree *){
   
   for(Int_t i=0; i<maxMult; i++){
     hTotM[i]=new TH1F(Form("hTot%d",i),Form("hTot%d",i),500,min2,max2);
-    hLeM[i]=new TH1F(Form("hLe%d",i),Form("hLe%d",i),5000,-100,100);
+    hLeM[i]=new TH1F(Form("hLe%d",i),Form("hLe%d",i),5000,-300,300);
     fOutput->Add(hTotM[i]);
     fOutput->Add(hLeM[i]);
   }
