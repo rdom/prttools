@@ -79,7 +79,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t pid = prt_event->GetParticle();
-    Int_t nHits =prt_event->GetHitSize();    
+    Int_t nGoodHits(0), nHits =prt_event->GetHitSize();    
     if(nHits<5) continue;
     
     if(prt_event->GetType()==0){
@@ -99,16 +99,14 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	//if(gch>1060)
 	  tof2=true;
 	
-	  if(gch>778 && gch<780)
+	  if(gch>777 && gch<779)
 	    hodo1=true;
-	  if(gch>792 && gch<794)
-	  hodo2=true;	   
+	  if(gch>791 && gch<793)
+	    hodo2=true;	   
       }
       
       if(!(tof1 && tof2 && hodo1 && hodo2)) continue;
     }
-
-    hnph[prt_pid]->Fill(nHits);
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
     
@@ -118,7 +116,6 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       pix=fHit.GetPixelId()-1;
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime()+rand.Gaus(0,sigma/10.);
-      if(mcp>6) continue;
       
       { //time cuts
       	// Double_t cut1(11);
@@ -131,6 +128,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	if(time<9 || time >40) continue;				 
       }
 
+      nGoodHits++;
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.));   
 
@@ -152,13 +150,15 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	cc->WaitPrimitive();
       }
       // if(aminf==0 || amins==0) continue;
-      Double_t noise = nHits * 1e-5; //1e-7;
+      Double_t noise = nHits * 5e-6; //1e-7;
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
       hl[prt_pid]->Fill(time);
     }
 
+    hnph[prt_pid]->Fill(nGoodHits);
+    
     sum = sumf-sums; 
     // if(fabs(sum)<0.04) continue;
     

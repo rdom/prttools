@@ -53,8 +53,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
   TH1F *hlef[maxch_dirc], *hles[maxch_dirc];
 
   for(Int_t i=0; i<maxch_dirc; i++){
-    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,100);
-    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,100);
+    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 2000,0,100);
+    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 2000,0,100);
   }
   
   Double_t time;
