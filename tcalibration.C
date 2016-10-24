@@ -9,7 +9,7 @@
 DataInfo prt_data_info;
 TString ginFile(""), goutFile(""), gcFile("");
 Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[maxch];
-Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[maxch_dirc][10],gLeOffArr[maxch_dirc],gEvtOffset(0);
+Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[maxch_dirc][10],gLeOffArr[maxch_dirc],gEvtOffset(12.59 -59);
 TGraph *gGrIn[maxch], *gLeO[maxch], *gGrDiff[maxch];
 
 Double_t walktheta(-5*TMath::Pi()/180.);
