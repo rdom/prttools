@@ -679,6 +679,7 @@ void MyMainFrame::DoDraw(){
 
 }
 
+TH2F* fhDigi_temp_updateplot[nmcp];
 TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
   if(!cT) cT = cTime;
   TString histname="";
@@ -687,6 +688,16 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
   cT->SetLogy(0);
   Int_t max = 0;
   TLegend *leg;
+
+  if(fBackToHp){
+    for(Int_t m=0; m<nmcp; m++){
+      fhDigi[m] = fhDigi_temp_updateplot[m];
+    }
+    drawDigi("m,p,v\n",layout);
+    fBackToHp=false;
+  }
+
+
   switch(id) {
   case 0: // LE 
     break;
@@ -777,6 +788,32 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
     leg->Draw();
     histname=hMultEvtNum1->GetName();
     break;
+  case 13:
+    TVector3 res;
+    for(Int_t m=0; m<nmcp; m++){
+      fhDigi_temp_updateplot[m] = (TH2F*)fhDigi[m]->Clone();
+      if(fhDigi[m]) fhDigi[m]->Reset();
+    }
+    TH1F *hSigma = new TH1F("hSigma","hSigma",150,0,1.5);
+
+    for (Int_t m=0; m <nmcp; m++) {
+      for(Int_t p=0; p<npix; p++){
+	Int_t col = p/8;
+	Int_t row = p%8;       
+	Double_t sigma = prt_fit(hPTime[m][p],1,1).Y();
+	if(sigma>1) sigma = 1;
+	fhDigi[m]->Fill(row,col,sigma);
+	hSigma->Fill(sigma);
+      }
+    }
+    drawDigi("m,p,v\n",layout);
+    fBackToHp=true;
+
+    cT->cd();
+    hSigma->Fit("gaus");
+    hSigma->Draw();
+    
+    break;    
   }
   cT->Modified();
   cT->Update();
@@ -1204,6 +1241,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fComboMode->AddEntry("Multiplicity All",6);
   fComboMode->AddEntry("Event Mult",8);
   fComboMode->AddEntry("Mult vs. Evt#",9);
+  fComboMode->AddEntry("Time resolution",13);
   fComboMode->AddEntry("Channels",7);
 
   fComboMode->Resize(300, 20);
@@ -1220,6 +1258,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 
   AddFrame(hframe, new TGLayoutHints(kLHintsExpandX | kLHintsCenterX, 2, 2, 2, 2));
 
+  fBackToHp=false;
+  
   // Set a name to the main frame   
   SetWindowName("cdisplay " + ginFile);
   MapSubwindows();

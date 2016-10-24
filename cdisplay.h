@@ -63,7 +63,8 @@ private:
   TGCheckButton        *fCheckBtn3;
   TGCheckButton        *fCheckBtn4;
   TGTextButton         *fBtnMore;
-
+  Bool_t               fBackToHp;
+  
 public:   
   TGCheckButton        *fCheckBtn2;
   TGNumberEntry        *fNumber2;

@@ -150,6 +150,8 @@ Bool_t TTSelector::Process(Long64_t entry){
   
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   Bool_t trbdata = current_file_name.Contains("trb");
+  Bool_t laser = current_file_name.Contains("pilas") || current_file_name.Contains("pico");
+    
   TObjArray *sarr = current_file_name.Tokenize("_");
 
   if(entry%10000==0) std::cout<<"event # "<< entry <<std::endl;
@@ -288,9 +290,12 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//timeLe += getTotWalk(triggerTot,ch,1);
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(timeTot)-30;
 	timeLe -= gLeOffArr[ch];
-	//timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1
-	timeLe += (22.776+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
-        timeLe +=  simOffset;
+
+	if(!laser){
+	  //timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
+	  timeLe += (22.776+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
+	  timeLe += simOffset;
+	}
       }   
       
       if(gMode==5){
