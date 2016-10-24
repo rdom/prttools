@@ -99,9 +99,9 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	//if(gch>1060)
 	  tof2=true;
 	
-	  //if(gch>776 && gch<780)
-	  hodo1=true;
-	  //if(gch>790 && gch<794)
+	  if(gch>778 && gch<780)
+	    hodo1=true;
+	  if(gch>792 && gch<794)
 	  hodo2=true;	   
       }
       
