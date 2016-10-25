@@ -117,7 +117,7 @@ fi
 if (( $batchmode == 2 || $batchmode == 102  )); then
     for x in $(ls *.hld.root); do
 	if [ ! -f  ${x%.*.*}"C.root" ] || [ $batchmode == 102 ]; then
-	    tcalibration -j5 -m5 -c /d/oct2016/laser/calib_2310_2_tof.root $x
+	    tcalibration -j5 -r720 -c /d/oct2016/laser/calib_2310_2_tof.root $x
 	fi
     done
     exit 0
