@@ -53,8 +53,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
   TH1F *hlef[maxch_dirc], *hles[maxch_dirc];
 
   for(Int_t i=0; i<maxch_dirc; i++){
-    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]", 2000,0,100);
-    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]", 2000,0,100);
+    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,100);
+    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,100);
   }
   
   Double_t time;
@@ -78,11 +78,11 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
 	//if(gch>1060)
 	tof2=true;
 
-	//if(gch>776 && gch<780) //4
-	if(gch>777 && gch<779) //2
+	if(gch>776 && gch<780) //4
+	//if(gch>777 && gch<779) //2
 	  hodo1=true;
-	//if(gch>790 && gch<794) //4
-	if(gch>791 && gch<793) //2
+	if(gch>790 && gch<794) //4
+	//if(gch>791 && gch<793) //2
 	  hodo2=true;
       }
 
