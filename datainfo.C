@@ -878,7 +878,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(205,Form("sim_%d",z),2,2,25,378,85.0,0.00,0,7.0,(Double_t)z));
     }   
 
-    study[210]="Hight stat. run @ 7GeV and 25 degree, plate, no lens";
+    study[210]="Hight stat. run @ 7GeV and 25 degree, plate, no lens, 1mV offset";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
       Double_t o = 12.59 -59; // 185.7
@@ -926,8 +926,29 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(210,"beam_16295074623",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
       dataArray.push_back(DataInfo(210,"beam_16295080036",2,0,25.0,378,85.0,0.00,11,7.0,10,o));
       dataArray.push_back(DataInfo(210,"beam_16295081511",2,0,25.0,378,85.0,0.00,11,7.0,10,o));	
+    }    
+    study[211]="7GeV and 25 degree, plate, no lens, 2mV th. offset. (Run9)";
+    {
+      Double_t o = 12.59 -59; // 185.7
+      
+      TString[62] files = {"beam_16297230153","beam_16297232417","beam_16297234705","beam_162980a00357","beam_16298002657","beam_16298004946","beam_16298012815","beam_16298015133","beam_16298021422","beam_16298022748","beam_16298025041","beam_16298030640","beam_16298032245","beam_16298035002","beam_16298040429","beam_16298041946","beam_16298043445","beam_16298044929","beam_16298045038","beam_16298050536","beam_16298052022","beam_16298053536","beam_16298055036","beam_16298061201","beam_16298062900","beam_16298064400","beam_16298065846","beam_16298071400","beam_16298072846","beam_16298074345","beam_16298075845","beam_16298085237","beam_16298090738","beam_16298092320","beam_16298094654","beam_16298100329","beam_16298102801","beam_16298104657","beam_16298110612","beam_16298112544","beam_16298122054","beam_16298124029","beam_16298130009","beam_16298132244","beam_16298134154","beam_16298140050","beam_16298142005","beam_16298143919","beam_16298145811","beam_16298151722","beam_16298153636","beam_16298155532","beam_16298161549","beam_16298163745","beam_16298170016","beam_16298172302","beam_16298174538","beam_16298180836","beam_16298190616","beam_16298192518","beam_16298215602","beam_16298221134"};
+      
+      for(Int_t i=0; i<62; i++){
+	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
+	dataArray.push_back(DataInfo(211,files[i],2,0,25.0,378,85.0,0.00,11,7.0,10,o));	
+      }
     }
     
+    study[212]="7GeV and 25 degree, plate, no lens, 1mV th. offset. (Run10)";
+    {
+      Double_t o = 12.59 -59; // 185.7
+      TString[31] files = {"beam_16298222516","beam_16298223844","beam_16298225232","beam_16298230549","beam_16298231901","beam_16298233531","beam_16298235613","beam_16299001637","beam_16299003356","beam_16299004731","beam_16299012313","beam_16299013643","beam_16299015013","beam_16299020401","beam_16299021744","beam_16299023119","beam_16299024507","beam_16299025837","beam_16299031225","beam_16299032613","beam_16299033956","beam_16299035344","beam_16299040719","beam_16299042049","beam_16299043437","beam_16299044820","beam_16299050208","beam_16299051553","beam_16299052929","beam_16299054317","beam_16299061119"}
+      for(Int_t i=0; i<31; i++){
+	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
+	dataArray.push_back(DataInfo(212,files[i],2,0,25.0,378,85.0,0.00,11,7.0,10,o));	
+      }
+   
+    }
   }
 }
 

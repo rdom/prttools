@@ -134,7 +134,7 @@ else
 	echo $str
 	str=$(echo $str |tr -d '\040\n\r')
 	total=$(echo $str | sed -r 's/.*[^0-9]([0-9]+)$/\1/')
-	if (( $events < $total )); then
+	if (( $events < $total && $events > 0 )); then
 	    total=$events
 	fi
 	step=$(echo "$total/$threads" |bc)
