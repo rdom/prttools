@@ -8,7 +8,7 @@
 
 TLine *gLine = new TLine(0,0,0,1000);
 
-void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdfEnding=".h2Zpdf.root", Double_t sigma=3,Bool_t debug=false){ 
+void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdfEnding=".h2Zpdf.root", Double_t sigma=3,Bool_t debug=false){
   
   if(path=="") return;
   Int_t studyId;
@@ -62,6 +62,18 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   F2->SetParameter(1,50);
   F1->SetParameter(2,11);
   F2->SetParameter(2,9);
+
+  Int_t countall[9][64],countgood[9][64],countbad[9][64];
+
+  for (Int_t m=0; m <nmcp; m++) {
+    for(Int_t p=0; p<npix; p++){
+      countall[m][p]=0;
+      countgood[m][p]=0;
+      countbad[m][p]=0;
+    }
+  }
+  
+
   
   Double_t theta(0);
   TVirtualFitter *fitter;
@@ -99,9 +111,9 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	//if(gch>1060)
 	  tof2=true;
 	
-	  if(gch>777 && gch<779)
+	  if(gch>776 && gch<779)
 	    hodo1=true;
-	  if(gch>791 && gch<793)
+	  if(gch>790 && gch<793)
 	    hodo2=true;	   
       }
       
@@ -115,7 +127,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       mcp = fHit.GetMcpId();
       pix=fHit.GetPixelId()-1;
       ch = map_mpc[mcp][pix];
-      time = fHit.GetLeadTime()+rand.Gaus(0,sigma/10.);
+      time = fHit.GetLeadTime();//+rand.Gaus(0,sigma/10.);
       
       { //time cuts
       	// Double_t cut1(11);
@@ -132,6 +144,20 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.));   
 
+      
+      countall[mcp][pix]++;
+
+
+      if(prt_pid==4){
+	//if(mcp ==7) continue;
+	if(aminf>amins) countgood [mcp][pix]++;
+	else countbad[mcp][pix]++;
+      }else if (prt_pid==2){
+	//if(mcp ==3 ) continue;
+	// if(amins>aminf) countgood [mcp][pix]++;
+	// else countbad[mcp][pix]++;
+      }
+            
       if(debug){
 	TString x=(aminf>amins)? " <====== PROTON" : "";
 	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,pid)<<"  "<<x <<std::endl;
@@ -168,7 +194,21 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     
     hll[prt_pid]->Fill(sum);
   }
+  
+  for (Int_t m=0; m <nmcp; m++) {
+    for(Int_t p=0; p<npix; p++){
+      std::cout<<countbad[m][p] <<" "<<countall[m][p]<<"  "<< countbad[m][p]/(Double_t)countall[m][p] <<std::endl;
+      
+      fhDigi[m]->Fill(p%8,p/8,countgood[m][p]/(Double_t)countbad[m][p]);
+    }
+  }
+  
+  drawDigi("m,p,v\n",7);
+  cDigi->cd();
+  (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
+  canvasAdd(cDigi);
 
+  
   TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
   if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
   canvasAdd("ll_"+name,800,500);
@@ -240,7 +280,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   hnph[2]->SetLineColor(2);
   hnph[2]->Draw("same");
   
-  canvasSave(0,0);
+  canvasSave(1,0);
 
   
   Double_t e1,e2,e3,e4;
