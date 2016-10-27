@@ -180,7 +180,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     if(tdc<0) continue;
     ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
     
-    time[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
+    time[i] = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0") {
       //spline calib
       //time[i] -= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1); //slow
@@ -193,7 +193,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     } // else time[i] -= (Hits_nFineTime[i]-31)*0.0102;
 
     if(Hits_nSignalEdge[i]==1){
-      if(ch==gTrigger) grTime1 = time[i];
+      if(ch==gTrigger && grTime1==0) grTime1 = time[i];
       if(Hits_nTdcChannel[i]==0) { //ref channel
 	tdcRefTime[tdc] = time[i];
 	if(gTrigger/48==tdc) grTime0 = time[i];
@@ -211,7 +211,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   if(gMode==5){
-    if(mult1!=1 || mult3!=1 || mult4!=1){ //  || mult2!=1 || mult5!=1
+    if(mult1!=1 || mult3!=1 || mult4<1){ //  || mult2!=1 || mult5!=1
       fEvent->Clear();
       delete fEvent;
       return kTRUE;
@@ -224,11 +224,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
-      if(ch==720){
+      if(ch==720 && tof1==0){
     	tof1 = time[i]-tdcRefTime[tdc];
     	tot1 = timeT[i+1] - time[i];
       }
-      if(ch==722){
+      if(ch==722 && tof2==0){
     	tof2 = time[i]-tdcRefTime[tdc];
     	tot2 = timeT[i+1] - time[i];
       }
@@ -292,8 +292,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeLe -= gLeOffArr[ch];
 
 	if(!laser){
-	  //timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
-	  timeLe += (22.776+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
+	  if(gTrigger==818) timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
+	  if(gTrigger==720) timeLe += (22.776+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
 	  timeLe += simOffset;
 	}
       }   
@@ -340,7 +340,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode == 5) gTrigger=720;
+  if(gMode == 5) gTrigger=818; //720;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

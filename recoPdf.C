@@ -73,8 +73,6 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     }
   }
   
-
-  
   Double_t theta(0);
   TVirtualFitter *fitter;
   Double_t mom,nph,time,timeres(-1);
@@ -111,9 +109,9 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	//if(gch>1060)
 	  tof2=true;
 	
-	  if(gch>776 && gch<779)
+	  if(gch>776 && gch<780)
 	    hodo1=true;
-	  if(gch>790 && gch<793)
+	  if(gch>790 && gch<794)
 	    hodo2=true;	   
       }
       
@@ -141,8 +139,8 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       }
 
       nGoodHits++;
-      aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.)); 
-      amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.));   
+      aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time+0.0)); 
+      amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.0));   
 
       
       countall[mcp][pix]++;
@@ -176,7 +174,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	cc->WaitPrimitive();
       }
       // if(aminf==0 || amins==0) continue;
-      Double_t noise = nHits * 5e-6; //1e-7;
+      Double_t noise = nHits * 5e-7; //1e-7;
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
