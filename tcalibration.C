@@ -284,7 +284,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(gTrigger!=0 && ch<maxch_dirc) timeLe = timeLe - grTime1;
       }
       
-      if(gTrigger==720) timeLe -= (triggerTot-tof1tot)*tan(-15*TMath::Pi()/180.);      
+      if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(-15*TMath::Pi()/180.);      
       
       timeTot = timeT[i+1] - time[i];
 
