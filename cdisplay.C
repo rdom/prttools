@@ -801,9 +801,9 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
 	Int_t col = p/8;
 	Int_t row = p%8;       
 	Double_t sigma = prt_fit(hPTime[m][p],1,1).Y();
+	hSigma->Fill(sigma);
 	if(sigma>1) sigma = 1;
 	fhDigi[m]->Fill(row,col,sigma);
-	hSigma->Fill(sigma);
       }
     }
     drawDigi("m,p,v\n",layout);

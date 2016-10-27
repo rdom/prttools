@@ -43,15 +43,16 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
       }
     }
     Double_t wcorr(10);
-    // if(ch/48==1) wcorr=0;
-    // if(ch/48==5) wcorr=0;
+    if(ch/48==1) wcorr=2;
+    if(ch/48==3) wcorr=15;
+    if(ch/48==5) wcorr=12;
     // if(ch/48==9) wcorr=0;
       
     if(fabs(min)<0.8) walk=-min*tan(wcorr*TMath::Pi()/180.);
-    if(tot<10) walk-=(10-tot)*tan(6*TMath::Pi()/180.);
+    if(tot<8) walk-=(4-tot)*tan(10*TMath::Pi()/180.);
   }
 
-  if(type==1){ //walk of the 1345
+  if(type==1){ //walk of the xxx	  
     walk += (38.85-tot)*tan(25*TMath::Pi()/180.); 
   }
   
@@ -141,6 +142,7 @@ void TTSelector::Begin(TTree *){
   std::cout<<"Initialization successful"<<std::endl;
 }  
 
+
 Bool_t TTSelector::Process(Long64_t entry){
   // if(entry >1000 ) return kTRUE;
   Int_t tdc,ch,tofpid(0);
@@ -157,6 +159,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   if(entry%10000==0) std::cout<<"event # "<< entry <<std::endl;
   GetEntry(entry);
 
+  
   fEvent = new PrtEvent();
   if(gMode==5){
     Int_t studyId=prt_data_info.getStudyId();
@@ -205,13 +208,13 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch==819) mult5++; //trigger3
     }else{
       timeT[i]=time[i];
-      grTime2=time[i];
+      if(ch==gTrigger && grTime2==0) grTime2=time[i];
     }
   }
 
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   if(gMode==5){
-    if(mult1!=1 || mult3!=1 || mult4!=1){ //  || mult2!=1 || mult5!=1
+    if(mult1!=1 || mult3!=1 || mult4<1){ //  || mult2!=1 || mult5!=1
       fEvent->Clear();
       delete fEvent;
       return kTRUE;
@@ -259,6 +262,11 @@ Bool_t TTSelector::Process(Long64_t entry){
   PrtHit hit;
   Int_t nrhits=0;
   if((grTime0>0 && grTime1>0) || gTrigger==0){
+    if(gTrigger!=0) {
+      triggerLe = grTime1 - grTime0;
+      triggerTot=grTime2-grTime1;
+    }
+    
     for(Int_t i=0; i<Hits_ && i<10000; i++){
       if(Hits_nTdcErrCode[i]!=0) continue;
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
@@ -276,24 +284,22 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(gTrigger!=0 && ch<maxch_dirc) timeLe = timeLe - grTime1;
       }
       
-      if(gTrigger!=0) {
-	triggerLe = grTime1 - grTime0;
-	triggerTot=grTime2-grTime1;
-      }
-	
+      if(gTrigger==720) timeLe -= (triggerTot-tof1tot)*tan(-18*TMath::Pi()/180.);      
+      
       timeTot = timeT[i+1] - time[i];
 
       if(ch<maxch_dirc) {
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
 	timeTot += 30-gTotO[ch];
 	timeLe += getTotWalk(timeTot,ch);
-	//timeLe += getTotWalk(triggerTot,ch,1);
+	timeLe += getTotWalk(triggerTot,ch,1);
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(timeTot)-30;
 	timeLe -= gLeOffArr[ch];
 
 	if(!laser){
 	  if(gTrigger==818) timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
 	  if(gTrigger==720) timeLe += (22.776+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
+	  if(gTrigger==722) timeLe -= (5.888-0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof2
 	  timeLe += simOffset;
 	}
       }   
@@ -340,7 +346,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode == 5) gTrigger=818; //720;
+  if(gMode == 5) gTrigger=720; //720;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

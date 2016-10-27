@@ -20,7 +20,8 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   CreateMap();
   TGaxis::SetMaxDigits(4);
   
-  TCanvas *cc = new TCanvas("cc","cc");
+  TCanvas *cc;
+  if(debug) cc = new TCanvas("cc","cc");
 
   TH1F *hpdff[maxch_dirc],*hpdfs[maxch_dirc], *hl[5],*hnph[5],*hll[5];
   for(Int_t i=0; i<5; i++){
@@ -104,12 +105,12 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       for(Int_t h=0; h<nHits; h++) {
   	fHit = prt_event->GetHit(h);
   	Int_t gch=fHit.GetChannel();
-
+	
 	if(gch==818)
 	  t1=true;
 	if(gch==821)
 	  t2=true;
-	  if(gch==819)
+	if(gch==819)
 	  t3=true;
 	
 	  //if(gch>1031 && gch<1034)
@@ -118,9 +119,9 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	  tof2=true;
 	  
 	
-	  if(gch>776 && gch<780)
+	  if(gch>776 && gch<=780)
 	    hodo1=true;
-	  if(gch>790 && gch<794)
+	  if(gch>=790 && gch<794)
 	    hodo2=true;	   
       }
       
@@ -206,7 +207,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     }
   }
   
-  drawDigi("m,p,v\n",7);
+  drawDigi("m,p,v\n",7,5,0);
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
   canvasAdd(cDigi);
@@ -222,27 +223,33 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   hll[4]->GetYaxis()->SetNdivisions(9,5,0);
    
   TF1 *ff;
-  Double_t m1,m2,s1,s2,dm1,dm2,ds1,ds2; 
-  if(hll[4]->GetEntries()>10){
+  Double_t sep(0),esep(0),m1,m2,s1,s2,dm1,dm2,ds1,ds2; 
+  if(hll[4]->GetEntries()>10 && hll[2]->GetEntries()>10){
     hll[4]->Fit("gaus","Sq");
     ff = hll[4]->GetFunction("gaus");
     m1=ff->GetParameter(1);
     s1=ff->GetParameter(2);
     dm1=ff->GetParError(1);
     ds1=ff->GetParError(2);
-  }
-  if(hll[2]->GetEntries()>10){
+
     hll[2]->Fit("gaus","Sq");
     ff = hll[2]->GetFunction("gaus");
     m2=ff->GetParameter(1);
     s2=ff->GetParameter(2);
     dm2=ff->GetParError(1);
     ds2=ff->GetParError(2);
+
+    sep = (fabs(m1-m2))/(0.5*(s1+s2));
+    
+    Double_t e1,e2,e3,e4;
+    e1=2/(s1+s2)*dm1;
+    e2=2/(s1+s2)*dm2;
+    e3=-((2*(m1 + m2))/((s1 + s2)*(s1 + s2)))*ds1;
+    e4=-((2*(m1 + m2))/((s1 + s2)*(s1 + s2)))*ds2;
+    esep=sqrt(e1*e1+e2*e2+e3*e3+e4*e4);
   }
-  Double_t sep = (fabs(m1-m2))/(0.5*(s1+s2));
-  
+
   hll[4]->SetTitle(Form("separation = %1.2f",sep));
-  
   hll[4]->SetLineColor(2);
   hll[4]->Draw();
   hll[2]->SetLineColor(4);
@@ -257,46 +264,34 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   leg->AddEntry(hll[4],"protons","lp");
   leg->Draw();
   
-  canvasAdd("hl_"+name,800,500);
+  // canvasAdd("hl_"+name,800,500);
 
 
-  // hl[4]->Scale(1/hl[4]->GetMaximum());
-  // hl[2]->Scale(1/hl[2]->GetMaximum());
-  // hl3->Scale(1/hl3->GetMaximum());
+  // // hl[4]->Scale(1/hl[4]->GetMaximum());
+  // // hl[2]->Scale(1/hl[2]->GetMaximum());
+  // // hl3->Scale(1/hl3->GetMaximum());
 
-  prt_normalize(hl[4],hl[2]);
+  // prt_normalize(hl[4],hl[2]);
   
-  hl[4]->Draw();
-  hl[2]->SetLineColor(4);
-  hl[2]->Draw("same");
-  hl3->SetLineColor(2);
-  hl3->Draw("same");
+  // hl[4]->Draw();
+  // hl[2]->SetLineColor(4);
+  // hl[2]->Draw("same");
+  // hl3->SetLineColor(2);
+  // hl3->Draw("same");
   
   canvasAdd("hnph_"+name,800,500);
   prt_normalize(hnph[4],hnph[2]);
   hnph[4]->Fit("gaus");
   ff = hnph[4]->GetFunction("gaus");
-  nph=ff->GetParameter(1);
-  
+  nph=ff->GetParameter(1);  
   hnph[4]->SetLineColor(4);
   hnph[4]->Draw();
   hnph[2]->SetLineColor(2);
   hnph[2]->Draw("same");
   
   canvasSave(1,0);
-
   
-  Double_t e1,e2,e3,e4;
-
-  std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl;
-  
-  
-  e1=2/(s1+s2)*dm1;
-  e2=2/(s1+s2)*dm2;
-  e3=-((2*(m1 + m2))/((s1 + s2)*(s1 + s2)))*ds1;
-  e4=-((2*(m1 + m2))/((s1 + s2)*(s1 + s2)))*ds2;
-
-  Double_t esep=sqrt(e1*e1+e2*e2+e3*e3+e4*e4);
+  std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
 
   TFile fc(fSavePath+"/reco_"+name,"recreate");
