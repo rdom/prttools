@@ -112,15 +112,15 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	  if(gch==819)
 	  t3=true;
 	
-	//if(gch>1031 && gch<1034)
+	  //if(gch>1031 && gch<1034)
 	  tof1=true;
-	//if(gch>1060)
+	  //if(gch>1060)
 	  tof2=true;
 	  
 	
 	  if(gch>776 && gch<780)
 	    hodo1=true;
-	    if(gch>790 && gch<794)
+	  if(gch>790 && gch<794)
 	    hodo2=true;	   
       }
       
@@ -154,11 +154,11 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       countall[mcp][pix]++;
 
       if(prt_pid==4){
-	if(mcp ==7) continue;
+	//if(mcp ==7) continue;
 	if(aminf>amins) countgood [mcp][pix]++;
 	else countbad[mcp][pix]++;
       }else if (prt_pid==2){
-	if(mcp ==3 ) continue;
+	//if(mcp ==3 ) continue;
 	// if(amins>aminf) countgood [mcp][pix]++;
 	// else countbad[mcp][pix]++;
       }
