@@ -98,24 +98,33 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>175.1 ) continue;
       // }
 
+      Bool_t t1(false),t2(false),t3(false);
       Bool_t tof1(false), tof2(false);
       Bool_t hodo1(false), hodo2(false);
       for(Int_t h=0; h<nHits; h++) {
   	fHit = prt_event->GetHit(h);
   	Int_t gch=fHit.GetChannel();
+
+	if(gch==818)
+	  t1=true;
+	if(gch==821)
+	  t2=true;
+	  if(gch==819)
+	  t3=true;
 	
 	//if(gch>1031 && gch<1034)
 	  tof1=true;
 	//if(gch>1060)
 	  tof2=true;
+	  
 	
 	  if(gch>776 && gch<780)
 	    hodo1=true;
-	  if(gch>790 && gch<794)
+	    if(gch>790 && gch<794)
 	    hodo2=true;	   
       }
       
-      if(!(tof1 && tof2 && hodo1 && hodo2)) continue;
+      if(!( t1 && t2 && t3 && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
@@ -142,16 +151,14 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time+0.0)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.0));   
 
-      
       countall[mcp][pix]++;
 
-
       if(prt_pid==4){
-	//if(mcp ==7) continue;
+	if(mcp ==7) continue;
 	if(aminf>amins) countgood [mcp][pix]++;
 	else countbad[mcp][pix]++;
       }else if (prt_pid==2){
-	//if(mcp ==3 ) continue;
+	if(mcp ==3 ) continue;
 	// if(amins>aminf) countgood [mcp][pix]++;
 	// else countbad[mcp][pix]++;
       }
@@ -195,8 +202,6 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   
   for (Int_t m=0; m <nmcp; m++) {
     for(Int_t p=0; p<npix; p++){
-      std::cout<<countbad[m][p] <<" "<<countall[m][p]<<"  "<< countbad[m][p]/(Double_t)countall[m][p] <<std::endl;
-      
       fhDigi[m]->Fill(p%8,p/8,countgood[m][p]/(Double_t)countbad[m][p]);
     }
   }
