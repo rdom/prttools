@@ -46,6 +46,9 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     hpdfs[i]->SetLineColor(4);
     if(sigma >0) hpdff[i]->Rebin((Int_t)sigma);
     if(sigma >0) hpdfs[i]->Rebin((Int_t)sigma);
+    // hpdff[i]->Smooth(1);
+    // hpdfs[i]->Smooth(1);
+	
     integ1+= hpdff[i]->Integral();
     integ2+= hpdfs[i]->Integral();
     hl3->Add(hpdff[i]);
