@@ -107,17 +107,17 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
       if(time<8 || time >40) continue;
       
       if(prt_event->GetParticle()==2212){
-	totalf++;
+	//totalf++;
 	hlef[ch]->Fill(time);
       }
       if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212){
-	totals++;
+	//totals++;
 	hles[ch]->Fill(time);
       }
       fhDigi[mcpid]->Fill(pixid%8, pixid/8);
     }
-    // if(prt_event->GetParticle()==2212) totalf++;
-    // if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) totals++;
+    if(prt_event->GetParticle()==2212) totalf++;
+    if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) totals++;
   }
 
   std::cout<<"#1 "<< totalf <<"  #2 "<<totals <<std::endl;
