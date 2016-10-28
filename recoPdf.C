@@ -56,10 +56,10 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     hl3->Add(hpdff[i]);
     hl3->Add(hpdfs[i]);
   }
-  for(Int_t i=0; i<maxch_dirc; i++){
-    hpdff[i]->Scale(1/integ1);
-    hpdfs[i]->Scale(1/integ2);
-  }  
+  // for(Int_t i=0; i<maxch_dirc; i++){
+  //   hpdff[i]->Scale(1/integ1);
+  //   hpdfs[i]->Scale(1/integ2);
+  // }  
 
   
   if(path.Contains("C.root")) sigma=0;
@@ -161,7 +161,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<9 || time >40) continue;				 
+	if(time<8 || time >40) continue;				 
       }
       nGoodHits++;
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time+0.0)); 
@@ -199,7 +199,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	cc->WaitPrimitive();
       }
       // if(aminf==0 || amins==0) continue;
-      Double_t noise = nHits * 1e-10; //1e-7;
+      Double_t noise = 1e-7; //1e-7; // nHits
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
