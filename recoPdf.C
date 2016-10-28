@@ -134,9 +134,9 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	  //if(gch>1060)
 	  tof2=true;
 	  	  
-	  if(gch>776 && gch<=780)
+	  if(gch>777 && gch<=780)
 	    hodo1=true;
-	  if(gch>=790 && gch<794)
+	  if(gch>=790 && gch<793)
 	    hodo2=true;
       }
       
@@ -180,7 +180,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	else countbad[mcp][pix]++;
       }
             
-      if(debug && mcp==6){
+      if(debug){
 	TString x=(aminf>amins)? " <====== PROTON" : "";
 	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,pid)<<"  "<<x <<std::endl;
 	
