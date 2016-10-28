@@ -26,7 +26,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   TH1F *hpdff[maxch_dirc],*hpdfs[maxch_dirc], *hl[5],*hnph[5],*hll[5];
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,100);
-    hnph[i] = new TH1F(Form("hnph_%d",i),";photon yield [#]; entries [#]", 250,0,250);
+    hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
     hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",110,-30,30);
   }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,100);
@@ -38,7 +38,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   TFile f(pdf);
   
   if(sigma >0) hl3->Rebin((Int_t)sigma);
-  Int_t integ1(0), integ2(0);
+  Double_t integ1(0), integ2(0);
   for(Int_t i=0; i<maxch_dirc; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
@@ -48,12 +48,20 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     if(sigma >0) hpdfs[i]->Rebin((Int_t)sigma);
     // hpdff[i]->Smooth(1);
     // hpdfs[i]->Smooth(1);
-	
+    // hpdff[i]->Scale(1/hpdff[i]->Integral());
+    // hpdfs[i]->Scale(1/hpdfs[i]->Integral());
+    
     integ1+= hpdff[i]->Integral();
     integ2+= hpdfs[i]->Integral();
     hl3->Add(hpdff[i]);
     hl3->Add(hpdfs[i]);
   }
+  for(Int_t i=0; i<maxch_dirc; i++){
+    hpdff[i]->Scale(1/integ1);
+    hpdfs[i]->Scale(1/integ2);
+  }  
+
+  
   if(path.Contains("C.root")) sigma=0;
   if(path.Contains("Z.root")) sigma=0;
 
@@ -68,14 +76,20 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   F2->SetParameter(2,9);
 
   Int_t countall[9][64],countgood[9][64],countbad[9][64];
-
+  Int_t mcpf[9], mcps[9];
+    
+  
   for (Int_t m=0; m <nmcp; m++) {
+    mcpf[m]=0;
+    mcps[m]=0;
     for(Int_t p=0; p<npix; p++){
       countall[m][p]=0;
       countgood[m][p]=0;
       countbad[m][p]=0;
     }
   }
+
+  
   
   Double_t theta(0);
   TVirtualFitter *fitter;
@@ -94,7 +108,6 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t pid = prt_event->GetParticle();
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();    
-    if(nHits<5) continue;
     
     if(prt_event->GetType()==0){
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
@@ -125,7 +138,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	  if(gch>776 && gch<=780)
 	    hodo1=true;
 	  if(gch>=790 && gch<794)
-	    hodo2=true;	   
+	    hodo2=true;
       }
       
       if(!( t1 && t2 && t3 && tof1 && tof2 && hodo1 && hodo2)) continue;
@@ -150,7 +163,6 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       	// }
 	if(time<9 || time >40) continue;				 
       }
-
       nGoodHits++;
       aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time+0.0)); 
       amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.0));   
@@ -158,16 +170,18 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       countall[mcp][pix]++;
 
       if(prt_pid==4){
+	mcpf[mcp]++;
 	//if(mcp ==7) continue;
 	if(aminf>amins) countgood [mcp][pix]++;
 	else countbad[mcp][pix]++;
       }else if (prt_pid==2){
+	mcps[mcp]++;
 	//if(mcp ==3 ) continue;
 	// if(amins>aminf) countgood [mcp][pix]++;
 	// else countbad[mcp][pix]++;
       }
             
-      if(debug){
+      if(debug && mcp==6){
 	TString x=(aminf>amins)? " <====== PROTON" : "";
 	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,pid)<<"  "<<x <<std::endl;
 	
@@ -185,13 +199,14 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	cc->WaitPrimitive();
       }
       // if(aminf==0 || amins==0) continue;
-      Double_t noise = nHits * 5e-7; //1e-7;
+      Double_t noise = nHits * 1e-10; //1e-7;
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
       hl[prt_pid]->Fill(time);
     }
-
+    if(nGoodHits<10) continue;
+    
     hnph[prt_pid]->Fill(nGoodHits);
     
     sum = sumf-sums; 
@@ -205,12 +220,14 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   }
   
   for (Int_t m=0; m <nmcp; m++) {
+    std::cout<<mcpf[m]<< " "<< mcps[m]<<std::endl;
+    
     for(Int_t p=0; p<npix; p++){
       fhDigi[m]->Fill(p%8,p/8,countgood[m][p]/(Double_t)countbad[m][p]);
     }
   }
   
-  drawDigi("m,p,v\n",7,5,0);
+  drawDigi("m,p,v\n",7,2,0);
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
   canvasAdd(cDigi);
