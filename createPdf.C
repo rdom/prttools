@@ -40,7 +40,7 @@ TF1 * fitpdf(TH1F *h){
   return gaust;
 }
 
-void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Bool_t save=false){
+void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int_t normtype=1 ,Bool_t save=false){
   // path="/data.local/data/jun15/beam_15177135523S.root";
   // path="~/simo/build/beam_15184203911SP.root";
   if(path=="") return;
@@ -49,7 +49,13 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
   PrtInit(path,1);
   gStyle->SetOptStat(0);
   CreateMap();
-
+  Int_t totalmcp[5][9];
+  for(Int_t i=0; i<10; i++){
+    for(Int_t m=0; m<10; m++){
+      totalmcp[i][m]=0;
+    }
+  }
+  
   TH1F *hlef[maxch_dirc], *hles[maxch_dirc];
 
   for(Int_t i=0; i<maxch_dirc; i++){
@@ -78,13 +84,13 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
 	  t1=true;
 	//if(gch==821)
 	  t2=true;
-	  //if(gch==819)
-	  t3=true;
+	  if(gch==819)
+	    t3=true;
 	
 	//if(gch>1031 && gch<1034)
 	tof1=true;
-	if(gch>651 && gch<657)
-	  tof2=true;
+	//if(gch>651 && gch<657)
+	tof2=true;
 
 	//if(gch>776 && gch<=780) //4
 	//if(gch>777 && gch<779) //2
@@ -102,9 +108,9 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
 
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
-      Int_t mcpid = fHit.GetMcpId();
-      Int_t pixid = fHit.GetPixelId()-1;
-      ch=map_mpc[mcpid][pixid];      
+      Int_t mcp = fHit.GetMcpId();
+      Int_t pix = fHit.GetPixelId()-1;
+      ch=map_mpc[mcp][pix];      
       time=fHit.GetLeadTime();//+gRandom->Gaus(0,0.3);
 
 
@@ -112,14 +118,16 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
       if(time<8 || time >40) continue;
       
       if(prt_event->GetParticle()==2212){
+	totalmcp[4][mcp]++;
 	totalf++;
 	hlef[ch]->Fill(time);
       }
-      if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212){
+      if(prt_event->GetParticle()==211){
+	totalmcp[2][mcp]++;
 	totals++;
 	hles[ch]->Fill(time);
       }
-      fhDigi[mcpid]->Fill(pixid%8, pixid/8);
+      fhDigi[mcp]->Fill(pix%8, pix/8);
     }
     // if(prt_event->GetParticle()==2212) totalf++;
     // if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) totals++;
@@ -135,9 +143,19 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
     TFile efile(path,"RECREATE");
     
     for(Int_t i=0; i<maxch_dirc; i++){
-      hlef[i]->Scale(1/(Double_t)totalf);
-      hles[i]->Scale(1/(Double_t)totals);
+      Int_t mcp = i/64;
 
+      if(normtype==1){
+	hlef[i]->Scale(1/(Double_t)totalf);
+	hles[i]->Scale(1/(Double_t)totals);
+      }
+      
+      if(normtype==2){
+	hlef[i]->Scale(1/(Double_t)totalmcp[4][mcp]);
+	hles[i]->Scale(1/(Double_t)totalmcp[2][mcp]);
+      }
+	    
+      
       // hlef[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));
       // hles[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));
 

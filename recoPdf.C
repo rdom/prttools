@@ -121,16 +121,16 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	
 	if(gch==818)
 	  t1=true;
-	if(gch==821)
+	//if(gch==821)
 	  t2=true;
 	if(gch==819)
 	  t3=true;
 	
 	  //if(gch>1031 && gch<1034)
 	  tof1=true;
-	  if(gch>651 && gch<657)
-	    tof2=true;
-	  	  
+	  //if(gch>651 && gch<657)
+	  tof2=true;
+	    
 	  // if(gch>775 && gch<780)
 	  //   hodo1=true;
 	  // if(gch>=790 && gch<794)
@@ -144,7 +144,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	  //if(gch>766 && gch<776)
 	  if(gch>776 && gch<781)
 	    hodo1=true;
-	  if(gch>=790 && gch<793)
+	  if(gch>=790 && gch<794)
 	    hodo2=true;
 	  
 	  
@@ -188,8 +188,8 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       if(prt_pid==4){
 	mcpf[mcp]++;
 	//if(mcp ==7) continue;
-	if(aminf>amins) countgood [mcp][pix]++;
-	else countbad[mcp][pix]++;
+	// if(aminf>amins) countgood [mcp][pix]++;
+	// else countbad[mcp][pix]++;
       }else if (prt_pid==2){
 	mcps[mcp]++;
 	//if(mcp ==3 ) continue;
@@ -329,6 +329,8 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
+  std::cout<<"Entries:  "<<hll[4]->GetEntries() <<std::endl;
+  
 
   TFile fc(fSavePath+"/reco_"+name,"recreate");
   TTree *tc = new TTree("reco","reco");
