@@ -50,8 +50,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
   gStyle->SetOptStat(0);
   CreateMap();
   Int_t totalmcp[5][9];
-  for(Int_t i=0; i<10; i++){
-    for(Int_t m=0; m<10; m++){
+  for(Int_t i=0; i<5; i++){
+    for(Int_t m=0; m<9; m++){
       totalmcp[i][m]=0;
     }
   }
@@ -83,9 +83,9 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
        	if(gch==818)
 	  t1=true;
 	//if(gch==821)
-	  t2=true;
-	  if(gch==819)
-	    t3=true;
+	t2=true;
+	//if(gch==819)
+	t3=true;
 	
 	//if(gch>1031 && gch<1034)
 	tof1=true;
