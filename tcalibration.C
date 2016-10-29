@@ -239,8 +239,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 
     if(tof1!=0 && tof2!=0) {
       Double_t time = tof2-tof1;
-      time += (tot1-tof1tot)*tan(walktheta);
-      time += (tot2-tof2tot)*tan(-walktheta);
+      // time += (tot1-tof1tot)*tan(walktheta);
+      // time += (tot2-tof2tot)*tan(-walktheta);
       toftime = time;
       
       if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)){
@@ -284,15 +284,16 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(gTrigger!=0 && ch<maxch_dirc) timeLe = timeLe - grTime1;
       }
       
-      if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(-18*TMath::Pi()/180.);
+      // if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(-18*TMath::Pi()/180.);
       
       timeTot = timeT[i+1] - time[i];
 
       if(ch<maxch_dirc) {
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
 	timeTot += 30-gTotO[ch];
-	timeLe += getTotWalk(timeTot,ch);
-	timeLe += getTotWalk(triggerTot,ch,1);
+	// timeLe += getTotWalk(timeTot,ch);
+	// timeLe += getTotWalk(triggerTot,ch,1);
+
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(timeTot)-30;
 	timeLe -= gLeOffArr[ch];
 
