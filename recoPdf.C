@@ -78,7 +78,6 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   Int_t countall[9][64],countgood[9][64],countbad[9][64];
   Int_t mcpf[9], mcps[9];
     
-  
   for (Int_t m=0; m <nmcp; m++) {
     mcpf[m]=0;
     mcps[m]=0;
@@ -88,8 +87,6 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       countbad[m][p]=0;
     }
   }
-
-  
   
   Double_t theta(0);
   TVirtualFitter *fitter;
@@ -131,19 +128,35 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	
 	  //if(gch>1031 && gch<1034)
 	  tof1=true;
-	  //if(gch>1060)
-	  tof2=true;
+	  if(gch>651 && gch<657)
+	    tof2=true;
 	  	  
-	  if(gch>776 && gch<=780)
+	  // if(gch>775 && gch<780)
+	  //   hodo1=true;
+	  // if(gch>=790 && gch<794)
+	  //   hodo2=true;
+
+	  // if(gch>770 && gch<776)
+	  //   hodo1=true;
+	  // if(gch>=790 && gch<794)
+	  //   hodo2=true;
+
+	  //if(gch>766 && gch<776)
+	  if(gch>776 && gch<781)
 	    hodo1=true;
-	  if(gch>=790 && gch<794)
+	  if(gch>=790 && gch<793)
 	    hodo2=true;
+	  
+	  
       }
       
       if(!( t1 && t2 && t3 && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
+
+    Int_t mult[maxch];
+    memset(mult, 0, sizeof(mult));
     
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
@@ -151,6 +164,10 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       pix=fHit.GetPixelId()-1;
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();//+rand.Gaus(0,sigma/10.);
+      Double_t tot= fHit.GetTotTime();
+      //      if(tot>5) continue;
+      
+      if(++mult[ch]>1) continue;
       
       { //time cuts
       	// Double_t cut1(11);
@@ -160,11 +177,11 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<8 || time >40) continue;				 
+	if(time<10 || time >40) continue;				 
       }
       nGoodHits++;
-      aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time+0.0)); 
-      amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time+0.0));   
+      aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
+      amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time-0.0));   
 
       countall[mcp][pix]++;
 
@@ -198,7 +215,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	cc->WaitPrimitive();
       }
       // if(aminf==0 || amins==0) continue;
-      Double_t noise = 1e-7; //1e-7; // nHits
+      Double_t noise = 1e-8; //1e-7; // nHits
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
@@ -274,7 +291,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   hll[2]->SetLineColor(4);
   hll[2]->Draw("same");
 
-  TLegend *leg = new TLegend(0.6,0.7,0.8,0.87);
+  TLegend *leg = new TLegend(0.6,0.7,0.82,0.88);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);

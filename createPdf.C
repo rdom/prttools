@@ -76,15 +76,15 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
 
        	if(gch==818)
 	  t1=true;
-	//if(gch==821)
+	if(gch==821)
 	  t2=true;
-	  //if(gch==819)
+	if(gch==819)
 	  t3=true;
 	
 	//if(gch>1031 && gch<1034)
 	tof1=true;
-	//if(gch>1060)
-	tof2=true;
+	if(gch>651 && gch<657)
+	  tof2=true;
 
 	//if(gch>776 && gch<=780) //4
 	//if(gch>777 && gch<779) //2
@@ -96,14 +96,19 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Boo
 
       if(!(t1 && t2 && t3 && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
-    
+
+    Int_t mult[maxch];
+    memset(mult, 0, sizeof(mult));
+
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       Int_t mcpid = fHit.GetMcpId();
       Int_t pixid = fHit.GetPixelId()-1;
       ch=map_mpc[mcpid][pixid];      
       time=fHit.GetLeadTime();//+gRandom->Gaus(0,0.3);
-      
+
+
+      if(++mult[ch]>1) continue;      
       if(time<8 || time >40) continue;
       
       if(prt_event->GetParticle()==2212){

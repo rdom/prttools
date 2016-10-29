@@ -290,7 +290,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
 	timeTot += 30-gTotO[ch];
 	timeLe += getTotWalk(timeTot,ch);
-	//if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(-18*TMath::Pi()/180.);
+	if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
 	//if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(timeTot)-30;
 	timeLe -= gLeOffArr[ch];
@@ -306,7 +306,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(gMode==5){
 	//timeLe-=gEvtOffset;
 	//if(ch>maxch_dirc && ch != 1104 && ch != 1344 && ch != 1248) continue;
-	//if(ch<maxch_dirc && (timeLe<-180 || timeLe>-120)) continue;
+	if(ch<maxch_dirc && (timeLe<0 || timeLe>50)) continue;
       }
 
       if(gMode!=5 || tofpid!=0){
