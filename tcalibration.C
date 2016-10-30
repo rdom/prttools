@@ -246,11 +246,12 @@ Bool_t TTSelector::Process(Long64_t entry){
       time += (tot1-tof1tot)*tan(walktheta);
       time += (tot2-tof2tot)*tan(-walktheta);
       toftime = time;
+      Int_t m=(Double_t) mom;
       
-      if(insideOfEllipce(time, tot1, tof1lea[mom], tof1tota[mom], c1y, c1x) && insideOfEllipce(time, tot2, tof1lea[mom], tof2tota[mom], c1y, c1x)){
+      if(insideOfEllipce(time, tot1, tof1lea[m], tof1tota[m], c1y, c1x) && insideOfEllipce(time, tot2, tof1lea[m], tof2tota[m], c1y, c1x)){
 	tofpid=211;
 	mass=0.13957018;
-      }else if(insideOfEllipce(time, tot1, tof2lea[mom], tof1tota[mom], c2y, c2x) && insideOfEllipce(time, tot2, tof2lea[mom], tof2tota[mom], c2y, c2x)){
+      }else if(insideOfEllipce(time, tot1, tof2lea[m], tof1tota[m], c2y, c2x) && insideOfEllipce(time, tot2, tof2lea[m], tof2tota[m], c2y, c2x)){
 	tofpid=2212;
     	mass = 0.938272046;
       }
