@@ -20,10 +20,10 @@ Double_t fr21[11]={0,0.8,0.8,0.3,0.3,0.4, 0.3,0.3,0.2,0.2,0.2};
 Double_t fr22[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.8,0.8};
 Double_t c1y(0.5),c2y(0.5),c1x(0.9),c2x(0.9);
 
-Double_t tof1lea[]= {0,0,0,76.48,74.51,73.58,73.06,72.74,71.91};
-Double_t tof2lea[]= {0,0,0,72.03,71.99,71.96,71.94,71.92,72.55};
-Double_t tof1tota[]={0,0,0,45.11,45.05,45.03,44.97,44.93,44.91};
-Double_t tof2tota[]={0,0,0,45.31,45.32,45.34,45.36,45.37,45.38};
+Double_t tof1lea[]= {0,0,81.84,76.48,74.51,73.58,73.06,72.74,71.91};
+Double_t tof2lea[]= {0,0,72.12,72.03,71.99,71.96,71.94,71.92,72.55};
+Double_t tof1tota[]={0,0,45.14,45.11,45.05,45.03,44.97,44.93,44.91};
+Double_t tof2tota[]={0,0,45.26,45.31,45.32,45.34,45.36,45.37,45.38};
 
 Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double_t r1, Double_t r2, Double_t w=0){
 
@@ -247,10 +247,10 @@ Bool_t TTSelector::Process(Long64_t entry){
       time += (tot2-tof2tot)*tan(-walktheta);
       toftime = time;
       
-      if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)){
+      if(insideOfEllipce(time, tot1, tof1lea[mom], tof1tota[mom], c1y, c1x) && insideOfEllipce(time, tot2, tof1lea[mom], tof2tota[mom], c1y, c1x)){
 	tofpid=211;
 	mass=0.13957018;
-      }else if(insideOfEllipce(time, tot1, tof2le, tof1tot, c2y, c2x) && insideOfEllipce(time, tot2, tof2le, tof2tot, c2y, c2x)){
+      }else if(insideOfEllipce(time, tot1, tof2lea[mom], tof1tota[mom], c2y, c2x) && insideOfEllipce(time, tot2, tof2lea[mom], tof2tota[mom], c2y, c2x)){
 	tofpid=2212;
     	mass = 0.938272046;
       }
