@@ -43,20 +43,20 @@ void drawMult(TString infile="hits.root"){
     }
 
     hMult->Fill(counts);
-  }  
+  }
     
   for (Int_t m=0; m <nmcp; m++) {
     Double_t t1(0),t2(0);
     for(Int_t p=0; p<npix; p++){
       t1+=count[4][m][p];
       t2+=count[2][m][p];
-      // fhDigi[m]->Fill(p%8,p/8,count[4][m][p]/(Double_t)count[2][m][p]);          
+      fhDigi[m]->Fill(p%8,p/8,count[4][m][p]/(Double_t)count[2][m][p]);          
     }
     std::cout<<"t1   "<<t1 << "   t2 "<<t2<<std::endl;
     
-    for(Int_t p=0; p<npix; p++){
-      fhDigi[m]->Fill(p%8,p/8,t1/t2);
-    }
+    // for(Int_t p=0; p<npix; p++){
+    //   fhDigi[m]->Fill(p%8,p/8,t1/t2);
+    // }
   }
 
   

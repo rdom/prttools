@@ -197,7 +197,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   hTofC->Draw();
   Double_t tot1=hLeTotC->GetMean(2);
   Double_t tot2=hLeTotC2->GetMean(2);
-  std::cout<<"p1  "<<r.X() << "   p1 "<< r.Z() << " t1 "<< tot1 <<"  t2 "<< tot2<<std::endl;
+  std::cout<<"LE1  "<<r.X() << "   LE2 "<< r.Z() << " TOT1 "<< tot1 <<"  TOT2 "<< tot2<<std::endl;
 
   
   fileid=infile;

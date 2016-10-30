@@ -24,6 +24,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   if(debug) cc = new TCanvas("cc","cc");
 
   TH1F *hpdff[maxch_dirc],*hpdfs[maxch_dirc], *hl[5],*hnph[5],*hll[5];
+  TGraph *gpdff[maxch_dirc],*gpdfs[maxch_dirc];
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,100);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
@@ -46,10 +47,13 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
     hpdfs[i]->SetLineColor(4);
     if(sigma >0) hpdff[i]->Rebin((Int_t)sigma);
     if(sigma >0) hpdfs[i]->Rebin((Int_t)sigma);
-    // hpdff[i]->Smooth(1);
-    // hpdfs[i]->Smooth(1);
+    hpdff[i]->Smooth(1);
+    hpdfs[i]->Smooth(1);
     // hpdff[i]->Scale(1/hpdff[i]->Integral());
     // hpdfs[i]->Scale(1/hpdfs[i]->Integral());
+
+    gpdff[i] = new TGraph(hpdff[i]);
+    gpdfs[i] = new TGraph(hpdfs[i]); 
     
     integ1+= hpdff[i]->Integral();
     integ2+= hpdfs[i]->Integral();
@@ -123,7 +127,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	  t1=true;
 	if(gch==821)
 	  t2=true;
-	  if(gch==819)
+	if(gch==819)
 	  t3=true;
 	
 	  //if(gch>1031 && gch<1034)
@@ -142,7 +146,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	  //   hodo2=true;
 
 	  //if(gch>766 && gch<776)
-	  if(gch>776 && gch<781)
+	  if(gch>777 && gch<781)
 	    hodo1=true;
 	  if(gch>=790 && gch<794)
 	    hodo2=true;
@@ -177,24 +181,26 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<10 || time >40) continue;				 
+	if(time<9 || time >40) continue;				 
       }
       nGoodHits++;
-      aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
-      amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time-0.0));   
+      // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
+      // amins = hpdfs[ch]->GetBinContent(hpdfs[ch]->FindBin(time-0.0));   
 
+      aminf = gpdff[ch]->Eval(time);
+      amins = gpdfs[ch]->Eval(time);
+      
       countall[mcp][pix]++;
-
       if(prt_pid==4){
 	mcpf[mcp]++;
-	//if(mcp ==7) continue;
-	// if(aminf>amins) countgood [mcp][pix]++;
-	// else countbad[mcp][pix]++;
+	//if(mcp ==6) continue;
+	if(aminf>amins) countgood [mcp][pix]++;
+	else countbad[mcp][pix]++;
       }else if (prt_pid==2){
 	mcps[mcp]++;
-	//if(mcp ==3 ) continue;
-	if(amins>aminf) countgood [mcp][pix]++;
-	else countbad[mcp][pix]++;
+	//if(mcp ==8 ) continue;
+	// if(amins>aminf) countgood [mcp][pix]++;
+	// else countbad[mcp][pix]++;
       }
             
       if(debug){
@@ -205,6 +211,8 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	hpdff[ch]->Draw();
 	hpdff[ch]->GetXaxis()->SetRangeUser(0,50);
 	hpdfs[ch]->Draw("same");
+	gpdff[ch]->Draw("PL same");
+	gpdfs[ch]->Draw("PL same");
 	cc->Update();
 	gLine->SetX1(time);
 	gLine->SetX2(time);
@@ -215,7 +223,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	cc->WaitPrimitive();
       }
       // if(aminf==0 || amins==0) continue;
-      Double_t noise = 1e-8; //1e-7; // nHits
+      Double_t noise = 1e-5; //1e-7; // nHits
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
