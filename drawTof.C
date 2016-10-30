@@ -59,8 +59,8 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   Int_t l1(70), l2(75);
   
   if(studyId<1000 && momentum==7){
-    le2=85;
-    l2=85;
+    le2=80;
+    l2=80;
   }
   
   c1y=fr11[momentum];
