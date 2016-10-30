@@ -20,11 +20,10 @@ Double_t fr21[11]={0,0.8,0.8,0.3,0.3,0.4, 0.3,0.3,0.2,0.2,0.2};
 Double_t fr22[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.8,0.8};
 Double_t c1y(0.5),c2y(0.5),c1x(0.9),c2x(0.9);
 
-
-Double_t tof1le[]= {0,0,0,0,0,0,0,0};
-Double_t tof2le[]= {0,0,0,0,0,0,0,0};
-Double_t tof1tot[]={0,0,0,0,0,0,0,0};
-Double_t tof2tot[]={0,0,0,0,0,0,0,0};
+Double_t tof1lea[]= {0,0,0,0,0,0,0,0};
+Double_t tof2lea[]= {0,0,0,0,0,0,0,0};
+Double_t tof1tota[]={0,0,0,0,0,0,0,0};
+Double_t tof2tota[]={0,0,0,0,0,0,0,0};
 
 Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double_t r1, Double_t r2, Double_t w=0){
 
