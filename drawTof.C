@@ -45,15 +45,14 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   
   TString fileid(infile);
   fileid.Remove(0,fileid.Last('/')+1);
-  fileid.Remove(fileid.Last('.')-1);
+  fileid.ReplaceAll("C.root","");
   prt_data_info = getDataInfo(fileid);
   Int_t momentum = prt_data_info.getMomentum();
   Int_t studyId = prt_data_info.getStudyId();
   if(studyId<0) studyId=1000;
   fSavePath = Form("tof/%d/%d",studyId,prt_data_info.getFileId());
   PrtInit(infile,1);
-  std::cout<<"fSavePath  "<<fSavePath <<std::endl;
-  if(studyId<0) return;
+  std::cout<<"fSavePath  "<<fSavePath << "momentum "<<momentum <<std::endl;
   
   Int_t le1(70), le2(75);
   Int_t l1(70), l2(75);
