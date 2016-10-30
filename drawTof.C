@@ -45,7 +45,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   
   TString fileid(infile);
   fileid.Remove(0,fileid.Last('/')+1);
-  fileid.ReplaceAll("C.root","");
+  fileid.Remove(fileid.Last('.')-1);
   prt_data_info = getDataInfo(fileid);
   Int_t momentum = prt_data_info.getMomentum();
   Int_t studyId = prt_data_info.getStudyId();
