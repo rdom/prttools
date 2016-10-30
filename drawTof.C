@@ -52,7 +52,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   if(studyId<0) studyId=1000;
   fSavePath = Form("tof/%d/%d",studyId,prt_data_info.getFileId());
   PrtInit(infile,1);
-  std::cout<<"fSavePath  "<<fSavePath << "momentum "<<momentum <<std::endl;
+  std::cout<<"fSavePath  "<<fSavePath << "  momentum "<<momentum <<std::endl;
   
   Int_t le1(70), le2(75);
   Int_t l1(70), l2(75);
