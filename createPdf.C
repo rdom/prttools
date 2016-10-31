@@ -49,10 +49,12 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
   PrtInit(path,1);
   gStyle->SetOptStat(0);
   CreateMap();
-  Int_t totalmcp[5][9];
+
+  Int_t totalmcp[5][9], totalmcpr[5][9];
   for(Int_t i=0; i<5; i++){
     for(Int_t m=0; m<9; m++){
       totalmcp[i][m]=0;
+      totalmcpr[i][m]=0;
     }
   }
   
@@ -119,11 +121,13 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
       
       if(prt_event->GetParticle()==2212){
 	totalmcp[4][mcp]++;
+	totalmcpr[4][mcp%3]++;
 	totalf++;
 	hlef[ch]->Fill(time);
       }
       if(prt_event->GetParticle()==211){
 	totalmcp[2][mcp]++;
+	totalmcpr[2][mcp%3]++;
 	totals++;
 	hles[ch]->Fill(time);
       }
@@ -139,7 +143,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
   
   if(totalf>0 && totals>0) {
     path.ReplaceAll("*","");
-    path.ReplaceAll(".root",".pdf.root");
+    path.ReplaceAll(".root",Form(".pdf%d.root",normtype));
+    
     TFile efile(path,"RECREATE");
     
     for(Int_t i=0; i<maxch_dirc; i++){
@@ -155,6 +160,11 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
 	hles[i]->Scale(1/(Double_t)totalmcp[2][mcp]);
       }
 	    
+      if(normtype==3){
+	hlef[i]->Scale(1/(Double_t)totalmcpr[4][mcp%3]);
+	hles[i]->Scale(1/(Double_t)totalmcpr[2][mcp%3]);
+      }
+
       
       // hlef[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));
       // hles[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));

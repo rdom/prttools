@@ -135,21 +135,20 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	  //if(gch>651 && gch<657)
 	  tof2=true;
 	    
-	  // if(gch>775 && gch<780)
-	  //   hodo1=true;
-	  // if(gch>=790 && gch<794)
-	  //   hodo2=true;
-
-	  // if(gch>770 && gch<776)
-	  //   hodo1=true;
-	  // if(gch>=790 && gch<794)
-	  //   hodo2=true;
-
-	  //if(gch>766 && gch<776)
-	  if(gch>777 && gch<781)
+	  if(gch>775 && gch<780)
 	    hodo1=true;
 	  if(gch>=790 && gch<794)
 	    hodo2=true;
+
+	  // if(gch>775 && gch<778)
+	  //   hodo1=true;
+	  // if(gch>=790 && gch<792)
+	  //   hodo2=true;
+
+	  // if(gch>777 && gch<781)
+	  //   hodo1=true;
+	  // if(gch>=790 && gch<794)
+	  //   hodo2=true;
 	  
 	  
       }
@@ -194,13 +193,13 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       if(prt_pid==4){
 	mcpf[mcp]++;
 	//if(mcp ==6) continue;
-	if(aminf>amins) countgood [mcp][pix]++;
-	else countbad[mcp][pix]++;
+	// if(aminf>amins) countgood [mcp][pix]++;
+	// else countbad[mcp][pix]++;
       }else if (prt_pid==2){
 	mcps[mcp]++;
 	//if(mcp ==8 ) continue;
-	// if(amins>aminf) countgood [mcp][pix]++;
-	// else countbad[mcp][pix]++;
+	if(amins>aminf) countgood [mcp][pix]++;
+	else countbad[mcp][pix]++;
       }
             
       if(debug){
@@ -223,7 +222,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	cc->WaitPrimitive();
       }
       // if(aminf==0 || amins==0) continue;
-      Double_t noise = 1e-5; //1e-7; // nHits
+      Double_t noise = 1e-5; //1e-7; // nHits //1e-5
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));    
 
