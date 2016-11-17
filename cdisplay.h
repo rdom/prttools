@@ -19,6 +19,7 @@
 #include <TSelector.h>
 #include <TH2.h>
 #include <TObject.h>
+#include <TCutG.h>
 
 #include <TApplication.h>
 #include <TGClient.h>

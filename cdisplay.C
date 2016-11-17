@@ -14,6 +14,7 @@ MyMainFrame *gMain;
 TGHProgressBar *pbar;
 MSelector *fSelector;
 TGraph *gGrDiff[maxch];
+TGraph *gWalk[maxch];
 TCanvas *cTime;
 
 const Int_t maxMult = 30;
@@ -361,8 +362,18 @@ void getTimeOffset(){
     for(Int_t p=0; p<npix; p++){
       Double_t mean = prt_fit(hPTime[m][p],0.5).X();
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
-      hh->RebinY(2);
+      hh->RebinY(1);
 
+      TCutG *cutg = new TCutG("onepeakcut",5);
+      cutg->SetVarX("y");
+      cutg->SetVarY("x");
+      Double_t range=1;
+      cutg->SetPoint(0,mean-range,0.5);
+      cutg->SetPoint(1,mean-range,8.5);
+      cutg->SetPoint(2,mean+range,8.5);
+      cutg->SetPoint(3,mean+range,0.5);
+      cutg->SetPoint(4,mean-range,0.5);
+  
       // TF1 *gaust = new TF1("gaust","gaus(0)",85,105);
       // gaust->SetParameter(1,90);
       // gaust->SetParameter(2,0.3);
@@ -370,12 +381,23 @@ void getTimeOffset(){
       // TGraph * gg = new TGraph((TH1D*)gDirectory->Get("hh_1")); 
       Int_t ch = map_mpc[m][p];
       gGrDiff[ch] = new TGraph();
-      for (int i=0;i<500;i++){
+      gWalk[ch] = new TGraph();
+      for (int i=0;i<hh->GetNbinsY();i++){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
-	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);
-	Double_t vx = prt_fit((TH1F*)h,0.5).X();
-	if(vx==0) vx = mean;
+	
+	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");
+	// cTime->cd();
+	// h->Draw();
+
+	Double_t vx = prt_fit((TH1F*)h,0.5,100,1).X();
+	if(vx==0 || fabs(vx-mean)>0.8) vx = mean;
 	gGrDiff[ch]->SetPoint(i,x,vx);
+	gWalk[ch]->SetPoint(i,x,vx-mean);
+
+	// std::cout<<"vx "<< vx<<std::endl;
+	
+	// cTime->Update();
+	// cTime->WaitPrimitive();
       }
 
       gGrDiff[ch]->SetName(Form("gCalib_ch%d",ch));
@@ -392,13 +414,13 @@ void MyMainFrame::DoExportOffsets(){
 
     TString filedir=ginFile;
     filedir.Remove(filedir.Last('/'));
-    TFile efile(filedir+"/calibOffsets.root","RECREATE");
+    TFile efile(filedir+"/calib_walk.root","RECREATE");
     Int_t c;
     for (Int_t m=0; m <nmcp; m++) {
       for(Int_t p=0; p<npix; p++){
 	c = map_mpc[m][p];
-	gGrDiff[c]->SetName(Form("%d_%d_%d",c,m,p));
-	gGrDiff[c]->Write();
+	gWalk[c]->SetName(Form("walk_%d",c));
+	gWalk[c]->Write();
       }
     }
     efile.Write();
@@ -449,13 +471,18 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==10) hShape[m][p]->Draw("colz");
       if(gComboId==11){
 	hLeTot[m][p]->Draw("colz");
-	Double_t* xx = gGrDiff[ch]->GetX();
-	Double_t* yy = gGrDiff[ch]->GetY();
+	if(gGrDiff[ch]){
+	  Double_t* xx = gGrDiff[ch]->GetX();
+	  Double_t* yy = gGrDiff[ch]->GetY();
 
-	TGraph* gr = new TGraph(gGrDiff[ch]->GetN(),yy,xx);
-	gr->SetMarkerStyle(7);
-	gr->SetMarkerColor(2);
-	gr->Draw("P same");
+	  TGraph* gr = new TGraph(gGrDiff[ch]->GetN(),yy,xx);
+	  gr->SetMarkerStyle(7);
+	  gr->SetMarkerColor(2);
+	  gr->Draw("PL same");
+	}else{
+	  std::cout<<"Press the btn \"Export offsets\" "<<std::endl;
+	  
+	}
       }
       if(gMain->fCheckBtn2->GetState() == kButtonDown){
 	gMain->fEdit3->SetText(Form("%2.2f %2.2f", gTimeCuts[m][p][0], gTimeCuts[m][p][1]));
