@@ -362,12 +362,12 @@ void getTimeOffset(){
     for(Int_t p=0; p<npix; p++){
       Double_t mean = prt_fit(hPTime[m][p],0.5).X();
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
-      hh->RebinY(1);
+      //hh->RebinY(1);
 
       TCutG *cutg = new TCutG("onepeakcut",5);
       cutg->SetVarX("y");
       cutg->SetVarY("x");
-      Double_t range=1;
+      Double_t range=0.6;
       cutg->SetPoint(0,mean-range,0.5);
       cutg->SetPoint(1,mean-range,8.5);
       cutg->SetPoint(2,mean+range,8.5);
@@ -389,8 +389,8 @@ void getTimeOffset(){
 	// cTime->cd();
 	// h->Draw();
 
-	Double_t vx = prt_fit((TH1F*)h,0.5,100,1).X();
-	if(vx==0 || fabs(vx-mean)>0.8) vx = mean;
+	Double_t vx = prt_fit((TH1F*)h,0.5,100).X();
+	if(vx==0 || fabs(vx-mean)>0.6) vx = mean;
 	gGrDiff[ch]->SetPoint(i,x,vx);
 	gWalk[ch]->SetPoint(i,x,vx-mean);
 
