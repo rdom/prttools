@@ -304,7 +304,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	// timeLe += getTotWalk(timeTot,ch);
 	// if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
-	//if(gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
+	if(gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
 	
 	timeLe -= gLeOffArr[ch];
 
