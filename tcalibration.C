@@ -300,6 +300,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
 	timeTot += 30-gTotO[ch];
 
+	// tmp commented! 
 	// timeLe += getTotWalk(timeTot,ch);
 	// if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
