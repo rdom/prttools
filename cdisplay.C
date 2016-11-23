@@ -389,7 +389,7 @@ void getTimeOffset(){
 	// cTime->cd();
 	// h->Draw();
 
-	Double_t vx = prt_fit((TH1F*)h,0.5,100).X();
+	Double_t vx = prt_fit((TH1F*)h,0.4,100).X();
 	if(vx==0 || fabs(vx-mean)>0.6) vx = mean;
 	gGrDiff[ch]->SetPoint(i,x,vx);
 	gWalk[ch]->SetPoint(i,x,vx-mean);
@@ -1298,12 +1298,12 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 
 
   fEdit1->SetText("600 20 40");
-  fEdit2->SetText("400 0 10");
+  fEdit2->SetText("200 1 8");
   if(gMode>=100) fEdit1->SetText("600 0 50");
   
   
   if(ginFile.Contains("th_")) fEdit1->SetText("400 20 40");
-  if(ginFile.Contains("beam")) fEdit1->SetText("400 0 50");
+  if(ginFile.Contains("beam")) fEdit1->SetText("400 10 25");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   
   fEdit3->SetText("0 0");
