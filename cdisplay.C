@@ -460,7 +460,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]};
 	normalize(hh,2);
-	prt_fit(hh[0],1,1);
+	prt_fit(hh[0],0.5,100);
 	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
@@ -559,7 +559,7 @@ void MyMainFrame::InterestChanged(){
     normalize(hh,2);
     hh[0]->Draw();
     hPiTime[mcp][pix]->Draw("same");
-    prt_fit(hh[0],1,1);
+    prt_fit(hh[0],0.5,100);
     if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
   }
   if(gComboId==2) hPTot[mcp][pix]->Draw();   
@@ -821,13 +821,13 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
       fhDigi_temp_updateplot[m] = (TH2F*)fhDigi[m]->Clone();
       if(fhDigi[m]) fhDigi[m]->Reset();
     }
-    TH1F *hSigma = new TH1F("hSigma","hSigma",150,0,1.5);
+    TH1F *hSigma = new TH1F("hSigma",";#sigma [ns];entries [#]",150,0,1.5);
 
     for (Int_t m=0; m <nmcp; m++) {
       for(Int_t p=0; p<npix; p++){
 	Int_t col = p/8;
 	Int_t row = p%8;       
-	Double_t sigma = prt_fit(hPTime[m][p],1,1).Y();
+	Double_t sigma = prt_fit(hPTime[m][p],0.5,100).Y();
 	hSigma->Fill(sigma);
 	if(sigma>1) sigma = 1;
 	fhDigi[m]->Fill(row,col,sigma);
@@ -906,7 +906,7 @@ void MyMainFrame::DoExport(){
 	if(gComboId==0) {
 	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; //,hSTime[m][p]}; 
 	  normalize(hh,2);
-	  prt_fit(hh[0],1,1);
+	  prt_fit(hh[0],0.5,1);
 	  hh[0]->Draw();
 	  if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 	  histname=hh[0]->GetName();
