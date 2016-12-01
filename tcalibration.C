@@ -305,7 +305,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	// if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
 	if(gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
-	
+	if(fabs(tof1tot-44.9)<1) timeLe -= (tof1tot-44.9)/8.4; //7.1;
+		
 	timeLe -= gLeOffArr[ch];
 
 	if(!laser){

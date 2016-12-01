@@ -34,6 +34,7 @@
 #include <TAxis.h>
 #include <TPaletteAxis.h>
 #include <TRandom.h>
+#include <TCutG.h>
 
 
 #include <iostream>
@@ -80,6 +81,8 @@ Int_t map_col[maxch];
 
 Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
 Double_t prt_mass[] = {0.000511,0.1056584,0.139570,0.49368,0.9382723};
+TString  prt_name[]={"e","muon","pion","kaon","proton"};
+Int_t    prt_color[]={1,1,4,7,2};
 Double_t prt_particleArray[3000];
 
 // const Int_t tdcnum=16;
@@ -178,6 +181,35 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
   return TVector3(mean1,sigma1,mean2);
 }
 
+TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_t fitrange=1,Int_t rebin=1){
+  TH2F *h =(TH2F*) hh->Clone("h");
+  h->RebinY(rebin);
+  Int_t point(0);
+  TGraph *gres = new TGraph();
+  for (int i=0;i<h->GetNbinsY();i++){
+    Double_t x = h->GetYaxis()->GetBinCenter(i);
+    TH1D* hp;
+    if(minrange!=maxrange){
+      TCutG *cut = new TCutG("prt_onepeakcut",5);
+      cut->SetVarX("y");
+      cut->SetVarY("x");
+      cut->SetPoint(0,minrange,-1E6);
+      cut->SetPoint(1,minrange, 1E6);
+      cut->SetPoint(2,maxrange, 1E6);
+      cut->SetPoint(3,maxrange,-1E6);
+      cut->SetPoint(4,minrange,-1E6);
+    
+      hp = h->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[prt_onepeakcut]");
+    }else{
+      hp = h->ProjectionX(Form("bin%d",i+1),i+1,i+2);
+    }
+    
+    Double_t y = prt_fit((TH1F*)hp,fitrange,100).X();
+    gres->SetPoint(point++,y,x);
+  }
+  return gres;
+}
+
 void CreateMap(){
   TGaxis::SetMaxDigits(3);
   Int_t seqid =-1;
@@ -234,7 +266,7 @@ Bool_t badcannel(Int_t ch){
   // if(ch==828) return true;
   // if(ch==815) return true;
   // if(ch>383 && ch<400) return true; //dead chain
-	
+
   return false;
 }
 
@@ -611,7 +643,8 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
 
 #ifdef prt__beam
 void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
-
+  
+  CreateMap();
   SetRootPalette(1);
   delete fCh;
 
@@ -658,7 +691,9 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
     fTest1 = prt_event->GetTest1();
     fTest2 = prt_event->GetTest2();
   }
-  prt_pid=prt_particleArray[prt_event->GetParticle()];
+  if(prt_event->GetParticle()<3000 && prt_event->GetParticle()>0){
+    prt_pid=prt_particleArray[prt_event->GetParticle()];
+  }
 }
 #endif
 
@@ -842,6 +877,7 @@ void canvasAdd(TString name="c",Int_t w=800, Int_t h=600){
 
 void canvasAdd(TCanvas *c){
   if(!gg_canvasList) gg_canvasList = new TList();
+  c->cd();
   gg_canvasList->Add(c);
 }
 
