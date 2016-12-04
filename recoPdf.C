@@ -8,7 +8,7 @@
 
 TLine *gLine = new TLine(0,0,0,1000);
 
-void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf2.root", Double_t sigma=2,Bool_t debug=false){
+void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf2_0.root", Double_t sigma=2,Bool_t debug=false){
   
   if(path=="") return;
   Int_t studyId;
@@ -137,7 +137,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	  tof2=true;
 	    
 	      //	      if(gch>775 && gch<780)
-	      //   if(gch>=778 && gch<=783)
+	  // if(gch>=778 && gch<=783)
 	     hodo1=true;
 	     //	   if(gch>=790 && gch<794)
 	     if(gch>=790 && gch<=794)
@@ -167,11 +167,11 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       mcp = fHit.GetMcpId();
-      pix=fHit.GetPixelId()-1;
+      pix=fHit.GetPixelId()-1;      
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();//+rand.Gaus(0,sigma/10.);
       Double_t tot= fHit.GetTotTime();
-      //      if(tot>5) continue;
+      //if(tot>5) continue;
       
       if(++mult[ch]>1) continue;
       
@@ -183,7 +183,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<9 || time >40) continue;				 
+	//if(time<9 || time >40) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -206,7 +206,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       }
       // if(fabs(aminf-amins)/(aminf+amins)*0.5<0.01) continue;
       
-      if(debug && cc){
+      if(debug){
 	TString x=(aminf>amins)? " <====== PROTON" : "";
 	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,pid)<<"  "<<x <<std::endl;
 	
