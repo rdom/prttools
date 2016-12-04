@@ -194,13 +194,13 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       if(prt_pid==4){
 	mcpf[mcp]++;
 	//if(mcp ==6) continue;
-	if(aminf>amins) countgood [mcp][pix]++;
-	else countbad[mcp][pix]++;
+	// if(aminf>amins) countgood [mcp][pix]++;
+	// else countbad[mcp][pix]++;
       }else if (prt_pid==2){
 	mcps[mcp]++;
 	//if(mcp ==8 ) continue;
-	// if(amins>aminf) countgood [mcp][pix]++;
-	// else countbad[mcp][pix]++;
+	if(amins>aminf) countgood [mcp][pix]++;
+	else countbad[mcp][pix]++;
       }
       // if(fabs(aminf-amins)/(aminf+amins)*0.5<0.01) continue;
       
