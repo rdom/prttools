@@ -61,8 +61,8 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
   TH1F *hlef[maxch_dirc], *hles[maxch_dirc];
 
   for(Int_t i=0; i<maxch_dirc; i++){
-    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,100);
-    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,100);
+    hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,50);
+    hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,50);
   }
   
   Double_t time;
@@ -90,13 +90,13 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
 	  t3=true;
 	
 	//if(gch>1031 && gch<1034)
-	tof1=true;
+	  tof1=true;
 	//if(gch>651 && gch<657)
-	tof2=true;
+	  tof2=true;
 
 	//if(gch>776 && gch<=780) //4
 	//if(gch>777 && gch<779) //2
-	hodo1=true;
+	  hodo1=true;
 	//if(gch>=790 && gch<794) //4
 	//if(gch>791 && gch<793) //2
 	if(gch>=790 && gch<=794)
@@ -118,7 +118,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
 
 
       if(++mult[ch]>1) continue;      
-      if(time<8 || time >40) continue;
+      if(time<8 || time>50) continue;
       
       if(prt_event->GetParticle()==2212){
 	totalmcp[4][mcp]++;
