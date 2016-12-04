@@ -169,8 +169,6 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       pix=fHit.GetPixelId()-1;      
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();//+rand.Gaus(0,sigma/10.);
-      Double_t tot= fHit.GetTotTime();
-      //if(tot>5) continue;
       if(++mult[ch]>1) continue;
       
       { //time cuts
@@ -181,7 +179,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	//if(time<9 || time >50) continue;
+	if(time<5 || time>50) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -194,13 +192,15 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       if(prt_pid==4){
 	mcpf[mcp]++;
 	//if(mcp ==6) continue;
+	countgood [mcp][0]++;
 	// if(aminf>amins) countgood [mcp][pix]++;
 	// else countbad[mcp][pix]++;
       }else if (prt_pid==2){
 	mcps[mcp]++;
 	//if(mcp ==8 ) continue;
-	if(amins>aminf) countgood [mcp][pix]++;
-	else countbad[mcp][pix]++;
+	countbad[mcp][0]++;
+	// if(amins>aminf) countgood [mcp][pix]++;
+	// else countbad[mcp][pix]++;
       }
       // if(fabs(aminf-amins)/(aminf+amins)*0.5<0.01) continue;
       
@@ -249,11 +249,11 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
     std::cout<<mcpf[m]<< " "<< mcps[m]<<std::endl;
     
     for(Int_t p=0; p<npix; p++){
-      fhDigi[m]->Fill(p%8,p/8,countgood[m][p]/(Double_t)countbad[m][p]);
+      fhDigi[m]->Fill(p%8,p/8,countgood[m][0]/(Double_t)countbad[m][0]);
     }
   }
   
-  drawDigi("m,p,v\n",7,2,0);
+  drawDigi("m,p,v\n",7,1.3,0);
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
   canvasAdd(cDigi);
