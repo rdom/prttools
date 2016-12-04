@@ -8,7 +8,7 @@
 
 TLine *gLine = new TLine(0,0,0,1000);
 
-void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pdfEnding=".h2Zpdf.root", Double_t sigma=3,Bool_t debug=false){
+void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf2.root", Double_t sigma=2,Bool_t debug=false){
   
   if(path=="") return;
   Int_t studyId;
@@ -35,6 +35,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
   TRandom rand;
   TF1 *pdff[maxch_dirc],*pdfs[maxch_dirc];
   TString pdf = path;
+  pdf.ReplaceAll("*","");
   pdf.ReplaceAll(".root",pdfEnding);
   TFile f(pdf);
   
@@ -135,10 +136,12 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
 	  //if(gch>651 && gch<657)
 	  tof2=true;
 	    
-	  if(gch>775 && gch<780)
-	    hodo1=true;
-	  if(gch>=790 && gch<794)
-	    hodo2=true;
+	      //	      if(gch>775 && gch<780)
+	      //   if(gch>=778 && gch<=783)
+	     hodo1=true;
+	     //	   if(gch>=790 && gch<794)
+	     if(gch>=790 && gch<=794)
+	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
 	  //   hodo1=true;
@@ -203,7 +206,7 @@ void recoPdf(TString path="$HOME/simo/build/beam_15184203911SF.root", TString pd
       }
       // if(fabs(aminf-amins)/(aminf+amins)*0.5<0.01) continue;
       
-      if(debug){
+      if(debug && cc){
 	TString x=(aminf>amins)? " <====== PROTON" : "";
 	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,pid)<<"  "<<x <<std::endl;
 	

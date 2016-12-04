@@ -86,7 +86,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
 	  t1=true;
 	//if(gch==821)
 	t2=true;
-	//if(gch==819)
+	if(gch==819)
 	t3=true;
 	
 	//if(gch>1031 && gch<1034)
@@ -96,9 +96,10 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
 
 	//if(gch>776 && gch<=780) //4
 	//if(gch>777 && gch<779) //2
-	  hodo1=true;
+	//hodo1=true;
 	//if(gch>=790 && gch<794) //4
 	//if(gch>791 && gch<793) //2
+	  if(gch>=790 && gch<=794)
 	  hodo2=true;
       }
 
