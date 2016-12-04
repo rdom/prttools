@@ -92,7 +92,6 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
 	if(gch==819)
 	  t3=true;
 
-	if(gch == )
 	//if(gch>1031 && gch<1034)
 	  tof1=true;
 	//if(gch>651 && gch<657)
