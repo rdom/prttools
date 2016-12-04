@@ -183,7 +183,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	//if(time<9 || time >40) continue;
+	//if(time<9 || time >50) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 

@@ -84,9 +84,9 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
 
        	if(gch==818)
 	  t1=true;
-	if(gch==821)
+	//if(gch==821)
 	  t2=true;
-	if(gch==819)
+	//if(gch==819)
 	  t3=true;
 	
 	//if(gch>1031 && gch<1034)
@@ -115,7 +115,9 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
       Int_t pix = fHit.GetPixelId()-1;
       ch=map_mpc[mcp][pix];      
       time=fHit.GetLeadTime();//+gRandom->Gaus(0,0.3);
-
+      Double_t tot= fHit.GetTotTime();
+      if(tot<2 || tot>4) continue;
+      
 
       if(++mult[ch]>1) continue;      
       if(time<8 || time>50) continue;
