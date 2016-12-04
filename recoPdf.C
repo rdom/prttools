@@ -26,11 +26,11 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   TH1F *hpdff[maxch_dirc],*hpdfs[maxch_dirc], *hl[5],*hnph[5],*hll[5];
   TGraph *gpdff[maxch_dirc],*gpdfs[maxch_dirc];
   for(Int_t i=0; i<5; i++){
-    hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
+    hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
     hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",110,-30,30);
   }  
-  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
+  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 500,0,50);
 
   TRandom rand;
   TF1 *pdff[maxch_dirc],*pdfs[maxch_dirc];
@@ -139,8 +139,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	      //	      if(gch>775 && gch<780)
 	  // if(gch>=778 && gch<=783)
 	     hodo1=true;
-	     //	   if(gch>=790 && gch<794)
-        if(gch>=790 && gch<=794)
+        if(gch>=791 && gch<=793)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
