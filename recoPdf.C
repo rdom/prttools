@@ -163,7 +163,6 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 
     Int_t mult[maxch];
     memset(mult, 0, sizeof(mult));
-    
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       mcp = fHit.GetMcpId();
@@ -172,7 +171,6 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       time = fHit.GetLeadTime();//+rand.Gaus(0,sigma/10.);
       Double_t tot= fHit.GetTotTime();
       //if(tot>5) continue;
-      
       if(++mult[ch]>1) continue;
       
       { //time cuts
