@@ -26,11 +26,11 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   TH1F *hpdff[maxch_dirc],*hpdfs[maxch_dirc], *hl[5],*hnph[5],*hll[5];
   TGraph *gpdff[maxch_dirc],*gpdfs[maxch_dirc];
   for(Int_t i=0; i<5; i++){
-    hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 500,0,50);
+    hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
-    hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",110,-30,30);
+    hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",120,-30,30);
   }  
-  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 500,0,50);
+  TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
 
   TRandom rand;
   TF1 *pdff[maxch_dirc],*pdfs[maxch_dirc];
@@ -139,7 +139,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	      //	      if(gch>775 && gch<780)
 	  // if(gch>=778 && gch<=783)
 	     hodo1=true;
-        if(gch>=791 && gch<=793)
+        if(gch>=790 && gch<=793)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
@@ -178,7 +178,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<5 || time>50) continue;
+	if(time<8 || time>50) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -225,9 +225,18 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       // if(aminf==0 || amins==0) continue;
 
       Double_t noise = 1e-5; //1e-7; // nHits //1e-5
-      sumf+=TMath::Log((aminf+noise));
-      sums+=TMath::Log((amins+noise));    
-
+      // sumf+=TMath::Log((aminf+noise));
+      // sums+=TMath::Log((amins+noise));
+      
+      Double_t res;
+      if(aminf>amins){
+	res=100*(aminf-amins)/amins;
+	sumf+=TMath::Log((res+noise));
+      }else{
+	res=100*(amins-aminf)/amins;
+	sums+=TMath::Log((res+noise));
+      }
+      
       hl[prt_pid]->Fill(time);
     }
     if(nGoodHits<20) continue;
@@ -270,7 +279,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   TF1 *ff;
   Double_t sep(0),esep(0),m1,m2,s1,s2,dm1,dm2,ds1,ds2; 
   if(hll[4]->GetEntries()>10 && hll[2]->GetEntries()>10){
-    hll[4]->Fit("gaus","Sq");
+    hll[4]->Fit("gaus","Sq","");
     ff = hll[4]->GetFunction("gaus");
     m1=ff->GetParameter(1);
     s1=ff->GetParameter(2);
