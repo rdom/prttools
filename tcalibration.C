@@ -223,7 +223,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   if(gMode==5){
-    if(mult1!=1 || mult3!=1 || mult4<1){ //  || mult2!=1 || mult5!=1
+    if(mult1!=1 || mult3!=1 || mult4<1 || mult5<1){ //  || mult2!=1 || mult5!=1
       fEvent->Clear();
       delete fEvent;
       return kTRUE;
@@ -304,7 +304,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	// timeLe += getTotWalk(timeTot,ch);
 	// if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
-	if(gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
+	if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
 	if(fabs(tof1tot-44.9)<1) timeLe -= (tof1tot-44.9)/8.4; //7.1;
 		
 	timeLe -= gLeOffArr[ch];
