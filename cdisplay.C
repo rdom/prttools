@@ -821,7 +821,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
       fhDigi_temp_updateplot[m] = (TH2F*)fhDigi[m]->Clone();
       if(fhDigi[m]) fhDigi[m]->Reset();
     }
-    TH1F *hSigma = new TH1F("hSigma",";#sigma [ns];entries [#]",150,0,1.5);
+    TH1F *hSigma = new TH1F("hSigma",";#sigma [ns];entries [#]",300,0,1.5);
 
     for (Int_t m=0; m <nmcp; m++) {
       for(Int_t p=0; p<npix; p++){
