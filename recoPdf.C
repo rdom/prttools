@@ -21,7 +21,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   TGaxis::SetMaxDigits(4);
   
   TCanvas *cc;
-  if(debug) cc = new TCanvas("cc","cc");
+  if(debug) cc = new TCanvas("cc","cc",800,400);
 
   TH1F *hpdff[maxch_dirc],*hpdfs[maxch_dirc], *hl[5],*hnph[5],*hll[5];
   TGraph *gpdff[maxch_dirc],*gpdfs[maxch_dirc];
@@ -139,7 +139,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	      //	      if(gch>775 && gch<780)
 	  // if(gch>=778 && gch<=783)
 	     hodo1=true;
-        if(gch>=790 && gch<=793)
+        if(gch>=791 && gch<=793)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
@@ -178,7 +178,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<8 || time>50) continue;
+	if(time<10 || time>30) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -208,12 +208,18 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,pid)<<"  "<<x <<std::endl;
 	
 	cc->cd();
+	axisTime800x500(hpdff[ch]);
+	axisTime800x500(hpdfs[ch]);
+	prt_normalize(hpdff[ch],hpdfs[ch]);
+	hpdff[ch]->SetLineColor(2);
+	hpdfs[ch]->SetLineColor(4);
 	hpdff[ch]->Draw();
-	hpdff[ch]->GetXaxis()->SetRangeUser(0,50);
+	hpdff[ch]->GetXaxis()->SetRangeUser(0,40);
 	hpdfs[ch]->Draw("same");
 	gpdff[ch]->Draw("PL same");
 	gpdfs[ch]->Draw("PL same");
 	cc->Update();
+	gLine->SetLineWidth(2);
 	gLine->SetX1(time);
 	gLine->SetX2(time);
 	gLine->SetY1(cc->GetUymin());
@@ -224,18 +230,18 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       }
       // if(aminf==0 || amins==0) continue;
 
-      Double_t noise = 1e-5; //1e-7; // nHits //1e-5
-      // sumf+=TMath::Log((aminf+noise));
-      // sums+=TMath::Log((amins+noise));
+      Double_t noise = 1e-3; //1e-7; // nHits //1e-5
+      sumf+=TMath::Log((aminf+noise));
+      sums+=TMath::Log((amins+noise));
       
-      Double_t res;
-      if(aminf>amins){
-	res=100*(aminf-amins)/amins;
-	sumf+=TMath::Log((res+noise));
-      }else{
-	res=100*(amins-aminf)/amins;
-	sums+=TMath::Log((res+noise));
-      }
+      // Double_t res;
+      // if(aminf>amins){
+      // 	res=100*(aminf-amins)/amins;
+      // 	sumf+=TMath::Log((res+noise));
+      // }else{
+      // 	res=100*(amins-aminf)/amins;
+      // 	sums+=TMath::Log((res+noise));
+      // }
       
       hl[prt_pid]->Fill(time);
     }
@@ -281,6 +287,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   if(hll[4]->GetEntries()>10 && hll[2]->GetEntries()>10){
     hll[4]->Fit("gaus","Sq","");
     ff = hll[4]->GetFunction("gaus");
+    ff->SetLineColor(1);
     m1=ff->GetParameter(1);
     s1=ff->GetParameter(2);
     dm1=ff->GetParError(1);
@@ -288,6 +295,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 
     hll[2]->Fit("gaus","Sq");
     ff = hll[2]->GetFunction("gaus");
+    ff->SetLineColor(1);
     m2=ff->GetParameter(1);
     s2=ff->GetParameter(2);
     dm2=ff->GetParError(1);
@@ -309,7 +317,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   hll[2]->SetLineColor(4);
   hll[2]->Draw("same");
 
-  TLegend *leg = new TLegend(0.6,0.7,0.82,0.88);
+  TLegend *leg = new TLegend(0.65,0.65,0.83q,0.87);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
@@ -332,11 +340,13 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   // hl[2]->Draw("same");
   // hl3->SetLineColor(2);
   // hl3->Draw("same");
-  
+
+  gStyle->SetOptFit(1);
   canvasAdd("hnph_"+name,800,500);
   prt_normalize(hnph[4],hnph[2]);
   hnph[4]->Fit("gaus");
   ff = hnph[4]->GetFunction("gaus");
+  ff->SetLineColor(1);
   nph=ff->GetParameter(1);  
   hnph[4]->SetLineColor(4);
   hnph[4]->Draw();

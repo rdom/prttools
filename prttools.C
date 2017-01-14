@@ -480,11 +480,13 @@ void axisTime800x500(TH2 * hist){
 void axisTime800x500(TH1 * hist, TString xtitle = "time [ns]"){
   TGaxis::SetMaxDigits(3);
   hist->GetXaxis()->SetTitle(xtitle);
-  hist->GetXaxis()->SetTitleSize(0.05);
+  hist->GetXaxis()->SetTitleSize(0.06);
   hist->GetXaxis()->SetTitleOffset(0.8);
+  hist->GetXaxis()->SetLabelSize(0.05);
   hist->GetYaxis()->SetTitle("entries [#]");
-  hist->GetYaxis()->SetTitleSize(0.05);
+  hist->GetYaxis()->SetTitleSize(0.06);
   hist->GetYaxis()->SetTitleOffset(0.7);
+  hist->GetYaxis()->SetLabelSize(0.05);
   hist->SetLineColor(1);
 }
 
@@ -604,6 +606,7 @@ void SetRootPalette(Int_t pal = 0){
 void PrtInit(TString inFile="../build/hits.root", Int_t bdigi=0){
 
   SetRootPalette(1);
+  CreateMap();
   delete fCh;
 
   fCh = new TChain("data");
