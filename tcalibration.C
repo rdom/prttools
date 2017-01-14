@@ -310,7 +310,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeLe -= gLeOffArr[ch];
 
 	if(!laser){
-	  std::cout<<"mom "<< mom<<std::endl;
+	  std::cout<<"mom "<< mom<<"  mass "<<mass <<std::endl;
 	  
 	  if(gTrigger==818) timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
 	  if(gTrigger==720) timeLe += (22.776+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
