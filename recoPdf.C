@@ -230,7 +230,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       }
       // if(aminf==0 || amins==0) continue;
 
-      Double_t noise = 1e-3; //1e-7; // nHits //1e-5
+      Double_t noise = 1e-4; //1e-7; // nHits //1e-5
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));
       
@@ -245,7 +245,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       
       hl[prt_pid]->Fill(time);
     }
-    if(nGoodHits<20) continue;
+    if(nGoodHits<10) continue;
     
     hnph[prt_pid]->Fill(nGoodHits);
     
