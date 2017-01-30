@@ -1113,23 +1113,23 @@ void createAliases(){
     aliasArray.push_back(dataArray[i]);
 	  
     
-    // for(UInt_t j = 0; j != dataArray.size(); j++) {
-    //   if(aid==dataArray[j].getAliasId()){
-    // 	bool found = false;
-    // 	for(UInt_t k = 0; k != aliasArray.size(); k++) {
-    // 	  if(aliasArray[k].getAliasId()==aid){
-    // 	    aliasArray[k].addChildRunId(dataArray[j].getRunId());
-    // 	    found = true;
-    // 	    break;
-    // 	  }
-    // 	}
-    // 	if(!found){
-    // 	  DataInfo newdi = dataArray[i];
-    // 	  newdi.addChildRunId(dataArray[j].getRunId());
-    // 	  aliasArray.push_back(newdi);
-    // 	}
-    //   }
-    // }
+    for(UInt_t j = 0; j != dataArray.size(); j++) {
+      if(aid==dataArray[j].getAliasId()){
+    	bool found = false;
+    	for(UInt_t k = 0; k != aliasArray.size(); k++) {
+    	  if(aliasArray[k].getAliasId()==aid){
+    	    aliasArray[k].addChildRunId(dataArray[j].getRunId());
+    	    found = true;
+    	    break;
+    	  }
+    	}
+    	if(!found){
+    	  DataInfo newdi = dataArray[i];
+    	  newdi.addChildRunId(dataArray[j].getRunId());
+    	  aliasArray.push_back(newdi);
+    	}
+      }
+    }
   }
 
   //std::sort(aliasArray.begin(), aliasArray.end());
