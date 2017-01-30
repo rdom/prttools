@@ -996,26 +996,26 @@ void datainfo_init(){
 
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
       
-      dataArray.push_back(DataInfo(218,"beam_2_90C",2,2,90.0,378,85.0,0.00,11,2.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_2_90P",2,2,90.0,378,85.0,0.00,11,2.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_3_60C",2,2,60.0,378,85.0,0.00,11,3.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_3_60P",2,2,60.0,378,85.0,0.00,11,3.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_3_25C",2,2,25.0,378,85.0,0.00,11,3.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_3_25P",2,2,25.0,378,85.0,0.00,11,3.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_4_50C",2,2,50.0,378,85.0,0.00,11,4.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_4_50P",2,2,50.0,378,85.0,0.00,11,4.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_5_25C",2,2,25.0,378,85.0,0.00,11,5.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_5_25P",2,2,25.0,378,85.0,0.00,11,5.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_5_43C",2,2,43.0,378,85.0,0.00,11,5.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_5_43P",2,2,43.0,378,85.0,0.00,11,5.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_6_36C",2,2,36.0,378,85.0,0.00,11,6.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_6_36P",2,2,36.0,378,85.0,0.00,11,6.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_7_33C",2,2,33.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_7_33P",2,2,33.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_8_25C",2,2,25.0,378,85.0,0.00,11,8.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_8_25P",2,2,25.0,378,85.0,0.00,11,8.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_8_33C",2,2,33.0,378,85.0,0.00,11,8.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_8_33P",2,2,33.0,378,85.0,0.00,11,8.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_2_90",2,2,90.0,378,85.0,0.00,11,2.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_2_90P",2,2,90.0,378,85.0,0.00,11,2.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_3_60",2,2,60.0,378,85.0,0.00,11,3.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_3_60P",2,2,60.0,378,85.0,0.00,11,3.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_3_25",2,2,25.0,378,85.0,0.00,11,3.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_3_25P",2,2,25.0,378,85.0,0.00,11,3.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_4_50",2,2,50.0,378,85.0,0.00,11,4.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_4_50P",2,2,50.0,378,85.0,0.00,11,4.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_5_25",2,2,25.0,378,85.0,0.00,11,5.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_5_25P",2,2,25.0,378,85.0,0.00,11,5.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_5_43",2,2,43.0,378,85.0,0.00,11,5.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_5_43P",2,2,43.0,378,85.0,0.00,11,5.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_6_36",2,2,36.0,378,85.0,0.00,11,6.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_6_36P",2,2,36.0,378,85.0,0.00,11,6.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_7_33",2,2,33.0,378,85.0,0.00,11,7.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_7_33P",2,2,33.0,378,85.0,0.00,11,7.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_8_25",2,2,25.0,378,85.0,0.00,11,8.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_8_25P",2,2,25.0,378,85.0,0.00,11,8.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_8_33",2,2,33.0,378,85.0,0.00,11,8.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_8_33P",2,2,33.0,378,85.0,0.00,11,8.0,5,o));
     }
 
     study[219]="momentum-angle scan, plate, cy lens, 1mV th. offset, 7m focus";
@@ -1024,22 +1024,22 @@ void datainfo_init(){
 
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
 
-      dataArray.push_back(DataInfo(219,"beam219_7_25C",2,2,25.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_25P",2,2,25.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_30C",2,2,30.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_30P",2,2,30.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_35C",2,2,35.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_35P",2,2,35.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_45C",2,2,45.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_45P",2,2,45.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_55C",2,2,55.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_55P",2,2,55.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_125C",2,2,125.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_125P",2,2,125.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_140C",2,2,140.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_140P",2,2,140.0,378,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_8_30C",2,2,30.0,378,85.0,0.00,11,8.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_8_30P",2,2,30.0,378,85.0,0.00,11,8.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_25",2,2,25.0,378,85.0,0.00,11,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_25P",2,2,25.0,378,85.0,0.00,11,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_30",2,2,30.0,378,85.0,0.00,11,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_30P",2,2,30.0,378,85.0,0.00,11,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_35",2,2,35.0,378,85.0,0.00,11,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_35P",2,2,35.0,378,85.0,0.00,11,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_45",2,2,45.0,378,85.0,0.00,11,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_45P",2,2,45.0,378,85.0,0.00,11,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_55",2,2,55.0,378,85.0,0.00,11,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_55P",2,2,55.0,378,85.0,0.00,11,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_125",2,2,125.0,378,85.0,0.00,11,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_125P",2,2,125.0,378,85.0,0.00,11,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_140",2,2,140.0,378,85.0,0.00,11,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_140P",2,2,140.0,378,85.0,0.00,11,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_8_30",2,2,30.0,378,85.0,0.00,11,8.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_8_30P",2,2,30.0,378,85.0,0.00,11,8.0,5,o));
     }
     
     study[221]="low stat angle scan, plate, cy lens, 0.5mV th. offset";
