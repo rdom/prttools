@@ -138,7 +138,10 @@ void TTSelector::Begin(TTree *){
   
   TString fileid(ginFile);
   fileid.Remove(0,fileid.Last('/')+1);
-  fileid.Remove(fileid.Last('.')-4);
+  //fileid.Remove(fileid.Last('.')-4);
+  fileid.ReplaceAll("C.hld.root","");
+  fileid.ReplaceAll("P.hld.root","");
+  fileid.ReplaceAll(".hld.root","");
   prt_data_info = getDataInfo(fileid);
   Int_t momentum = prt_data_info.getMomentum();
   std::cout<<fileid<<" study id "<<prt_data_info.getStudyId() << " mom "<<momentum <<std::endl;
