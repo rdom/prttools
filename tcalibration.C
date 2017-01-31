@@ -268,7 +268,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       time += (tot1-tof1tot)*tan(walktheta);
       time += (tot2-tof2tot)*tan(-walktheta);
       toftime = time;
-      Int_t m=(Double_t) mom;
+      Int_t m=(Double_t) (mom+0.1);
 
       // if(insideOfEllipce(time, tot1, tof1lea[m], tof1tota[m], c1y, c1x) && insideOfEllipce(time, tot2, tof1lea[m], tof2tota[m], c1y, c1x)){
       if(IsPion(time,m)){
