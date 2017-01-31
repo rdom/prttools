@@ -274,7 +274,8 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(IsPion(time,m)){
 	tofpid=211;
 	mass=0.13957018;
-      }else if(IsProton(time,m)){ //if(insideOfEllipce(time, tot1, tof2lea[m], tof1tota[m], c2y, c2x) && insideOfEllipce(time, tot2, tof2lea[m], tof2tota[m], c2y, c2x)){
+	//}else if(insideOfEllipce(time, tot1, tof2lea[m], tof1tota[m], c2y, c2x) && insideOfEllipce(time, tot2, tof2lea[m], tof2tota[m], c2y, c2x)){
+      }else if(IsProton(time,m)){ 
 	tofpid=2212;
 	mass = 0.938272046;
       }
@@ -322,8 +323,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	// timeLe += getTotWalk(timeTot,ch);
 	// if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
-        // if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
-	// if(fabs(tof1tot-44.9)<1) timeLe -= (tof1tot-44.9)/8.4; //7.1;
+        if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
+	if(fabs(tof1tot-44.9)<1) timeLe -= (tof1tot-44.9)/8.4; //7.1;
 		
 	timeLe -= gLeOffArr[ch];
 
