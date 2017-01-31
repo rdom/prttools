@@ -992,7 +992,7 @@ void datainfo_init(){
 
     study[218]="momentum-angle scan, plate, cy lens, 1mV th. offset";
     {
-      Double_t o = 12.59 +83;//-59; // 185.7
+      Double_t o = 12.59 +95.6;//-59; // 185.7
 
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
       
