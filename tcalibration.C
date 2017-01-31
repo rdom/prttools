@@ -25,11 +25,19 @@ Double_t tof2lea[]= {0,0,72.12,72.03,71.99,71.96,71.94,71.92,72.55};
 Double_t tof1tota[]={0,0,45.14,45.11,45.05,45.03,44.97,44.93,44.91};
 Double_t tof2tota[]={0,0,45.26,45.31,45.32,45.34,45.36,45.37,45.38};
 
-Double_t tofpi1[]={0,0,72.12,72.03,71.99,71.96, 71.60,71.55,71.60};
-Double_t tofpi2[]={0,0,72.12,72.03,71.99,71.96,72.30,72.20,72.20};
+Double_t tofpi1[]={0,0,71.50,71.50,71.60, 71.50,71.55,71.55,71.60};
+Double_t tofpi2[]={0,0,72.50,72.50,72.40, 72.20,72.20,72.20,72.20};
 
-Double_t tofp1[] ={0,0,72.12,72.03,71.99,71.96,72.55,72.40,72.45};
-Double_t tofp2[] ={0,0,72.12,72.03,71.99,71.96,73.20,73.10,72.90};
+Double_t tofp1[] ={0,0,80.80,75.80,73.80, 73.20,72.65,72.40,72.45};
+Double_t tofp2[] ={0,0,83.20,77.20,75.00, 73.90,73.40,73.10,72.90};
+
+Bool_t IsPion(Double_t tof, Int_t mom){
+  return tofpi1[mom]<tof && tof<tofpi2[mom];
+}
+
+Bool_t IsProton(Double_t tof, Int_t mom){
+  return tofp1[mom]<tof && tof<tofp2[mom];
+}
 
 Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double_t r1, Double_t r2, Double_t w=0){
 
@@ -260,14 +268,15 @@ Bool_t TTSelector::Process(Long64_t entry){
       time += (tot1-tof1tot)*tan(walktheta);
       time += (tot2-tof2tot)*tan(-walktheta);
       toftime = time;
-      Int_t m=7;//(Double_t) mom;
+      Int_t m=(Double_t) mom;
       tofpid=211;	
-      if(insideOfEllipce(time, tot1, tof1lea[m], tof1tota[m], c1y, c1x) && insideOfEllipce(time, tot2, tof1lea[m], tof2tota[m], c1y, c1x)){
-      	tofpid=211;
-      	mass=0.13957018;
-      }else if(insideOfEllipce(time, tot1, tof2lea[m], tof1tota[m], c2y, c2x) && insideOfEllipce(time, tot2, tof2lea[m], tof2tota[m], c2y, c2x)){
-      	tofpid=2212;
-      	mass = 0.938272046;
+      // if(insideOfEllipce(time, tot1, tof1lea[m], tof1tota[m], c1y, c1x) && insideOfEllipce(time, tot2, tof1lea[m], tof2tota[m], c1y, c1x)){
+      if(IsPion(time,m)){
+	tofpid=211;
+	mass=0.13957018;
+      }else if(IsProton(time,m)){ //if(insideOfEllipce(time, tot1, tof2lea[m], tof1tota[m], c2y, c2x) && insideOfEllipce(time, tot2, tof2lea[m], tof2tota[m], c2y, c2x)){
+	tofpid=2212;
+	mass = 0.938272046;
       }
     }
     
