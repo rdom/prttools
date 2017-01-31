@@ -316,6 +316,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  if(gTrigger==818) timeLe += (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
 	  if(gTrigger==720) timeLe += (22.776+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
 	  if(gTrigger==722) timeLe -= ( 5.888-0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof2
+	  std::cout<<"tofpid "<<tofpid <<"  mom  "<<mom << " mass  " << mass << " timeLe  "<< timeLe<<std::endl;
+	  
 	  timeLe += simOffset;
 	}
       }   
