@@ -884,7 +884,7 @@ void datainfo_init(){
     
     study[209]="7GeV, 25  degree, plate, no lens, 2mV th. offset (Run9)";
     {
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 - 95.6; // 185.7
       
       TString files[62] = {"beam_16297230153","beam_16297232417","beam_16297234705","beam_162980a00357","beam_16298002657","beam_16298004946","beam_16298012815","beam_16298015133","beam_16298021422","beam_16298022748","beam_16298025041","beam_16298030640","beam_16298032245","beam_16298035002","beam_16298040429","beam_16298041946","beam_16298043445","beam_16298044929","beam_16298045038","beam_16298050536","beam_16298052022","beam_16298053536","beam_16298055036","beam_16298061201","beam_16298062900","beam_16298064400","beam_16298065846","beam_16298071400","beam_16298072846","beam_16298074345","beam_16298075845","beam_16298085237","beam_16298090738","beam_16298092320","beam_16298094654","beam_16298100329","beam_16298102801","beam_16298104657","beam_16298110612","beam_16298112544","beam_16298122054","beam_16298124029","beam_16298130009","beam_16298132244","beam_16298134154","beam_16298140050","beam_16298142005","beam_16298143919","beam_16298145811","beam_16298151722","beam_16298153636","beam_16298155532","beam_16298161549","beam_16298163745","beam_16298170016","beam_16298172302","beam_16298174538","beam_16298180836","beam_16298190616","beam_16298192518","beam_16298215602","beam_16298221134"};
       
@@ -896,7 +896,7 @@ void datainfo_init(){
     
     study[210]="7GeV, 25  degree, plate, no lens, 1mV th. offset (Run10)";
     {
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 - 95.6; // 185.7
       TString files[43] = {"beam_16298222516","beam_16298223844","beam_16298225232","beam_16298230549","beam_16298231901","beam_16298233531","beam_16298235613","beam_16299001637","beam_16299003356","beam_16299004731","beam_16299012313","beam_16299013643","beam_16299015013","beam_16299020401","beam_16299021744","beam_16299023119","beam_16299024507","beam_16299025837","beam_16299031225","beam_16299032613","beam_16299033956","beam_16299035344","beam_16299040719","beam_16299042049","beam_16299043437","beam_16299044820","beam_16299050208","beam_16299051553","beam_16299052929","beam_16299054317","beam_16299061119","beam_16299062453","beam_16299063918","beam_16299071156","beam_16299073230","beam_16299075249","beam_16299081259","beam_16299083201","beam_16299084607","beam_16299090007","beam_16299091401","beam_16299092825","beam_16299094249"};
 
       for(Int_t i=0; i<43; i++){
@@ -908,7 +908,8 @@ void datainfo_init(){
 
     study[211]="7GeV, 112 degree, plate, no lens, 1mV th. offset (Run11)";
     {
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 - 95.6; // 185.7
+
       TString files[10] = {"beam_16299101257","beam_16299103739","beam_16299111115","beam_16299122658","beam_16299130530","beam_16299133717","beam_16299135906","beam_16299142029","beam_16299144406","beam_16299150756"};
             
       for(Int_t i=0; i<10; i++){
@@ -920,7 +921,7 @@ void datainfo_init(){
 
     study[212]="7GeV, 25  degree, plate, cy lens, 1mV th. offset (Run12)";
     {
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 - 95.6; // 185.7
       TString files[40] = {"beam_16299181547","beam_16299183819","beam_16299185942","beam_16299192300","beam_16299194505","beam_16299200626","beam_16299202538","beam_16299204450","beam_16299213127","beam_16299214957","beam_16299221321","beam_16299223213","beam_16299225053","beam_16299230945","beam_16299232837","beam_16299234733","beam_16300000625","beam_16300002501","beam_16300011135","beam_16300013432","beam_16300020255","beam_16300022946","beam_16300025511","beam_16300033353","beam_16300034808","beam_16300040226","beam_16300041656","beam_16300043114","beam_16300044538","beam_16300050002","beam_16300051428","beam_16300052906","beam_16300054350","beam_16300055838","beam_16300063649","beam_16300065118","beam_16300070608","beam_16300072102","beam_16300073618","beam_16300075102"};
       
       for(Int_t i=0; i<40; i++){
@@ -931,7 +932,8 @@ void datainfo_init(){
 
     study[213]="7GeV, 112 degree, plate, cy lens, 1mV th. offset";
     {
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 - 95.6; // 185.7
+
       TString files[5] = {"beam_16300081140","beam_16300083302","beam_16300085349","beam_16300091432","beam_16300093512"};
       
       for(Int_t i=0; i<5; i++){
@@ -942,7 +944,7 @@ void datainfo_init(){
 
     study[214]="7GeV, 25  degree,   bar, sh lens, 1mV th. offset";
     {
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 - 95.6; // 185.7
       TString files[51] = {"beam_16300123932","beam_16300134200","beam_16300142015","beam_16300145955","beam_16300153922","beam_16300161517","beam_16300161758","beam_16300165607","beam_16300172424","beam_16300184337","beam_16300192449","beam_16300201120","beam_16300203744","beam_16300210133","beam_16300212516","beam_16300214926","beam_16300220350","beam_16300222009","beam_16300224322","beam_16300230829","beam_16300234354","beam_16301003644","beam_16301010603","beam_16301013659","beam_16301020406","beam_16301022737","beam_16301025054","beam_16301031349","beam_16301033706","beam_16301040030","beam_16301042325","beam_16301044701","beam_16301051013","beam_16301053349","beam_16301055713","beam_16301062037","beam_16301064613","beam_16301070937","beam_16301073301","beam_16301080037","beam_16301083317","beam_16301090146","beam_16301092818","beam_16301100049","beam_16301102544","beam_16301105013","beam_16301112005","beam_16301112839","beam_16301115237","beam_16301121653","beam_16301124037"};
       
       for(Int_t i=0; i<51; i++){
@@ -953,7 +955,7 @@ void datainfo_init(){
     
     study[215]="7GeV, angle scan,   bar, sh lens, 1mV th. offset";
     {
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 - 95.6; // 185.7
       
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
       dataArray.push_back(DataInfo(215,"beam_16301130321",1,3,20.0,364,85.0,0.00,11,7.0,10,o));
@@ -970,7 +972,7 @@ void datainfo_init(){
 
     study[216]="7GeV, 25  degree,   bar, no lens, 1mV th. offset";
     {
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 - 95.6;
       TString files[28] = {"beam_16301214831","beam_16301221143","beam_16301223118","beam_16301230513","beam_16301232946","beam_16301235206","beam_16302001117","beam_16302003030","beam_16302005147","beam_16302011059","beam_16302013010","beam_16302014906","beam_16302020758","beam_16302024405","beam_16302030458","beam_16302040153","beam_16302042030","beam_16302043930","beam_16302045841","beam_16302051754","beam_16302053735","beam_16302055909","beam_16302062156","beam_16302064423","beam_16302070630","beam_16302072856","beam_16302075129","beam_16302081349"};
       
       for(Int_t i=0; i<28; i++){
@@ -981,7 +983,7 @@ void datainfo_init(){
 
     study[217]="7GeV, 25  degree, plate, cy lens, 1mV th. offset";
     {
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 - 95.6;
       TString files[40] = {"beam_16302111449","beam_16302113659","beam_16302115833","beam_16302122019","beam_16302124248","beam_16302130538","beam_16302132931","beam_16302135548","beam_16302141909","beam_16302144257","beam_16302150645","beam_16302154207","beam_16302161559","beam_16302165145","beam_16302171452","beam_16302173649","beam_16302175754","beam_16302181821","beam_16302183939","beam_16302190121","beam_16302192314","beam_16302195849","beam_16302214401","beam_16302220254","beam_16302223003","beam_16302231921","beam_16303000841","beam_16303005902","beam_16303014756","beam_16303020645","beam_16303022544","beam_16303033357","beam_16303035219","beam_16303041042","beam_16303042931","beam_16303044807","beam_16303050658","beam_16303052534","beam_16303054410","beam_16303060514"};
       
       for(Int_t i=0; i<40; i++){
@@ -1020,8 +1022,8 @@ void datainfo_init(){
 
     study[219]="momentum-angle scan, plate, cy lens, 1mV th. offset, 7m focus";
     {
-      Double_t o = 12.59 -59; // 185.7
-
+      Double_t o = 12.59 - 95.6;
+      
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
 
       dataArray.push_back(DataInfo(219,"beam219_7_25",2,2,25.0,378,85.0,0.00,11,7.0,5,o));
@@ -1044,8 +1046,7 @@ void datainfo_init(){
     
     study[221]="low stat angle scan, plate, cy lens, 0.5mV th. offset";
     {
-      Double_t o = 12.59 -59; // 185.7
-      
+      Double_t o = 12.59 +95.6;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
 
       dataArray.push_back(DataInfo(221,"beam_16305204455",2,2,140.0,378,85.0,0.00,11,7.0,5,o));
@@ -1065,8 +1066,7 @@ void datainfo_init(){
 
     study[222]="7GeV, 35  degree, plate, cy lens, 1mV th. offset";
     {
-
-      Double_t o = 12.59 -59; // 185.7
+      Double_t o = 12.59 +95.6;
       TString files[35] = {"beam_16306114948", "beam_16306120609", "beam_16306122252", "beam_16306123901", "beam_16306125602", "beam_16306131227", "beam_16306172555", "beam_16306174336", "beam_16306180110", "beam_16306181911", "beam_16306183738", "beam_16306185350", "beam_16306192948", "beam_16306194150", "beam_16306195352", "beam_16306202157", "beam_16306204033", "beam_16306205840", "beam_16306225504", "beam_16306231350", "beam_16306235117", "beam_16307001803", "beam_16307004633", "beam_16307011521", "beam_16307020004", "beam_16307022833", "beam_16307025703", "beam_16307032515", "beam_16307034358", "beam_16307040909", "beam_16307042322", "beam_16307043715", "beam_16307045134", "beam_16307050527", "beam_16307051933"};
       
       for(Int_t i=0; i<35; i++){
