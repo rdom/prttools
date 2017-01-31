@@ -227,7 +227,7 @@ Bool_t MSelector::Process(Long64_t entry){
     }
   }
 
-  Double_t le,tot, triggerLe(0), tof(0), tof1(0),tof2(0);
+  Double_t le,tot, triggerLe(0),toftime(0), tof(0), tof1(0),tof2(0);
   PrtHit hit;
   Int_t mcp,pix,col,row,ch,chMultiplicity(0);
   Int_t thitCount1(0), thitCount2(0), hitCount1(0), hitCount2(0);
@@ -237,6 +237,7 @@ Bool_t MSelector::Process(Long64_t entry){
   if(gTrigger>-1){
     for(Int_t h=0; h<nhits; h++){
       hit = prt_event->GetHit(h);
+      toftime = prt_event->GetTest1();
       ch  = hit.GetChannel();
       mult[ch]++;
 
@@ -250,6 +251,7 @@ Bool_t MSelector::Process(Long64_t entry){
   }
   if(tof1!=0 && tof2!=0) {
     tof = tof2-tof1;
+    tof = toftime;
     if(gTofMin==gTofMax || (tof>gTofMin && tof<gTofMax)) hTof->Fill(tof);
   }
 
