@@ -270,12 +270,12 @@ Bool_t TTSelector::Process(Long64_t entry){
       toftime = time;
       Int_t m = (Double_t) (mom+0.1);
 
-      // if(insideOfEllipce(time, tot1, tof1lea[m], tof1tota[m], c1y, c1x) && insideOfEllipce(time, tot2, tof1lea[m], tof2tota[m], c1y, c1x)){
-      if(IsPion(time,m)){
+      if(insideOfEllipce(time, tot1, tof1lea[m], tof1tota[m], c1y, c1x) && insideOfEllipce(time, tot2, tof1lea[m], tof2tota[m], c1y, c1x)){
+	// if(IsPion(time,m)){
 	tofpid=211;
 	mass=0.13957018;
-	//}else if(insideOfEllipce(time, tot1, tof2lea[m], tof1tota[m], c2y, c2x) && insideOfEllipce(time, tot2, tof2lea[m], tof2tota[m], c2y, c2x)){
-      }else if(IsProton(time,m)){ 
+      }else if(insideOfEllipce(time, tot1, tof2lea[m], tof1tota[m], c2y, c2x) && insideOfEllipce(time, tot2, tof2lea[m], tof2tota[m], c2y, c2x)){
+	// }else if(IsProton(time,m)){ 
 	tofpid=2212;
 	mass = 0.938272046;
       }
