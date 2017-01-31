@@ -128,7 +128,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	  t1=true;
 	if(gch==821)
 	  t2=true;
-	//if(gch==819)
+	if(gch==819)
 	  t3=true;
 	
 	  //if(gch>1031 && gch<1034)
@@ -137,7 +137,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	  tof2=true;
 	    
 	      //	      if(gch>775 && gch<780)
-	  // if(gch>=778 && gch<=783)
+	  //if(gch>=778 && gch<=783)
 	     hodo1=true;
 	   if(gch>=791 && gch<=793)
 	     hodo2=true;
@@ -230,7 +230,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       }
       // if(aminf==0 || amins==0) continue;
 
-      Double_t noise = 1e-5; //1e-7; // nHits //1e-5
+      Double_t noise = 1e-6; //1e-7; // nHits //1e-5
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));
       
