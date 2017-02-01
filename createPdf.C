@@ -120,7 +120,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
       
 
       if(++mult[ch]>1) continue;      
-      if(time<5 || time>50) continue;
+      if(time<0 || time>50) continue;
       
       if(prt_event->GetParticle()==2212){
 	totalmcp[4][mcp]++;

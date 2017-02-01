@@ -138,8 +138,8 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	    
 	      //	      if(gch>775 && gch<780)
 	  // if(gch>=778 && gch<=783)
-	     hodo1=true;
-	   if(gch>=791 && gch<=793)
+	  hodo1=true;
+	  if(gch>=791 && gch<=793)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
@@ -178,7 +178,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<10 || time>30) continue;
+	if(time<1 || time>40) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -190,7 +190,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       countall[mcp][pix]++;
       if(prt_pid==4){
 	mcpf[mcp]++;
-	//if(mcp ==6) continue;
+	//if(mcp ==8) continue;
 	countgood [mcp][0]++;
 	// if(aminf>amins) countgood [mcp][pix]++;
 	// else countbad[mcp][pix]++;
@@ -199,7 +199,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	//if(mcp ==8 ) continue;
 	countbad[mcp][0]++;
 	// if(amins>aminf) countgood [mcp][pix]++;
-	// else countbad[mcp][pix]++;
+        // else countbad[mcp][pix]++;
       }
       // if(fabs(aminf-amins)/(aminf+amins)*0.5<0.01) continue;
       
@@ -230,7 +230,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       }
       // if(aminf==0 || amins==0) continue;
 
-      Double_t noise = 1e-7; //1e-7; // nHits //1e-5
+      Double_t noise = 1e-5; //1e-7; // nHits //1e-5
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));
       
@@ -348,9 +348,9 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   ff = hnph[4]->GetFunction("gaus");
   ff->SetLineColor(1);
   nph=ff->GetParameter(1);  
-  hnph[4]->SetLineColor(4);
+  hnph[4]->SetLineColor(2);
   hnph[4]->Draw();
-  hnph[2]->SetLineColor(2);
+  hnph[2]->SetLineColor(4);
   hnph[2]->Draw("same");
   
   canvasSave(1,0);
