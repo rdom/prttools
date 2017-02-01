@@ -86,7 +86,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
  
        	if(gch==818)
 	  t1=true;
-	//if(gch==821)
+	if(gch==821)
 	  t2=true;
 	if(gch==819)
 	  t3=true;
