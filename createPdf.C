@@ -99,7 +99,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
 	//if(gch>776 && gch<=780) //4
 	//if(gch>777 && gch<779) //2
 	  hodo1=true;
-	if(gch>=790 && gch<=794)
+	  //if(gch>=790 && gch<=794)
 	  hodo2=true;
       }
 
@@ -116,7 +116,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
       ch=map_mpc[mcp][pix];      
       time=fHit.GetLeadTime();//+gRandom->Gaus(0,0.3);
       Double_t tot= fHit.GetTotTime();
-      if(tot<3 || tot>40) continue;
+      //if(tot<0 || tot>40) continue;
       
 
       if(++mult[ch]>1) continue;      
