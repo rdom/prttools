@@ -99,7 +99,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
 	//if(gch>776 && gch<=780) //4
 	//if(gch>777 && gch<779) //2
 	  hodo1=true;
-	  //if(gch>=790 && gch<=794)
+	  if(gch>=793 && gch<=793)
 	  hodo2=true;
       }
 
