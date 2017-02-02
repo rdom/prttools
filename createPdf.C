@@ -116,7 +116,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
       ch=map_mpc[mcp][pix];      
       time=fHit.GetLeadTime();//+gRandom->Gaus(0,0.3);
       Double_t tot= fHit.GetTotTime();
-      if(tot<2 || tot>40) continue;
+      if(tot<3 || tot>40) continue;
       
 
       if(++mult[ch]>1) continue;      

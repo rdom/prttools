@@ -168,7 +168,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       pix=fHit.GetPixelId()-1;      
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();//+rand.Gaus(0,0.3);//+rand.Gaus(0,sigma/10.);
-      if(++mult[ch]>1) continue;
+      if(++mult[ch]>1 || ch ==0) continue;
       
       { //time cuts
       	// Double_t cut1(11);
@@ -230,7 +230,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       }
       // if(aminf==0 || amins==0) continue;
 
-      Double_t noise = 1e-5; //1e-7; // nHits //1e-5
+      Double_t noise = 1e-6; //1e-7; // nHits //1e-5
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));
       
