@@ -167,7 +167,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       mcp = fHit.GetMcpId();
       pix=fHit.GetPixelId()-1;      
       ch = map_mpc[mcp][pix];
-      time = fHit.GetLeadTime();//+rand.Gaus(0,sigma/10.);
+      time = fHit.GetLeadTime()+rand.Gaus(0,0.3);//+rand.Gaus(0,sigma/10.);
       if(++mult[ch]>1) continue;
       
       { //time cuts
@@ -178,7 +178,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<1 || time>40) continue;
+	if(time<0 || time>40) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 

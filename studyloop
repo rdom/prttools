@@ -99,7 +99,7 @@ processOneSim (){
 	IFS="$OIFS"
         mkdir -p "$1"
 
-	datapath="/d/proc/jun15/${1}"
+	datapath="/d/proc/oct16/${1}"
 	
 	statusline="run study $1"
 	for ((fk=1;fk<${#file[@]};fk++)); do
@@ -133,7 +133,7 @@ processOneSim (){
 }
 
 processOneReco (){
-    if [ -d "/d/proc/jun15/$1" ]; then
+    if [ -d "/d/proc/oct16/$1" ]; then
 	OIFS="$IFS"
 	IFS=$'\n'
 	
@@ -178,22 +178,22 @@ if [ ${level} -lt "8" ]; then
     if [ ${level} -eq "6" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
-		datapath="/d/proc/jun15/${allstudies[k]}"
+		datapath="/d/proc/oct16/${allstudies[k]}"
 		hadd -f ${datapath}/spr_${allstudies[k]}S.root ${datapath}/reco_beam_*S_spr.root 
 	    done
 	else
-	    datapath="/d/proc/jun15/${study}"
+	    datapath="/d/proc/oct16/${study}"
 	    hadd -f ${datapath}/spr_${study}S.root ${datapath}/reco_beam_*S_spr.root 
 	fi
     fi
     if [ ${level} -eq "7" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
-		datapath="/d/proc/jun15/${allstudies[k]}"
+		datapath="/d/proc/oct16/${allstudies[k]}"
 		hadd -f ${datapath}/spr_${allstudies[k]}R.root ${datapath}/reco_beam_*R_spr.root 
 	    done
 	else
-	    datapath="/d/proc/jun15/${study}"
+	    datapath="/d/proc/oct16/${study}"
 	    hadd -f ${datapath}/spr_${study}R.root ${datapath}/reco_beam_*R_spr.root 
 	fi
     fi
@@ -215,7 +215,7 @@ else
 	done
 	waitForMe "1" && sleep 2
 	for ((k=1;k<${#allstudies[@]};k++)); do
-	    cd "/d/proc/jun15/${allstudies[k]}"
+	    cd "/d/proc/oct16/${allstudies[k]}"
 	    hadd -f res_${allstudies[k]}.root *.root.res.root
 	    rm -f *.root.res.root
 	    cd -
@@ -224,7 +224,7 @@ else
 	processOneReco $study
 
 	waitForMe "1" && sleep 2
-	cd "/d/proc/jun15/$study"
+	cd "/d/proc/oct16/$study"
 	hadd -f res_${study}.root *.root.res.root
 	rm -f *.root.res.root
 	cd -
