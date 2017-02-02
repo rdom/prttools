@@ -30,7 +30,7 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   }
   gNph->Sort();
 
-  TString names[200];
+  TString names[300];
   names[150]="bar 2LS @ 7 GeV/c";
   names[151]="bar 3LS @ 7 GeV/c";
   names[152]="plate WL @ 7 GeV/c";
@@ -39,7 +39,7 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   names[160]="bar 3LS @ 5 GeV/c";
   names[161]="plate WL @ 5 GeV/c";
   names[162]="plate 2LC @ 5 GeV/c";
-  
+  names[221]="plate 2LC @ 7 GeV/c";
   
   gNph->SetTitle(names[studyId]);
   
