@@ -12,7 +12,9 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   
   if(path=="") return;
   Int_t studyId;
-  sscanf(path, "%*[^/]/%d{3}",&studyId);
+  TString tpaht=path;
+  tpath.ReplaceAll("oct16","");
+  sscanf(tpath, "%*[^0-9]%d{3}",&studyId);
   
   fSavePath = Form("data/recopdf_%d",studyId);
   PrtInit(path,1);
