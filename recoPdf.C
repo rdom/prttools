@@ -38,7 +38,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   pdf.ReplaceAll("*","");
   pdf.ReplaceAll(".root",pdfEnding);
   TFile f(pdf);
-  
+
   if(sigma >0) hl3->Rebin((Int_t)sigma);
   Double_t integ1(0), integ2(0);
   for(Int_t i=0; i<maxch_dirc; i++){
@@ -167,7 +167,8 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       mcp = fHit.GetMcpId();
       pix=fHit.GetPixelId()-1;      
       ch = map_mpc[mcp][pix];
-      time = fHit.GetLeadTime();//+rand.Gaus(0,0.3);//+rand.Gaus(0,sigma/10.);
+      time = fHit.GetLeadTime();//+rand.Gaus(0,0.3);//+rand.Gaus(0,(sigma*2)/10.);
+      if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.05);
       if(++mult[ch]>1 || ch ==0) continue;
       
       { //time cuts
