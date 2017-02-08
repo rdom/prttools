@@ -41,7 +41,6 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   
   for(Int_t i=0; i<ch.GetEntries(); i++){
     ch.GetEvent(i);
-    sigma*=100;
     if (std::find(vec.begin(), vec.end(), sigma) == vec.end()) vec.push_back((int)sigma);
   }
   std::sort(vec.begin(), vec.end());
@@ -51,8 +50,6 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     //  mom=0;
     ch.GetEvent(i);
     if(theta>155) continue;
-    //Int_t sid = sigma*10;
-    sigma*=100;
     Int_t sid = std::distance(vec.begin(),std::find(vec.begin(), vec.end(),sigma));
 
     if(sid==1 && mom==0) continue;
@@ -70,8 +67,8 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     g[i]->Sort();
     gn[i]->Sort();
     g[i]->GetXaxis()->SetLimits(15,160);
-    g[i]->GetYaxis()->SetRangeUser(0,9);
-    if(studyId>159) g[i]->GetYaxis()->SetRangeUser(0,10);
+    g[i]->GetYaxis()->SetRangeUser(0,10);
+    if(studyId>159) g[i]->GetYaxis()->SetRangeUser(0,4);
     // if(i==0) g[i]->Draw("apl");
     // g[i]->Draw("same pl");
   }
@@ -91,7 +88,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     gc[i]->SetLineStyle(1);
   }
 
-  bool beamdata = (g[0]->GetN()>2)? true: false; 
+  bool beamdata = (vec[0]<0.1)? true: false; 
   
   if(beamdata){
     g[0]->Draw("apl");
@@ -103,17 +100,8 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     gc[1]->Draw("same p");
   }
   
- 
 
-  g[2]->SetLineColor(kGreen+1);
-  g[2]->SetMarkerColor(kGreen+1);  
-  g[2]->Draw("same pl");  
-  g[3]->SetLineColor(kRed+2);
-  g[3]->SetMarkerColor(kRed+2);  
-  g[3]->Draw("same pl");
-  g[6]->SetLineColor(4);
-  g[6]->SetMarkerColor(4);
-  g[6]->Draw("same pl");
+  Int_t colors[]={1,kGreen+1,kRed+2,kRed,4,5,6,7,8,9,10};
   
   TLegend *leg = new TLegend(0.55,0.65,0.75,0.88);
   leg->SetFillColor(0);
@@ -121,10 +109,13 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
 
-  for(Int_t i=1; i<size; i++){
+  for(Int_t i=0; i<size; i++){
+    g[i]->SetLineColor(colors[i]);
+    g[i]->SetMarkerColor(colors[i]);  
+    g[i]->Draw("same pl");
+    if(beamdata && i==0) leg->AddEntry(g[0],"beam data","lp");
     leg->AddEntry(g[i],Form("#sigma_{t} = %d ps ",vec[i]),"lp");
   }
-  if(beamdata) leg->AddEntry(g[0],"beam data","lp");
   leg->Draw();
 
   canvasAdd( Form("hNph_%d",studyId),800,500);
