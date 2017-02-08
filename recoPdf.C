@@ -8,7 +8,7 @@
 
 TLine *gLine = new TLine(0,0,0,1000);
 
-void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf2_0.root", Double_t sigma=2,Bool_t debug=false){
+void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf2_0.root", Double_t sigma=200,Bool_t debug=false){
   
   if(path=="") return;
   Int_t studyId;
@@ -41,15 +41,16 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   pdf.ReplaceAll(".root",pdfEnding);
   TFile f(pdf);
 
-  if(sigma >0) hl3->Rebin((Int_t)sigma);
+  Int_t binfactor =  (Int_t)(sigma/50.+0.1);
+  if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
   for(Int_t i=0; i<maxch_dirc; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
     hpdff[i]->SetLineColor(2);
     hpdfs[i]->SetLineColor(4);
-    if(sigma >0) hpdff[i]->Rebin((Int_t)sigma);
-    if(sigma >0) hpdfs[i]->Rebin((Int_t)sigma);
+    if(sigma >0) hpdff[i]->Rebin(binfactor);
+    if(sigma >0) hpdfs[i]->Rebin(binfactor);
     hpdff[i]->Smooth(1);
     hpdfs[i]->Smooth(1);
     // hpdff[i]->Scale(1/hpdff[i]->Integral());
@@ -170,7 +171,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       pix=fHit.GetPixelId()-1;      
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();//+rand.Gaus(0,0.3);//+rand.Gaus(0,(sigma*2)/10.);
-      if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.05);
+      if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
       if(++mult[ch]>1 || ch ==0) continue;
       
       { //time cuts
@@ -371,7 +372,6 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   tc->Branch("sigma",&sigma,"sigma/D");
   tc->Branch("mom",&mom,"mom/D");
   tc->Branch("nph",&nph,"nph/D");
-  sigma/=10.;
   tc->Fill();
   tc->Write();
 }

@@ -1,4 +1,8 @@
 #include "prttools.C"
+#include <algorithm>
+#include <iterator>
+#include <TGraphAsymmErrors.h>
+
 
 void drawRes(TString in="data/recopdf_151/reco*root"){
   Int_t studyId;
@@ -33,12 +37,24 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     gn[i]->SetLineColor(i+1);
   }
   prt_rand.SetSeed(445);
+  std::vector<int> vec;
+  
+  for(Int_t i=0; i<ch.GetEntries(); i++){
+    ch.GetEvent(i);
+    sigma*=100;
+    if (std::find(vec.begin(), vec.end(), sigma) == vec.end()) vec.push_back((int)sigma);
+  }
+  std::sort(vec.begin(), vec.end());
+  Int_t size=vec.size();
   
   for(Int_t i=0; i<ch.GetEntries(); i++){
     //  mom=0;
     ch.GetEvent(i);
     if(theta>155) continue;
-    Int_t sid = sigma*10;
+    //Int_t sid = sigma*10;
+    sigma*=100;
+    Int_t sid = std::distance(vec.begin(),std::find(vec.begin(), vec.end(),sigma));
+
     if(sid==1 && mom==0) continue;
     g[sid]->SetPoint(ng[sid],theta,sep);
     gn[sid]->SetPoint(ng[sid],theta,nph);
@@ -50,7 +66,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     g[sid]->SetPointEYlow(ng[sid]++,err);
   }
   
-  for(Int_t i=0; i<8; i++){
+  for(Int_t i=0; i<size; i++){
     g[i]->Sort();
     gn[i]->Sort();
     g[i]->GetXaxis()->SetLimits(15,160);
@@ -104,10 +120,10 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
-  leg->AddEntry(g[1],"#sigma_{t} = 100 ps ","lp");
-  leg->AddEntry(g[2],"#sigma_{t} = 200 ps ","lp");
-  leg->AddEntry(g[3],"#sigma_{t} = 300 ps ","lp");
-  leg->AddEntry(g[6],"#sigma_{t} = 600 ps ","lp");
+
+  for(Int_t i=1; i<size; i++){
+    leg->AddEntry(g[i],Form("#sigma_{t} = %d ps ",vec[i]),"lp");
+  }
   if(beamdata) leg->AddEntry(g[0],"beam data","lp");
   leg->Draw();
 
