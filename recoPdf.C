@@ -318,7 +318,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   hll[2]->SetLineColor(4);
   hll[2]->Draw("same");
 
-  TLegend *leg = new TLegend(0.65,0.65,0.83q,0.87);
+  TLegend *leg = new TLegend(0.65,0.65,0.83,0.87);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
