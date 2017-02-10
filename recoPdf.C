@@ -41,7 +41,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   pdf.ReplaceAll(".root",pdfEnding);
   TFile f(pdf);
 
-  Int_t binfactor =  (Int_t)(sigma/50.+0.1);
+  Int_t binfactor = 4; //(Int_t)(sigma/50.+0.1);
   if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
   for(Int_t i=0; i<maxch_dirc; i++){
@@ -170,7 +170,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       mcp = fHit.GetMcpId();
       pix=fHit.GetPixelId()-1;      
       ch = map_mpc[mcp][pix];
-      time = fHit.GetLeadTime();//+rand.Gaus(0,0.3);//+rand.Gaus(0,(sigma*2)/10.);
+      time = fHit.GetLeadTime();
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
       if(++mult[ch]>1 || ch ==0) continue;
       
@@ -182,7 +182,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<0 || time>40) continue;
+	if(time<0 || time>50) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -218,7 +218,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	hpdff[ch]->SetLineColor(2);
 	hpdfs[ch]->SetLineColor(4);
 	hpdff[ch]->Draw();
-	hpdff[ch]->GetXaxis()->SetRangeUser(0,40);
+	hpdff[ch]->GetXaxis()->SetRangeUser(0,50);
 	hpdfs[ch]->Draw("same");
 	gpdff[ch]->Draw("PL same");
 	gpdfs[ch]->Draw("PL same");
@@ -249,7 +249,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       
       hl[prt_pid]->Fill(time);
     }
-    if(nGoodHits<10) continue;
+    if(nGoodHits<5) continue;
     
     hnph[prt_pid]->Fill(nGoodHits);
     

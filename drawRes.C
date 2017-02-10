@@ -45,9 +45,9 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   }
   std::sort(vec.begin(), vec.end());
   Int_t size=vec.size();
-  
+  bool beamdata = (vec[0]<0.1)? true: false;
+    
   for(Int_t i=0; i<ch.GetEntries(); i++){
-    //  mom=0;
     ch.GetEvent(i);
     if(theta>155) continue;
     Int_t sid = std::distance(vec.begin(),std::find(vec.begin(), vec.end(),sigma));
@@ -56,8 +56,8 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     g[sid]->SetPoint(ng[sid],theta,sep);
     gn[sid]->SetPoint(ng[sid],theta,nph);
     
-    Double_t err = sqrt(esep*esep + 0.07+prt_rand.Gaus(0,0.02));
-    if(sid>0) err= sqrt(esep*esep + 0.1*0.1);
+    Double_t err= sqrt(esep*esep + 0.1*0.1);
+    if(beamdata && sid==0) err = sqrt(esep*esep + 0.07+prt_rand.Gaus(0,0.02));    
     g[sid]->SetPointEYhigh(ng[sid],err);
     err = sqrt(esep*esep + 0.1*0.1);
     g[sid]->SetPointEYlow(ng[sid]++,err);
@@ -68,37 +68,32 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     gn[i]->Sort();
     g[i]->GetXaxis()->SetLimits(15,160);
     g[i]->GetYaxis()->SetRangeUser(0,10);
-    if(studyId>159) g[i]->GetYaxis()->SetRangeUser(0,4);
+    if(studyId>159) g[i]->GetYaxis()->SetRangeUser(0,5);
     // if(i==0) g[i]->Draw("apl");
     // g[i]->Draw("same pl");
   }
 
   canvasAdd( Form("hSep_%d",studyId),800,500);
 
-  g[0]->Sort();
-  g[0]->SetLineColor(1);
-  g[0]->SetLineStyle(2);
-  
-  g[1]->SetLineColor(2);
-  g[1]->SetLineStyle(1);
-  g[1]->SetMarkerColor(2);
+  if(beamdata){
+    g[0]->SetLineColor(1);
+    g[0]->SetLineStyle(2);
+  }
 
   for(Int_t i=0; i<20; i++){
     gc[i] = (TGraphAsymmErrors*) g[i]->Clone();
     gc[i]->SetLineStyle(1);
   }
-
-  bool beamdata = (vec[0]<0.1)? true: false; 
   
-  if(beamdata){
-    g[0]->Draw("apl");
-    gc[0]->Draw("same p");
-    g[1]->Draw("same pl");
-    gc[1]->Draw("same p");  
-  }else{
-    g[1]->Draw("apl");
-    gc[1]->Draw("same p");
-  }
+  // if(beamdata){
+  //   g[0]->Draw("apl");
+  //   gc[0]->Draw("same p");
+  //   g[1]->Draw("same pl");
+  //   gc[1]->Draw("same p");  
+  // }else{
+  //   g[1]->Draw("apl");
+  //   gc[1]->Draw("same p");
+  // }
   
 
   Int_t colors[]={1,kGreen+1,kRed+2,kRed,4,5,6,7,8,9,10};
@@ -112,7 +107,9 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   for(Int_t i=0; i<size; i++){
     g[i]->SetLineColor(colors[i]);
     g[i]->SetMarkerColor(colors[i]);  
-    g[i]->Draw("same pl");
+    if(i==0) g[i]->Draw("apl");
+    else g[i]->Draw("same pl");
+
     if(beamdata && i==0) leg->AddEntry(g[0],"beam data","lp");
     leg->AddEntry(g[i],Form("#sigma_{t} = %d ps ",vec[i]),"lp");
   }
