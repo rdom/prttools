@@ -877,8 +877,8 @@ void datainfo_init(){
     for(Int_t a=20; a<140; a=a+10){
       dataArray.push_back(DataInfo(203,Form("sim_%d",a),2,2,a,378,85.0,0.00,0,7.0));
     }
-    dataArray.push_back(DataInfo(203,Form("sim_%d",25),2,2,a,378,85.0,0.00,0,7.0));
-    dataArray.push_back(DataInfo(203,Form("sim_%d",35),2,2,a,378,85.0,0.00,0,7.0));
+    dataArray.push_back(DataInfo(203,Form("sim_%d",25),2,2,25,378,85.0,0.00,0,7.0));
+    dataArray.push_back(DataInfo(203,Form("sim_%d",35),2,2,35,378,85.0,0.00,0,7.0));
 
     study[205]="sim Oct 16, plate, lens 0, beam dimension scan";
     for(Int_t z=0; z<=40; z+=5){
