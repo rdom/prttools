@@ -114,7 +114,7 @@ processOneSim (){
 		#./prtdirc -o "${datapath}/${file[fk]}S2x.root" ${args[fk]} -x pi+    -tr 0.2 -z 10 -e 5000 -r 2704162 -b 1  > "${datapath}/${file[fk]}S2x.log" &
 
 		./prtdirc -o "${datapath}/${file[fk]}SF1x.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 1000 -r 2704161 -b 1  > "${datapath}/${file[fk]}SF1x.log" &
-		./prtdirc -o "${datapath}/${file[fk]}SF2x.root" ${args[fk]} -x pi+    -tr 0.0 -z 10 -e 1000 -r 2704162 -b 1  > "${datapath}/${file[fk]}SF2x.log" &
+		#./prtdirc -o "${datapath}/${file[fk]}SF2x.root" ${args[fk]} -x pi+    -tr 0.0 -z 10 -e 1000 -r 2704162 -b 1  > "${datapath}/${file[fk]}SF2x.log" &
 	
 		#./prtdirc -o "${datapath}/${file[fk]}SP1x.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 20000 -r 231$RANDOM -b 1  > "${datapath}/${file[fk]}SP1x.log" &
 		#./prtdirc -o "${datapath}/${file[fk]}SP2x.root" ${args[fk]} -x pi+    -tr 0.0 -z 10 -e 20000 -r 231$RANDOM -b 1  > "${datapath}/${file[fk]}SP2x.log" &
