@@ -831,7 +831,7 @@ void datainfo_init(){
   }
 
   { // 2016
-    study[200]="Simulations for 2016, plate, no lens";
+    study[200]="SO16, plate, no lens";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
       dataArray.push_back(DataInfo(200,"sim_00",2,0,20.0,378,85.0,0.00,0,7.0));
@@ -863,23 +863,29 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(200,"sim_26",2,0,150.0,378,85.0,0.00,0,7.0));
     }
 
-    study[201]="sim Oct 16, plate, no lens";
+    study[201]="SO16, plate, no lens";
     for(Int_t a=20; a<140; a++){
       dataArray.push_back(DataInfo(201,Form("sim_%d",a),2,0,a,378,85.0,0.00,0,7.0));
     }
     
-    study[202]="sim Oct 16, plate, lens 2";
+    study[202]="SO16, plate, lens 2";
     for(Int_t a=20; a<140; a++){
       dataArray.push_back(DataInfo(202,Form("sim_%d",a),2,2,a,378,85.0,0.00,0,7.0));
     }
 
-    study[203]="sim Oct 16, plate, lens 2";
+    study[203]="SO16, plate, lens 2";
     for(Int_t a=20; a<140; a=a+10){
       dataArray.push_back(DataInfo(203,Form("sim_%d",a),2,2,a,378,85.0,0.00,0,7.0));
     }
     dataArray.push_back(DataInfo(203,Form("sim_%d",25),2,2,25,378,85.0,0.00,0,7.0));
     dataArray.push_back(DataInfo(203,Form("sim_%d",35),2,2,35,378,85.0,0.00,0,7.0));
 
+    study[250]="SO16, fine angle scan around 112";
+    for(Int_t a=110; a<114; a=a+0.1){
+      dataArray.push_back(DataInfo(250,Form("sim_%d",a),2,2,a,378,85.0,0.00,0,7.0));
+    }
+
+    
     study[205]="sim Oct 16, plate, lens 0, beam dimension scan";
     for(Int_t z=0; z<=40; z+=5){
       dataArray.push_back(DataInfo(205,Form("sim_%d",z),2,2,25,378,85.0,0.00,0,7.0,(Double_t)z));
@@ -921,7 +927,7 @@ void datainfo_init(){
             
       for(Int_t i=0; i<10; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(211,files[i],2,0,25.0,378,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(211,files[i],2,2,25.0,378,85.0,0.00,11,7.0,10,o));	
       }
    
     }
