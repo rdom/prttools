@@ -869,20 +869,20 @@ void datainfo_init(){
     }
     
     study[202]="SO16, plate, lens 2";
-    for(Int_t a=20; a<140; a++){
+    for(Int_t a=20; a<=140; a++){
       dataArray.push_back(DataInfo(202,Form("sim_%d",a),2,2,a,378,85.0,0.00,0,7.0));
     }
 
     study[203]="SO16, plate, lens 2";
-    for(Int_t a=20; a<140; a=a+10){
+    for(Int_t a=20; a<=140; a=a+10){
       dataArray.push_back(DataInfo(203,Form("sim_%d",a),2,2,a,378,85.0,0.00,0,7.0));
     }
     dataArray.push_back(DataInfo(203,Form("sim_%d",25),2,2,25,378,85.0,0.00,0,7.0));
     dataArray.push_back(DataInfo(203,Form("sim_%d",35),2,2,35,378,85.0,0.00,0,7.0));
 
     study[250]="SO16, fine angle scan around 112";
-    for(Int_t a=110; a<114; a=a+0.1){
-      dataArray.push_back(DataInfo(250,Form("sim_%d",a),2,2,a,378,85.0,0.00,0,7.0));
+    for(Double_t a=110; a<114; a=a+0.1){
+      dataArray.push_back(DataInfo(250,Form("sim_%2.2f",a),2,2,a,378,85.0,0.00,0,7.0));
     }
 
     
