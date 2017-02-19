@@ -882,7 +882,7 @@ void datainfo_init(){
 
     study[250]="SO16, fine angle scan around 112";
     for(Double_t a=110; a<114; a=a+0.1){
-      dataArray.push_back(DataInfo(250,Form("sim_%2.2f",a),2,2,a,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(250,Form("sim_%2.2f",a),2,2,a,364,85.0,0.00,0,7.0));
     }
 
     
