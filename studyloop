@@ -109,17 +109,14 @@ processOneSim (){
 		    ./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 0 -t1 1   >> "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "4" ]; then
-		#./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]}  -x proton -e 5000 -b 1  > "${datapath}/${file[fk]}S.log" &
-		#./prtdirc -o "${datapath}/${file[fk]}S1x.root" ${args[fk]} -x proton -tr 0.2 -z 10 -e 5000 -r 2704161 -b 1  > "${datapath}/${file[fk]}S1x.log" &
-		#./prtdirc -o "${datapath}/${file[fk]}S2x.root" ${args[fk]} -x pi+    -tr 0.2 -z 10 -e 5000 -r 2704162 -b 1  > "${datapath}/${file[fk]}S2x.log" &
-
-		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 2000 -r 0 -b 1  > "${datapath}/${file[fk]}SF.log" &
 		
-		#./prtdirc -o "${datapath}/${file[fk]}SF1x.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 5000 -r 2704161 -b 1  > "${datapath}/${file[fk]}SF1x.log" &
-		#./prtdirc -o "${datapath}/${file[fk]}SF2x.root" ${args[fk]} -x pi+    -tr 0.0 -z 10 -e 5000 -r 2704162 -b 1  > "${datapath}/${file[fk]}SF2x.log" &
+		#./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 2000 -r 0 -b 1  > "${datapath}/${file[fk]}SF.log" &
+		
+		./prtdirc -o "${datapath}/${file[fk]}SF1x.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 5000 -r 2704161 -b 1  > "${datapath}/${file[fk]}SF1x.log" &
+		./prtdirc -o "${datapath}/${file[fk]}SF2x.root" ${args[fk]} -x pi+    -tr 0.0 -z 10 -e 5000 -r 2704162 -b 1  > "${datapath}/${file[fk]}SF2x.log" &
 	
-		#./prtdirc -o "${datapath}/${file[fk]}SP1x.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 20000 -r 231$RANDOM -b 1  > "${datapath}/${file[fk]}SP1x.log" &
-		#./prtdirc -o "${datapath}/${file[fk]}SP2x.root" ${args[fk]} -x pi+    -tr 0.0 -z 10 -e 20000 -r 231$RANDOM -b 1  > "${datapath}/${file[fk]}SP2x.log" &
+		./prtdirc -o "${datapath}/${file[fk]}SP1x.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 20000 -r 231$RANDOM -b 1  > "${datapath}/${file[fk]}SP1x.log" &
+		./prtdirc -o "${datapath}/${file[fk]}SP2x.root" ${args[fk]} -x pi+    -tr 0.0 -z 10 -e 20000 -r 231$RANDOM -b 1  > "${datapath}/${file[fk]}SP2x.log" &
 	    fi
 	    if [ ${level} -eq "5" ]; then
 		./prtdirc -o "${datapath}/lut_${file[fk]}S10M.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 10000000  -b 1 > "${datapath}/${file[fk]}L.log" &
