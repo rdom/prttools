@@ -834,33 +834,33 @@ void datainfo_init(){
     study[200]="SO16, plate, no lens";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
-      dataArray.push_back(DataInfo(200,"sim_00",2,0,20.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_01",2,0,25.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_02",2,0,30.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_03",2,0,35.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_04",2,0,40.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_05",2,0,45.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_06",2,0,50.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_07",2,0,55.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_08",2,0,60.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_09",2,0,65.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_10",2,0,70.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_11",2,0,75.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_12",2,0,80.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_13",2,0,85.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_14",2,0,90.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_15",2,0,95.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_16",2,0,100.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_17",2,0,105.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_18",2,0,110.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_19",2,0,115.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_20",2,0,120.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_21",2,0,125.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_22",2,0,130.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_23",2,0,135.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_24",2,0,140.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_25",2,0,145.0,378,85.0,0.00,0,7.0));
-      dataArray.push_back(DataInfo(200,"sim_26",2,0,150.0,378,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_00",2,0,20.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_01",2,0,25.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_02",2,0,30.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_03",2,0,35.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_04",2,0,40.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_05",2,0,45.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_06",2,0,50.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_07",2,0,55.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_08",2,0,60.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_09",2,0,65.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_10",2,0,70.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_11",2,0,75.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_12",2,0,80.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_13",2,0,85.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_14",2,0,90.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_15",2,0,95.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_16",2,0,100.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_17",2,0,105.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_18",2,0,110.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_19",2,0,115.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_20",2,0,120.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_21",2,0,125.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_22",2,0,130.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_23",2,0,135.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_24",2,0,140.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_25",2,0,145.0,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(200,"sim_26",2,0,150.0,364,85.0,0.00,0,7.0));
     }
 
     study[201]="SO16, plate, no lens";
@@ -903,7 +903,7 @@ void datainfo_init(){
       
       for(Int_t i=0; i<62; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(209,files[i],2,0,25.0,364,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(209,files[i],2,0,25.0,364,85.0,0.00,0,7.0,10,o));	
       }
     }
     
@@ -914,7 +914,7 @@ void datainfo_init(){
 
       for(Int_t i=0; i<43; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(210,files[i],2,0,25.0,364,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(210,files[i],2,0,25.0,364,85.0,0.00,0,7.0,10,o));	
       }
    
     }
@@ -927,7 +927,7 @@ void datainfo_init(){
             
       for(Int_t i=0; i<10; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(211,files[i],2,2,25.0,364,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(211,files[i],2,2,25.0,364,85.0,0.00,0,7.0,10,o));	
       }
    
     }
@@ -939,7 +939,7 @@ void datainfo_init(){
       
       for(Int_t i=0; i<40; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(212,files[i],2,0,25.0,364,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(212,files[i],2,0,25.0,364,85.0,0.00,0,7.0,10,o));	
       }      
     }
 
@@ -951,46 +951,46 @@ void datainfo_init(){
       
       for(Int_t i=0; i<5; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(213,files[i],2,0,25.0,364,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(213,files[i],2,0,25.0,364,85.0,0.00,0,7.0,10,o));	
       }      
     }
 
-    study[214]="7GeV, 25  degree,   bar, sh lens, 1mV th. offset";
+    study[214]="7GeV, 25  degree,bar   , sh lens, 1mV th. offset";
     {
       Double_t o = 12.59 + 95.6; // 185.7
       TString files[51] = {"beam_16300123932","beam_16300134200","beam_16300142015","beam_16300145955","beam_16300153922","beam_16300161517","beam_16300161758","beam_16300165607","beam_16300172424","beam_16300184337","beam_16300192449","beam_16300201120","beam_16300203744","beam_16300210133","beam_16300212516","beam_16300214926","beam_16300220350","beam_16300222009","beam_16300224322","beam_16300230829","beam_16300234354","beam_16301003644","beam_16301010603","beam_16301013659","beam_16301020406","beam_16301022737","beam_16301025054","beam_16301031349","beam_16301033706","beam_16301040030","beam_16301042325","beam_16301044701","beam_16301051013","beam_16301053349","beam_16301055713","beam_16301062037","beam_16301064613","beam_16301070937","beam_16301073301","beam_16301080037","beam_16301083317","beam_16301090146","beam_16301092818","beam_16301100049","beam_16301102544","beam_16301105013","beam_16301112005","beam_16301112839","beam_16301115237","beam_16301121653","beam_16301124037"};
       
       for(Int_t i=0; i<51; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(214,files[i],1,3,25.0,364,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(214,files[i],1,3,25.0,364,85.0,0.00,0,7.0,10,o));	
       }      
     }
     
-    study[215]="7GeV, angle scan,   bar, sh lens, 1mV th. offset";
+    study[215]="7GeV, angle scan,bar   , sh lens, 1mV th. offset";
     {
       Double_t o = 12.59 + 95.6; // 185.7
       
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-      dataArray.push_back(DataInfo(215,"beam_16301130321",1,3,20.0,364,85.0,0.00,11,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301135650",1,3,30.0,364,85.0,0.00,11,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301142633",1,3,35.0,364,85.0,0.00,11,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301150734",1,3,40.0,364,85.0,0.00,11,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301153804",1,3,45.0,364,85.0,0.00,11,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301161333",1,3,50.0,364,85.0,0.00,11,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301164958",1,3,55.0,364,85.0,0.00,11,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301173105",1,3,60.0,364,85.0,0.00,11,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301180149",1,3,65.0,364,85.0,0.00,11,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301183115",1,3,70.0,364,85.0,0.00,11,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301130321",1,3,20.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301135650",1,3,30.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301142633",1,3,35.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301150734",1,3,40.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301153804",1,3,45.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301161333",1,3,50.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301164958",1,3,55.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301173105",1,3,60.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301180149",1,3,65.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301183115",1,3,70.0,364,85.0,0.00,0,7.0,10,o));
     }
 
-    study[216]="7GeV, 25  degree,   bar, no lens, 1mV th. offset";
+    study[216]="7GeV, 25  degree,bar   , no lens, 1mV th. offset";
     {
       Double_t o = 12.59 + 95.6;
       TString files[28] = {"beam_16301214831","beam_16301221143","beam_16301223118","beam_16301230513","beam_16301232946","beam_16301235206","beam_16302001117","beam_16302003030","beam_16302005147","beam_16302011059","beam_16302013010","beam_16302014906","beam_16302020758","beam_16302024405","beam_16302030458","beam_16302040153","beam_16302042030","beam_16302043930","beam_16302045841","beam_16302051754","beam_16302053735","beam_16302055909","beam_16302062156","beam_16302064423","beam_16302070630","beam_16302072856","beam_16302075129","beam_16302081349"};
       
       for(Int_t i=0; i<28; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(216,files[i],1,0,25.0,364,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(216,files[i],1,0,25.0,364,85.0,0.00,0,7.0,10,o));	
       }
     }
 
@@ -1001,60 +1001,60 @@ void datainfo_init(){
       
       for(Int_t i=0; i<40; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(217,files[i],2,0,25.0,364,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(217,files[i],2,0,25.0,364,85.0,0.00,0,7.0,10,o));	
       }
     }
 
-    study[218]="momentum-angle scan, plate, cy lens, 1mV th. offset";
+    study[218]="mom-angle scan  , plate, cy lens, 1mV th. offset";
     {
       Double_t o = 12.59 +95.6;//-59; // 185.7
 
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
       
-      dataArray.push_back(DataInfo(218,"beam_2_90",2,2,90.0,364,85.0,0.00,11,2.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_2_90P",2,2,90.0,364,85.0,0.00,11,2.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_3_60",2,2,60.0,364,85.0,0.00,11,3.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_3_60P",2,2,60.0,364,85.0,0.00,11,3.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_3_25",2,2,25.0,364,85.0,0.00,11,3.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_3_25P",2,2,25.0,364,85.0,0.00,11,3.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_4_50",2,2,50.0,364,85.0,0.00,11,4.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_4_50P",2,2,50.0,364,85.0,0.00,11,4.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_5_25",2,2,25.0,364,85.0,0.00,11,5.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_5_25P",2,2,25.0,364,85.0,0.00,11,5.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_5_43",2,2,43.0,364,85.0,0.00,11,5.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_5_43P",2,2,43.0,364,85.0,0.00,11,5.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_6_36",2,2,36.0,364,85.0,0.00,11,6.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_6_36P",2,2,36.0,364,85.0,0.00,11,6.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_7_33",2,2,33.0,364,85.0,0.00,11,7.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_7_33P",2,2,33.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_8_25",2,2,25.0,364,85.0,0.00,11,8.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_8_25P",2,2,25.0,364,85.0,0.00,11,8.0,5,o));
-      dataArray.push_back(DataInfo(218,"beam_8_33",2,2,33.0,364,85.0,0.00,11,8.0,5,o));
-      //      dataArray.push_back(DataInfo(218,"beam_8_33P",2,2,33.0,364,85.0,0.00,11,8.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_2_90",2,2,90.0,364,85.0,0.00,0,2.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_2_90P",2,2,90.0,364,85.0,0.00,0,2.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_3_60",2,2,60.0,364,85.0,0.00,0,3.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_3_60P",2,2,60.0,364,85.0,0.00,0,3.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_3_25",2,2,25.0,364,85.0,0.00,0,3.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_3_25P",2,2,25.0,364,85.0,0.00,0,3.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_4_50",2,2,50.0,364,85.0,0.00,0,4.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_4_50P",2,2,50.0,364,85.0,0.00,0,4.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_5_25",2,2,25.0,364,85.0,0.00,0,5.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_5_25P",2,2,25.0,364,85.0,0.00,0,5.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_5_43",2,2,43.0,364,85.0,0.00,0,5.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_5_43P",2,2,43.0,364,85.0,0.00,0,5.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_6_36",2,2,36.0,364,85.0,0.00,0,6.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_6_36P",2,2,36.0,364,85.0,0.00,0,6.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_7_33",2,2,33.0,364,85.0,0.00,0,7.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_7_33P",2,2,33.0,364,85.0,0.00,0,7.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_8_25",2,2,25.0,364,85.0,0.00,0,8.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_8_25P",2,2,25.0,364,85.0,0.00,0,8.0,5,o));
+      dataArray.push_back(DataInfo(218,"beam_8_33",2,2,33.0,364,85.0,0.00,0,8.0,5,o));
+      //      dataArray.push_back(DataInfo(218,"beam_8_33P",2,2,33.0,364,85.0,0.00,0,8.0,5,o));
     }
 
-    study[219]="momentum-angle scan, plate, cy lens, 1mV th. offset, 7m focus";
+    study[219]="mom-angle scan  , plate, cy lens, 1mV th. offset, 7m focus";
     {
       Double_t o = 12.59 + 95.6;
       
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
 
-      dataArray.push_back(DataInfo(219,"beam219_7_25",2,2,25.0,364,85.0,0.00,11,7.0,5,o));
-      //      dataArray.push_back(DataInfo(219,"beam219_7_25P",2,2,25.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_30",2,2,30.0,364,85.0,0.00,11,7.0,5,o));
-      //      dataArray.push_back(DataInfo(219,"beam219_7_30P",2,2,30.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_35",2,2,35.0,364,85.0,0.00,11,7.0,5,o));
-      //      dataArray.push_back(DataInfo(219,"beam219_7_35P",2,2,35.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_45",2,2,45.0,364,85.0,0.00,11,7.0,5,o));
-      //      dataArray.push_back(DataInfo(219,"beam219_7_45P",2,2,45.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_55",2,2,55.0,364,85.0,0.00,11,7.0,5,o));
-      //      dataArray.push_back(DataInfo(219,"beam219_7_55P",2,2,55.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_125",2,2,125.0,364,85.0,0.00,11,7.0,5,o));
-      //      dataArray.push_back(DataInfo(219,"beam219_7_125P",2,2,125.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_7_140",2,2,140.0,364,85.0,0.00,11,7.0,5,o));
-      //      dataArray.push_back(DataInfo(219,"beam219_7_140P",2,2,140.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(219,"beam219_8_30",2,2,30.0,364,85.0,0.00,11,8.0,5,o));
-      //      dataArray.push_back(DataInfo(219,"beam219_8_30P",2,2,30.0,364,85.0,0.00,11,8.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_25",2,2,25.0,364,85.0,0.00,0,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_25P",2,2,25.0,364,85.0,0.00,0,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_30",2,2,30.0,364,85.0,0.00,0,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_30P",2,2,30.0,364,85.0,0.00,0,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_35",2,2,35.0,364,85.0,0.00,0,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_35P",2,2,35.0,364,85.0,0.00,0,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_45",2,2,45.0,364,85.0,0.00,0,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_45P",2,2,45.0,364,85.0,0.00,0,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_55",2,2,55.0,364,85.0,0.00,0,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_55P",2,2,55.0,364,85.0,0.00,0,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_125",2,2,125.0,364,85.0,0.00,0,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_125P",2,2,125.0,364,85.0,0.00,0,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_7_140",2,2,140.0,364,85.0,0.00,0,7.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_7_140P",2,2,140.0,364,85.0,0.00,0,7.0,5,o));
+      dataArray.push_back(DataInfo(219,"beam219_8_30",2,2,30.0,364,85.0,0.00,0,8.0,5,o));
+      //      dataArray.push_back(DataInfo(219,"beam219_8_30P",2,2,30.0,364,85.0,0.00,0,8.0,5,o));
     }
     
     study[221]="low stat angle scan, plate, no lens, 0.5mV th. offset";
@@ -1062,19 +1062,19 @@ void datainfo_init(){
       Double_t o = 12.59 +95.6;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
 
-      dataArray.push_back(DataInfo(221,"beam_16305204455",2,0,140.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305204944",2,0,130.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305205404",2,0,120.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305205735",2,0,110.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305210108",2,0,100.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305210424",2,0, 90.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305210909",2,0, 80.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305211237",2,0, 70.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305211556",2,0, 60.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305211950",2,0, 50.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305212325",2,0, 40.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305212714",2,0, 30.0,364,85.0,0.00,11,7.0,5,o));
-      dataArray.push_back(DataInfo(221,"beam_16305213705",2,0, 20.0,364,85.0,0.00,11,7.0,5,o));
+      dataArray.push_back(DataInfo(221,"beam_16305204455",2,0,140.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305204944",2,0,130.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305205404",2,0,120.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305205735",2,0,110.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305210108",2,0,100.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305210424",2,0, 90.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305210909",2,0, 80.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305211237",2,0, 70.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305211556",2,0, 60.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305211950",2,0, 50.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305212325",2,0, 40.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305212714",2,0, 30.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(221,"beam_16305213705",2,0, 20.0,364,85.0,0.00,0,7.0,10,o));
     }
 
     study[222]="7GeV, 35  degree, plate, cy lens, 1mV th. offset";
@@ -1084,7 +1084,7 @@ void datainfo_init(){
       
       for(Int_t i=0; i<35; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(222,files[i],2,0,35.0,364,85.0,0.00,11,7.0,10,o));	
+	dataArray.push_back(DataInfo(222,files[i],2,0,35.0,364,85.0,0.00,0,7.0,10,o));	
       }
     }
   }
