@@ -62,9 +62,10 @@ const Int_t maxch_dirc = nmcp*npix;
 const Int_t prt_maxnametdc=10000;
 const Int_t maxtdc=maxch/48;
 
+Int_t prt_nmcp = 9;
 TRandom prt_rand;
 TChain*  fCh = 0;
-Int_t    fNEntries(0),fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0);
+Int_t    fNEntries(0),fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0),prt_geometry(0);
 TString  fSavePath(""),fInfo(""),fPath;
 TH2F*    fhDigi[nmcp];
 TPad*    fhPads[nmcp], *fhPglobal;
@@ -272,9 +273,10 @@ Bool_t badcannel(Int_t ch){
 
 // layoutId == 5  - 5 row's design for the PANDA Barrel DIRC
 // layoutId == 6  - new 3.6 row's design for the PANDA Barrel DIRC
-// layoutId == 7  - cern 2016 
+// layoutId == 7  - cern 2016
 
 TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
+  if(prt_geometry==2021) layoutId=6;
   if(!cDigi) cDigi = new TCanvas("cDigi","cDigi",0,0,800,400);
   cDigi->cd();
   // TPad * pp = new TPad("P","T",0.06,0.135,0.93,0.865);
@@ -635,6 +637,7 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
     fMomentum = prt_event->GetMomentum().Mag() +0.01;
     fAngle = prt_event->GetAngle() + 0.01;
     fParticle =  prt_event->GetParticle();
+    prt_geometry= prt_event->GetGeometry();
     fTest1 = prt_event->GetTest1();
     fTest2 = prt_event->GetTest2();
   }

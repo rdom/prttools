@@ -865,26 +865,35 @@ void datainfo_init(){
 
     study[201]="SO16, plate, no lens";
     for(Int_t a=20; a<140; a++){
-      dataArray.push_back(DataInfo(201,Form("sim_%d",a),2,0,a,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(201,Form("sim_%d",a),2,0,a,364,85.0,0.00,0,7.0,10));
     }
     
     study[202]="SO16, plate, lens 2";
     for(Int_t a=20; a<=140; a++){
-      dataArray.push_back(DataInfo(202,Form("sim_%d",a),2,2,a,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(202,Form("sim_%d",a),2,2,a,364,85.0,0.00,0,7.0,10));
     }
 
     study[203]="SO16, plate, lens 2";
     for(Int_t a=20; a<=140; a=a+10){
-      dataArray.push_back(DataInfo(203,Form("sim_%d",a),2,2,a,364,85.0,0.00,0,7.0));
+      dataArray.push_back(DataInfo(203,Form("sim_%d",a),2,2,a,364,85.0,0.00,0,7.0,10));
     }
-    dataArray.push_back(DataInfo(203,Form("sim_%d",25),2,2,25,364,85.0,0.00,0,7.0));
-    dataArray.push_back(DataInfo(203,Form("sim_%d",35),2,2,35,364,85.0,0.00,0,7.0));
+    dataArray.push_back(DataInfo(203,Form("sim_%d",25),2,2,25,364,85.0,0.00,0,7.0,10));
+    dataArray.push_back(DataInfo(203,Form("sim_%d",35),2,2,35,364,85.0,0.00,0,7.0,10));
 
     study[250]="SO16, fine angle scan around 112";
     for(Double_t a=110; a<114; a=a+0.1){
       dataArray.push_back(DataInfo(250,Form("sim_%2.2f",a),2,2,a,364,85.0,0.00,0,7.0));
     }
 
+    study[251]="SO16, plate with lens for all measured configuration";
+    for(Double_t a=20; a<=140; a=a+5){
+      dataArray.push_back(DataInfo(251,Form("sim_%2.2f",a),2,2,a,364,85.0,0.00,0,7.0));
+    }
+
+    study[252]="SO16, plate with lens for Barrel DIRC analog";
+    for(Double_t a=110; a<114; a=a+0.1){
+      dataArray.push_back(DataInfo(252,Form("sim_%2.2f",a),2,2,a,364,85.0,0.00,0,7.0));
+    }
     
     study[205]="sim Oct 16, plate, lens 0, beam dimension scan";
     for(Int_t z=0; z<=40; z+=5){
@@ -962,7 +971,7 @@ void datainfo_init(){
       
       for(Int_t i=0; i<51; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(214,files[i],1,3,25.0,364,85.0,0.00,0,7.0,10,o));	
+	dataArray.push_back(DataInfo(214,files[i],1,3,25.0,364,85.0,70,5,7.0,10,o));	
       }      
     }
     
@@ -971,16 +980,16 @@ void datainfo_init(){
       Double_t o = 12.59 + 95.6; // 185.7
       
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-      dataArray.push_back(DataInfo(215,"beam_16301130321",1,3,20.0,364,85.0,0.00,0,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301135650",1,3,30.0,364,85.0,0.00,0,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301142633",1,3,35.0,364,85.0,0.00,0,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301150734",1,3,40.0,364,85.0,0.00,0,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301153804",1,3,45.0,364,85.0,0.00,0,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301161333",1,3,50.0,364,85.0,0.00,0,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301164958",1,3,55.0,364,85.0,0.00,0,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301173105",1,3,60.0,364,85.0,0.00,0,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301180149",1,3,65.0,364,85.0,0.00,0,7.0,10,o));
-      dataArray.push_back(DataInfo(215,"beam_16301183115",1,3,70.0,364,85.0,0.00,0,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301130321",1,3,20.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301135650",1,3,30.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301142633",1,3,35.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301150734",1,3,40.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301153804",1,3,45.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301161333",1,3,50.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301164958",1,3,55.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301173105",1,3,60.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301180149",1,3,65.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(215,"beam_16301183115",1,3,70.0,364,85.0,70.00,5,7.0,10,o));
     }
 
     study[216]="7GeV, 25  degree,bar   , no lens, 1mV th. offset";
@@ -990,7 +999,7 @@ void datainfo_init(){
       
       for(Int_t i=0; i<28; i++){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
-	dataArray.push_back(DataInfo(216,files[i],1,0,25.0,364,85.0,0.00,0,7.0,10,o));	
+	dataArray.push_back(DataInfo(216,files[i],1,0,25.0,364,85.0,70,5,7.0,10,o));	
       }
     }
 
@@ -1216,6 +1225,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
       if(newset[i].getStudyId()>=150){
 	if(newset[i].getStudyId()<200) std::cout<<" -g 2015 -c 2015 "<<std::endl;
+	else if(newset[i].getStudyId()==252) std::cout<<" -g 2021 -c 2021 "<<std::endl;
 	else std::cout<<" -g 2016 -c 2016 "<<std::endl;
       }
       else  std::cout<<" "<<std::endl;

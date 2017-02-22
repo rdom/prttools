@@ -41,7 +41,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   pdf.ReplaceAll(".root",pdfEnding);
   TFile f(pdf);
 
-  Int_t binfactor = 4; //(Int_t)(sigma/50.+0.1);
+  Int_t binfactor = (Int_t)(sigma/50.+0.1);
   if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
   for(Int_t i=0; i<maxch_dirc; i++){
@@ -86,7 +86,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   Int_t countall[9][64],countgood[9][64],countbad[9][64];
   Int_t mcpf[9], mcps[9];
     
-  for (Int_t m=0; m <nmcp; m++) {
+  for (Int_t m=0; m <9; m++) {
     mcpf[m]=0;
     mcps[m]=0;
     for(Int_t p=0; p<npix; p++){
@@ -263,7 +263,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
     hll[prt_pid]->Fill(sum);
   }
   
-  for (Int_t m=0; m <nmcp; m++) {
+  for (Int_t m=0; m <9; m++) {
     std::cout<<mcpf[m]<< " "<< mcps[m]<<std::endl;
     
     for(Int_t p=0; p<npix; p++){

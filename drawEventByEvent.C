@@ -6,7 +6,7 @@
 
 
 void drawEventByEvent(TString infile="~/simo/laser/all_0910_2/th_800_16283152516C.root", Int_t nevents=100, bool mc=true){
-  fSavePath = "data/draw_event_by_event";
+  fSavePath = "data/draw_event_by_event_210sim";
   canvasSave(1,0);
   
   PrtInit(infile,1);
@@ -30,13 +30,13 @@ void drawEventByEvent(TString infile="~/simo/laser/all_0910_2/th_800_16283152516
 	  time = hit.GetLeadTime();
 	  tot = hit.GetTotTime();
 	  ch  = hit.GetChannel();
-	  if(time<9 || time >30) continue;
-	  if(ch==-1) ch = map_mpc[mcp][ hit.GetPixelId()-1];
+	  if(time<7 || time >40) continue;
+	  Int_t mcpid = hit.GetMcpId();
+	  Int_t pixid = hit.GetPixelId()-1;
+	  
+	  if(ch==-1) ch = map_mpc[mcpid][ hit.GetPixelId()-1];
 	  if(badcannel(ch) || time <0) continue;
-	  if( mc || (tot>20 && tot<60 && time<-180 && time > -220)){
-	    Int_t mcpid = hit.GetMcpId();
-	    Int_t pixid = hit.GetPixelId()-1;
-	    
+	  if( mc || (tot>20 && tot<60 && time<-180 && time > -220)){	    
 	    if(pixid==0) std::cout<<"time  "<<time <<std::endl;
 	    
 	    fhDigi[mcpid]->Fill(pixid%8, pixid/8);
