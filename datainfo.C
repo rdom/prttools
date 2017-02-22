@@ -886,15 +886,55 @@ void datainfo_init(){
     }
 
     study[251]="SO16, plate with lens for all measured configuration";
-    for(Double_t a=20; a<=140; a=a+5){
-      dataArray.push_back(DataInfo(251,Form("sim_%2.2f",a),2,2,a,364,85.0,0.00,0,7.0));
+    {
+      dataArray.push_back(DataInfo(251,"beam_2_90",2,2,90.0,364,85.0,0.00,0,2.0,10));
+      dataArray.push_back(DataInfo(251,"beam_3_60",2,2,60.0,364,85.0,0.00,0,3.0,10));
+      dataArray.push_back(DataInfo(251,"beam_3_25",2,2,25.0,364,85.0,0.00,0,3.0,10));
+      dataArray.push_back(DataInfo(251,"beam_4_50",2,2,50.0,364,85.0,0.00,0,4.0,10));
+      dataArray.push_back(DataInfo(251,"beam_5_25",2,2,25.0,364,85.0,0.00,0,5.0,10));
+      dataArray.push_back(DataInfo(251,"beam_5_43",2,2,43.0,364,85.0,0.00,0,5.0,10));
+      dataArray.push_back(DataInfo(251,"beam_6_36",2,2,36.0,364,85.0,0.00,0,6.0,10));
+      dataArray.push_back(DataInfo(251,"beam_7_25",2,2,25.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_7_33",2,2,33.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_7_112",2,2,112.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_8_25",2,2,25.0,364,85.0,0.00,0,8.0,10));
+      dataArray.push_back(DataInfo(251,"beam_8_33",2,2,33.0,364,85.0,0.00,0,8.0,10));
+
+      dataArray.push_back(DataInfo(251,"beam_7_25",2,2,25.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_7_30",2,2,30.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_7_35",2,2,35.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_7_45",2,2,45.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_7_55",2,2,55.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_7_125",2,2,125.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_7_140",2,2,140.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(251,"beam_8_30",2,2,30.0,364,85.0,0.00,0,8.0,10));
     }
 
     study[252]="SO16, plate with lens for Barrel DIRC analog";
-    for(Double_t a=110; a<114; a=a+0.1){
-      dataArray.push_back(DataInfo(252,Form("sim_%2.2f",a),2,2,a,364,85.0,0.00,0,7.0));
+     {
+      dataArray.push_back(DataInfo(252,"beam_2_90",2,6,90.0,364,85.0,0.00,0,2.0,10));
+      dataArray.push_back(DataInfo(252,"beam_3_60",2,6,60.0,364,85.0,0.00,0,3.0,10));
+      dataArray.push_back(DataInfo(252,"beam_3_25",2,6,25.0,364,85.0,0.00,0,3.0,10));
+      dataArray.push_back(DataInfo(252,"beam_4_50",2,6,50.0,364,85.0,0.00,0,4.0,10));
+      dataArray.push_back(DataInfo(252,"beam_5_25",2,6,25.0,364,85.0,0.00,0,5.0,10));
+      dataArray.push_back(DataInfo(252,"beam_5_43",2,6,43.0,364,85.0,0.00,0,5.0,10));
+      dataArray.push_back(DataInfo(252,"beam_6_36",2,6,36.0,364,85.0,0.00,0,6.0,10));
+      dataArray.push_back(DataInfo(252,"beam_7_25",2,6,25.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_7_33",2,6,33.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_7_112",2,6,112.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_8_25",2,6,25.0,364,85.0,0.00,0,8.0,10));
+      dataArray.push_back(DataInfo(252,"beam_8_33",2,6,33.0,364,85.0,0.00,0,8.0,10));
+
+      dataArray.push_back(DataInfo(252,"beam_7_25",2,6,25.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_7_30",2,6,30.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_7_35",2,6,35.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_7_45",2,6,45.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_7_55",2,6,55.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_7_125",2,6,125.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_7_140",2,6,140.0,364,85.0,0.00,0,7.0,10));
+      dataArray.push_back(DataInfo(252,"beam_8_30",2,6,30.0,364,85.0,0.00,0,8.0,10));
     }
-    
+  
     study[205]="sim Oct 16, plate, lens 0, beam dimension scan";
     for(Int_t z=0; z<=40; z+=5){
       dataArray.push_back(DataInfo(205,Form("sim_%d",z),2,2,25,364,85.0,0.00,0,7.0,(Double_t)z));
