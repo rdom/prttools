@@ -54,7 +54,7 @@
    DataInfo prt_data_info;
 #endif 
 
-const Int_t nmcp = 9, npix = 64;
+const Int_t nmcp = 15, npix = 64;
 const Int_t ctdc = 48; //41
 const Int_t maxmch(nmcp*npix);
 const Int_t maxch = 960;
@@ -694,6 +694,7 @@ void PrtNextEvent(Int_t ievent, Int_t printstep){
     fMomentum = prt_event->GetMomentum().Mag() +0.01;
     fAngle = prt_event->GetAngle() + 0.01;
     fParticle =  prt_event->GetParticle();
+    prt_geometry= prt_event->GetGeometry();
     fTest1 = prt_event->GetTest1();
     fTest2 = prt_event->GetTest2();
   }
