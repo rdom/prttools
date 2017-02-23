@@ -39,7 +39,12 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   names[160]="bar 3LS @ 5 GeV/c";
   names[161]="plate WL @ 5 GeV/c";
   names[162]="plate 2LC @ 5 GeV/c";
-  names[221]="plate 2LC @ 7 GeV/c";
+
+  names[201]="sim, plate w/o lens @ 7 GeV/c";
+  names[202]="sim, plate with 2LCL @ 7 GeV/c";
+  names[221]="data, plate w/o lens @ 7 GeV/c";
+
+  
   
   gNph->SetTitle(names[studyId]);
   
@@ -64,6 +69,15 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   TCanvas* c2 = new TCanvas(Form("mult_%d",studyId),"c2",800,500);c2->SetBottomMargin(0.12);
   gNph->Draw("APL");
   canvasAdd(c2);
+
+  // TLegend *leg = new TLegend(0.2,0.7,0.5,0.9);
+  // leg->SetFillColor(0);
+  // leg->SetFillStyle(0);
+  // leg->SetBorderSize(0);
+  // leg->SetFillStyle(0);
+  // leg->AddEntry(S201,names[201],"lp");
+  // leg->AddEntry(S202,names[202],"lp");
+  // leg->Draw();
  
   canvasSave(0,1);
 }

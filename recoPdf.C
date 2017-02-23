@@ -44,7 +44,9 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   Int_t binfactor = (Int_t)(sigma/50.+0.1);
   if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
-  for(Int_t i=0; i<maxch_dirc; i++){
+  Int_t max(9*64);
+  if(path.Contains("252")) max=11*64;
+  for(Int_t i=0; i<max; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
     hpdff[i]->SetLineColor(2);
@@ -95,6 +97,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       countbad[m][p]=0;
     }
   }
+  
   
   Double_t theta(0);
   TVirtualFitter *fitter;
@@ -168,11 +171,12 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       mcp = fHit.GetMcpId();
-      pix=fHit.GetPixelId()-1;      
+      pix=fHit.GetPixelId()-1;
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();
+
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
-      if(++mult[ch]>1 || ch ==0) continue;
+      //if(++mult[ch]>1 || ch ==0) continue;
       
       { //time cuts
       	// Double_t cut1(11);
