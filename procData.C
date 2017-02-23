@@ -7,7 +7,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   
   if(infile=="") return;
 
-  Double_t mult(0),le1(0),le2(50),offset(0),timeres(0);
+  Double_t mult(0),le1(5),le2(40),offset(0),timeres(0);
   fSavePath = path+Form("/%ds/%d",studyId,fileId);
   
   if(infile.Contains("C.root")) { // beam data

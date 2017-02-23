@@ -50,9 +50,9 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
   gStyle->SetOptStat(0);
   CreateMap();
 
-  Int_t totalmcp[5][9], totalmcpr[5][9];
+  Int_t totalmcp[5][15], totalmcpr[5][15];
   for(Int_t i=0; i<5; i++){
-    for(Int_t m=0; m<9; m++){
+    for(Int_t m=0; m<15; m++){
       totalmcp[i][m]=0;
       totalmcpr[i][m]=0;
     }
