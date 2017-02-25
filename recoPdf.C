@@ -145,7 +145,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	      //	      if(gch>775 && gch<780)
 	  // if(gch>=778 && gch<=783)
 	  hodo1=true;
-	  if(gch>=793 && gch<=793)
+	  if(gch>=791 && gch<=793)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
@@ -186,7 +186,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<0 || time>50) continue;
+	if(time<0 || time>40) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 

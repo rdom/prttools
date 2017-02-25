@@ -42,6 +42,7 @@ void drawProcRes(TString inFile = "../data/res151.root"){
 
   names[201]="sim, plate w/o lens @ 7 GeV/c";
   names[202]="sim, plate with 2LCL @ 7 GeV/c";
+  names[219]="data, plate with 2LCL @ 7 GeV/c";
   names[221]="data, plate w/o lens @ 7 GeV/c";
 
   
@@ -75,9 +76,11 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   // leg->SetFillStyle(0);
   // leg->SetBorderSize(0);
   // leg->SetFillStyle(0);
+  // leg->AddEntry(S221,names[221],"lp");
+  // leg->AddEntry(S219,names[219],"lp");
   // leg->AddEntry(S201,names[201],"lp");
-  // leg->AddEntry(S202,names[202],"lp");
+  // leg->AddEntry(S202,names[202],"lp");   
   // leg->Draw();
- 
+  
   canvasSave(0,1);
 }

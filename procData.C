@@ -85,7 +85,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
       }
     }
 
-    if(counts>5) hMult->Fill(counts);
+    if(counts>0) hMult->Fill(counts);
   }
 
   TString ext = Form("_%d_%d",studyId,fileId);
