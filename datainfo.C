@@ -864,12 +864,12 @@ void datainfo_init(){
     }
 
     study[201]="SO16, plate, no lens";
-    for(Int_t a=20; a<140; a=a+5){
+    for(Int_t a=20; a<140; a++){
       dataArray.push_back(DataInfo(201,Form("sim_%d",a),2,0,a,364,85.0,0.00,0,7.0,10));
     }
     
     study[202]="SO16, plate, lens 2";
-    for(Int_t a=20; a<=140; a=a+5){
+    for(Int_t a=20; a<=140; a++){
       dataArray.push_back(DataInfo(202,Form("sim_%d",a),2,2,a,364,85.0,0.00,0,7.0,10));
     }
 
