@@ -8,7 +8,7 @@
 
 TLine *gLine = new TLine(0,0,0,1000);
 
-void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200,Bool_t debug=false){
+void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200,Bool_t debug=false, Double_t r1=0, Double_t r2=0){
   
   if(path=="") return;
   Int_t studyId;
@@ -46,6 +46,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Double_t integ1(0), integ2(0);
   Int_t max(9*64);
   if(path.Contains("252")) max=11*64;
+  if(path.Contains("l6scan")) max=15*64;
   for(Int_t i=0; i<max; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
@@ -371,7 +372,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   std::cout<<"Entries:  "<<hll[4]->GetEntries() <<std::endl;
   
 
-  TFile fc(fSavePath+"/reco_"+name,"recreate");
+  // TFile fc(fSavePath+"/reco_"+name,"recreate");
+  TFile fc(path.ReplaceAll("S.root","R.root"),"recreate");
   TTree *tc = new TTree("reco","reco");
   tc->Branch("theta",&theta,"theta/D");
   tc->Branch("sep",&sep,"sep/D");
@@ -379,6 +381,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   tc->Branch("sigma",&sigma,"sigma/D");
   tc->Branch("mom",&mom,"mom/D");
   tc->Branch("nph",&nph,"nph/D");
+  tc->Branch("r1",&r1,"r1/D");
+  tc->Branch("r2",&r2,"r2/D");
   tc->Fill();
   tc->Write();
 }
