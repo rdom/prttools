@@ -71,16 +71,16 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   gNph->Draw("APL");
   canvasAdd(c2);
 
-  // TLegend *leg = new TLegend(0.2,0.7,0.5,0.9);
-  // leg->SetFillColor(0);
-  // leg->SetFillStyle(0);
-  // leg->SetBorderSize(0);
-  // leg->SetFillStyle(0);
-  // leg->AddEntry(S221,names[221],"lp");
-  // leg->AddEntry(S219,names[219],"lp");
-  // leg->AddEntry(S201,names[201],"lp");
-  // leg->AddEntry(S202,names[202],"lp");   
-  // leg->Draw();
+  TLegend *leg = new TLegend(0.2,0.7,0.5,0.9);
+  leg->SetFillColor(0);
+  leg->SetFillStyle(0);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->AddEntry("S221",names[221],"lp");
+  leg->AddEntry("S219",names[219],"lp");
+  leg->AddEntry("S201",names[201],"lp");
+  leg->AddEntry("S202",names[202],"lp");   
+  leg->Draw();
   
   canvasSave(0,1);
 }

@@ -879,6 +879,7 @@ void datainfo_init(){
     }
     dataArray.push_back(DataInfo(203,Form("sim_%d",25),2,2,25,364,85.0,0.00,0,7.0,10));
     dataArray.push_back(DataInfo(203,Form("sim_%d",35),2,2,35,364,85.0,0.00,0,7.0,10));
+    dataArray.push_back(DataInfo(203,Form("sim_%d",112),2,2,112,364,85.0,0.00,0,7.0,10));
 
     study[250]="SO16, fine angle scan around 112";
     for(Double_t a=110; a<114; a=a+0.1){

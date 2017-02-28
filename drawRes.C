@@ -61,6 +61,8 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     g[sid]->SetPointEYhigh(ng[sid],err);
     err = sqrt(esep*esep + 0.1*0.1);
     g[sid]->SetPointEYlow(ng[sid]++,err);
+    std::cout<<mom/1000.<<" "<<theta<<" "<<sep <<std::endl;
+    
   }
   
   for(Int_t i=0; i<size; i++){

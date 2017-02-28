@@ -8,7 +8,7 @@
 
 TLine *gLine = new TLine(0,0,0,1000);
 
-void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf2_0.root", Double_t sigma=200,Bool_t debug=false){
+void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200,Bool_t debug=false){
   
   if(path=="") return;
   Int_t studyId;
@@ -74,6 +74,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
   
   if(path.Contains("C.root")) sigma=0;
   if(path.Contains("Z.root")) sigma=0;
+  // if(path.Contains("F.root")) sigma=200;
 
   TF1 *F1 = new TF1("gaus0","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
   TF1 *F2 = new TF1("gaus1","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
@@ -145,6 +146,7 @@ void recoPdf(TString path="$HOME/simo/217n/beam*C.root", TString pdfEnding=".pdf
 	      //	      if(gch>775 && gch<780)
 	  // if(gch>=778 && gch<=783)
 	  hodo1=true;
+	  //	  if(gch>=791 && gch<=793)
 	  if(gch>=791 && gch<=793)
 	     hodo2=true;
 

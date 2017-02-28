@@ -40,9 +40,7 @@ TF1 * fitpdf(TH1F *h){
   return gaust;
 }
 
-void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int_t normtype=1 ,Bool_t save=false){
-  // path="/data.local/data/jun15/beam_15177135523S.root";
-  // path="~/simo/build/beam_15184203911SP.root";
+void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false){
   if(path=="") return;
   
   fSavePath = "data/pdf3";
@@ -68,13 +66,12 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
   Double_t time;
   PrtHit fHit;
   Int_t totalf(0),totals(0), ch, entries = fCh->GetEntries();
-  Int_t start =0; //(path.Contains("C.root"))? 50000 : 0; 
+  Int_t start = (path.Contains("S.root"))? 4000 : 0; 
   for (Int_t ievent=start; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
 
     Int_t nHits =prt_event->GetHitSize();
     Double_t tof = prt_event->GetTest1();
-    // if(tof>72 && tof<72.6) continue;
     
     if(prt_event->GetType()==0){
       Bool_t t1(false),t2(false),t3(false);
@@ -138,7 +135,7 @@ void createPdf(TString path="/data.local/data/jun15/beam_15183022858C.root", Int
       fhDigi[mcp]->Fill(pix%8, pix/8);
     }
     // if(prt_event->GetParticle()==2212) totalf++;
-    // if(prt_event->GetParticle()==211 || prt_event->GetParticle()==212) totals++;
+    // if(prt_event->GetParticle()==211) totals++;
   }
 
   std::cout<<"#1 "<< totalf <<"  #2 "<<totals <<std::endl;
