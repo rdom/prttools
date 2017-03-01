@@ -40,7 +40,7 @@ TF1 * fitpdf(TH1F *h){
   return gaust;
 }
 
-void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false){
+void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentries=-1){
   if(path=="") return;
   
   fSavePath = "data/pdf3";
@@ -65,7 +65,8 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false){
   
   Double_t time;
   PrtHit fHit;
-  Int_t totalf(0),totals(0), ch, entries = fCh->GetEntries();
+  Int_t totalf(0),totals(0),ch,entries = fCh->GetEntries();
+  if(aentries>=0) entries = aentries;
   Int_t start = (path.Contains("S.root"))? 4000 : 0; 
   for (Int_t ievent=start; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
@@ -145,6 +146,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false){
   if(totalf>0 && totals>0) {
     path.ReplaceAll("*","");
     path.ReplaceAll(".root",Form(".pdf%d.root",normtype));
+    if(aentries>=0) path.ReplaceAll(".root",Form("_%d.root",aentries)); 
     
     TFile efile(path,"RECREATE");
     
@@ -166,7 +168,6 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false){
 	hles[i]->Scale(1/(Double_t)totalmcpr[2][mcp%3]);
       }
 
-      
       // hlef[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));
       // hles[i]->Scale(1/(Double_t)(hlef[i]->GetEntries()));
 

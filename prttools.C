@@ -820,7 +820,7 @@ void save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t st
       cc = (TCanvas*) c->DrawClone();
       cc->SetCanvasSize(w,h);
       if(style == 0) {
-	cc->SetBottomMargin(0.12);
+	if(fabs(cc->GetBottomMargin()-0.1)<0.001) cc->SetBottomMargin(0.12);
 	TIter next(cc->GetListOfPrimitives());
 	TObject *obj;
 	

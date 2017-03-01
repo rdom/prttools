@@ -8,7 +8,7 @@
 
 TLine *gLine = new TLine(0,0,0,1000);
 
-void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200,Bool_t debug=false, Double_t r1=0, Double_t r2=0){
+void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200,Bool_t debug=false, Double_t r1=0, Double_t r2=0, Int_t nforpdf=0){
   
   if(path=="") return;
   Int_t studyId;
@@ -80,8 +80,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   TF1 *F1 = new TF1("gaus0","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
   TF1 *F2 = new TF1("gaus1","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
   F1->SetParameter(0,1);
-  F2->SetParameter(0,1);
-      
+  F2->SetParameter(0,1);      
   F1->SetParameter(1,63);
   F2->SetParameter(1,50);
   F1->SetParameter(2,11);
@@ -98,8 +97,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       countgood[m][p]=0;
       countbad[m][p]=0;
     }
-  }
-  
+  }  
   
   Double_t theta(0);
   TVirtualFitter *fitter;
@@ -149,7 +147,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	  // if(gch>=778 && gch<=783)
 	  hodo1=true;
 	  //	  if(gch>=791 && gch<=793)
-	  if(gch>=791 && gch<=793)
+	  if(gch>=793 && gch<=793)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
@@ -283,11 +281,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
   canvasAdd(cDigi);
-
   
-  TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
-  if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
-  canvasAdd("ll_"+name,800,500);
 
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
@@ -323,6 +317,11 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     esep=sqrt(e1*e1+e2*e2+e3*e3+e4*e4);
   }
 
+
+  TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
+  if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
+  canvasAdd("ll_"+name,800,500);
+  
   hll[4]->SetTitle(Form("separation = %1.2f",sep));
   hll[4]->SetLineColor(2);
   hll[4]->Draw();
@@ -339,8 +338,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   leg->Draw();
   
   // canvasAdd("hl_"+name,800,500);
-
-
   // // hl[4]->Scale(1/hl[4]->GetMaximum());
   // // hl[2]->Scale(1/hl[2]->GetMaximum());
   // // hl3->Scale(1/hl3->GetMaximum());
@@ -369,11 +366,13 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
-  std::cout<<"Entries:  "<<hll[4]->GetEntries() <<std::endl;
+  std::cout<<"entries:  "<<hll[4]->GetEntries() <<std::endl;
   
-
-  // TFile fc(fSavePath+"/reco_"+name,"recreate");
-  TFile fc(path.ReplaceAll("S.root","R.root"),"recreate");
+  if(path.Contains("S.root")) path.ReplaceAll("S.root","R.root");
+  else path=fSavePath+"/reco_"+name;
+  if(nforpdf!=0) path=fSavePath+Form("/reco_%d.root",nforpdf);
+  
+  TFile fc(path,"recreate");
   TTree *tc = new TTree("reco","reco");
   tc->Branch("theta",&theta,"theta/D");
   tc->Branch("sep",&sep,"sep/D");
@@ -383,6 +382,9 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   tc->Branch("nph",&nph,"nph/D");
   tc->Branch("r1",&r1,"r1/D");
   tc->Branch("r2",&r2,"r2/D");
+  tc->Branch("nforpdf",&nforpdf,"nforpdf/I");
   tc->Fill();
   tc->Write();
+  fc.Write();
+  fc.Close();
 }
