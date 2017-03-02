@@ -105,7 +105,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   PrtHit fHit;
   Int_t totalf(0),totals(0),mcp,pix,ch, entries = fCh->GetEntries(); // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = fCh->GetEntries();
-  if(path.Contains("S.root")) entries = 4000;
+  if(path.Contains("S.root")) entries = 3000;
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
     if(ievent==0){
