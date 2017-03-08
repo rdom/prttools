@@ -936,7 +936,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(252,"beam_8_30",2,6,30.0,364,85.0,0.00,0,8.0,10));
     }
   
-    study[205]="sim Oct 16, plate, lens 0, beam dimension scan";
+    study[205]="sim Oct 16, plate, lens 2, beam dimension scan";
     for(Int_t z=0; z<=40; z+=5){
       dataArray.push_back(DataInfo(205,Form("sim_%d",z),2,2,25,364,85.0,0.00,0,7.0,(Double_t)z));
     }   
@@ -1127,7 +1127,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(221,"beam_16305213705",2,0, 20.0,364,85.0,0.00,0,7.0,10,o));
     }
 
-    study[222]="7GeV, 35  degree, plate, cy lens, 1mV th. offset";
+    study[222]="7GeV, 35  degree, plate, no lens, 1mV th. offset";
     {
       Double_t o = 12.59 +95.6;
       TString files[35] = {"beam_16306114948", "beam_16306120609", "beam_16306122252", "beam_16306123901", "beam_16306125602", "beam_16306131227", "beam_16306172555", "beam_16306174336", "beam_16306180110", "beam_16306181911", "beam_16306183738", "beam_16306185350", "beam_16306192948", "beam_16306194150", "beam_16306195352", "beam_16306202157", "beam_16306204033", "beam_16306205840", "beam_16306225504", "beam_16306231350", "beam_16306235117", "beam_16307001803", "beam_16307004633", "beam_16307011521", "beam_16307020004", "beam_16307022833", "beam_16307025703", "beam_16307032515", "beam_16307034358", "beam_16307040909", "beam_16307042322", "beam_16307043715", "beam_16307045134", "beam_16307050527", "beam_16307051933"};

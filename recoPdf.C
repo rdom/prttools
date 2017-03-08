@@ -105,7 +105,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   PrtHit fHit;
   Int_t totalf(0),totals(0),mcp,pix,ch, entries = fCh->GetEntries(); // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = fCh->GetEntries();
-  if(path.Contains("S.root")) entries = 3000;
+  if(path.Contains("S.root")) entries = 4000;
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
     if(ievent==0){
@@ -147,7 +147,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	  // if(gch>=778 && gch<=783)
 	  hodo1=true;
 	  //	  if(gch>=791 && gch<=793)
-	  if(gch>=793 && gch<=793)
+	  if(gch>=791 && gch<=793)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
@@ -188,7 +188,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<0 || time>40) continue;
+	if(time<11 || time>40) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -217,14 +217,17 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	TString x=(aminf>amins)? " <====== PROTON" : "";
 	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,pid)<<"  "<<x <<std::endl;
 	
-	cc->cd();
+	cc->cd();	
 	axisTime800x500(hpdff[ch]);
 	axisTime800x500(hpdfs[ch]);
 	prt_normalize(hpdff[ch],hpdfs[ch]);
 	hpdff[ch]->SetLineColor(2);
 	hpdfs[ch]->SetLineColor(4);
 	hpdff[ch]->Draw();
-	hpdff[ch]->GetXaxis()->SetRangeUser(0,50);
+	hpdff[ch]->SetTitle("");
+	hpdff[ch]->GetXaxis()->SetTitle("LE time [ns]");
+	hpdff[ch]->GetYaxis()->SetTitle("PDF value");
+	hpdff[ch]->GetXaxis()->SetRangeUser(0,40);
 	hpdfs[ch]->Draw("same");
 	gpdff[ch]->Draw("PL same");
 	gpdfs[ch]->Draw("PL same");
