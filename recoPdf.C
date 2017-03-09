@@ -44,7 +44,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t binfactor = (Int_t)(sigma/50.+0.1);
   if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
-  Int_t max(9*64);
+  Int_t max(11*64);
   if(path.Contains("252")) max=11*64;
   if(path.Contains("l6scan")) max=15*64;
   for(Int_t i=0; i<max; i++){
@@ -188,7 +188,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<11 || time>40) continue;
+	if(time<0 || time>40) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 

@@ -20,6 +20,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   ch.SetBranchAddress("mom",&mom);
   ch.SetBranchAddress("nph",&nph);
 
+  
   TGraphAsymmErrors *g[20],*gc[20],*gn[20];
   Int_t ng[20];
   for(Int_t i=0; i<20; i++){
@@ -36,9 +37,10 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     gn[i]->SetMarkerSize(0.8);
     gn[i]->SetLineColor(i+1);
   }
+  
   prt_rand.SetSeed(445);
   std::vector<int> vec;
-  
+
   for(Int_t i=0; i<ch.GetEntries(); i++){
     ch.GetEvent(i);
     if (std::find(vec.begin(), vec.end(), sigma) == vec.end()) vec.push_back((int)sigma);
@@ -46,8 +48,8 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   std::sort(vec.begin(), vec.end());
   Int_t size=vec.size();
   bool beamdata = (vec[0]<0.1)? true: false;
-    
-  for(Int_t i=0; i<ch.GetEntries(); i++){
+  
+  for(Int_t i=0; i<ch.GetEntries()-1; i++){
     ch.GetEvent(i);
     if(theta>155) continue;
     Int_t sid = std::distance(vec.begin(),std::find(vec.begin(), vec.end(),sigma));
@@ -120,7 +122,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   canvasAdd( Form("hNph_%d",studyId),800,500);
   gn[0]->Sort();
   if(beamdata) gn[0]->Draw("apl");
-  else  gn[1]->Draw("apl");
+  else  gn[0]->Draw("apl");
   gn[0]->GetXaxis()->SetLimits(15,160);
   gn[0]->GetYaxis()->SetRangeUser(0,150);
   gn[1]->GetYaxis()->SetRangeUser(0,150);

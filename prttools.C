@@ -54,7 +54,7 @@
    DataInfo prt_data_info;
 #endif 
 
-const Int_t nmcp = 15, npix = 64;
+const Int_t nmcp = 11, npix = 64;
 const Int_t ctdc = 48; //41
 const Int_t maxmch(nmcp*npix);
 const Int_t maxch =  nmcp*npix;

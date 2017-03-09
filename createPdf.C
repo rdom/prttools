@@ -124,19 +124,19 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       if(prt_event->GetParticle()==2212){
 	totalmcp[4][mcp]++;
 	totalmcpr[4][mcp%3]++;
-	totalf++;
+	if(normtype) totalf++;
 	hlef[ch]->Fill(time);
       }
       if(prt_event->GetParticle()==211){
 	totalmcp[2][mcp]++;
 	totalmcpr[2][mcp%3]++;
-	totals++;
+	if(normtype) totals++;
 	hles[ch]->Fill(time);
       }
       fhDigi[mcp]->Fill(pix%8, pix/8);
     }
-    // if(prt_event->GetParticle()==2212) totalf++;
-    // if(prt_event->GetParticle()==211) totals++;
+    if(!normtype && prt_event->GetParticle()==2212) totalf++;
+    if(!normtype && prt_event->GetParticle()==211) totals++;
   }
 
   std::cout<<"#1 "<< totalf <<"  #2 "<<totals <<std::endl;
