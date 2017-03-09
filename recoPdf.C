@@ -44,7 +44,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t binfactor = (Int_t)(sigma/50.+0.1);
   if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
-  Int_t max(11*64);
+  Int_t max(9*64);
   if(path.Contains("252")) max=11*64;
   if(path.Contains("l6scan")) max=15*64;
   for(Int_t i=0; i<max; i++){

@@ -153,7 +153,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     for(Int_t i=0; i<maxch_dirc; i++){
       Int_t mcp = i/64;
 
-      if(normtype==1){
+      if(normtype<2){
 	hlef[i]->Scale(1/(Double_t)totalf);
 	hles[i]->Scale(1/(Double_t)totals);
       }
