@@ -33,7 +33,11 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",120,-30,30);
   }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
+  TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
+  TH1F *hnphs =  new TH1F("hnphs","hnphs",200,0,200);
 
+  Bool_t ismultnorm(true);
+  //  if(pdfEnding.Contains("pdf0")) ismultnorm=true;
   TRandom rand;
   TF1 *pdff[maxch_dirc],*pdfs[maxch_dirc];
   TString pdf = path;
@@ -47,7 +51,12 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t max(9*64);
   if(path.Contains("252")) max=11*64;
   if(path.Contains("l6scan")) max=15*64;
-  for(Int_t i=0; i<max; i++){
+
+  if(ismultnorm){
+    hnphf = (TH1F*)f.Get("hnphf");
+    hnphs = (TH1F*)f.Get("hnphs");
+  }
+  for(Int_t i=0; i<max; i++){    
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
     hpdff[i]->SetLineColor(2);
@@ -88,8 +97,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 
   Int_t countall[9][64],countgood[9][64],countbad[9][64];
   Int_t mcpf[9], mcps[9];
-    
-  for (Int_t m=0; m <9; m++) {
+      
+  for (Int_t m=0; m<9; m++) {
     mcpf[m]=0;
     mcps[m]=0;
     for(Int_t p=0; p<npix; p++){
@@ -147,7 +156,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	  // if(gch>=778 && gch<=783)
 	  hodo1=true;
 	  //	  if(gch>=791 && gch<=793)
-	  if(gch>=791 && gch<=793)
+	  if(gch>=793 && gch<=793)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
@@ -167,7 +176,9 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-
+    if(prt_pid==2 && hll[2]->GetEntries()>3000)continue;
+    if(prt_pid==4 && hll[4]->GetEntries()>3000) continue;    
+    
     Int_t mult[maxch];
     memset(mult, 0, sizeof(mult));
     for(Int_t i=0; i<nHits; i++){
@@ -244,6 +255,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // if(aminf==0 || amins==0) continue;
 
       Double_t noise = 1e-6; //1e-7; // nHits //1e-5
+      
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));
       
@@ -254,17 +266,19 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // }else{
       // 	res=100*(amins-aminf)/amins;
       // 	sums+=TMath::Log((res+noise));
-      // }
-      
+      // }      
       hl[prt_pid]->Fill(time);
     }
     if(nGoodHits<5) continue;
-    
     hnph[prt_pid]->Fill(nGoodHits);
     
-    sum = sumf-sums; 
-    // if(fabs(sum)<0.04) continue;
-    
+    if(ismultnorm){
+      Double_t lhmf = hnphf->GetBinContent(hnphf->FindBin(nGoodHits)); 
+      Double_t lhms = hnphs->GetBinContent(hnphs->FindBin(nGoodHits)); 
+      sum = sumf+TMath::Log(lhmf)-(sums+TMath::Log(lhms));
+    }else sum = sumf-sums; 
+
+    // if(fabs(sum)<0.04) continue;    
     // sumf += 10*TMath::Log(F2->Eval(nHits));
     // sums += 10*TMath::Log(F1->Eval(nHits));
     // sum = sumf-sums;
@@ -285,7 +299,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
   canvasAdd(cDigi);
   
-
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   prt_normalize(hll[4],hll[2]);
@@ -369,7 +382,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
-  std::cout<<"entries:  "<<hll[4]->GetEntries() <<std::endl;
+  std::cout<<"entries:  pi "<<hll[2]->GetEntries()<<" p "<<hll[4]->GetEntries() <<std::endl;
   
   if(path.Contains("S.root")) path.ReplaceAll("S.root","R.root");
   else path=fSavePath+"/reco_"+name;

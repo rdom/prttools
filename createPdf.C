@@ -62,6 +62,8 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,50);
     hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,50);
   }
+  TH1F *hnphf = new TH1F("hnphf","hnphf",200,0,200);
+  TH1F *hnphs = new TH1F("hnphs","hnphs",200,0,200);
   
   Double_t time;
   PrtHit fHit;
@@ -73,6 +75,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 
     Int_t nHits =prt_event->GetHitSize();
     Double_t tof = prt_event->GetTest1();
+    Int_t pid=prt_event->GetParticle();
     
     if(prt_event->GetType()==0){
       Bool_t t1(false),t2(false),t3(false);
@@ -104,6 +107,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       if(!(t1 && t2 && t3 && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
 
+    Int_t goodhits(0);
     Int_t mult[maxch];
     memset(mult, 0, sizeof(mult));
 
@@ -116,18 +120,17 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       //if(prt_event->GetType()!=0) time += gRandom->Gaus(0,0.3);
       Double_t tot= fHit.GetTotTime();
       //if(tot<0 || tot>40) continue;
-      
 
       if(++mult[ch]>1) continue;      
       if(time<0 || time>50) continue;
-      
-      if(prt_event->GetParticle()==2212){
+      goodhits++;
+      if(pid==2212){
 	totalmcp[4][mcp]++;
 	totalmcpr[4][mcp%3]++;
 	if(normtype) totalf++;
 	hlef[ch]->Fill(time);
       }
-      if(prt_event->GetParticle()==211){
+      if(pid==211){
 	totalmcp[2][mcp]++;
 	totalmcpr[2][mcp%3]++;
 	if(normtype) totals++;
@@ -135,8 +138,14 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       }
       fhDigi[mcp]->Fill(pix%8, pix/8);
     }
-    if(!normtype && prt_event->GetParticle()==2212) totalf++;
-    if(!normtype && prt_event->GetParticle()==211) totals++;
+    if(pid==2212){
+      hnphf->Fill(goodhits);
+      if(normtype==0) totalf++;
+    }
+    if(pid==211){
+      hnphs->Fill(goodhits);
+      if(normtype==0) totals++;
+    }
   }
 
   std::cout<<"#1 "<< totalf <<"  #2 "<<totals <<std::endl;
@@ -149,11 +158,14 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     if(aentries>=0) path.ReplaceAll(".root",Form("_%d.root",aentries)); 
     
     TFile efile(path,"RECREATE");
-    
+    hnphf->Scale(1/(Double_t)(hnphf->GetMaximum()));
+    hnphs->Scale(1/(Double_t)(hnphs->GetMaximum()));
+    hnphf->Write();
+    hnphs->Write();
     for(Int_t i=0; i<maxch_dirc; i++){
       Int_t mcp = i/64;
 
-      if(normtype<2){
+      if(normtype<=1){
 	hlef[i]->Scale(1/(Double_t)totalf);
 	hles[i]->Scale(1/(Double_t)totals);
       }
