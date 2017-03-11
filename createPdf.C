@@ -87,7 +87,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
  
        	if(gch==818)
 	  t1=true;
-	//if(gch==821)
+	if(gch==821)
 	  t2=true;
 	if(gch==819)
 	  t3=true;
@@ -100,7 +100,8 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 	//if(gch>776 && gch<=780) //4
 	//if(gch>777 && gch<779) //2
 	  hodo1=true;
-	  if(gch>=789 && gch<=795)
+	  // if(gch>=789 && gch<=795)
+	  if(gch>=790 && gch<=793)
 	  hodo2=true;
       }
 
@@ -122,7 +123,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       //if(tot<0 || tot>40) continue;
 
       if(++mult[ch]>1) continue;      
-      if(time<0 || time>50) continue;
+      if(time<10 || time>50) continue;
       goodhits++;
       if(pid==2212){
 	totalmcp[4][mcp]++;

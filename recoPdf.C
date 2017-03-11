@@ -142,7 +142,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	
 	if(gch==818)
 	  t1=true;
-	if(gch==821)
+       	if(gch==821)
 	  t2=true;
 	if(gch==819)
 	  t3=true;
@@ -153,7 +153,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	  tof2=true;
 	    
 	      //	      if(gch>775 && gch<780)
-	  // if(gch>=778 && gch<=783)
+	  //  if(gch>=778 && gch<=783)
 	  hodo1=true;
 	  //	  if(gch>=791 && gch<=793)
 	  if(gch>=793 && gch<=793)
@@ -176,8 +176,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    if(prt_pid==2 && hll[2]->GetEntries()>3000)continue;
-    if(prt_pid==4 && hll[4]->GetEntries()>3000) continue;    
+    // if(prt_pid==2 && hll[2]->GetEntries()>3000)continue;
+    // if(prt_pid==4 && hll[4]->GetEntries()>3000) continue;    
     
     Int_t mult[maxch];
     memset(mult, 0, sizeof(mult));
@@ -276,7 +276,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       Double_t lhmf = hnphf->GetBinContent(hnphf->FindBin(nGoodHits)); 
       Double_t lhms = hnphs->GetBinContent(hnphs->FindBin(nGoodHits)); 
       sum = sumf+TMath::Log(lhmf)-(sums+TMath::Log(lhms));
-    }else sum = sumf-sums; 
+    }else sum = sumf-sums;    
 
     // if(fabs(sum)<0.04) continue;    
     // sumf += 10*TMath::Log(F2->Eval(nHits));
@@ -298,6 +298,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   cDigi->cd();
   (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
   canvasAdd(cDigi);
+
+  TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
+  if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
+  canvasAdd("ll_"+name,800,500);
   
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
@@ -332,11 +336,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     e4=-((2*(m1 + m2))/((s1 + s2)*(s1 + s2)))*ds2;
     esep=sqrt(e1*e1+e2*e2+e3*e3+e4*e4);
   }
-
-
-  TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
-  if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
-  canvasAdd("ll_"+name,800,500);
   
   hll[4]->SetTitle(Form("separation = %1.2f",sep));
   hll[4]->SetLineColor(2);
