@@ -57,12 +57,13 @@
 const Int_t nmcp = 15, npix = 64;
 const Int_t ctdc = 48; //41
 const Int_t maxmch(nmcp*npix);
-const Int_t maxch =  nmcp*npix;
-const Int_t maxch_dirc = nmcp*npix;
+const Int_t maxch(nmcp*npix);
 const Int_t prt_maxnametdc=10000;
 const Int_t maxtdc=maxch/48;
 
-Int_t prt_nmcp = 9;
+const Int_t prt_nmcp = 9;
+const Int_t maxch_dirc =  prt_nmcp*npix;
+
 TRandom prt_rand;
 TChain*  fCh = 0;
 Int_t    fNEntries(0),fMomentum(0),fAngle(0),fParticle(0),fTest1(0),fTest2(0),prt_geometry(0);
