@@ -116,7 +116,8 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       fHit = prt_event->GetHit(i);
       Int_t mcp = fHit.GetMcpId();
       Int_t pix = fHit.GetPixelId()-1;
-      ch=map_mpc[mcp][pix];      
+      ch=map_mpc[mcp][pix];
+      if(ch>maxch_dirc) continue;
       time=fHit.GetLeadTime();
       //if(prt_event->GetType()!=0) time += gRandom->Gaus(0,0.3);
       Double_t tot= fHit.GetTotTime();
@@ -125,7 +126,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       if(++mult[ch]>1) continue;      
       if(time<10 || time>50) continue;
       goodhits++;
-      
+
       if(pid==2212){
 	totalmcp[4][mcp]++;
 	totalmcpr[4][mcp%3]++;
