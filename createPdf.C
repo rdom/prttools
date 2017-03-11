@@ -107,7 +107,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 
       if(!(t1 && t2 && t3 && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
-
+ 
     Int_t goodhits(0);
     Int_t mult[maxch];
     memset(mult, 0, sizeof(mult));
@@ -121,10 +121,11 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       //if(prt_event->GetType()!=0) time += gRandom->Gaus(0,0.3);
       Double_t tot= fHit.GetTotTime();
       //if(tot<0 || tot>40) continue;
-
+      
       if(++mult[ch]>1) continue;      
       if(time<10 || time>50) continue;
       goodhits++;
+      
       if(pid==2212){
 	totalmcp[4][mcp]++;
 	totalmcpr[4][mcp%3]++;
