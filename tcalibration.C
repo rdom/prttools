@@ -208,7 +208,6 @@ Bool_t TTSelector::Process(Long64_t entry){
     tdc = map_tdc[Hits_nTrbAddress[i]];
     if(tdc<0) continue;
     ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
-    
     time[i] = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0") {
       //spline calib
@@ -237,7 +236,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch==gTrigger && grTime2==0) grTime2=time[i];
     }
   }
-
+  
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   if(gMode==5){
     if(mult1!=1 || mult3!=1 || mult4<1 || mult5<1){ //  || mult2!=1 || mult5!=1
@@ -260,7 +259,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch==722 && tof2==0){
     	tof2 = time[i]-tdcRefTime[tdc];
     	tot2 = timeT[i+1] - time[i];
-      }
+      }      
     }
 
     if(tof1!=0 && tof2!=0) {
@@ -304,7 +303,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
       if(!trbdata && badcannel(ch)) continue;
-
+      
       if(gMode>0){
 	timeLe = time[i]-tdcRefTime[tdc];
 	if(gTrigger!=0 && ch<maxch_dirc) timeLe = timeLe - (grTime1-grTime0);
