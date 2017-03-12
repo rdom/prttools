@@ -305,7 +305,7 @@ Bool_t MSelector::Process(Long64_t entry){
       //timeDiff-=offset;
       if(gMode==1){
 	hLeTot[mcp][pix]->SetTitle(Form("ch %d",ch));
-	hLeTot[mcp][pix]->Fill(timeDiff,tot);
+	if(particleId==2212) hLeTot[mcp][pix]->Fill(timeDiff,tot);
 	hShape[mcp][pix]->Fill(timeDiff,offset);
 	hShape[mcp][pix]->Fill(timeDiff + tot,offset);
       }
