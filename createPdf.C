@@ -48,9 +48,9 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   gStyle->SetOptStat(0);
   CreateMap();
 
-  Int_t totalmcp[5][15], totalmcpr[5][15];
+  Int_t totalmcp[5][prt_nmcp], totalmcpr[5][prt_nmcp];
   for(Int_t i=0; i<5; i++){
-    for(Int_t m=0; m<15; m++){
+    for(Int_t m=0; m<prt_nmcp; m++){
       totalmcp[i][m]=0;
       totalmcpr[i][m]=0;
     }
@@ -87,27 +87,25 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
  
        	if(gch==818)
 	  t1=true;
-	if(gch==821)
-	  t2=true;
+	// if(gch==821)
+	   t2=true;
 	if(gch==819)
 	  t3=true;
-
+	
 	//if(gch>1031 && gch<1034)
 	  tof1=true;
-	//if(gch>651 && gch<657)
+	  //if(gch>651 && gch<657)
 	  tof2=true;
-
-	//if(gch>776 && gch<=780) //4
-	//if(gch>777 && gch<779) //2
+	  
+	  //if(gch>776 && gch<=780) //4
 	  hodo1=true;
-	  // if(gch>=789 && gch<=795)
-	  if(gch>=790 && gch<=793)
-	  hodo2=true;
+	  if(gch>=789 && gch<=794)
+	    hodo2=true;
       }
 
       if(!(t1 && t2 && t3 && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
- 
+    
     Int_t goodhits(0);
     Int_t mult[maxch];
     memset(mult, 0, sizeof(mult));
@@ -115,16 +113,16 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
       Int_t mcp = fHit.GetMcpId();
-      Int_t pix = fHit.GetPixelId()-1;
+      Int_t pix = fHit.GetPixelId()-1;      
       ch=map_mpc[mcp][pix];
       if(ch>maxch_dirc) continue;
       time=fHit.GetLeadTime();
       //if(prt_event->GetType()!=0) time += gRandom->Gaus(0,0.3);
-      Double_t tot= fHit.GetTotTime();
-      //if(tot<0 || tot>40) continue;
+      //Double_t tot= fHit.GetTotTime();
+      //if(tot<2 || tot>8) continue;
       
       if(++mult[ch]>1) continue;      
-      if(time<10 || time>50) continue;
+      if(time<0 || time>50) continue;
       goodhits++;
 
       if(pid==2212){
@@ -141,6 +139,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       }
       fhDigi[mcp]->Fill(pix%8, pix/8);
     }
+    
     if(pid==2212){
       hnphf->Fill(goodhits);
       if(normtype==0) totalf++;

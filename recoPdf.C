@@ -36,7 +36,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
   TH1F *hnphs =  new TH1F("hnphs","hnphs",200,0,200);
 
-  Bool_t ismultnorm(true);
+  Bool_t ismultnorm(false);
   //  if(pdfEnding.Contains("pdf0")) ismultnorm=true;
   TRandom rand;
   TF1 *pdff[maxch_dirc],*pdfs[maxch_dirc];
@@ -56,7 +56,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     hnphf = (TH1F*)f.Get("hnphf");
     hnphs = (TH1F*)f.Get("hnphs");
   }
-  for(Int_t i=0; i<max; i++){    
+  for(Int_t i=0; i<max; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
     hpdff[i]->SetLineColor(2);
@@ -80,8 +80,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   //   hpdff[i]->Scale(1/integ1);
   //   hpdfs[i]->Scale(1/integ2);
   // }  
-
-  
+ 
   if(path.Contains("C.root")) sigma=0;
   if(path.Contains("Z.root")) sigma=0;
   // if(path.Contains("F.root")) sigma=200;
@@ -115,6 +114,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t totalf(0),totals(0),mcp,pix,ch, entries = fCh->GetEntries(); // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = fCh->GetEntries();
   if(path.Contains("S.root")) entries = 4000;
+  
   for (Int_t ievent=0; ievent<entries; ievent++){
     PrtNextEvent(ievent,1000);
     if(ievent==0){
@@ -142,7 +142,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	
 	if(gch==818)
 	  t1=true;
-       	if(gch==821)
+	if(gch==821)
 	  t2=true;
 	if(gch==819)
 	  t3=true;
@@ -156,7 +156,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	  //  if(gch>=778 && gch<=783)
 	  hodo1=true;
 	  //	  if(gch>=791 && gch<=793)
-	  if(gch>=793 && gch<=793)
+	  if(gch>=790 && gch<=793)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
@@ -176,9 +176,9 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    // if(prt_pid==2 && hll[2]->GetEntries()>3000)continue;
-    // if(prt_pid==4 && hll[4]->GetEntries()>3000) continue;    
-    
+    if(prt_pid==2 && hll[2]->GetEntries()>2500)continue;
+    if(prt_pid==4 && hll[4]->GetEntries()>2500) continue;    
+
     Int_t mult[maxch];
     memset(mult, 0, sizeof(mult));
     for(Int_t i=0; i<nHits; i++){
@@ -188,9 +188,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();
 
+      if(ch>maxch_dirc) continue;
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
-      //if(++mult[ch]>1 || ch ==0) continue;
-      
+      if(++mult[ch]>1 || ch ==0) continue;
+
       { //time cuts
       	// Double_t cut1(11);
       	// if(studyId==157 || studyId==155) cut1=8;
@@ -269,6 +270,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // }      
       hl[prt_pid]->Fill(time);
     }
+    
     if(nGoodHits<5) continue;
     hnph[prt_pid]->Fill(nGoodHits);
     
@@ -294,10 +296,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
   }
   
-  drawDigi("m,p,v\n",7,1.3,0);
-  cDigi->cd();
-  (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
-  canvasAdd(cDigi);
+  // drawDigi("m,p,v\n",7,1.3,0);
+  // cDigi->cd();
+  // (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
+  // canvasAdd(cDigi);
 
   TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
   if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
