@@ -271,7 +271,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       hl[prt_pid]->Fill(time);
     }
     
-    if(nGoodHits<5) continue;
+    if(nGoodHits<0) continue;
     hnph[prt_pid]->Fill(nGoodHits);
     
     if(ismultnorm){

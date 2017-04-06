@@ -61,7 +61,7 @@ const Int_t maxch(nmcp*npix);
 const Int_t prt_maxnametdc=10000;
 const Int_t maxtdc=maxch/48;
 
-const Int_t prt_nmcp = 11;
+const Int_t prt_nmcp = 15;
 const Int_t maxch_dirc =  prt_nmcp*npix;
 
 TRandom prt_rand;
