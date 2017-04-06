@@ -50,7 +50,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Double_t integ1(0), integ2(0);
   Int_t max(9*64);
   if(path.Contains("252")) max=11*64;
-  if(path.Contains("l6scan")) max=15*64;
+  if(path.Contains("l6")) max=15*64;
 
   if(ismultnorm){
     hnphf = (TH1F*)f.Get("hnphf");
