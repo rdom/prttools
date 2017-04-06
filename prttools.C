@@ -61,7 +61,7 @@ const Int_t maxch(nmcp*npix);
 const Int_t prt_maxnametdc=10000;
 const Int_t maxtdc=maxch/48;
 
-const Int_t prt_nmcp = 9;
+const Int_t prt_nmcp = 11;
 const Int_t maxch_dirc =  prt_nmcp*npix;
 
 TRandom prt_rand;
@@ -313,7 +313,7 @@ TString drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Dou
 	    if(ii==0) shifth=0.167;
 	  }
 	  if(layoutId == 7) {
-	    shift = -0.01; shiftw=0.01; tbw=0.03; tbh=0.0015;
+	    shift = -0.01; shiftw=0.01; tbw=0.03; tbh=0.006;
 	    if(j==1) shift += 0.015;
 	  }
 	  fhPads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh+shifth, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh+shifth, 21);

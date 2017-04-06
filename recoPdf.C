@@ -94,10 +94,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   F1->SetParameter(2,11);
   F2->SetParameter(2,9);
 
-  Int_t countall[9][64],countgood[9][64],countbad[9][64];
-  Int_t mcpf[9], mcps[9];
+  Int_t countall[nmcp][64],countgood[nmcp][64],countbad[nmcp][64];
+  Int_t mcpf[nmcp], mcps[nmcp];
       
-  for (Int_t m=0; m<9; m++) {
+  for (Int_t m=0; m<nmcp; m++) {
     mcpf[m]=0;
     mcps[m]=0;
     for(Int_t p=0; p<npix; p++){
@@ -156,7 +156,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	  //  if(gch>=778 && gch<=783)
 	  hodo1=true;
 	  //	  if(gch>=791 && gch<=793)
-	  if(gch>=790 && gch<=793)
+	  if(gch>=792 && gch<=795)
 	     hodo2=true;
 
 	  // if(gch>775 && gch<778)
@@ -176,8 +176,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    if(prt_pid==2 && hll[2]->GetEntries()>2500)continue;
-    if(prt_pid==4 && hll[4]->GetEntries()>2500) continue;    
+    if(prt_pid==2 && hll[2]->GetEntries()>4500)continue;
+    if(prt_pid==4 && hll[4]->GetEntries()>4500) continue;    
 
     Int_t mult[maxch];
     memset(mult, 0, sizeof(mult));
@@ -287,8 +287,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     
     hll[prt_pid]->Fill(sum);
   }
-  
-  for (Int_t m=0; m <9; m++) {
+
+  for (Int_t m=0; m <nmcp; m++) {
     std::cout<<mcpf[m]<< " "<< mcps[m]<<std::endl;
     
     for(Int_t p=0; p<npix; p++){
@@ -379,7 +379,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   hnph[2]->SetLineColor(4);
   hnph[2]->Draw("same");
   
-  canvasSave(1,0);
+  canvasSave(0,0);
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;

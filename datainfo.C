@@ -912,7 +912,7 @@ void datainfo_init(){
     }
 
     study[252]="SO16, plate with lens for Barrel DIRC analog";
-     {
+    {
       dataArray.push_back(DataInfo(252,"beam_2_90",2,6,90.0,364,85.0,0.00,0,2.0,10));
       dataArray.push_back(DataInfo(252,"beam_3_60",2,6,60.0,364,85.0,0.00,0,3.0,10));
       dataArray.push_back(DataInfo(252,"beam_3_25",2,6,25.0,364,85.0,0.00,0,3.0,10));
