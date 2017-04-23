@@ -35,7 +35,7 @@
 #include <TPaletteAxis.h>
 #include <TRandom.h>
 #include <TCutG.h>
-
+#include <TPaletteAxis.h>
 
 #include <iostream>
 #include <fstream>
