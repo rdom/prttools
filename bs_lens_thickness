@@ -1,10 +1,10 @@
 #!/bin/bash
 
 root -b -q loadprtlibs.C procRaw.C+'("")'
-mkdir -p  hdata
 
 build="~/dirc/prtdirc/build"
 macro="~/dirc/prttools"
+mkdir -p $build/hdata
 
 for a in 25 80 90; do    
     for d in `LANG=en_us seq 2 0.1 6` ; do
