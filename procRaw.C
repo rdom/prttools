@@ -9,7 +9,7 @@ void procRaw(TString in="../prtdirc/build/hits.root"){
   
   Int_t studyId(0),lensId(0),radiatorId(0);
   Double_t nph(0),z(0),x(0),xstep(0),ystep(0),t1(0),t2(0),
-    le1(0),le2(50),offset(0),timeres(0);
+    le1(0),le2(80),offset(0),timeres(0);
   
   TFile *file = new TFile(in.ReplaceAll(".root","_proc.root"),"recreate");
   TTree *tree= new TTree("proc","proc");
@@ -71,7 +71,6 @@ void procRaw(TString in="../prtdirc/build/hits.root"){
     }
     if(counts>0) hNph->Fill(counts);
   }
-std::cout<<"prt_theta "<<prt_theta <<std::endl;
  
   TString ext = Form("_%d",studyId);
   // TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
