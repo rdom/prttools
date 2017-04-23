@@ -26,7 +26,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
-    hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",120,-30,30);
+    hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",200,-50,50); //120,-60,60
   }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
@@ -44,15 +44,12 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t binfactor = (Int_t)(sigma/50.+0.1);
   if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
-  Int_t max(9*64);
-  if(path.Contains("252")) max=11*64;
-  if(path.Contains("l6")) max=15*64;
 
   if(ismultnorm){
     hnphf = (TH1F*)f.Get("hnphf");
     hnphs = (TH1F*)f.Get("hnphs");
   }
-  for(Int_t i=0; i<max; i++){
+  for(Int_t i=0; i<prt_maxch; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
     hpdff[i]->SetLineColor(2);
