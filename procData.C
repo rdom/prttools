@@ -7,7 +7,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   
   if(infile=="") return;
 
-  Double_t mult(0),le1(0),le2(40),offset(0),timeres(0);
+  Double_t mult(0),le1(0),le2(50),offset(0),timeres(0);
   fSavePath = path+Form("/%ds/%d",studyId,fileId);
   
   if(infile.Contains("C.root")) { // beam data
@@ -114,7 +114,7 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   mult = prt_fit(hMult,20,20,100).X();
   hMult->Draw();
   
-  drawDigi("m,p,v\n",7,-2,-2);
+  drawDigi("m,p,v\n",prt_geometry,-2,-2);
   cDigi->SetName("p_hits"+ext);
   canvasAdd(cDigi);  
   
