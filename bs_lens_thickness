@@ -7,7 +7,7 @@ for a in 25 80 90; do
     for d in `LANG=en_us seq 2 0.1 6` ; do
 	simfile=hdata/hits_${a}_${d}.root
 	echo $simfile
-	(./../prtdirc/build/prtdirc -o $simfile -p 7 -h 2 -l 8 -a 25 -gz 364 -gx 85 -gsx 0 -gsy 0 -z 10 -g 2017 -c 2017 -x proton -tr 0.0 -z 10 -e 500 -t1 $d -b 1 && \
+	(./../prtdirc/build/prtdirc -o $simfile -p 7 -h 2 -l 8 -a $a -gz 364 -gx 85 -gsx 0 -gsy 0 -z 10 -g 2017 -c 2017 -x proton -tr 0.0 -z 10 -e 500 -t1 $d -b 1 && \
 	    root -b -q loadprtlibs.C procRaw.C+"(\"${simfile}\")") &
     done 
 done
