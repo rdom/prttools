@@ -41,12 +41,9 @@ TF1 * fitpdf(TH1F *h){
 }
 
 void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentries=-1){
-  if(path=="") return;
-  
-  fSavePath = "data/pdf3";
-  PrtInit(path,1);
+
+  if(!prt_init(path,1,"data/pdf3")) return;
   gStyle->SetOptStat(0);
-  CreateMap();
 
   Int_t totalmcp[5][prt_nmcp], totalmcpr[5][prt_nmcp];
   for(Int_t i=0; i<5; i++){
@@ -56,9 +53,9 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     }
   }
   
-  TH1F *hlef[maxch_dirc], *hles[maxch_dirc];
+  TH1F *hlef[prt_maxch], *hles[prt_maxch];
 
-  for(Int_t i=0; i<maxch_dirc; i++){
+  for(Int_t i=0; i<prt_maxch; i++){
     hlef[i] = new TH1F(Form("lef_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,50);
     hles[i] = new TH1F(Form("les_%d",i),"pdf;LE time [ns]; entries [#]",1000,0,50);
   }
@@ -66,12 +63,12 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   TH1F *hnphs = new TH1F("hnphs","hnphs",200,0,200);
   
   Double_t time;
-  PrtHit fHit;
-  Int_t totalf(0),totals(0),ch,entries = fCh->GetEntries();
+  PrtHit hit;
+  Int_t totalf(0),totals(0),ch,entries = prt_entries;
   if(aentries>=0) entries = aentries;
   Int_t start = (path.Contains("S.root"))? 4000 : 0; 
   for (Int_t ievent=start; ievent<entries; ievent++){
-    PrtNextEvent(ievent,1000);
+    prt_nextEvent(ievent,1000);
 
     Int_t nHits =prt_event->GetHitSize();
     Double_t tof = prt_event->GetTest1();
@@ -82,8 +79,8 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       Bool_t tof1(false), tof2(false);
       Bool_t hodo1(false), hodo2(false);
       for(Int_t h=0; h<nHits; h++) {
-	fHit = prt_event->GetHit(h);
-	Int_t gch=fHit.GetChannel();
+	hit = prt_event->GetHit(h);
+	Int_t gch=hit.GetChannel();
  
        	if(gch==818)
 	  t1=true;
@@ -107,18 +104,18 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     }
     
     Int_t goodhits(0);
-    Int_t mult[maxch];
+    Int_t mult[prt_maxch];
     memset(mult, 0, sizeof(mult));
 
     for(Int_t i=0; i<nHits; i++){
-      fHit = prt_event->GetHit(i);
-      Int_t mcp = fHit.GetMcpId();
-      Int_t pix = fHit.GetPixelId()-1;      
+      hit = prt_event->GetHit(i);
+      Int_t mcp = hit.GetMcpId();
+      Int_t pix = hit.GetPixelId()-1;      
       ch=map_mpc[mcp][pix];
-      if(ch>maxch_dirc) continue;
-      time=fHit.GetLeadTime();
+      if(ch>prt_maxch) continue;
+      time=hit.GetLeadTime();
       //if(prt_event->GetType()!=0) time += gRandom->Gaus(0,0.3);
-      //Double_t tot= fHit.GetTotTime();
+      //Double_t tot= hit.GetTotTime();
       //if(tot<2 || tot>8) continue;
       
       if(++mult[ch]>1) continue;      
@@ -137,7 +134,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 	if(normtype) totals++;
 	hles[ch]->Fill(time);
       }
-      fhDigi[mcp]->Fill(pix%8, pix/8);
+      prt_hdigi[mcp]->Fill(pix%8, pix/8);
     }
     
     if(pid==2212){
@@ -164,7 +161,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     hnphs->Scale(1/(Double_t)(hnphs->GetMaximum()));
     hnphf->Write();
     hnphs->Write();
-    for(Int_t i=0; i<maxch_dirc; i++){
+    for(Int_t i=0; i<prt_maxch; i++){
       Int_t mcp = i/64;
 
       if(normtype<=1){
@@ -215,8 +212,8 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 	hlef[i]->Draw();
       	hles[i]->Draw("same");
 	cExport->SetName(Form("pdf_mcp%d_pix_%d",map_mcp[i],map_pix[i]));
-	canvasAdd(cExport);
-      	canvasSave(1,0);
+	prt_canvasAdd(cExport);
+      	prt_canvasSave(1,0);
       }
     }
     
@@ -225,16 +222,16 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   }
 
  
-  canvasAdd("le",800,500);
+  prt_canvasAdd("le",800,500);
   hlef[308]->SetLineColor(2);
   hlef[308]->Draw();
   hles[308]->SetLineColor(4);
   hles[308]->Draw("same");
   
   //  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",2,-2,-2));
-  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",7,0,0));
-  cDigi->SetName("hits");
-  canvasAdd(cDigi);
+  prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry,0,0));
+  prt_cdigi->SetName("hits");
+  prt_canvasAdd(prt_cdigi);
   
-  canvasSave(1,0);
+  prt_canvasSave(1,0);
 }

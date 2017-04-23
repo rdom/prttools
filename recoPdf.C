@@ -10,23 +10,19 @@ TLine *gLine = new TLine(0,0,0,1000);
 
 void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200,Bool_t debug=false, Double_t r1=0, Double_t r2=0, Int_t nforpdf=0){
   
-  if(path=="") return;
   Int_t studyId;
   TString tpath=path;
   tpath.ReplaceAll("oct16","");
   sscanf(tpath, "%*[^0-9]%d{3}",&studyId);
-  
-  fSavePath = Form("data/recopdf_%d",studyId);
-  PrtInit(path,1);
-  // gStyle->SetOptStat(0);
-  CreateMap();
+
+  if(!prt_init(path,1,Form("data/recopdf_%d",studyId))) return;
   TGaxis::SetMaxDigits(4);
   
   TCanvas *cc;
   if(debug) cc = new TCanvas("cc","cc",800,400);
 
-  TH1F *hpdff[maxch_dirc],*hpdfs[maxch_dirc], *hl[5],*hnph[5],*hll[5];
-  TGraph *gpdff[maxch_dirc],*gpdfs[maxch_dirc];
+  TH1F *hpdff[prt_maxch],*hpdfs[prt_maxch], *hl[5],*hnph[5],*hll[5];
+  TGraph *gpdff[prt_maxch],*gpdfs[prt_maxch];
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
@@ -39,7 +35,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Bool_t ismultnorm(false);
   //  if(pdfEnding.Contains("pdf0")) ismultnorm=true;
   TRandom rand;
-  TF1 *pdff[maxch_dirc],*pdfs[maxch_dirc];
+  TF1 *pdff[prt_maxch],*pdfs[prt_maxch];
   TString pdf = path;
   pdf.ReplaceAll("*","");
   pdf.ReplaceAll(".root",pdfEnding);
@@ -76,7 +72,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     hl3->Add(hpdff[i]);
     hl3->Add(hpdfs[i]);
   }
-  // for(Int_t i=0; i<maxch_dirc; i++){
+  // for(Int_t i=0; i<prt_maxch; i++){
   //   hpdff[i]->Scale(1/integ1);
   //   hpdfs[i]->Scale(1/integ2);
   // }  
@@ -94,13 +90,13 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   F1->SetParameter(2,11);
   F2->SetParameter(2,9);
 
-  Int_t countall[nmcp][64],countgood[nmcp][64],countbad[nmcp][64];
-  Int_t mcpf[nmcp], mcps[nmcp];
+  Int_t countall[prt_nmcp][64],countgood[prt_nmcp][64],countbad[prt_nmcp][64];
+  Int_t mcpf[prt_nmcp], mcps[prt_nmcp];
       
-  for (Int_t m=0; m<nmcp; m++) {
+  for (Int_t m=0; m<prt_nmcp; m++) {
     mcpf[m]=0;
     mcps[m]=0;
-    for(Int_t p=0; p<npix; p++){
+    for(Int_t p=0; p<prt_npix; p++){
       countall[m][p]=0;
       countgood[m][p]=0;
       countbad[m][p]=0;
@@ -109,22 +105,16 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   
   Double_t theta(0);
   TVirtualFitter *fitter;
-  Double_t mom,nph,time,timeres(-1);
+  Double_t nph,time,timeres(-1);
   PrtHit fHit;
-  Int_t totalf(0),totals(0),mcp,pix,ch, entries = fCh->GetEntries(); // [50000-rest] - is for pdf generation
-  if(path.Contains("F.root")) entries = fCh->GetEntries();
+  Int_t totalf(0),totals(0),mcp,pix,ch, entries = prt_entries; // [50000-rest] - is for pdf generation
+  if(path.Contains("F.root")) entries = prt_entries;
   if(path.Contains("S.root")) entries = 4000;
   
   for (Int_t ievent=0; ievent<entries; ievent++){
-    PrtNextEvent(ievent,1000);
-    if(ievent==0){
-      theta = prt_event->GetAngle();
-      mom=prt_event->GetMomentum().Mag();
-    }
-    
+    prt_nextEvent(ievent,1000);
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
-    Int_t pid = prt_event->GetParticle();
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();    
     
     if(prt_event->GetType()==0){
@@ -179,7 +169,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     if(prt_pid==2 && hll[2]->GetEntries()>4500)continue;
     if(prt_pid==4 && hll[4]->GetEntries()>4500) continue;    
 
-    Int_t mult[maxch];
+    Int_t mult[prt_maxch];
     memset(mult, 0, sizeof(mult));
     for(Int_t i=0; i<nHits; i++){
       fHit = prt_event->GetHit(i);
@@ -188,7 +178,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();
 
-      if(ch>maxch_dirc) continue;
+      if(ch>prt_maxch) continue;
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
       if(++mult[ch]>1 || ch ==0) continue;
 
@@ -227,11 +217,11 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       
       if(debug){
 	TString x=(aminf>amins)? " <====== PROTON" : "";
-	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,pid)<<"  "<<x <<std::endl;
+	std::cout<<Form("f %1.6f s %1.6f mcp %d pix %d   pid %d",aminf,amins,mcp,pix  ,prt_particle)<<"  "<<x <<std::endl;
 	
 	cc->cd();	
-	axisTime800x500(hpdff[ch]);
-	axisTime800x500(hpdfs[ch]);
+	prt_axisTime800x500(hpdff[ch]);
+	prt_axisTime800x500(hpdfs[ch]);
 	prt_normalize(hpdff[ch],hpdfs[ch]);
 	hpdff[ch]->SetLineColor(2);
 	hpdfs[ch]->SetLineColor(4);
@@ -288,22 +278,20 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     hll[prt_pid]->Fill(sum);
   }
 
-  for (Int_t m=0; m <nmcp; m++) {
+  for (Int_t m=0; m <prt_nmcp; m++) {
     std::cout<<mcpf[m]<< " "<< mcps[m]<<std::endl;
     
-    for(Int_t p=0; p<npix; p++){
-      fhDigi[m]->Fill(p%8,p/8,countgood[m][0]/(Double_t)countbad[m][0]);
+    for(Int_t p=0; p<prt_npix; p++){
+      prt_hdigi[m]->Fill(p%8,p/8,countgood[m][0]/(Double_t)countbad[m][0]);
     }
   }
   
-  // drawDigi("m,p,v\n",7,1.3,0);
-  // cDigi->cd();
-  // (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
-  // canvasAdd(cDigi);
+  // prt_drawDigi("m,p,v\n",prt_geometry,1.3,0);
+  // prt_canvasAdd(cDigi);
 
-  TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
-  if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,theta,sigma,mom);
-  canvasAdd("ll_"+name,800,500);
+  TString name = Form("tis_%d_%1.1f_%1.1f_m%1.1f.root",studyId,prt_theta,sigma,prt_mom);
+  if(path.Contains("C.root")) name = Form("tid_%d_%1.1f_%1.1f_m%1.1f.root",studyId,prt_theta,sigma,prt_mom);
+  prt_canvasAdd("ll_"+name,800,500);
   
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
@@ -354,7 +342,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   leg->AddEntry(hll[4],"protons","lp");
   leg->Draw();
   
-  // canvasAdd("hl_"+name,800,500);
+  // prt_canvasAdd("hl_"+name,800,500);
   // // hl[4]->Scale(1/hl[4]->GetMaximum());
   // // hl[2]->Scale(1/hl[2]->GetMaximum());
   // // hl3->Scale(1/hl3->GetMaximum());
@@ -368,7 +356,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   // hl3->Draw("same");
 
   gStyle->SetOptFit(1);
-  canvasAdd("hnph_"+name,800,500);
+  prt_canvasAdd("hnph_"+name,800,500);
   prt_normalize(hnph[4],hnph[2]);
   hnph[4]->Fit("gaus");
   ff = hnph[4]->GetFunction("gaus");
@@ -379,23 +367,23 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   hnph[2]->SetLineColor(4);
   hnph[2]->Draw("same");
   
-  canvasSave(0,0);
+  prt_canvasSave(0,0);
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
   std::cout<<"entries:  pi "<<hll[2]->GetEntries()<<" p "<<hll[4]->GetEntries() <<std::endl;
   
   if(path.Contains("S.root")) path.ReplaceAll("S.root","R.root");
-  else path=fSavePath+"/reco_"+name;
-  if(nforpdf!=0) path=fSavePath+Form("/reco_%d.root",nforpdf);
+  else path=prt_savepath+"/reco_"+name;
+  if(nforpdf!=0) path=prt_savepath+Form("/reco_%d.root",nforpdf);
   
   TFile fc(path,"recreate");
   TTree *tc = new TTree("reco","reco");
-  tc->Branch("theta",&theta,"theta/D");
+  tc->Branch("theta",&prt_theta,"prt_theta/D");
   tc->Branch("sep",&sep,"sep/D");
   tc->Branch("esep",&esep,"esep/D");
   tc->Branch("sigma",&sigma,"sigma/D");
-  tc->Branch("mom",&mom,"mom/D");
+  tc->Branch("mom",&prt_mom,"prt_mom/D");
   tc->Branch("nph",&nph,"nph/D");
   tc->Branch("r1",&r1,"r1/D");
   tc->Branch("r2",&r2,"r2/D");
