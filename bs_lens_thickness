@@ -2,8 +2,8 @@
 
 root -b -q loadprtlibs.C procRaw.C+'("")'
 
-build="~/dirc/prtdirc/build"
-macro="~/dirc/prttools"
+build=$HOME/dirc/prtdirc/build
+macro=$HOME/dirc/prttools
 mkdir -p $build/hdata
 
 for a in 25 80 90; do    
