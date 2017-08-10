@@ -897,12 +897,12 @@ void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_
       cc->Print(path+"/"+name+".png");
       if(what==0) cc->Print(path+"/"+name+".eps");
       if(what==0) cc->Print(path+"/"+name+".pdf");
-      if(what==0) cc->Print(path+"/"+name+".root");
+      if(what==0 || what==2) cc->Print(path+"/"+name+".root");
     }else{
       c->SetCanvasSize(w,h);
       c->Print(path+"/"+name+".png");
       if(what==0) c->Print(path+"/"+name+".pdf");
-      if(what==0) c->Print(path+"/"+name+".root");
+      if(what==0 || what==2) c->Print(path+"/"+name+".root");
     }		    
     gROOT->SetBatch(0);
   }
@@ -950,8 +950,9 @@ void prt_canvasDel(TString name="c"){
 
 // style = 0 - for web blog
 // style = 1 - for talk 
-// what = 0 - save in png, pdf, root formats
+// what = 0 - save in png, pdf, eps, root formats
 // what = 1 - save in png format
+// what = 2 - save in png and root format
 void prt_canvasSave(Int_t what=0, Int_t style=0){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
