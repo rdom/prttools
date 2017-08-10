@@ -175,6 +175,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();
 
+      //cut-off from c2017
+      if(mcp%3==0 && pix<32) continue;
+      if(mcp%3==2 && pix>=32) continue; 
+      
       if(ch>prt_maxch) continue;
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
       if(++mult[ch]>1 || ch ==0) continue;

@@ -35,7 +35,6 @@
 #include <TPaletteAxis.h>
 #include <TRandom.h>
 #include <TCutG.h>
-#include <TPaletteAxis.h>
 
 #include <iostream>
 #include <fstream>
@@ -276,7 +275,8 @@ Bool_t prt_isBadChannel(Int_t ch){
 // layoutId == 2016 - cern 2016
 // layoutId == 2017 - cern 2016
 // layoutId == 2021 - new 3.6 row's design for the PANDA Barrel DIRC
-
+TPaletteAxis* prt_cdigi_palette;
+TH1 * prt_cdigi_th;
 TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
   if(prt_geometry==2021) layoutId=2021;
   if(!prt_cdigi) prt_cdigi = new TCanvas("prt_cdigi","prt_cdigi",0,0,800,400);
@@ -321,7 +321,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 	  if(layoutId == 2017) {
 	    margin= 0.1;
 	    shift = 0; shiftw=0.01; tbw=0.005; tbh=0.006;
-	    if(j==1) shift += 0.015;
+	    //if(j==1) shift += 0.015;
 	  }
 	  prt_hpads[padi] =  new TPad(Form("P%d",i*10+j),"T",
 				      i/(ncol+2*margin)+tbw+shift+shiftw,
@@ -424,14 +424,16 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   prt_cdigi->Update();
   
   prt_cdigi->cd();
-  (new TPaletteAxis(0.82,0.1,0.86,0.90,((TH1 *)(prt_hdigi[nnmax])->Clone())))->Draw();
+  prt_cdigi_th = (TH1 *)(prt_hdigi[nnmax])->Clone();
+  prt_cdigi_palette = (new TPaletteAxis(0.82,0.1,0.86,0.90,(prt_cdigi_th)));
+  prt_cdigi_palette->Draw();
   
   prt_cdigi->Modified();
   prt_cdigi->Update();
   return digidata;
 }
 
-void prt_initDigi(Int_t type=0){
+void prt_initDigi(Int_t type=0){  
   if(type == 0){
     for(Int_t m=0; m<prt_nmcp;m++){	
       prt_hdigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),8,0.,8.,8,0.,8.);
@@ -640,6 +642,7 @@ bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepa
   prt_entries = prt_ch->GetEntries();
   std::cout<<"Entries in chain:  "<<prt_entries <<std::endl;
   if(bdigi == 1) prt_initDigi();
+  return true;
 }
 
 void prt_nextEvent(Int_t ievent, Int_t printstep){
@@ -699,6 +702,7 @@ bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepa
   prt_entries = prt_ch->GetEntries();
   std::cout<<"Entries in chain: "<<prt_entries <<std::endl;
   if(bdigi == 1) prt_initDigi();
+  return true;
 }
 
 void prt_nextEvent(Int_t ievent, Int_t printstep){
@@ -748,7 +752,7 @@ Int_t prt_getColorId(Int_t ind, Int_t style =0){
   if(style==0) {
     cid=ind+1;
     if(cid==5) cid =8;
-    if(cid==3) cid =15;
+    if(cid==3) cid =kOrange+2;
   }
   if(style==1) cid=ind+300;
   return cid;
@@ -840,9 +844,19 @@ void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_
 	h = ((TCanvas*)c)->GetWindowHeight();
       }
 
-      TCanvas *cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
-      cc = (TCanvas*) c->DrawClone();
-      cc->SetCanvasSize(w,h);
+      // TCanvas *cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
+      // cc = (TCanvas*) c->DrawClone();
+      // cc->SetCanvasSize(w,h);
+
+      TCanvas *cc;
+      cc = (TCanvas*) c;
+      if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) cc = (TCanvas*) c;
+      else {
+      	cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
+      	cc = (TCanvas*) c->DrawClone();      
+      	cc->SetCanvasSize(w,h);
+      }
+      
       if(style == 0) {
 	if(fabs(cc->GetBottomMargin()-0.1)<0.001) cc->SetBottomMargin(0.12);
 	TIter next(cc->GetListOfPrimitives());
@@ -952,8 +966,6 @@ void prt_waitPrimitive(TString name, TString prim=""){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
   while((c = (TCanvas*) next())){
-    std::cout<<"c->GetName()  "<<c->GetName() <<std::endl;
-    
     if(TString(c->GetName())==name){
       c->Modified(); 
       c->Update(); 
