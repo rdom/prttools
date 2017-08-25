@@ -1,6 +1,6 @@
 #include "prttools.C"
 void drawProcRes(TString inFile = "../data/res151.root"){
-  fSavePath = "mult";
+  prt_savepath = "data/drawProcRes";
   TChain ch("proc"); ch.Add(inFile);
 
   Int_t studyId = 0, fileId=0,radiatorId, lensId=0;
@@ -25,6 +25,8 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   Int_t point(0);
   for (Int_t i = 0; i < nent; i++) {
     ch.GetEvent(i);
+    std::cout<<"mult "<<mult<< " t "<< angle<<std::endl;
+    
     if(angle<160)
       gNph->SetPoint(point++,angle,mult);
   }
@@ -69,7 +71,7 @@ void drawProcRes(TString inFile = "../data/res151.root"){
 
   TCanvas* c2 = new TCanvas(Form("mult_%d",studyId),"c2",800,500);c2->SetBottomMargin(0.12);
   gNph->Draw("APL");
-  canvasAdd(c2);
+  prt_canvasAdd(c2);
 
   TLegend *leg = new TLegend(0.2,0.7,0.5,0.9);
   leg->SetFillColor(0);
@@ -82,5 +84,5 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   leg->AddEntry("S202",names[202],"lp");   
   leg->Draw();
   
-  canvasSave(0,1);
+  prt_canvasSave(0,1);
 }

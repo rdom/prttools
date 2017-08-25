@@ -3,29 +3,26 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
-void procData(TString path="/data.local/data/jun15", TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
+void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
   
   if(infile=="") return;
 
-  Double_t mult(0),le1(0),le2(50),offset(0),timeres(0);
-  fSavePath = path+Form("/%ds/%d",studyId,fileId);
-  
+  Double_t mult(0),le1(0),le2(150),offset(0),timeres(0);
+
   if(infile.Contains("C.root")) { // beam data
     // offset=284.59;
     // le1=280;
     // le2=330;
-    fSavePath = path+Form("/%dr/%d",studyId,fileId);
   }
   if(infile.Contains("SP.root")) { // PDF data
     timeres=0.2;
   }
-    
+ 
+  if(!prt_init(infile,1,"data/procData")) return;
+   
+
   
-  
-  PrtInit(path+"/"+infile,1);
-  CreateMap();
-  
-  TFile *file = new TFile(path+"/"+infile+".res.root","recreate");
+  TFile *file = new TFile(infile.ReplaceAll(".root",".res.root"),"recreate");
   TTree *tree= new TTree("proc","proc");
   tree->Branch("studyId", &studyId,"studyId/I");
   tree->Branch("fileId", &fileId,"fileId/I");
@@ -44,9 +41,9 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   TH1F * hTot  = new TH1F("tot","TOT; TOT [#]; entries [#]",1000,-2,15);
 
   Int_t colors[4]={2,4,2,4};
-  TH1F * hLe[maxch_dirc][4];
+  TH1F * hLe[prt_maxdircch][4];
   for(Int_t t=0; t<4; t++){
-    for(Int_t i=0; i<maxch_dirc; i++){
+    for(Int_t i=0; i<prt_maxdircch; i++){
       hLe[i][t] = new TH1F(Form("le_ch_%d_%d",t,i),"LE; LE [ns]; entries [#]",500,le1,le2);
       hLe[i][t]->SetLineColor(colors[t]);
     }    
@@ -55,39 +52,42 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit(1111);
  
-  PrtHit fHit;
-  Int_t entries = fCh->GetEntries();
-  for (Int_t ievent=0; ievent<entries; ievent++){
-    PrtNextEvent(ievent,1000);
+  PrtHit hit;
+  for (auto ievent=0; ievent<prt_entries; ievent++){
+    prt_nextEvent(ievent,1000);
     Int_t counts(0),pid(0);
     Double_t tot(0),time(0);
     if(prt_event->GetParticle()==211) pid=1;
+    std::cout<<"ievent "<<ievent<<std::endl;
     
-    for(Int_t i=0; i<prt_event->GetHitSize(); i++){
-      fHit = prt_event->GetHit(i);
-      Int_t ch = fHit.GetChannel();
-      if(ch==-1) ch = map_mpc[fHit.GetMcpId()][fHit.GetPixelId()-1];      
-      
-      if(ch<maxch_dirc && !badcannel(ch)){
-	time = fHit.GetLeadTime()-offset;
-	if(timeres>0) time=prt_rand.Gaus(time,timeres);
-	tot = fHit.GetTotTime();
+    for(auto i=0; i<prt_event->GetHitSize(); i++){
+      hit = prt_event->GetHit(i);
+      Int_t mcpid = hit.GetMcpId();
+      Int_t pixid = hit.GetPixelId()-1;
+      Double_t time = hit.GetLeadTime();
+      Int_t ch = map_mpc[mcpid][pixid];
+            
+      //if(ch<maxch_dirc && !prt_badcannel(ch)){
+	time = hit.GetLeadTime()-offset;
+	//if(timeres>0) time=prt_rand.Gaus(time,timeres);
+	tot = hit.GetTotTime();
 	hLe[ch][pid]->Fill(time);
 	hLeA->Fill(time);
 	hTot->Fill(tot);
 
 	if(time<le2 && time>le1){
-	  Int_t mcpid = fHit.GetMcpId();
-	  Int_t pixid = fHit.GetPixelId()-1;
-	  fhDigi[mcpid]->Fill(pixid%8, pixid/8);
+	  Int_t mcpid = hit.GetMcpId();
+	  Int_t pixid = hit.GetPixelId()-1;
+	  prt_hdigi[mcpid]->Fill(pixid%8, pixid/8);
 	  counts++;
 	}
-      }
+	//      }
     }
 
     if(counts>0) hMult->Fill(counts);
   }
 
+  angle = prt_theta;
   TString ext = Form("_%d_%d",studyId,fileId);
   // TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
   // cExport->SetCanvasSize(800,400);
@@ -103,23 +103,24 @@ void procData(TString path="/data.local/data/jun15", TString infile="", Int_t st
   // }  
   
   
-  canvasAdd("p_le"+ext,800,400);
+  prt_canvasAdd("p_le"+ext,800,400);
   prt_fit(hLeA,0.3,100,100).X();
   hLeA->Draw();
   
-  canvasAdd("p_tot"+ext,800,400);
+  prt_canvasAdd("p_tot"+ext,800,400);
   hTot->Draw();
 
-  canvasAdd("p_mult"+ext,800,400);
+  prt_canvasAdd("p_mult"+ext,800,400);
   mult = prt_fit(hMult,20,20,100).X();
   hMult->Draw();
   
-  drawDigi("m,p,v\n",prt_geometry,-2,-2);
-  cDigi->SetName("p_hits"+ext);
-  canvasAdd(cDigi);  
+  prt_drawDigi("m,p,v\n",prt_geometry,0,0);
+  prt_cdigi->SetName(Form("hp_sim_%d_%d",(Int_t)prt_theta,(Int_t)prt_test1));
+  prt_canvasAdd(prt_cdigi);
+  prt_cdigi_palette->Draw();
   
   tree->Fill();
   tree->Write();
   
-  canvasSave(1,0);
+  prt_canvasSave(1,0);
 }
