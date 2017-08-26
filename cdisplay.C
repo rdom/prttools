@@ -13,20 +13,20 @@ class PrtEvent;
 MyMainFrame *gMain;
 TGHProgressBar *pbar;
 MSelector *fSelector;
-TGraph *gGrDiff[maxch];
-TGraph *gWalk[maxch];
+TGraph *gGrDiff[prt_maxch];
+TGraph *gWalk[prt_maxch];
 TCanvas *cTime;
 
 const Int_t maxMult = 30;
-Int_t mult[maxch]={0},gComboId(0), gTrigger(0), gMode(0), layout(7), gEntries(0); //3for2015
+Int_t mult[prt_maxch]={0},gComboId(0), gTrigger(0), gMode(0), gEntries(0); //3for2015
 Double_t gTimeCutMin(-10000),gTimeCutMax(10000),gTofMin(0),gTofMax(0);
-Double_t gMultCutMin(0),gMultCutMax(0),gTimeCuts[nmcp][npix][2], gTotMean[nmcp][npix];
+Double_t gMultCutMin(0),gMultCutMax(0),gTimeCuts[prt_nmcp][prt_npix][2], gTotMean[prt_nmcp][prt_npix];
 TString ginFile(""), gPath(""), gInfo(""),gsTimeCuts("0"), gsTotMean("0");
 
 TH1F *hTotM[maxMult], *hLeM[maxMult];
 TH1F *hTot,*hLe,*hLes,*hMult,*hCh,*hTof,*hMultEvtNum1,*hMultEvtNum2;
-TH1F *hPTime[nmcp][npix],*hPiTime[nmcp][npix],*hSTime[nmcp][npix],*hPTot[nmcp][npix],*hPMult[nmcp][npix],*hEMult[nmcp+1];
-TH2F *hLeTot[nmcp][npix],*hShape[nmcp][npix];
+TH1F *hPTime[prt_nmcp][prt_npix],*hPiTime[prt_nmcp][prt_npix],*hSTime[prt_nmcp][prt_npix],*hPTot[prt_nmcp][prt_npix],*hPMult[prt_nmcp][prt_npix],*hEMult[prt_nmcp+1];
+TH2F *hLeTot[prt_nmcp][prt_npix],*hShape[prt_nmcp][prt_npix];
 
 void MSelector::Init(TTree *tree){
   fChain = tree; 
@@ -38,7 +38,7 @@ void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
 }
 
 void init(){
-  PrtInit(ginFile);
+  if(!prt_init(ginFile,1,"data/drawHP")) return;
   
   TString insim =  ginFile;
   insim.ReplaceAll("C.root","S.root");
@@ -46,13 +46,13 @@ void init(){
   Long_t *id(0), *size(0), *flags(0), *modtime(0);
   if(gMode>=100 && !gSystem->GetPathInfo(insim,id,size,flags,modtime)){
     std::cout<<"Add Sim file: "<<insim <<std::endl;
-    fCh->Add(insim);
-    fNEntries = fCh->GetEntries();
+    prt_ch->Add(insim);
+    prt_entries = prt_ch->GetEntries();
   }
-  if(gEntries>0) fNEntries=gEntries;
+  if(gEntries>0) prt_entries=gEntries;
   
   TString workers = "workers=4";
-  if(gSystem->GetFromPipe("whoami")=="hadaq" && fNEntries>1000000) workers = "workers=12";
+  if(gSystem->GetFromPipe("whoami")=="hadaq" && prt_entries>1000000) workers = "workers=12";
 
   TProof *proof = TProof::Open(workers);
   TString dir = gSystem->pwd();
@@ -62,14 +62,14 @@ void init(){
   proof->Load("cdisplay.C+");
 
   proof->SetPrintProgress(&PrintStressProgress);
-  fCh->SetProof();
+  prt_ch->SetProof();
 
   fSelector = new MSelector();
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit(1111);
 
   // create channel - mcp/pixel map
-  CreateMap();
+  prt_createMap();
 }
 
 void MSelector::SlaveBegin(TTree *){
@@ -81,11 +81,11 @@ void MSelector::SlaveBegin(TTree *){
 
   TObjArray *sarr = gsTimeCuts.Tokenize(";");
   if(sarr->GetEntries()>1){
-    for (Int_t m=0; m <nmcp; m++) {
-      for(Int_t p=0; p<npix; p++){
-	TString cut = ((TObjString *) sarr->At(2*(m*npix+p)))->GetName();
+    for (Int_t m=0; m <prt_nmcp; m++) {
+      for(Int_t p=0; p<prt_npix; p++){
+	TString cut = ((TObjString *) sarr->At(2*(m*prt_npix+p)))->GetName();
 	gTimeCuts[m][p][0] = cut.Atof();
-	cut = ((TObjString *) sarr->At(2*(m*npix+p)+1))->GetName();
+	cut = ((TObjString *) sarr->At(2*(m*prt_npix+p)+1))->GetName();
 	gTimeCuts[m][p][1] = cut.Atof();
       }
     }
@@ -93,9 +93,9 @@ void MSelector::SlaveBegin(TTree *){
   std::cout<<"sarr->GetEntries() "<<sarr->GetEntries() <<std::endl;
   sarr = gsTotMean.Tokenize(";");
   if(sarr->GetEntries()>1){
-    for (Int_t m=0; m <nmcp; m++) {
-      for(Int_t p=0; p<npix; p++){
-	TString totmean = ((TObjString *) sarr->At(m*npix+p))->GetName();
+    for (Int_t m=0; m <prt_nmcp; m++) {
+      for(Int_t p=0; p<prt_npix; p++){
+	TString totmean = ((TObjString *) sarr->At(m*prt_npix+p))->GetName();
 	gTotMean[m][p] = totmean.Atof();
 	std::cout<<"gTotMean[m][p]  "<<gTotMean[m][p] <<std::endl;
 	
@@ -112,32 +112,32 @@ void MSelector::SlaveBegin(TTree *){
 
   hMultEvtNum1=new TH1F("hMultEvtNum1","",1000001,-0.5,1000000.5);
   hMultEvtNum2=new TH1F("hMultEvtNum2","",1000001,-0.5,1000000.5);
-  axisTime800x500(hMultEvtNum1,"event number , [#]");
+  prt_axisTime800x500(hMultEvtNum1,"event number , [#]");
   hMultEvtNum1->GetYaxis()->SetTitle("multiplicity, [#]");
-  axisTime800x500(hMultEvtNum2,"event number , [#]");
+  prt_axisTime800x500(hMultEvtNum2,"event number , [#]");
   hMultEvtNum2->GetYaxis()->SetTitle("multiplicity, [#]");
   fOutput->Add(hMultEvtNum1);
   fOutput->Add(hMultEvtNum2);
 
-  for(Int_t m=0; m<nmcp; m++){
-    fhDigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),8,0.,8.,8,0.,8.);
-    fhDigi[m]->SetStats(0);
-    fhDigi[m]->SetTitle(0);
-    fhDigi[m]->GetXaxis()->SetNdivisions(10);
-    fhDigi[m]->GetYaxis()->SetNdivisions(10);
-    fhDigi[m]->GetXaxis()->SetLabelOffset(100);
-    fhDigi[m]->GetYaxis()->SetLabelOffset(100);
-    fhDigi[m]->GetXaxis()->SetTickLength(1);
-    fhDigi[m]->GetYaxis()->SetTickLength(1);
-    fhDigi[m]->GetXaxis()->SetAxisColor(15);
-    fhDigi[m]->GetYaxis()->SetAxisColor(15);
-    fOutput->Add(fhDigi[m]);
+  for(Int_t m=0; m<prt_nmcp; m++){
+    prt_hdigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),8,0.,8.,8,0.,8.);
+    prt_hdigi[m]->SetStats(0);
+    prt_hdigi[m]->SetTitle(0);
+    prt_hdigi[m]->GetXaxis()->SetNdivisions(10);
+    prt_hdigi[m]->GetYaxis()->SetNdivisions(10);
+    prt_hdigi[m]->GetXaxis()->SetLabelOffset(100);
+    prt_hdigi[m]->GetYaxis()->SetLabelOffset(100);
+    prt_hdigi[m]->GetXaxis()->SetTickLength(1);
+    prt_hdigi[m]->GetYaxis()->SetTickLength(1);
+    prt_hdigi[m]->GetXaxis()->SetAxisColor(15);
+    prt_hdigi[m]->GetYaxis()->SetAxisColor(15);
+    fOutput->Add(prt_hdigi[m]);
 
     hEMult[m]   = new TH1F(Form("emult_m%d",m),Form("mcp %d",m),  500,0,500);
-    axisTime800x500(hEMult[m],"multiplicity per event, [#]");
+    prt_axisTime800x500(hEMult[m],"multiplicity per event, [#]");
     fOutput->Add(hEMult[m]);
 
-    for(Int_t p=0; p<npix; p++){     
+    for(Int_t p=0; p<prt_npix; p++){     
       hPTime[m][p]   = new TH1F(Form("le_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
       hPiTime[m][p]   = new TH1F(Form("lepi_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
       hPiTime[m][p]->SetLineColor(4);
@@ -148,17 +148,17 @@ void MSelector::SlaveBegin(TTree *){
       if(gMode==1){
 	hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d;LE [ns];offset [mV]",m,p) , bins1,min1,max1,100,-5.1,15);
 	hLeTot[m][p] = new TH2F(Form("hLeTot_mcp%dpix%d" ,m,p), Form("mcp %d, pixel %d;LE [ns];TOT [ns]",m, p), 400,min1,max1, bins2,min2,max2);
-	axisTime800x500(hShape[m][p],"time, [ns]");
+	prt_axisTime800x500(hShape[m][p],"time, [ns]");
 	hShape[m][p]->GetYaxis()->SetTitle("offset to the threshold, [mV]");
       
 	fOutput->Add(hLeTot[m][p]);
 	fOutput->Add(hShape[m][p]);
       }
 
-      axisTime800x500(hPTime[m][p]);
-      axisTime800x500(hPiTime[m][p]);
-      axisTime800x500(hPTot[m][p],"TOT time, [ns]");
-      axisTime800x500(hPMult[m][p],"multiplicity, [#]");
+      prt_axisTime800x500(hPTime[m][p]);
+      prt_axisTime800x500(hPiTime[m][p]);
+      prt_axisTime800x500(hPTot[m][p],"TOT time, [ns]");
+      prt_axisTime800x500(hPMult[m][p],"multiplicity, [#]");
       hSTime[m][p]->SetLineColor(2);
       hPiTime[m][p]->SetLineColor(4);
       
@@ -177,9 +177,9 @@ void MSelector::SlaveBegin(TTree *){
   hCh=new TH1F("hChA","",980,0,980);
   hTof=new TH1F("hTof","",2000,60,85);
 
-  axisTime800x500(hTot,"TOT time, [ns]");
-  axisTime800x500(hLe,"LE time, [ns]");
-  axisTime800x500(hMult,"multiplicity, [#]");
+  prt_axisTime800x500(hTot,"TOT time, [ns]");
+  prt_axisTime800x500(hLe,"LE time, [ns]");
+  prt_axisTime800x500(hMult,"multiplicity, [#]");
  
   gStyle->SetOptStat(1001111);
   
@@ -187,11 +187,11 @@ void MSelector::SlaveBegin(TTree *){
   fOutput->Add(hLes);
   fOutput->Add(hTot);
   fOutput->Add(hMult);
-  fOutput->Add(hEMult[nmcp]);
+  fOutput->Add(hEMult[prt_nmcp]);
   fOutput->Add(hCh);
   fOutput->Add(hTof);
   
-  CreateMap();
+  prt_createMap();
 }
 
 Bool_t MSelector::Process(Long64_t entry){
@@ -267,7 +267,7 @@ Bool_t MSelector::Process(Long64_t entry){
       hMult->Fill(chMultiplicity);
     }
 
-    if(ch>=maxmch){
+    if(ch>=prt_maxdircch){ //rd?
       hitCount1++;
       continue;
     }
@@ -283,7 +283,7 @@ Bool_t MSelector::Process(Long64_t entry){
     if(timeres>0) le += prt_rand.Gaus(0,0.2);
     tot = hit.GetTotTime();   
 
-    if(badcannel(ch)) continue;
+    if(prt_isBadChannel(ch)) continue;
 
     Double_t timeDiff = le-triggerLe;
     
@@ -310,7 +310,7 @@ Bool_t MSelector::Process(Long64_t entry){
 	hShape[mcp][pix]->Fill(timeDiff + tot,offset);
       }
 
-      fhDigi[mcp]->Fill(col, row);
+      prt_hdigi[mcp]->Fill(col, row);
       if(particleId==2212 || particleId==0){
 	hPTime[mcp][pix]->Fill(timeDiff);
 	hPTime[mcp][pix]->SetTitle(Form("%d " ,ch));
@@ -346,8 +346,8 @@ Bool_t MSelector::Process(Long64_t entry){
 void calculateTimeCut(){
   TVector3 res;
   gsTimeCuts="";
-  for (Int_t m=0; m <nmcp; m++) {
-    for(Int_t p=0; p<npix; p++){
+  for (Int_t m=0; m <prt_nmcp; m++) {
+    for(Int_t p=0; p<prt_npix; p++){
       res = prt_fit(hPTime[m][p]);
       gTimeCuts[m][p][0]=res.X() - 3*res.Y();
       gTimeCuts[m][p][1]=res.X() + 3*res.Y();
@@ -360,8 +360,8 @@ void getTimeOffset(){
   std::cout<<"Creating calibration"<<std::endl;
   TH1D* h;
   TH2F* hh;
-  for (Int_t m=0; m <nmcp; m++) {
-    for(Int_t p=0; p<npix; p++){
+  for (Int_t m=0; m <prt_nmcp; m++) {
+    for(Int_t p=0; p<prt_npix; p++){
       Double_t mean = prt_fit(hPTime[m][p],0.5).X();
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
       //hh->RebinY(1);
@@ -418,8 +418,8 @@ void MyMainFrame::DoExportOffsets(){
     filedir.Remove(filedir.Last('/'));
     TFile efile(filedir+"/calib_walk.root","RECREATE");
     Int_t c;
-    for (Int_t m=0; m <nmcp; m++) {
-      for(Int_t p=0; p<npix; p++){
+    for (Int_t m=0; m <prt_nmcp; m++) {
+      for(Int_t p=0; p<prt_npix; p++){
 	c = map_mpc[m][p];
 	gWalk[c]->SetName(Form("walk_%d",c));
 	gWalk[c]->Write();
@@ -461,7 +461,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       cTime->cd();
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]};
-	normalize(hh,2);
+	prt_normalize(hh,2);
 	prt_fit(hh[0],0.5,100);
 	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
@@ -504,7 +504,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	list->RemoveAll();
 
         ps->AddText(Form("Entries %d",(Int_t)hCh->GetEntries()));
-	ps->AddText("TDC = 0x"+tdcsid[ch/48]);
+	ps->AddText("TDC = 0x"+prt_tdcsid[ch/48]);
 	ps->AddText(Form("Global ch = %d",ch));
 	ps->AddText(Form("TDC ch = %d",ch%48+1));
 	ps->AddText(Form("PADIWA ch =  %d",(ch%48)%16+1));
@@ -543,7 +543,7 @@ void exec4event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
   list->RemoveAll();
 
   ps->AddText(Form("Entries %d",(Int_t)hCh->GetEntries()));
-  ps->AddText("TDC = 0x"+tdcsid[ch/48]);
+  ps->AddText("TDC = 0x"+prt_tdcsid[ch/48]);
   ps->AddText(Form("Global ch = %d",ch));
   ps->AddText(Form("TDC ch = %d",ch%48+1));
   ps->AddText(Form("PADIWA ch =  %d",(ch%48)%16+1));
@@ -558,7 +558,7 @@ void MyMainFrame::InterestChanged(){
 
   if(gComboId==0) {
     TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
-    normalize(hh,2);
+    prt_normalize(hh,2);
     hh[0]->Draw();
     hPiTime[mcp][pix]->Draw("same");
     prt_fit(hh[0],0.5,100);
@@ -583,10 +583,10 @@ void MyMainFrame::InterestChanged(){
 }
 
 void MSelector::Terminate(){
-  for (Int_t m=0; m <nmcp; m++) {
-    fhDigi[m] = dynamic_cast<TH2F *>(TProof::GetOutput(Form("mcp%d",m), fOutput));
+  for (Int_t m=0; m <prt_nmcp; m++) {
+    prt_hdigi[m] = dynamic_cast<TH2F *>(TProof::GetOutput(Form("mcp%d",m), fOutput));
     hEMult[m] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("emult_m%d",m), fOutput)); 
-    for(Int_t p=0; p<npix; p++){
+    for(Int_t p=0; p<prt_npix; p++){
       hPTime[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("le_mcp%dpix%d",m,p), fOutput));
       hPiTime[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("lepi_mcp%dpix%d",m,p), fOutput)); 
       hSTime[m][p] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("les_mcp%dpix%d",m,p), fOutput)); 
@@ -607,7 +607,7 @@ void MSelector::Terminate(){
   hLes = dynamic_cast<TH1F *>(TProof::GetOutput("hLeAs", fOutput));   
   hTot = dynamic_cast<TH1F *>(TProof::GetOutput("hTotA", fOutput)); 
   hMult = dynamic_cast<TH1F *>(TProof::GetOutput("hMultA", fOutput)); 
-  hEMult[nmcp] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("emult_m%d",nmcp), fOutput)); 
+  hEMult[prt_nmcp] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("emult_m%d",prt_nmcp), fOutput)); 
   hMultEvtNum1 = dynamic_cast<TH1F *>(TProof::GetOutput("hMultEvtNum1", fOutput));
   hMultEvtNum2 = dynamic_cast<TH1F *>(TProof::GetOutput("hMultEvtNum2", fOutput));
 
@@ -623,10 +623,10 @@ void MyMainFrame::DoDraw(){
   if(gTrigger>-1) gTrigger = fNumber->GetIntNumber();
   
 
-  for(Int_t m=0; m<nmcp; m++){
-    if(fhDigi[m]) fhDigi[m]->Reset();
+  for(Int_t m=0; m<prt_nmcp; m++){
+    if(prt_hdigi[m]) prt_hdigi[m]->Reset();
     if(hEMult[m]) hEMult[m]->Reset();
-    for(Int_t p=0; p<npix; p++){
+    for(Int_t p=0; p<prt_npix; p++){
       if(hPTime[m][p]) hPTime[m][p]->Reset();
       if(hPiTime[m][p]) hPiTime[m][p]->Reset();
       if(hSTime[m][p]) hSTime[m][p]->Reset();
@@ -642,19 +642,19 @@ void MyMainFrame::DoDraw(){
   if(hTof) hTof->Reset(); 
 
   fHProg3->Reset();
-  //fNEntries = 10000;
+  //prt_entries = 10000;
 
   TString option = Form("%d %d %s %s %s %s %s %s %s",gMode,gTrigger,fEdit1->GetText(),fEdit2->GetText(),fEdit3->GetText(),fEdit4->GetText(),gsTimeCuts.Data(), gsTotMean.Data(),fEdit5->GetText());
 
   gROOT->SetBatch(1);
-  fCh->Process(fSelector,option,fNEntries);
+  prt_ch->Process(fSelector,option,prt_entries);
   gROOT->SetBatch(0);
  
   if(gTrigger<0) gTrigger=0;
 
   Int_t tmax, max=0;
-  for(Int_t p=0; p<nmcp;p++){
-    tmax = fhDigi[p]->GetMaximum();
+  for(Int_t p=0; p<prt_nmcp;p++){
+    tmax = prt_hdigi[p]->GetMaximum();
     if(max<tmax) max = tmax;
   }
   max = (max>0)? max : 1;
@@ -663,9 +663,11 @@ void MyMainFrame::DoDraw(){
 
   fCheckBtn1->SetState(kButtonUp);
 
-  drawDigi("m,p,v\n",layout);
-  cDigi->cd();
-  (new TPaletteAxis(0.90,0.1,0.94,0.90,fhDigi[0]))->Draw();  
+  prt_drawDigi("m,p,v\n",prt_geometry);
+  prt_cdigi->cd();
+  prt_cdigi_palette->Draw();
+  
+  //(new TPaletteAxis(0.90,0.1,0.94,0.90,prt_hdigi[0]))->Draw();  
 
   updatePlot(gComboId);
 
@@ -708,7 +710,7 @@ void MyMainFrame::DoDraw(){
 
 }
 
-TH2F* fhDigi_temp_updateplot[nmcp];
+TH2F* prt_hdigi_temp_updateplot[prt_nmcp];
 TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
   if(!cT) cT = cTime;
   TString histname="";
@@ -719,10 +721,10 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
   TLegend *leg;
 
   if(fBackToHp){
-    for(Int_t m=0; m<nmcp; m++){
-      fhDigi[m] = fhDigi_temp_updateplot[m];
+    for(Int_t m=0; m<prt_nmcp; m++){
+      prt_hdigi[m] = prt_hdigi_temp_updateplot[m];
     }
-    drawDigi("m,p,v\n",layout);
+    prt_drawDigi("m,p,v\n",prt_geometry);
     fBackToHp=false;
   }
 
@@ -819,23 +821,23 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
     break;
   case 13:
     TVector3 res;
-    for(Int_t m=0; m<nmcp; m++){
-      fhDigi_temp_updateplot[m] = (TH2F*)fhDigi[m]->Clone();
-      if(fhDigi[m]) fhDigi[m]->Reset();
+    for(Int_t m=0; m<prt_nmcp; m++){
+      prt_hdigi_temp_updateplot[m] = (TH2F*)prt_hdigi[m]->Clone();
+      if(prt_hdigi[m]) prt_hdigi[m]->Reset();
     }
     TH1F *hSigma = new TH1F("hSigma",";#sigma [ns];entries [#]",300,0,1.5);
 
-    for (Int_t m=0; m <nmcp; m++) {
-      for(Int_t p=0; p<npix; p++){
+    for (Int_t m=0; m <prt_nmcp; m++) {
+      for(Int_t p=0; p<prt_npix; p++){
 	Int_t col = p/8;
 	Int_t row = p%8;       
 	Double_t sigma = prt_fit(hPTime[m][p],0.5,100).Y();
 	hSigma->Fill(sigma);
 	if(sigma>1) sigma = 1;
-	fhDigi[m]->Fill(row,col,sigma);
+	prt_hdigi[m]->Fill(row,col,sigma);
       }
     }
-    drawDigi("m,p,v\n",layout);
+    prt_drawDigi("m,p,v\n",prt_geometry);
     fBackToHp=true;
 
     cT->cd();
@@ -869,15 +871,15 @@ void MyMainFrame::DoSavePng(){
   Int_t saveFlag = 1;
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
-  if(fSavePath == "") prt_createDir(filedir+"/auto");
+  if(prt_savepath == "") prt_createDir(filedir+"/auto");
   
   TObject *obj; 
   TIter next(cTime->GetListOfPrimitives());
   obj=next(); obj=next(); obj->Draw();
   while ((obj=next())) obj->Draw("same");
   
-  canvasAdd(cExport);
-  canvasSave(1,0);
+  prt_canvasAdd(cExport);
+  prt_canvasSave(1,0);
   gROOT->SetBatch(0);
   std::cout<<"Save current png .. done"<<std::endl;
   
@@ -890,24 +892,24 @@ void MyMainFrame::DoExport(){
   Int_t saveFlag = 1;
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
-  if(fSavePath == "") prt_createDir(filedir+"/auto");
+  if(prt_savepath == "") prt_createDir(filedir+"/auto");
   
-  canvasAdd("digi",800,400);
-  cDigi->DrawClonePad();
-  canvasSave(1,0);    
+  prt_canvasAdd("digi",800,400);
+  prt_cdigi->DrawClonePad();
+  prt_canvasSave(1,0);    
   
-  std::cout<<"Exporting into  "<<fSavePath <<std::endl;
-  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",layout)); //layout,-2,-2
+  std::cout<<"Exporting into  "<<prt_savepath <<std::endl;
+  prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry)); //prt_geometry,-2,-2
   
   pbar->Reset();
-  Float_t total = (nmcp-1)*(npix-1);
+  Float_t total = (prt_nmcp-1)*(prt_npix-1);
   if(gComboId==0 || gComboId==2 || gComboId==5 || gComboId==4 || gComboId==10 || gComboId==11){
-    for(Int_t m=0; m<nmcp; m++){
-      for(Int_t p=0; p<npix; p++){
+    for(Int_t m=0; m<prt_nmcp; m++){
+      for(Int_t p=0; p<prt_npix; p++){
 	cExport->cd();
 	if(gComboId==0) {
 	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; //,hSTime[m][p]}; 
-	  normalize(hh,2);
+	  prt_normalize(hh,2);
 	  prt_fit(hh[0],0.5,1);
 	  hh[0]->Draw();
 	  if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
@@ -931,8 +933,8 @@ void MyMainFrame::DoExport(){
 	}
 	
 	cExport->SetName(histname);
-	canvasAdd(cExport);
-	canvasSave(1,0);
+	prt_canvasAdd(cExport);
+	prt_canvasSave(1,0);
 	
 	pbar->SetPosition(100*(m*p)/total);
 	gSystem->ProcessEvents();
@@ -941,16 +943,16 @@ void MyMainFrame::DoExport(){
   }else{
     histname = updatePlot(gComboId,cExport);
     cExport->SetName(histname);
-    canvasAdd(cExport);
-    canvasSave(1,0);
+    prt_canvasAdd(cExport);
+    prt_canvasSave(1,0);
   }
 
   // if( gMode==100){
-  //   for(Int_t m=0; m<nmcp; m++){
-  //     for(Int_t p=0; p<npix; p++){
+  //   for(Int_t m=0; m<prt_nmcp; m++){
+  //     for(Int_t p=0; p<prt_npix; p++){
   // 	cExport->cd();
   // 	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; 
-  // 	normalize(hh,2);
+  // 	prt_normalize(hh,2);
   // 	hh[0]->Draw();
   // 	prt_fit(hh[0],1,1);
   // 	hh[0]->Draw("same");
@@ -971,7 +973,7 @@ void MyMainFrame::DoExport(){
 TLine *gLine = new TLine(0,0,3000,0);
 void MyMainFrame::DoSlider(Int_t pos){
   if(fCheckBtn1->GetState() != kButtonDown)
-    drawDigi("m,p,v\n",layout,pos);
+    prt_drawDigi("m,p,v\n",prt_geometry,pos);
 
   if(gComboId==7){
     cTime->cd();  
@@ -992,7 +994,7 @@ void MyMainFrame::DoCheckBtnClecked1(){
   }else{
     gMain->fHslider1->SetEnabled(kFALSE);
   }
-  drawDigi("m,p,v\n",layout,state);
+  prt_drawDigi("m,p,v\n",prt_geometry,state);
 }
 
 void MyMainFrame::DoCheckBtnClecked2(){
@@ -1007,8 +1009,8 @@ void MyMainFrame::DoCheckBtnClecked2(){
     gsTimeCuts="0";
     gMain->fEdit3->SetText("0 0");
     gMain->fEdit3->SetEnabled(kTRUE);
-    for (Int_t m=0; m <nmcp; m++) {
-      for(Int_t p=0; p<npix; p++){
+    for (Int_t m=0; m <prt_nmcp; m++) {
+      for(Int_t p=0; p<prt_npix; p++){
 	gTimeCuts[m][p][0]=0;
 	gTimeCuts[m][p][1]=0;
       }
@@ -1024,8 +1026,8 @@ void MyMainFrame::DoCheckBtnClecked3(){
     // get mean TOT for each pixel
     gsTotMean="";
     TVector3 res;
-    for (Int_t m=0; m <nmcp; m++) {
-      for(Int_t p=0; p<npix; p++){
+    for (Int_t m=0; m <prt_nmcp; m++) {
+      for(Int_t p=0; p<prt_npix; p++){
 	res = prt_fit(hPTot[m][p]);
 	gsTotMean+=Form("%f;",res.X());
       }
@@ -1036,43 +1038,43 @@ void MyMainFrame::DoCheckBtnClecked3(){
   }
 }
 
-TH2F* fhDigi_temp[nmcp];
+TH2F* prt_hdigi_temp[prt_nmcp];
 void MyMainFrame::DoCheckBtnClecked4(){
   if(fCheckBtn4->GetState() == kButtonDown){
     TVector3 res;
-    for(Int_t m=0; m<nmcp; m++){
-      fhDigi_temp[m] = (TH2F*)fhDigi[m]->Clone();
-      if(fhDigi[m]) fhDigi[m]->Reset();
+    for(Int_t m=0; m<prt_nmcp; m++){
+      prt_hdigi_temp[m] = (TH2F*)prt_hdigi[m]->Clone();
+      if(prt_hdigi[m]) prt_hdigi[m]->Reset();
     }
-    for (Int_t m=0; m <nmcp; m++) {
-      for(Int_t p=0; p<npix; p++){
+    for (Int_t m=0; m <prt_nmcp; m++) {
+      for(Int_t p=0; p<prt_npix; p++){
 	Int_t col = p/8;
 	Int_t row = p%8;
 	Double_t mean = prt_fit(hPTime[m][p],0.5).X();
 	if(mean>90) mean = 90; 
-	fhDigi[m]->Fill(row,col,mean);
+	prt_hdigi[m]->Fill(row,col,mean);
       }
     }
-    drawDigi("m,p,v\n",layout,-2,-2);
+    prt_drawDigi("m,p,v\n",prt_geometry,-2,-2);
   }
   if(fCheckBtn4->GetState() == kButtonUp){
-    for(Int_t m=0; m<nmcp; m++){
-      fhDigi[m] = fhDigi_temp[m];
+    for(Int_t m=0; m<prt_nmcp; m++){
+      prt_hdigi[m] = prt_hdigi_temp[m];
     }
-    drawDigi("m,p,v\n",layout);
+    prt_drawDigi("m,p,v\n",prt_geometry);
   }
 }
 
-TH2F* fhDigi_history[nmcp];
+TH2F* prt_hdigi_history[prt_nmcp];
 void MyMainFrame::DoHistory(){
-    for(Int_t m=0; m<nmcp; m++){
-      fhDigi_temp[m] = (TH2F*)fhDigi[m]->Clone();
-      if(fhDigi_history[m]){
-	fhDigi[m] = (TH2F*)fhDigi_history[m]->Clone();   
+    for(Int_t m=0; m<prt_nmcp; m++){
+      prt_hdigi_temp[m] = (TH2F*)prt_hdigi[m]->Clone();
+      if(prt_hdigi_history[m]){
+	prt_hdigi[m] = (TH2F*)prt_hdigi_history[m]->Clone();   
       }
-      fhDigi_history[m] = (TH2F*)fhDigi_temp[m]->Clone();
+      prt_hdigi_history[m] = (TH2F*)prt_hdigi_temp[m]->Clone();
     }
-    drawDigi("m,p,v\n",layout);
+    prt_drawDigi("m,p,v\n",prt_geometry);
 }
 
 void MyMainFrame::DoExit(){
@@ -1104,9 +1106,9 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   // Create the embedded canvas
   fEcan = new TRootEmbeddedCanvas(0,this,800,350);
   Int_t wid0 = fEcan->GetCanvasWindowId();
-  cDigi = new TCanvas("cDigi",10,10,wid0);
-  cDigi->SetMargin(0,0,0,0);
-  fEcan->AdoptCanvas(cDigi);
+  prt_cdigi = new TCanvas("prt_cdigi",10,10,wid0);
+  prt_cdigi->SetMargin(0,0,0,0);
+  fEcan->AdoptCanvas(prt_cdigi);
 
   fTime = new TRootEmbeddedCanvas(0,this,800,350);
   Int_t wid1 = fTime->GetCanvasWindowId();
@@ -1203,7 +1205,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fNumber2 = new TGNumberEntry(fHm2, 0, 9,999, TGNumberFormat::kNESInteger,
 			       TGNumberFormat::kNEANonNegative,
 			       TGNumberFormat::kNELLimitMinMax,
-			       0, maxch);
+			       0, prt_maxch);
 
   fNumber2->Connect("ValueSet(Long_t)", "MyMainFrame", this, "InterestChanged()");
   (fNumber2->GetNumberEntry())->Connect("ReturnPressed()", "MyMainFrame", this, "InterestChanged()");
@@ -1236,7 +1238,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   fNumber = new TGNumberEntry(hframe, 0, 9,999, TGNumberFormat::kNESInteger,
 			      TGNumberFormat::kNEANonNegative, 
 			      TGNumberFormat::kNELLimitMinMax,
-			      0, maxch);
+			      0, prt_maxch);
   fNumber->SetNumber(0);
   hframe->AddFrame(fNumber, new TGLayoutHints(kLHintsTop | kLHintsLeft, 5, 5, 3, 4));
    
@@ -1318,7 +1320,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   DoDraw();
   fComboMode->Select(7);
 
-  cDigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
+  prt_cdigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
 		 "exec3event(Int_t,Int_t,Int_t,TObject*)");
 
 

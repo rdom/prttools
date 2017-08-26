@@ -8,9 +8,9 @@
 
 DataInfo prt_data_info;
 TString ginFile(""), goutFile(""), gcFile("");
-Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[maxch];
-Double_t tdcRefTime[maxtdc],gTotO[maxch], gTotP[maxch_dirc][10],gLeOffArr[maxch_dirc],gEvtOffset(0);
-TGraph *gGrIn[maxch], *gWalk[maxch], *gGrDiff[maxch];
+Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[prt_maxch];
+Double_t tdcRefTime[prt_maxtdc],gTotO[prt_maxch], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0);
+TGraph *gGrIn[prt_maxch], *gWalk[prt_maxch], *gGrDiff[prt_maxch];
 
 Double_t walktheta(-5*TMath::Pi()/180.);
 Double_t tof1le(0),tof2le(0),tof1tot(0),tof2tot(0);
@@ -51,7 +51,7 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
   Double_t minp(0), walk(0), d(0), min(100);
 
   if(type==0){
-    if(ch<maxch_dirc){
+    if(ch<prt_maxdircch){
       for(Int_t i=0; i<9; i++){
 	if(gTotP[ch][i]<0.00000001) continue;
 	d = gTotP[ch][i]-tot;
@@ -83,7 +83,7 @@ void TTSelector::Begin(TTree *){
   TObjArray *strobj = option.Tokenize(" ");
   gTrigger = ((TObjString*)strobj->At(0))->GetString().Atoi();
   gMode = ((TObjString*)strobj->At(1))->GetString().Atoi();
-  CreateMap();
+  prt_createMap();
   TString filedir=ginFile;
   filedir.Remove(filedir.Last('.')-4);
   fFile = new TFile(goutFile,"RECREATE");
@@ -125,24 +125,24 @@ void TTSelector::Begin(TTree *){
       if(ch <10000){ // spline calibration
 	gGrIn[ch]= new TGraph(*gr);
       }else if(ch == 10000){ // line calibration
-	for(Int_t i=0; i<maxch; i++){
+	for(Int_t i=0; i<prt_maxch; i++){
 	  gr->GetPoint(i,x,y);
 	  gMaxIn[i] = (Int_t)(y+0.01);
 	  //std::cout<<"ch  "<<i<< "  FT max"<<  gMaxIn[i]<<std::endl;	  
 	}
       }else if(ch == 10001){ // read tot offsets
-	for(Int_t i=0; i<maxch; i++){
+	for(Int_t i=0; i<prt_maxch; i++){
 	  gr->GetPoint(i,gTotO[i],y);
 	  //std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
       }else if(ch == 10002){ // read tot peaks
-	for(Int_t i=0; i<maxch_dirc*10; i++){
+	for(Int_t i=0; i<prt_maxdircch*10; i++){
 	  gr->GetPoint(i,x,y);
 	  gTotP[i/10][i%10] = y;
 	  //std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
 	}
       }else if(ch == 10003){ // read LE offsets 1
-	for(Int_t i=0; i<maxch_dirc; i++){
+	for(Int_t i=0; i<prt_maxdircch; i++){
 	  gr->GetPoint(i,gLeOffArr[i],y);
 	}
       }
@@ -207,16 +207,16 @@ Bool_t TTSelector::Process(Long64_t entry){
   for(Int_t i=0; i<Hits_ && i<10000; i++){
     tdc = map_tdc[Hits_nTrbAddress[i]];
     if(tdc<0) continue;
-    ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
+    ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
     time[i] = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0") {
       //spline calib
-      //time[i] -= gGrIn[AddRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1); //slow
+      //time[i] -= gGrIn[prt_addRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1); //slow
       Double_t xx,yy;
-      gGrIn[AddRefChannels(ch+1,tdc)]->GetPoint(Hits_nFineTime[i],xx,yy); time[i] -=yy;//fast
+      gGrIn[prt_addRefChannels(ch+1,tdc)]->GetPoint(Hits_nFineTime[i],xx,yy); time[i] -=yy;//fast
 
       //linear calib
-      // Double_t max = (Double_t) gMaxIn[AddRefChannels(ch+1,tdc)]-2;
+      // Double_t max = (Double_t) gMaxIn[prt_addRefChannels(ch+1,tdc)]-2;
       // time[i] = coarseTime-5*(Hits_nFineTime[i]-31)/(max-31);
     } // else time[i] -= (Hits_nFineTime[i]-31)*0.0102;
 
@@ -251,7 +251,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
       
       tdc = map_tdc[Hits_nTrbAddress[i]];
-      ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
+      ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
       if(ch==720 && tof1==0){
     	tof1 = time[i]-tdcRefTime[tdc];
     	tot1 = timeT[i+1] - time[i];
@@ -301,20 +301,20 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
       
       tdc = map_tdc[Hits_nTrbAddress[i]];
-      ch = GetChannelNumber(tdc,Hits_nTdcChannel[i])-1;
-      if(!trbdata && badcannel(ch)) continue;
+      ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
+      if(!trbdata && prt_isBadChannel(ch)) continue;
       
       if(gMode>0){
 	timeLe = time[i]-tdcRefTime[tdc];
-	if(gTrigger!=0 && ch<maxch_dirc) timeLe = timeLe - (grTime1-grTime0);
+	if(gTrigger!=0 && ch<prt_maxdircch) timeLe = timeLe - (grTime1-grTime0);
       }else {
 	timeLe = time[i];
-	if(gTrigger!=0 && ch<maxch_dirc) timeLe = timeLe - grTime1;
+	if(gTrigger!=0 && ch<prt_maxdircch) timeLe = timeLe - grTime1;
       }
       
       timeTot = timeT[i+1] - time[i];
 
-      if(ch<maxch_dirc) {
+      if(ch<prt_maxdircch) {
 	//if(timeTot<0 || timeLe<20 || timeLe>40) continue;
 	timeTot += 30-gTotO[ch];
 
@@ -338,8 +338,8 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       if(gMode==5){
 	//timeLe-=gEvtOffset;
-	//if(ch>maxch_dirc && ch != 1104 && ch != 1344 && ch != 1248) continue;
-	if(ch<maxch_dirc && (timeLe<0 || timeLe>50)) continue;
+	//if(ch>prt_maxdircch && ch != 1104 && ch != 1344 && ch != 1248) continue;
+	if(ch<prt_maxdircch && (timeLe<0 || timeLe>50)) continue;
       }
 
       if(gMode!=5 || tofpid!=0){

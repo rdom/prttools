@@ -51,6 +51,7 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
 
 void TTSelector::SlaveBegin(TTree *){
   std::cout<<"init starts "<<std::endl;
+  
   TString option = GetOption();
   TObjArray *strobj = option.Tokenize(" ");
   nfiles = ((TObjString*)strobj->At(0))->GetString().Atoi();
@@ -122,6 +123,12 @@ void TTSelector::SlaveBegin(TTree *){
   fOutput->Add(hRefDiff);
   prt_createMap();
 
+  
+  // for(auto ch=0; ch<prt_maxch; ch++){
+  //   std::cout<< ch << " "<<prt_tdcsid[ch/48]<<" "<<ch%48+1<<" "<<map_mcp[ch]<<" "<<map_pix[ch]<<" "<<map_row[ch]+1<<" "<<map_col[ch]+1<<std::endl;      
+  // }
+
+  
 if(gcFile!="0"){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
@@ -174,7 +181,7 @@ if(gcFile!="0"){
 
 Int_t mult[prt_maxch]={0};
 Bool_t TTSelector::Process(Long64_t entry){
-  //if(entry>10000) return kTRUE;
+  if(entry>10000) return kTRUE;
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   Int_t tdc,ch,mcp,pix,col,row;
   Double_t triggerLe(0),triggerTot(0), grTime0(0), grTime1(0),grTime2(0),timeLe(0), timeTe(0), offset(0);
@@ -235,19 +242,25 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
 
   //if(hh<20) return kTRUE;
-  if((grTime0>0 && grTime1>0) || gTrigger==0){
+  // if((grTime0>0 && grTime1>0) || gTrigger==0)
+    {
     for(auto i=0; i<Hits_ && i<maxhits; i++){
+      
       //if(Hits_nTdcErrCode[i]!=0) continue;
 
       tdc = map_tdc[Hits_nTrbAddress[i]];
+      //if (tdc!=7)continue;
+      
       if(tdc<0) continue;
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
+      if(tdc==7) std::cout<<"d "<<Hits_nTdcChannel[i]<< " ch "<< ch<<std::endl;
+      
       ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
       hFine[fileid][prt_addRefChannels(ch+1,tdc)]->Fill(Hits_nFineTime[i]);	  
       //if(mult[ch]>1) continue;
 
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
-      if(ch<3000){
+      if(ch<prt_maxdircch){
 	mcp = map_mcp[ch];
 	pix = map_pix[ch];	
 	if(gTrigger!=0) {
@@ -273,17 +286,21 @@ Bool_t TTSelector::Process(Long64_t entry){
 	    ////if(gLeO[ch]) timeLe -=  gLeO[ch]->Eval(tot)-30;
 	    //timeLe -= gLeOffArr[ch];
 	  }
+
 	  
-	  prt_hdigi[mcp]->Fill(map_col[ch],map_row[ch]);
-	  TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
-	  hFine[fileid][ch]->SetTitle(Form("tdc 0x%s, chain %d, lch %d = ch %d, m%dp%d ",tdchex.Data() ,(ch/16)%3,ch%16,ch, mcp, pix));
-	  hTimeL[mcp][pix]->Fill(timeLe); 
-	  hTimeT[mcp][pix]->Fill(timeTe);
-	  hTot[fileid][ch]->Fill(tot);
+	  if(mcp< prt_nmcp) {
+	    prt_hdigi[mcp]->Fill(map_col[ch],map_row[ch]);
 	  
-	  hLeTot[ch]->Fill(timeLe,tot);
-	  hShape[mcp][pix]->Fill(timeLe,offset);
-	  hShape[mcp][pix]->Fill(timeTe,offset);
+	    TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
+	    hFine[fileid][ch]->SetTitle(Form("tdc 0x%s, chain %d, lch %d = ch %d, m%dp%d ",tdchex.Data() ,(ch/16)%3,ch%16,ch, mcp, pix));
+	    hTimeL[mcp][pix]->Fill(timeLe); 
+	    hTimeT[mcp][pix]->Fill(timeTe);
+	    hTot[fileid][ch]->Fill(tot);
+	  
+	    hLeTot[ch]->Fill(timeLe,tot);
+	    hShape[mcp][pix]->Fill(timeLe,offset);
+	    hShape[mcp][pix]->Fill(timeTe,offset);
+	  }
 	}
       }
     }
@@ -306,7 +323,7 @@ TString drawHist(Int_t m, Int_t p){
     leg->SetFillStyle(0);
     leg->SetBorderSize(0);
     Int_t num=0;
-    ch = prt_addRefChannels(ch,ch/prt_ctdc)+1;
+    ch = prt_addRefChannels(ch,ch/48)+1;
     for(Int_t j=0; j<nfiles; j++){
       if(gGr[j][ch]->GetN()<1){
 	gPad->Clear();
@@ -325,7 +342,7 @@ TString drawHist(Int_t m, Int_t p){
     histname=Form("gCalib_mcp%dpix%d",m,p);
   }
   if(gComboId==1){
-    ch = prt_addRefChannels(ch,ch/prt_ctdc)+1;
+    ch = prt_addRefChannels(ch,ch/48)+1;
     for(Int_t j=0; j<nfiles; j++){
       if(j==0) hFine[j][ch]->Draw();
       else hFine[j][ch]->Draw("same");

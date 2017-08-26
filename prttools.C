@@ -53,17 +53,17 @@ PrtEvent* prt_event = 0;
 DataInfo prt_data_info;
 #endif 
 
-const Int_t prt_nmcp = 15;
+const Int_t prt_nmcp = 12;
 const Int_t prt_npix = 64;
+const Int_t prt_ctdc = 32; //41
 const Int_t prt_maxdircch(prt_nmcp*prt_npix);
-const Int_t prt_maxch(1500);
+const Int_t prt_maxch(prt_ctdc*48);
 const Int_t prt_maxnametdc=10000;
-const Int_t prt_ctdc = 48; //41
 const Int_t prt_maxtdc=prt_maxch/48;
 
 TRandom  prt_rand;
 TChain*  prt_ch = 0;
-Int_t    prt_entries(0),prt_theta(0),prt_particle(0),prt_geometry(0);
+Int_t    prt_entries(0),prt_theta(0),prt_particle(0),prt_geometry(2017);
 Double_t prt_test1(0),prt_test2(0),prt_mom(0);
 TString  prt_savepath(""),prt_info("");
 TH2F*    prt_hdigi[prt_nmcp];
@@ -105,11 +105,18 @@ Double_t prt_particleArray[3000];
 // 			 "2014","2015","2016","2018","2019","201a","201c","201d","202c","202d"
 // };
 
-const Int_t prt_ntdc=20;  //oct2016
-TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-			       "200a","200b","200c",
-			       "2018","201b","201c","201f","202c","202d","202d"
+// const Int_t prt_ntdc=20;  //oct2016
+// TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
+// 			       "200a","200b","200c",
+// 			       "2018","201b","201c","201f","202c","202d","202d"
+// };
+
+const Int_t prt_ntdc=32;  //aug2017
+TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
+			       "2014","2015","2016","2017","2018","2019","201a","201b",
+			       "201c","201d","201e","201f"
 };
+
 
 TF1 *prt_gaust;
 TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1){
@@ -219,7 +226,8 @@ void prt_createMap(){
     map_tdc[dec]=++seqid;
   }
   
-  for(Int_t ch=0; ch<prt_maxdircch; ch++){
+  //  for(Int_t ch=0; ch<prt_maxdircch; ch++){
+    for(Int_t ch=0; ch<prt_maxch; ch++){
     Int_t mcp = ch/64;
     Int_t pix = ch%64;	
     Int_t col = pix/2 - 8*(pix/16);
@@ -424,8 +432,9 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   prt_cdigi->Update();
   
   prt_cdigi->cd();
-  prt_cdigi_th = (TH1 *)(prt_hdigi[nnmax])->Clone();
-  prt_cdigi_palette = (new TPaletteAxis(0.82,0.1,0.86,0.90,(prt_cdigi_th)));
+  // prt_cdigi_th = (TH1 *)(prt_hdigi[nnmax])->Clone();
+  //  prt_cdigi_palette = (new TPaletteAxis(0.82,0.1,0.86,0.90,(prt_cdigi_th)));
+  prt_cdigi_palette = (new TPaletteAxis(0.82,0.1,0.86,0.90,(TH1 *)prt_hdigi[nnmax]));
   prt_cdigi_palette->Draw();
   
   prt_cdigi->Modified();
