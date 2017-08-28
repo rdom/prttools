@@ -1166,14 +1166,14 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 
   TGHorizontalFrame *fHm1 = new TGHorizontalFrame(fHm, 400, 40);
 
-  TGLabel *fL3 = new TGLabel(fHm1, "Maximum in hit pattern: ");
+  TGLabel *fL3 = new TGLabel(fHm1, "Max in HP: ");
   fHm1->AddFrame(fL3, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
-  fHslider1 = new TGHSlider(fHm1, 200, kSlider1 | kScaleBoth, 0);
+  fHslider1 = new TGHSlider(fHm1, 183, kSlider1 | kScaleBoth, 0);
   fHslider1->Connect("PositionChanged(Int_t)", "MyMainFrame", this, "DoSlider(Int_t)");
   fHslider1->SetRange(0,50);
   fHm1->AddFrame(fHslider1, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
 
-  fCheckBtn1  = new TGCheckButton(fHm1, new TGHotString("Local maximum"),        -1);
+  fCheckBtn1  = new TGCheckButton(fHm1, new TGHotString("Local max"),        -1);
   fCheckBtn1->Connect("Clicked()", "MyMainFrame", this, "DoCheckBtnClecked1()");
   fHm1->AddFrame(fCheckBtn1, new TGLayoutHints(kLHintsBottom | kLHintsLeft,5, 5, 5, 5));
 
@@ -1307,7 +1307,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   
   if(ginFile.Contains("th_")) fEdit1->SetText("400 20 40");
-  if(ginFile.Contains("beam")) fEdit1->SetText("400 10 25");
+  //  if(ginFile.Contains("beam")) fEdit1->SetText("400 10 25");
+  if(ginFile.Contains("beam")) fEdit1->SetText("400 -200 -150");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   
   fEdit3->SetText("0 0");
