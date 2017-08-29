@@ -238,9 +238,9 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
   
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
-  tofpid=211; //rd
+  tofpid=2212; //rd
   
-  if(gMode>6){
+  if(gMode==6){
     if(mult1!=1 || mult3!=1 || mult4<1 || mult5<1){ //  || mult2!=1 || mult5!=1
       fEvent->Clear();
       delete fEvent;
