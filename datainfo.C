@@ -119,7 +119,7 @@ public:
 Int_t gg_alias=0;
 std::vector<DataInfo> dataArray;
 std::vector<DataInfo> aliasArray;
-const Int_t gg_nstudies = 300;
+const Int_t gg_nstudies = 400;
 Int_t gg_studyArray[gg_nstudies];
 TString study[gg_nstudies];
 void datainfo_init(){
@@ -1144,7 +1144,7 @@ void datainfo_init(){
   {
     study[300]="Angle scan, bar, 3LS lens, cookies for lens, air gap for the prizm-MCP";
     {
-      ouble_t o = 12.59 + 95.6; // 185.7      
+      Double_t o = 12.59 + 95.6; // 185.7      
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
       dataArray.push_back(DataInfo(300,"beam_17240151314",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(300,"beam_17240181058",1,3,130.0,364,85.0,70.00,5,7.0,10,o));
