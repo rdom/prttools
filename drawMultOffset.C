@@ -1,7 +1,7 @@
 #define prt__sim
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
-#include "../../prttools/datainfo.C"
+#include "datainfo.C"
 #include "../../prttools/prttools.C"
 
 void drawMultOffset(TString infile="../build/hits.root"){
