@@ -830,7 +830,8 @@ void datainfo_init(){
       
   }
 
-  { // 2016
+  //= XXXX 16   =================================
+  {
     study[200]="SO16, plate, no lens";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum
@@ -1136,6 +1137,28 @@ void datainfo_init(){
 	// study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset  
 	dataArray.push_back(DataInfo(222,files[i],2,0,35.0,364,85.0,0.00,0,7.0,10,o));	
       }
+    }
+  }
+
+  //= Aug 17   =================================
+  {
+    study[300]="Angle scan, bar, 3LS lens, cookies for lens, air gap for the prizm-MCP";
+    {
+      ouble_t o = 12.59 + 95.6; // 185.7      
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      dataArray.push_back(DataInfo(300,"beam_17240151314",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240181058",1,3,130.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240151314",1,3,120.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240185318",1,3,110.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240191244",1,3,100.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240201655",1,3, 90.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240203001",1,3, 80.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240204445",1,3, 70.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240205753",1,3, 60.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240211057",1,3, 50.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240212322",1,3, 40.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240213623",1,3, 30.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(300,"beam_17240214847",1,3, 20.0,364,85.0,70.00,5,7.0,10,o));
     }
   }
 }

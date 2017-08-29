@@ -50,12 +50,10 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   Int_t momentum = prt_data_info.getMomentum();
   Int_t studyId = prt_data_info.getStudyId();
   if(studyId<0) studyId=1000;
-  fSavePath = Form("tof/%d/%d",studyId,prt_data_info.getFileId());
-  PrtInit(infile,1);
-  std::cout<<"fSavePath  "<<fSavePath << "  momentum "<<momentum <<std::endl;
+  if(!prt_init(infile,1,Form("data/drawTof/%d/%d",studyId,prt_data_info.getFileId()))) return;
   
   Int_t le1(70), le2(75);
-  Int_t l1(70), l2(75);
+  Int_t l1(70), l2(75);  
   
   if(studyId<1000 && momentum<7){
     le2=80;
@@ -87,43 +85,43 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   TH1F * hTofC  = new TH1F("tofC ","tofC;TOF2-TOF1 [ns]; entries [#]",600,le1,le2);
   TH1F * hTot  = new TH1F("tot ","tot;TOT1,TOT2 [ns]; entries [#]",   600,0,100);
  
-  TH2F * hLeTot  = new TH2F("letot ","letot;TOF2-TOF1 [ns]; TOT1 [ns]",      500,l1,l2,125,43,47);
-  TH2F * hLeTotW  = new TH2F("letotW ","letotW;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,43,47);
-  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,43,47);
-  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,125,43,47);
+  TH2F * hLeTot  = new TH2F("letot ","letot;TOF2-TOF1 [ns]; TOT1 [ns]",      500,l1,l2,125,43,49);
+  TH2F * hLeTotW  = new TH2F("letotW ","letotW;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,43,49);
+  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,43,49);
+  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,125,43,49);
 
 
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit();
   
-  PrtHit fHit;
-  for (Int_t ievent=0; ievent< fCh->GetEntries(); ievent++){ //fCh->GetEntries()
-    PrtNextEvent(ievent,10000);
+  PrtHit hit;
+  for (Int_t ievent=0; ievent< 100000; ievent++){ //prt_entries
+    prt_nextEvent(ievent,10000);
     
     Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false);
     Double_t tot1(0),tot2(0),tof1(0),tof2(0);
     Int_t mult1(0), mult2(0), mult3(0), mult4(0);
     
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){
-      fHit = prt_event->GetHit(i);
-      if(fHit.GetChannel()==816) {//trigger 1
+      hit = prt_event->GetHit(i);
+      if(hit.GetChannel()==816) {//trigger 1
 	btrig = true;
 	mult1++;
       }
-      if(fHit.GetChannel()==821){ // trigger 2
+      if(hit.GetChannel()==821){ // trigger 2
 	bmcpout = true;
 	mult2++;
       }
-      if(fHit.GetChannel()==1396){ //tof 1
+      if(hit.GetChannel()==1392){ //tof 1 96
 	btof1 = true;
-	tof1=fHit.GetLeadTime();
-	tot1=fHit.GetTotTime();
+	tof1=hit.GetLeadTime();
+	tot1=hit.GetTotTime();
 	mult3++;
       }
-      if(fHit.GetChannel()==1398){ //tof2
+      if(hit.GetChannel()==1398){ //tof2 98
 	btof2 = true;
-	tof2 = fHit.GetLeadTime();
-	tot2=fHit.GetTotTime();
+	tof2 = hit.GetLeadTime();
+	tot2=hit.GetTotTime();
 	mult4++;
       }
     }
@@ -160,13 +158,13 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
       
   }
 
-  canvasAdd("LeTot",800,400);
+  prt_canvasAdd("LeTot",800,400);
   hLeTot->Draw("colz");
 
-  // canvasAdd("LeTotW",800,400);
+  // prt_canvasAdd("LeTotW",800,400);
   // hLeTotW->Draw("colz");
   
-  canvasAdd("LeTotC",800,400);
+  prt_canvasAdd("LeTotC",800,400);
   hLeTotC->Draw("colz");
   TEllipse *el1 = new TEllipse(tof1le,tof1tot,c1y,c1x);
   el1->SetLineColor(2);
@@ -179,7 +177,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   el2->SetFillStyle(0);
   el2->Draw();
   
-  canvasAdd("LeTotC2",800,400);
+  prt_canvasAdd("LeTotC2",800,400);
   hLeTotC2->Draw("colz");
   TEllipse *el3 = new TEllipse(tof1le,tof2tot,c1y,c1x);
   el3->SetLineColor(2);
@@ -193,11 +191,11 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   el4->Draw();
  
   
-  canvasAdd("tof",800,400);
+  prt_canvasAdd("tof",800,400);
   prt_fit(hTof,10,20,2,2);
   hTof->Draw();
 
-  canvasAdd("tofC",800,400);
+  prt_canvasAdd("tofC",800,400);
   TVector3 r=prt_fit(hTofC,10,20,2,2);
   hTofC->Draw();
   Double_t tot1=hLeTotC->GetMean(2);
@@ -218,7 +216,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   efile.Close();
   
   
-  canvasAdd("mult",800,400);
+  prt_canvasAdd("mult",800,400);
   hMult[0]->Draw();
   for(Int_t i=1; i<4; i++){
     hMult[i]->Draw("same");
@@ -233,5 +231,5 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   leg->Draw();
   
   gStyle->SetOptTitle(0);
-  canvasSave(0,0);
+  prt_canvasSave(0,0);
 }
