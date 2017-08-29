@@ -174,8 +174,9 @@ void MSelector::SlaveBegin(TTree *){
   hLe=new TH1F("hLeA","",2000,-300,300);
   hLes=new TH1F("hLeAs","",2000,0,100);
   hMult=new TH1F("hMultA","",50,0,50);
-  hCh=new TH1F("hChA","",980,0,980);
-  hTof=new TH1F("hTof","",2000,60,85);
+  hCh=new TH1F("hChA","",prt_maxch,0,prt_maxch);
+  //  hTof=new TH1F("hTof","",2000,60,85);
+  hTof=new TH1F("hTof","",2000,-606,805);
 
   prt_axisTime800x500(hTot,"TOT time, [ns]");
   prt_axisTime800x500(hLe,"LE time, [ns]");
@@ -214,7 +215,7 @@ Bool_t MSelector::Process(Long64_t entry){
       if(sarr->GetEntries()==3){
 	if(current_file_name.Contains("th_")){
 	  TString soffset = ((TObjString *) sarr->At(1))->GetName();
-	  offset = soffset.Atof()/400.;
+	  offset = soffset.Atof()/600.;
 	}
       }else offset = prt_event->GetTest1();
     }
@@ -245,11 +246,13 @@ Bool_t MSelector::Process(Long64_t entry){
       else  thitCount2++;
       
       if(ch == gTrigger && gTrigger>0) triggerLe = hit.GetLeadTime();
-      if(ch==720)  tof1 = hit.GetLeadTime();
-      if(ch==722) tof2 = hit.GetLeadTime();
+      if(ch==1398)  tof1 = hit.GetLeadTime();
+      if(ch==1396) tof2 = hit.GetLeadTime();
     }
   }
   if(tof1!=0 && tof2!=0) {
+    std::cout<<"tof "<<tof1<<" "<<tof2<<std::endl;
+    
     tof = tof2-tof1;
     tof = toftime;
     if(gTofMin==gTofMax || (tof>gTofMin && tof<gTofMax)) hTof->Fill(tof);

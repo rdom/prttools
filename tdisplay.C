@@ -73,12 +73,12 @@ void TTSelector::SlaveBegin(TTree *){
     leb=4000, le1=-5, le2=5;
   }
   if(fileList[0].Contains("pilas")){
-    gTrigger=817; //1345;
+    gTrigger=820;
     leb = 400; le1=70; le2=100;
     totb=240; totl=0; toth=12;
   }
   if(fileList[0].Contains("pico")){
-    gTrigger=817;//1345;
+    gTrigger=820;
     totb=240; totl=0; toth=12;
     leb = 400; le1=10; le2=40; //20 40
   }
@@ -113,7 +113,7 @@ void TTSelector::SlaveBegin(TTree *){
     fOutput->Add(prt_hdigi[m]);
   }
 
-  hCh = new TH1F("hCh","hCh;channel [#];entries [#]",980,0,980);
+  hCh = new TH1F("hCh","hCh;channel [#];entries [#]",prt_maxch,0,prt_maxch);
   fOutput->Add(hCh);
   hRefDiff = new TH1F("hRefDiff","ch-ref. resolution;sigma [ns];entries [#]",200,0,1);//0.05
   for(Int_t i=0; i<prt_maxtdc; i++){
@@ -181,7 +181,6 @@ if(gcFile!="0"){
 
 Int_t mult[prt_maxch]={0};
 Bool_t TTSelector::Process(Long64_t entry){
-  if(entry>10000) return kTRUE;
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   Int_t tdc,ch,mcp,pix,col,row;
   Double_t triggerLe(0),triggerTot(0), grTime0(0), grTime1(0),grTime2(0),timeLe(0), timeTe(0), offset(0);
@@ -253,14 +252,15 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       if(tdc<0) continue;
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
-      if(tdc==7) std::cout<<"d "<<Hits_nTdcChannel[i]<< " ch "<< ch<<std::endl;
       
       ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
+            
       hFine[fileid][prt_addRefChannels(ch+1,tdc)]->Fill(Hits_nFineTime[i]);	  
       //if(mult[ch]>1) continue;
 
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
-      if(ch<prt_maxdircch){
+      //      if(ch<prt_maxdircch)
+      {
 	mcp = map_mcp[ch];
 	pix = map_pix[ch];	
 	if(gTrigger!=0) {

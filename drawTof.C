@@ -106,7 +106,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
     
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){
       fHit = prt_event->GetHit(i);
-      if(fHit.GetChannel()==818) {//trigger 1
+      if(fHit.GetChannel()==816) {//trigger 1
 	btrig = true;
 	mult1++;
       }
@@ -114,13 +114,13 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
 	bmcpout = true;
 	mult2++;
       }
-      if(fHit.GetChannel()==720){ //tof 1
+      if(fHit.GetChannel()==1396){ //tof 1
 	btof1 = true;
 	tof1=fHit.GetLeadTime();
 	tot1=fHit.GetTotTime();
 	mult3++;
       }
-      if(fHit.GetChannel()==722){ //tof2
+      if(fHit.GetChannel()==1398){ //tof2
 	btof2 = true;
 	tof2 = fHit.GetLeadTime();
 	tot2=fHit.GetTotTime();

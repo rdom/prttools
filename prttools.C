@@ -218,7 +218,7 @@ TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_
 }
 
 void prt_createMap(){
-  TGaxis::SetMaxDigits(3);
+  TGaxis::SetMaxDigits(4);
   Int_t seqid =-1;
   for(Int_t i=0; i<prt_maxnametdc; i++) map_tdc[i]=-1;
   for(Int_t i=0; i<prt_ntdc; i++){
