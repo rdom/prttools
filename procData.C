@@ -10,16 +10,15 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   Double_t mult(0),le1(0),le2(150),offset(0),timeres(0);
 
   if(infile.Contains("C.root")) { // beam data
-    // offset=284.59;
-    // le1=280;
-    // le2=330;
+    //offset=284.59;
+    le1=-200;
+    le2=-130;
   }
   if(infile.Contains("SP.root")) { // PDF data
     timeres=0.2;
   }
  
-  if(!prt_init(infile,1,"data/procData")) return;
-   
+  if(!prt_init(infile,1,"data/procData")) return;   
 
   
   TFile *file = new TFile(infile.ReplaceAll(".root",".res.root"),"recreate");
@@ -58,7 +57,6 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
     Int_t counts(0),pid(0);
     Double_t tot(0),time(0);
     if(prt_event->GetParticle()==211) pid=1;
-    std::cout<<"ievent "<<ievent<<std::endl;
     
     for(auto i=0; i<prt_event->GetHitSize(); i++){
       hit = prt_event->GetHit(i);
@@ -66,8 +64,8 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
       Int_t pixid = hit.GetPixelId()-1;
       Double_t time = hit.GetLeadTime();
       Int_t ch = map_mpc[mcpid][pixid];
-            
-      //if(ch<maxch_dirc && !prt_badcannel(ch)){
+      
+      if(ch<prt_maxdircch){
 	time = hit.GetLeadTime()-offset;
 	//if(timeres>0) time=prt_rand.Gaus(time,timeres);
 	tot = hit.GetTotTime();
@@ -81,7 +79,7 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
 	  prt_hdigi[mcpid]->Fill(pixid%8, pixid/8);
 	  counts++;
 	}
-	//      }
+      }
     }
 
     if(counts>0) hMult->Fill(counts);
