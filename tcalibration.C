@@ -194,7 +194,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       simOffset = prt_data_info.getSimTO();
       fEvent->SetAngle(prt_data_info.getAngle());
       fEvent->SetMomentum(TVector3(0,0,mom));
-      fEvent->SetTrigger(720);
+      fEvent->SetTrigger(816);
       fEvent->SetGeometry(studyId);
       fEvent->SetLens(prt_data_info.getLensId());
       fEvent->SetPrismStepX(prt_data_info.getXstep());
@@ -238,7 +238,9 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
   
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
-  if(gMode==5){
+  tofpid=211; //rd
+  
+  if(gMode>6){
     if(mult1!=1 || mult3!=1 || mult4<1 || mult5<1){ //  || mult2!=1 || mult5!=1
       fEvent->Clear();
       delete fEvent;
@@ -336,7 +338,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	}
       }   
       
-      if(gMode==5){
+      if(gMode==6){
 	//timeLe-=gEvtOffset;
 	//if(ch>prt_maxdircch && ch != 1104 && ch != 1344 && ch != 1248) continue;
 	if(ch<prt_maxdircch && (timeLe<0 || timeLe>50)) continue;
