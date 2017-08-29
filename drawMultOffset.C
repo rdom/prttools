@@ -30,7 +30,7 @@ void drawMultOffset(TString infile="../build/hits.root"){
 
   //for padiwas
   
-  
+  Int_t npad=12*4;
   TH1F * hMult[npad];
   Int_t multa[npad];
   for(auto i=0; i<npad; i++){
