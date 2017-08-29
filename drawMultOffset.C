@@ -1,6 +1,6 @@
 #define prt__sim
-#include "../src/PrtHit.h"
-#include "../src/PrtEvent.h"
+#include "../prtdirc/src/PrtHit.h"
+#include "../prtdirc/src/PrtEvent.h"
 #include "../../prttools/datainfo.C"
 #include "../../prttools/prttools.C"
 

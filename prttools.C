@@ -55,9 +55,9 @@ DataInfo prt_data_info;
 
 const Int_t prt_nmcp = 12;
 const Int_t prt_npix = 64;
-const Int_t prt_ctdc = 32; //41
+const Int_t prt_ntdc = 32;
 const Int_t prt_maxdircch(prt_nmcp*prt_npix);
-const Int_t prt_maxch(prt_ctdc*48);
+const Int_t prt_maxch(prt_ntdc*48);
 const Int_t prt_maxnametdc=10000;
 const Int_t prt_maxtdc=prt_maxch/48;
 
@@ -111,7 +111,7 @@ Double_t prt_particleArray[3000];
 // 			       "2018","201b","201c","201f","202c","202d","202d"
 // };
 
-const Int_t prt_ntdc=32;  //aug2017
+//aug2017
 TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
 			       "2014","2015","2016","2017","2018","2019","201a","201b",
 			       "201c","201d","201e","201f"
