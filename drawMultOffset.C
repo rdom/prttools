@@ -2,7 +2,7 @@
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
 #include "datainfo.C"
-#include "../../prttools/prttools.C"
+#include "prttools.C"
 
 void drawMultOffset(TString infile="../build/hits.root"){
 
@@ -51,9 +51,10 @@ void drawMultOffset(TString infile="../build/hits.root"){
     memset(multa, 0, sizeof(multa));    
     for(auto h=0; h<prt_event->GetHitSize(); h++){
       hit = prt_event->GetHit(h);
-      Int_t mcpid = hit.GetMcpId();
+      Int_t mcp = hit.GetMcpId();
       Double_t time = hit.GetLeadTime();
-      if(time>-30 && time<0) multa[mcpid]++;
+      if(mcp>prt_nmcp) continue; 
+      if(time>-30 && time<0) multa[mcp]++;
       hTime->Fill(time);
     }
     for(auto i=0; i<prt_nmcp; i++){
