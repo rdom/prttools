@@ -8,7 +8,7 @@ void drawMultOffset(TString infile="../build/hits.root"){
 
   if(!prt_init(infile,1,"data/drawMultOffset")) return;
 
-  Int_t studyId, fileId(0), radiatorId(0), lensId(0), offset(0),mcp(0);
+  Int_t studyId, fileId(0), radiatorId(0), lensId(0), offset(0),mcp(0),padiwa(0);
   Double_t mom(0), angle(0), z(0), x(0), xstep(0), ystep(0),mult(0);
 
   TFile *file = new TFile(infile.ReplaceAll(".root",".ro.root"),"recreate");
@@ -27,9 +27,13 @@ void drawMultOffset(TString infile="../build/hits.root"){
   tree->Branch("offset",&offset,"offset/I");
   tree->Branch("mcp",&mcp,"mcp/I");
 
-  TH1F * hMult[prt_nmcp];
-  Int_t multa[prt_nmcp];
-  for(auto i=0; i<prt_nmcp; i++){
+
+  //for padiwas
+  
+  
+  TH1F * hMult[npad];
+  Int_t multa[npad];
+  for(auto i=0; i<npad; i++){
     hMult[i]  = new TH1F(Form("mult_%i",i),"Mult;multiplicity [#];entries [#]",300,0,300);
   }
 
@@ -52,18 +56,24 @@ void drawMultOffset(TString infile="../build/hits.root"){
     memset(multa, 0, sizeof(multa));    
     for(auto h=0; h<prt_event->GetHitSize(); h++){
       hit = prt_event->GetHit(h);
+
       Int_t mcp = hit.GetMcpId();
+      Int_t mcpid = hit.GetMcpId();
+      Int_t pixid = hit.GetPixelId()-1;
+      Int_t ch = map_mpc[mcpid][pixid];
+      Int_t padiwa = ch/16;
+      
       Double_t time = hit.GetLeadTime();
-      if(mcp>prt_nmcp) continue; 
-      if(time>-30 && time<0) multa[mcp]++;
+      if(mcp>npad) continue; 
+      if(time>-30 && time<0) multa[padiwa]++;
       hTime->Fill(time);
     }
-    for(auto i=0; i<prt_nmcp; i++){
+    for(auto i=0; i<npad; i++){
       hMult[i]->Fill(multa[i]);
     }
   }
 
-  for(auto i=0; i<prt_nmcp; i++){
+  for(auto i=0; i<npad; i++){
     mult = hMult[i]->GetMean();
     mcp=i;
     tree->Fill();
