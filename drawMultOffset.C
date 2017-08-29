@@ -64,7 +64,7 @@ void drawMultOffset(TString infile="../build/hits.root"){
       Int_t padiwa = ch/16;
       
       Double_t time = hit.GetLeadTime();
-      if(mcp>npad) continue; 
+      if(padiwa>npad) continue; 
       if(time>-30 && time<0) multa[padiwa]++;
       hTime->Fill(time);
     }
