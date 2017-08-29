@@ -100,7 +100,12 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   //   canvasSave(1,0);
   // }  
   
-  
+  prt_drawDigi("m,p,v\n",2017,0,0);
+  prt_cdigi->SetName(Form("hp_sim_%d_%d",(Int_t)prt_theta,(Int_t)prt_test1));
+  prt_canvasAdd(prt_cdigi);
+  prt_cdigi_palette->Draw();
+
+
   prt_canvasAdd("p_le"+ext,800,400);
   prt_fit(hLeA,0.3,100,100).X();
   hLeA->Draw();
@@ -111,12 +116,7 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   prt_canvasAdd("p_mult"+ext,800,400);
   mult = prt_fit(hMult,20,20,100).X();
   hMult->Draw();
-  
-  prt_drawDigi("m,p,v\n",prt_geometry,0,0);
-  prt_cdigi->SetName(Form("hp_sim_%d_%d",(Int_t)prt_theta,(Int_t)prt_test1));
-  prt_canvasAdd(prt_cdigi);
-  prt_cdigi_palette->Draw();
-  
+
   tree->Fill();
   tree->Write();
   
