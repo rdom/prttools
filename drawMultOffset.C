@@ -8,7 +8,7 @@ void drawMultOffset(TString infile="../build/hits.root"){
 
   if(!prt_init(infile,1,"data/drawMultOffset")) return;
 
-  Int_t studyId, fileId(0), radiatorId(0), lensId(0), offset(0);
+  Int_t studyId, fileId(0), radiatorId(0), lensId(0), offset(0),mcp(0);
   Double_t mom(0), angle(0), z(0), x(0), xstep(0), ystep(0),mult(0);
 
   TFile *file = new TFile(infile.ReplaceAll(".root",".ro.root"),"recreate");
@@ -25,6 +25,7 @@ void drawMultOffset(TString infile="../build/hits.root"){
   tree->Branch("ystep", &ystep,"ystep/D");
   tree->Branch("mult",&mult,"mult/D");
   tree->Branch("offset",&offset,"offset/I");
+  tree->Branch("mcp",&mcp,"mcp/I");
 
   TH1F * hMult[prt_nmcp];
   Int_t multa[prt_nmcp];
@@ -64,6 +65,7 @@ void drawMultOffset(TString infile="../build/hits.root"){
 
   for(auto i=0; i<prt_nmcp; i++){
     mult = hMult[i]->GetMean();
+    mcp=i;
     tree->Fill();
   }
   
