@@ -82,7 +82,7 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
       }
     }
 
-    if(counts>0) hMult->Fill(counts);
+    if(counts>5) hMult->Fill(counts);
   }
 
   angle = prt_theta;
