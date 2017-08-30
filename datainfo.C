@@ -1160,6 +1160,30 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(300,"beam_17240213623",1,3, 30.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(300,"beam_17240214847",1,3, 20.0,364,85.0,70.00,5,7.0,10,o));
     }
+
+    study[300]="Angle scan, bar, 3LS lens, cookies for lens, air gap for the prizm-MCP; HV +150V; th offset 500";
+    {
+      Double_t o = 12.59 + 95.6; // 185.7
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      // dataArray.push_back(DataInfo(301,"",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
+      // dataArray.push_back(DataInfo(301,"",1,3,130.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17242105452",1,3,120.0,364,85.0,70.00,5,7.0,10,o));
+      // dataArray.push_back(DataInfo(301,"",1,3,110.0,364,85.0,70.00,5,7.0,10,o));
+      // dataArray.push_back(DataInfo(301,"",1,3,100.0,364,85.0,70.00,5,7.0,10,o));
+      // dataArray.push_back(DataInfo(301,"",1,3, 90.0,364,85.0,70.00,5,7.0,10,o));
+      // dataArray.push_back(DataInfo(301,"",1,3, 80.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17242070844",1,3, 70.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17241235836",1,3, 60.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17241232404",1,3, 50.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17241230615",1,3, 40.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17241224638",1,3, 30.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17242053631",1,3, 25.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17241222625",1,3, 20.0,364,85.0,70.00,5,7.0,10,o));
+    }
+
+    
+    
+    
   }
 }
 
