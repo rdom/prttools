@@ -1165,13 +1165,13 @@ void datainfo_init(){
     {
       Double_t o = 12.59 + 95.6; // 185.7
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
-      // dataArray.push_back(DataInfo(301,"",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
-      // dataArray.push_back(DataInfo(301,"",1,3,130.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17242114304",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17242113826",1,3,130.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(301,"beam_17242105452",1,3,120.0,364,85.0,70.00,5,7.0,10,o));
-      // dataArray.push_back(DataInfo(301,"",1,3,110.0,364,85.0,70.00,5,7.0,10,o));
-      // dataArray.push_back(DataInfo(301,"",1,3,100.0,364,85.0,70.00,5,7.0,10,o));
-      // dataArray.push_back(DataInfo(301,"",1,3, 90.0,364,85.0,70.00,5,7.0,10,o));
-      // dataArray.push_back(DataInfo(301,"",1,3, 80.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17242122658",1,3,110.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17242121608",1,3,100.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17242120250",1,3, 90.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(301,"beam_17242115300",1,3, 80.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(301,"beam_17242070844",1,3, 70.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(301,"beam_17241235836",1,3, 60.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(301,"beam_17241232404",1,3, 50.0,364,85.0,70.00,5,7.0,10,o));
