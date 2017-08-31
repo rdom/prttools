@@ -26,12 +26,14 @@ show_help(){
         information string (for -a 10)
      -q
         quite mode
+     -j
+        number of proof threads (default 4) if <2 - no proof will be used
 "
   echo "$help" 
 }
 
 OPTIND=1 
-while getopts "h?r:le:a:p:i:q" opt; do
+while getopts "h?r:le:a:p:i:qj:" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -51,6 +53,8 @@ while getopts "h?r:le:a:p:i:q" opt; do
 	    ;;
 	q)  quite=1
 	    ;;
+	j)  threads=$OPTARG
+	    ;;
     esac
 done
 refChannel=${refChannel:-0}
@@ -58,6 +62,7 @@ mode=${mode:-0}
 events=${events:-0}
 path=${path:-0}
 info=${info:-0}
+threads=${threads:-4}
 shift $((OPTIND-1))
 
 fileName=$1
@@ -88,6 +93,6 @@ else
     if [ $quite ]; then
 	flags="-l -q"
     fi
-    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\",$events)"
+    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\", $events, $threads)"
     cd -
 fi

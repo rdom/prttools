@@ -18,7 +18,7 @@ TGraph *gWalk[prt_maxch];
 TCanvas *cTime;
 
 const Int_t maxMult = 30;
-Int_t mult[prt_maxch]={0},gComboId(0), gTrigger(0), gMode(0), gEntries(0); //3for2015
+Int_t mult[prt_maxch]={0},gComboId(0), gTrigger(0), gMode(0), gWorkers(4), gEntries(0); //3for2015
 Double_t gTimeCutMin(-10000),gTimeCutMax(10000),gTofMin(0),gTofMax(0);
 Double_t gMultCutMin(0),gMultCutMax(0),gTimeCuts[prt_nmcp][prt_npix][2], gTotMean[prt_nmcp][prt_npix];
 TString ginFile(""), gPath(""), gInfo(""),gsTimeCuts("0"), gsTotMean("0");
@@ -51,18 +51,22 @@ void init(){
   }
   if(gEntries>0) prt_entries=gEntries;
   
-  TString workers = "workers=4";
+  TString workers = Form("workers=%d",gWorkers);
   if(gSystem->GetFromPipe("whoami")=="hadaq" && prt_entries>1000000) workers = "workers=12";
 
-  TProof *proof = TProof::Open(workers);
-  TString dir = gSystem->pwd();
-
-  gProof->Exec("gSystem->Load(\""+ dir+"/../prtdirc/src/PrtHit_cxx.so\")");
-  gProof->Exec("gSystem->Load(\""+ dir+"/../prtdirc/src/PrtEvent_cxx.so\")");
-  proof->Load("cdisplay.C+");
-
-  proof->SetPrintProgress(&PrintStressProgress);
-  prt_ch->SetProof();
+  TProof *proof;
+  if(gWorkers>1){
+    proof= TProof::Open(workers);
+    TString dir = gSystem->pwd();
+    
+    gProof->Exec("gSystem->Load(\""+ dir+"/../prtdirc/src/PrtHit_cxx.so\")");
+    gProof->Exec("gSystem->Load(\""+ dir+"/../prtdirc/src/PrtEvent_cxx.so\")");
+    proof->Load("cdisplay.C+");
+    
+    proof->SetPrintProgress(&PrintStressProgress);
+    prt_ch->SetProof();
+    
+  }
 
   fSelector = new MSelector();
   gStyle->SetOptStat(1001111);
@@ -246,15 +250,12 @@ Bool_t MSelector::Process(Long64_t entry){
       else  thitCount2++;
       
       if(ch == gTrigger && gTrigger>0) triggerLe = hit.GetLeadTime();
-      if(ch==1392)  tof1 = hit.GetLeadTime();
+      if(ch==1392) tof1 = hit.GetLeadTime();
       if(ch==1398) tof2 = hit.GetLeadTime();
     }
   }
-  if(tof1!=0 && tof2!=0) {
-    std::cout<<"tof "<<tof1<<" "<<tof2<<std::endl;
-    
+  if(tof1!=0 && tof2!=0) {    
     tof = tof2-tof1;
-    tof = toftime;
     if(gTofMin==gTofMax || (tof>gTofMin && tof<gTofMax)) hTof->Fill(tof);
   }
 
@@ -1340,7 +1341,7 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TString path="", TString info="0",Int_t entries=0){
+void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TString path="", TString info="0",Int_t entries=0, Int_t workers = 4){
   ginFile = inFile;
   gEntries=entries;
   gTrigger= trigger;
@@ -1350,6 +1351,7 @@ void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TStr
   prt_addInfo("Program = cdisplay");
   prt_addInfo("In file = " + ginFile);
   prt_addInfo("In path = " + gPath);
+  gWorkers = workers;
   
   gMain = new MyMainFrame(gClient->GetRoot(), 800, 800);
 }
