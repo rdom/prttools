@@ -10,11 +10,11 @@ const Int_t geometry=2017;
 Int_t gSetup=2015, gTrigger, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
 TString ginFile(""),gcFile(""), fileList[maxfiles];
 TH1F *hCh, *hRefDiff, *hFine[maxfiles][prt_maxch], *hTot[maxfiles][prt_maxch],
-  *hTimeL[prt_nmcp][prt_npix], *hTimeT[prt_nmcp][prt_npix], *hSigma[prt_maxtdc];
+  *hTimeL[prt_nmcp][prt_npix], *hTimeT[prt_nmcp][prt_npix], *hSigma[prt_ntdc];
 TH2F *hLeTot[prt_maxch], *hShape[prt_nmcp][prt_npix];
 TGraph *gMaxFine, *gLeOff, *gTotOff, *gTotPeaks;
 Int_t gMaxIn[prt_maxch];
-Double_t  tdcRefTime[prt_maxtdc], gTotO[prt_maxch], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0);
+Double_t  tdcRefTime[prt_ntdc], gTotO[prt_maxch], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0);
 TGraph *gGrIn[prt_maxch], *gLeO[prt_maxch], *gGr[maxfiles][prt_maxch], *gGrDiff[prt_maxch];
 TCanvas *cTime;
 
@@ -116,7 +116,7 @@ void TTSelector::SlaveBegin(TTree *){
   hCh = new TH1F("hCh","hCh;channel [#];entries [#]",prt_maxch,0,prt_maxch);
   fOutput->Add(hCh);
   hRefDiff = new TH1F("hRefDiff","ch-ref. resolution;sigma [ns];entries [#]",200,0,1);//0.05
-  for(Int_t i=0; i<prt_maxtdc; i++){
+  for(Int_t i=0; i<prt_ntdc; i++){
     hSigma[i] = new TH1F(Form("hSigma%d",i),"ch-ref. resolution;sigma [ns];entries [#]",200,0,0.1);
     fOutput->Add(hSigma[i]);
   }
@@ -306,7 +306,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
   }
 
-  for(Int_t i=0; i<prt_maxtdc; i++) tdcRefTime[i]=0;
+  for(Int_t i=0; i<prt_ntdc; i++) tdcRefTime[i]=0;
   
   return kTRUE;
 }
@@ -722,7 +722,7 @@ void TTSelector::Terminate(){
   }
 
   for(Int_t c=0; c<prt_maxch; c++) hLeTot[c] = dynamic_cast<TH2F *>(TProof::GetOutput(Form("hLeTot_ch%d",c), fOutput));
-  for(Int_t c=0; c<prt_maxtdc; c++) hSigma[c] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("hSigma%d",c), fOutput));
+  for(Int_t c=0; c<prt_ntdc; c++) hSigma[c] = dynamic_cast<TH1F *>(TProof::GetOutput(Form("hSigma%d",c), fOutput));
   
   hCh = dynamic_cast<TH1F *>(TProof::GetOutput("hCh", fOutput));
   hRefDiff = dynamic_cast<TH1F *>(TProof::GetOutput("hRefDiff", fOutput));
@@ -845,8 +845,6 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   ch->Process(selector,option,entries);
 
   prt_drawDigi("m,p,v\n",geometry,0,0);
-  prt_cdigi_palette->Draw();
-  
   updatePlot(0); //gComboId
 
   prt_cdigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
