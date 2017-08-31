@@ -246,8 +246,8 @@ Bool_t MSelector::Process(Long64_t entry){
       else  thitCount2++;
       
       if(ch == gTrigger && gTrigger>0) triggerLe = hit.GetLeadTime();
-      if(ch==1398)  tof1 = hit.GetLeadTime();
-      if(ch==1396) tof2 = hit.GetLeadTime();
+      if(ch==1392)  tof1 = hit.GetLeadTime();
+      if(ch==1398) tof2 = hit.GetLeadTime();
     }
   }
   if(tof1!=0 && tof2!=0) {

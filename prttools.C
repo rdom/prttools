@@ -59,7 +59,6 @@ const Int_t prt_ntdc = 32;
 const Int_t prt_maxdircch(prt_nmcp*prt_npix);
 const Int_t prt_maxch(prt_ntdc*48);
 const Int_t prt_maxnametdc=10000;
-const Int_t prt_maxtdc=prt_maxch/48;
 
 TRandom  prt_rand;
 TChain*  prt_ch = 0;
@@ -227,7 +226,7 @@ void prt_createMap(){
   }
   
   //  for(Int_t ch=0; ch<prt_maxdircch; ch++){
-    for(Int_t ch=0; ch<prt_maxch; ch++){
+  for(Int_t ch=0; ch<prt_maxch; ch++){
     Int_t mcp = ch/64;
     Int_t pix = ch%64;	
     Int_t col = pix/2 - 8*(pix/16);
@@ -289,17 +288,19 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   if(prt_geometry==2021) layoutId=2021;
   if(!prt_cdigi) prt_cdigi = new TCanvas("prt_cdigi","prt_cdigi",0,0,800,400);
   prt_cdigi->cd();
-  // TPad * pp = new TPad("P","T",0.06,0.135,0.93,0.865);
+  
   if(!prt_hpglobal){
-    prt_hpglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
     if(layoutId==2015 ||  layoutId==5) prt_hpglobal = new TPad("P","T",0.04,0.04,0.88,0.96);
     if(layoutId==2021) prt_hpglobal = new TPad("P","T",0.12,0.02,0.78,0.98);
     if(layoutId==2016) prt_hpglobal = new TPad("P","T",0.2,0.02,0.75,0.98);
     if(layoutId==2017) prt_hpglobal = new TPad("P","T",0.15,0.02,0.80,0.98);
+    if(!prt_hpglobal)  prt_hpglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
+    
     prt_hpglobal->SetFillStyle(0);
     prt_hpglobal->Draw();
   }
   prt_hpglobal->cd();
+
   
   Int_t nrow = 3, ncol = 5;
 
@@ -361,7 +362,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     }
 
   }
-  
+
   Int_t np,tmax;
   Double_t max=0;
   if(maxz==0){
@@ -372,7 +373,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   }else{
     max = maxz;
   }
-
+  
   if(maxz==-2 && minz<-1){ // optimize range
     for(Int_t p=0; p<nrow*ncol;p++){
       tmax = prt_hdigi[p]->GetMaximum();
@@ -428,15 +429,12 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     }
   }
   
-  prt_cdigi->Modified();
-  prt_cdigi->Update();
-  
+
   prt_cdigi->cd();
-  // prt_cdigi_th = (TH1 *)(prt_hdigi[nnmax])->Clone();
-  //  prt_cdigi_palette = (new TPaletteAxis(0.82,0.1,0.86,0.90,(prt_cdigi_th)));
-  prt_cdigi_palette = (new TPaletteAxis(0.82,0.1,0.86,0.90,(TH1 *)prt_hdigi[nnmax]));
+  prt_cdigi_palette = new TPaletteAxis(0.82,0.1,0.86,0.90,(TH1 *) prt_hdigi[nnmax]);
   prt_cdigi_palette->Draw();
-  
+  prt_hpads[0]->cd();
+    
   prt_cdigi->Modified();
   prt_cdigi->Update();
   return digidata;

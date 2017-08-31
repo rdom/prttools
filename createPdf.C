@@ -229,9 +229,9 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   hles[308]->Draw("same");
   
   //  writeString(fSavePath+"/digi.csv", drawDigi("m,p,v\n",2,-2,-2));
-  prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry,0,0));
-  prt_cdigi->SetName("hits");
-  prt_canvasAdd(prt_cdigi);
+  //prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry,0,0));
+  //prt_cdigi->SetName("hits");
+  //prt_canvasAdd(prt_cdigi);
   
   prt_canvasSave(1,0);
 }
