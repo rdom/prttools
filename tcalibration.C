@@ -174,7 +174,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
   Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(12.59-59);
-  Int_t mult1(0), mult2(0), mult3(0), mult4(0), mult5(0);
+  Int_t mult1(0), mult2(0), mult3(0), mult4(0), mult5(0),mult6(0);
   
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   Bool_t trbdata = current_file_name.Contains("trb");
@@ -185,6 +185,13 @@ Bool_t TTSelector::Process(Long64_t entry){
   if(entry%10000==0) std::cout<<"event # "<< entry <<std::endl;
   GetEntry(entry);
 
+  Int_t trigT1(816);
+  Int_t trigT2(817);
+  Int_t trigT3h(818);
+  Int_t trigT3v(819);  
+  Int_t trigTof1(1392);
+  Int_t trigTof2(1398);
+  
   
   fEvent = new PrtEvent();
   if(gMode==5){
@@ -226,11 +233,12 @@ Bool_t TTSelector::Process(Long64_t entry){
 	tdcRefTime[tdc] = time[i];
 	if(gTrigger/48==tdc) grTime0 = time[i];
       }
-      if(ch==818) mult1++; //trigger1
-      if(ch==821) mult2++; //trigger2
-      if(ch==720) mult3++; //tof1
-      if(ch==722) mult4++; //tof2
-      if(ch==819) mult5++; //trigger3
+      if(ch==trigT1) mult1++; //trigger1
+      if(ch==trigT2) mult2++; //trigger2
+      if(ch==trigTof1) mult3++; //tof1
+      if(ch==trigTof2) mult4++; //tof2
+      if(ch==trigT3h) mult5++; //trigger3h
+      if(ch==trigT3v) mult6++; //trigger3v
     }else{
       timeT[i]=time[i];
       if(ch==gTrigger && grTime2==0) grTime2=time[i];
@@ -238,10 +246,9 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
   
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
-  tofpid=2212; //rd
   
-  if(gMode==6){
-    if(mult1!=1 || mult3!=1 || mult4<1 || mult5<1){ //  || mult2!=1 || mult5!=1
+  if(gMode==5){
+    if(mult1<1 || mult3<1 || mult4<1 || mult5<1 || mult6<1){ //  || mult2!=1 || mult5!=1
       fEvent->Clear();
       delete fEvent;
       return kTRUE;
@@ -254,11 +261,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
-      if(ch==720 && tof1==0){
+      if(ch==trigTof1 && tof1==0){
     	tof1 = time[i]-tdcRefTime[tdc];
     	tot1 = timeT[i+1] - time[i];
       }
-      if(ch==722 && tof2==0){
+      if(ch==trigTof2 && tof2==0){
     	tof2 = time[i]-tdcRefTime[tdc];
     	tot2 = timeT[i+1] - time[i];
       }      
@@ -288,7 +295,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       return kTRUE;
     }
   }
-      
+  
   PrtHit hit;
   Int_t nrhits=0;
   if((grTime0>0 && grTime1>0) || gTrigger==0){
