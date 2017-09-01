@@ -179,8 +179,8 @@ void MSelector::SlaveBegin(TTree *){
   hLes=new TH1F("hLeAs","",2000,0,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",prt_maxch,0,prt_maxch);
-  //  hTof=new TH1F("hTof","",2000,60,85);
-  hTof=new TH1F("hTof","",2000,-606,805);
+  hTof=new TH1F("hTof","",2000,60,85);
+  //hTof=new TH1F("hTof","",2000,-606,805);
 
   prt_axisTime800x500(hTot,"TOT time, [ns]");
   prt_axisTime800x500(hLe,"LE time, [ns]");
