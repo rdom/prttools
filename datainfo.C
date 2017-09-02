@@ -1184,7 +1184,7 @@ void datainfo_init(){
     
     study[310]="Angle scan, bar, 3LS lens, all with grease; HV +150V; th offset 600";
     {
-      Double_t o =    12.59 + 95.6; // 185.7 //189.9+30; //
+      Double_t o =    12.59 + 62;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
       dataArray.push_back(DataInfo(310,"beam_17244170154",1,3,20.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(310,"beam_17244171356",1,3,30.0,364,85.0,70.00,5,7.0,10,o));
