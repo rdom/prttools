@@ -13,6 +13,7 @@ Double_t tdcRefTime[prt_ntdc],gTotO[prt_maxch], gTotP[prt_maxdircch][10],gLeOffA
 TGraph *gGrIn[prt_maxch], *gWalk[prt_maxch], *gGrDiff[prt_maxch];
 
 Double_t walktheta(-5*TMath::Pi()/180.);
+
 Double_t tof1le(0),tof2le(0),tof1tot(0),tof2tot(0);
 Double_t fr11[11]={0,0.5,0.5,0.3,0.3,0.4, 0.3,0.3,0.2,0.20,0.15};
 Double_t fr12[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.80,0.70};
@@ -20,17 +21,18 @@ Double_t fr21[11]={0,0.8,0.8,0.3,0.3,0.4, 0.3,0.3,0.2,0.2,0.2};
 Double_t fr22[11]={0,1.0,1.0,0.9,0.9,0.9, 0.9,0.9,0.8,0.8,0.8};
 Double_t c1y(0.5),c2y(0.5),c1x(0.9),c2x(0.9);
 
-Double_t tof1lea[]= {0,0,81.84,76.48,74.51,73.58,73.06,72.74,71.91};
-Double_t tof2lea[]= {0,0,72.12,72.03,71.99,71.96,71.94,71.92,72.55};
-Double_t tof1tota[]={0,0,45.14,45.11,45.05,45.03,44.97,44.93,44.91};
-Double_t tof2tota[]={0,0,45.26,45.31,45.32,45.34,45.36,45.37,45.38};
+Double_t tof1lea[]= {0,0,81.84,76.48,74.51,73.58,73.06, 71.17, 71.91};
+Double_t tof2lea[]= {0,0,72.12,72.03,71.99,71.96,71.94, 72.00, 72.55};
+Double_t tof1tota[]={0,0,45.14,45.11,45.05,45.03,44.97, 47.10, 44.91};
+Double_t tof2tota[]={0,0,45.26,45.31,45.32,45.34,45.36, 46.50, 45.38};
 
-Double_t tofpi1[]={0,0,71.50,71.50,71.60, 71.50,71.55,71.55,71.60};
-Double_t tofpi2[]={0,0,72.50,72.50,72.40, 72.20,72.20,72.20,72.10};
+//aug 2017
+Double_t tofpi1[]={0,0,71.50,71.50,71.60, 71.50,71.55, 70.00,71.60};
+Double_t tofpi2[]={0,0,72.50,72.50,72.40, 72.20,72.20, 71.40,72.10};
 
-Double_t tofp1[] ={0,0,80.80,75.80,73.80, 73.20,72.65,72.40,72.30};
-Double_t tofp2[] ={0,0,83.20,77.20,75.00, 73.90,73.40,73.10,72.90};
-
+Double_t tofp1[] ={0,0,80.80,75.80,73.80, 73.20,72.65, 71.80,72.30};
+Double_t tofp2[] ={0,0,83.20,77.20,75.00, 73.90,73.40, 73.20,72.90};
+   
 Bool_t IsPion(Double_t tof, Int_t mom){
   return tofpi1[mom]<tof && tof<tofpi2[mom];
 }
@@ -174,7 +176,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
   Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(12.59-59);
-  Int_t mult1(0), mult2(0), mult3(0), mult4(0), mult5(0),mult6(0);
+  Int_t multT1(0), multT2(0), multT3v(0), multT3h(0), multTof1(0), multTof2(0);
   
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   Bool_t trbdata = current_file_name.Contains("trb");
@@ -233,12 +235,12 @@ Bool_t TTSelector::Process(Long64_t entry){
 	tdcRefTime[tdc] = time[i];
 	if(gTrigger/48==tdc) grTime0 = time[i];
       }
-      if(ch==trigT1) mult1++; //trigger1
-      if(ch==trigT2) mult2++; //trigger2
-      if(ch==trigTof1) mult3++; //tof1
-      if(ch==trigTof2) mult4++; //tof2
-      if(ch==trigT3h) mult5++; //trigger3h
-      if(ch==trigT3v) mult6++; //trigger3v
+      if(ch==trigT1) multT1++; //trigger1
+      if(ch==trigT2) multT2++; //trigger2
+      if(ch==trigTof1) multTof1++; //tof1
+      if(ch==trigTof2) multTof2++; //tof2
+      if(ch==trigT3h) multT3h++; //trigger3h
+      if(ch==trigT3v) multT3v++; //trigger3v
     }else{
       timeT[i]=time[i];
       if(ch==gTrigger && grTime2==0) grTime2=time[i];
@@ -246,9 +248,10 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
   
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
+
   
   if(gMode==5){
-    if(mult1<1 || mult3<1 || mult4<1 || mult5<1 || mult6<1){ //  || mult2!=1 || mult5!=1
+    if(multT1!=1 || multTof1<1 || multTof2<1 || multT3h<1 || multT3v<1){ //  || mult2!=1 || mult5!=1
       fEvent->Clear();
       delete fEvent;
       return kTRUE;
@@ -275,6 +278,10 @@ Bool_t TTSelector::Process(Long64_t entry){
       Double_t time = tof2-tof1;
       time += (tot1-tof1tot)*tan(walktheta);
       time += (tot2-tof2tot)*tan(-walktheta);
+
+      // time += (tot1-tof1tot)*tan(-6*TMath::Pi()/180.);
+      // time += (tot2-tof2tot)*tan(0.5*TMath::Pi()/180.);      
+      
       toftime = time;
       Int_t m = (Double_t) (mom+0.1);
 
@@ -286,13 +293,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       }else if(IsProton(time,m)){ 
 	tofpid=2212;
 	mass = 0.938272046;
+      }else{
+	fEvent->Clear();
+	delete fEvent;
+	return kTRUE;
       }
-    }
-    
-    if(tofpid==0){
-      fEvent->Clear();
-      delete fEvent;
-      return kTRUE;
     }
   }
   
@@ -328,19 +333,19 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeTot += 30-gTotO[ch];
 
 	// tmp commented! 
-	// timeLe += getTotWalk(timeTot,ch);
-	// if(gTrigger==720 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
+	timeLe += getTotWalk(timeTot,ch);
+	if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
         if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
-	if(fabs(tof1tot-44.9)<1) timeLe -= (tof1tot-44.9)/8.4; //7.1;
+	//if(fabs(tof1tot-44.9)<1) timeLe -= (tof1tot-44.9)/8.4; //7.1;
 		
 	timeLe -= gLeOffArr[ch];
 
 	if(!laser){
-	  if(gTrigger==818) timeLe -= (5.973 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
-	  if(gTrigger==720) timeLe -= (22.776+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
-	  if(gTrigger==722) timeLe += ( 5.888-0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof2
-	  
+	  if(gTrigger==trigT1) timeLe -= (7.829 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
+	  if(gTrigger==trigTof1) timeLe -= (24.460+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
+	  if(gTrigger==trigTof2) timeLe += ( 3.998-0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof2
+
 	  timeLe += simOffset;
 	}
       }   

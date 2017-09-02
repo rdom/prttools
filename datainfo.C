@@ -830,7 +830,7 @@ void datainfo_init(){
       
   }
 
-  //= XXXX 16   =================================
+  //= Oct 16   =================================
   {
     study[200]="SO16, plate, no lens";
     {
@@ -1163,7 +1163,7 @@ void datainfo_init(){
 
     study[300]="Angle scan, bar, 3LS lens, cookies for lens, air gap for the prizm-MCP; HV +150V; th offset 500";
     {
-      Double_t o = 12.59 + 95.6; // 185.7
+      Double_t o =    12.59 + 95.6; // 185.7 //189.9+30; //
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
       dataArray.push_back(DataInfo(301,"beam_17242114304",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(301,"beam_17242113826",1,3,130.0,364,85.0,70.00,5,7.0,10,o));
@@ -1181,6 +1181,26 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(301,"beam_17241222625",1,3, 20.0,364,85.0,70.00,5,7.0,10,o));
     }
 
+    
+    study[310]="Angle scan, bar, 3LS lens, all with grease; HV +150V; th offset 600";
+    {
+      Double_t o =    12.59 + 95.6; // 185.7 //189.9+30; //
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      dataArray.push_back(DataInfo(310,"beam_17244170154",1,3,20.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244171356",1,3,30.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244171854",1,3,40.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244172340",1,3,50.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244172834",1,3,60.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244173452",1,3,70.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244174209",1,3,80.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244175018",1,3,90.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244180555",1,3,100.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244182110",1,3,110.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244182818",1,3,120.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244183924",1,3,130.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244184701",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244183924",1,3,150.0,364,85.0,70.00,5,7.0,10,o));
+    }
     
     
     

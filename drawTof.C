@@ -5,7 +5,7 @@
 #include <TEllipse.h>
 #include <TKey.h>
 
-Double_t walktheta(-5*TMath::Pi()/180.);
+Double_t walktheta(-4*TMath::Pi()/180.);
 Double_t tof1le(0),tof2le(0),tof1tot(0),tof2tot(0);
 
 Double_t fr11[11]={0,0.5,0.5,0.3,0.3,0.4, 0.3,0.3,0.2,0.20,0.15};
@@ -54,7 +54,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   
   Int_t le1(70), le2(75);
   Int_t l1(70), l2(75);  
-  
+
   if(studyId<1000 && momentum<7){
     le2=80;
     l2=80;
@@ -95,7 +95,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   gStyle->SetOptFit();
   
   PrtHit hit;
-  for (Int_t ievent=0; ievent< 100000; ievent++){ //prt_entries
+  for (Int_t ievent=0; ievent< prt_entries; ievent++){ //prt_entries
     prt_nextEvent(ievent,10000);
     
     Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false);
@@ -108,17 +108,17 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
 	btrig = true;
 	mult1++;
       }
-      if(hit.GetChannel()==821){ // trigger 2
+      if(hit.GetChannel()==817){ // trigger 2
 	bmcpout = true;
 	mult2++;
       }
-      if(hit.GetChannel()==1392){ //tof 1 96
+      if(hit.GetChannel()==1392){ //tof1
 	btof1 = true;
 	tof1=hit.GetLeadTime();
 	tot1=hit.GetTotTime();
 	mult3++;
       }
-      if(hit.GetChannel()==1398){ //tof2 98
+      if(hit.GetChannel()==1398){ //tof2
 	btof2 = true;
 	tof2 = hit.GetLeadTime();
 	tot2=hit.GetTotTime();
@@ -126,7 +126,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
       }
     }
     
-    if(!(btrig && bmcpout && btof1 && btof2)) continue;
+    if(!(btrig && btof1 && btof2)) continue;
     //if(fabs(tot1-tof1tot)>0.5 ||fabs(tot2-tof2tot)>0.5 )  continue;
 
     hMult[0]->Fill(mult1);
@@ -141,8 +141,16 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
       Double_t time = tof2-tof1;
       hTof->Fill(time);	
       hLeTotW->Fill(time,tot1);
-      time += (tot1-tof1tot)*tan(walktheta);
-      time += (tot2-tof2tot)*tan(-walktheta);
+      // time += (tot1-tof1tot)*tan(walktheta);
+      // time += (tot2-tof2tot)*tan(-walktheta);
+      
+      time += (tot1-47.1)*tan(-6*TMath::Pi()/180.);
+      time += (tot2-46.5)*tan(0.5*TMath::Pi()/180.);
+
+      // time += (tot1-tof2tot)*tan(-6*TMath::Pi()/180.);
+      // time += (tot2-tof1tot)*tan(0.5*TMath::Pi()/180.);
+      
+      
       hTofC->Fill(time);
      
       // if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)){
