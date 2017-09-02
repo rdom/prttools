@@ -193,8 +193,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t trigT3v(819);  
   Int_t trigTof1(1392);
   Int_t trigTof2(1398);
-  
-  
+    
   fEvent = new PrtEvent();
   if(gMode==5){
     Int_t studyId=prt_data_info.getStudyId();
@@ -337,7 +336,6 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
         if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
-	//if(fabs(tof1tot-44.9)<1) timeLe -= (tof1tot-44.9)/8.4; //7.1;
 		
 	timeLe -= gLeOffArr[ch];
 
@@ -347,13 +345,15 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  if(gTrigger==trigTof2) timeLe += ( 3.998-0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof2
 
 	  timeLe += simOffset;
+	}else{
+	  if(fabs(tof1tot-44.9)<1) timeLe -= (tof1tot-44.9)/8.4; //7.1;
 	}
       }   
       
       if(gMode==5){
 	//timeLe-=gEvtOffset;
 	//if(ch>prt_maxdircch && ch != 1104 && ch != 1344 && ch != 1248) continue;
-	if(ch<prt_maxdircch && (timeLe<0 || timeLe>50)) continue;
+	if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
       }
 
       if(gMode!=5 || tofpid!=0){
