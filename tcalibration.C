@@ -341,7 +341,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 		
 	timeLe -= gLeOffArr[ch];
 
-	if(!laser){
+	if(!laser && gMode==5){
 	  if(gTrigger==trigT1) timeLe -= (7.829 +0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
 	  if(gTrigger==trigTof1) timeLe -= (24.460+0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
 	  if(gTrigger==trigTof2) timeLe += ( 3.998-0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof2
@@ -350,7 +350,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	}
       }   
       
-      if(gMode==6){
+      if(gMode==5){
 	//timeLe-=gEvtOffset;
 	//if(ch>prt_maxdircch && ch != 1104 && ch != 1344 && ch != 1248) continue;
 	if(ch<prt_maxdircch && (timeLe<0 || timeLe>50)) continue;
