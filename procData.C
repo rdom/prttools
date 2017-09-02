@@ -10,9 +10,8 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   Double_t mult(0),le1(0),le2(150),offset(0),timeres(0);
 
   if(infile.Contains("C.root")) { // beam data
-    //offset=284.59;
-    le1=-60;
-    le2=0;
+    le1=0;
+    le2=100;
   }
   if(infile.Contains("SP.root")) { // PDF data
     timeres=0.2;
