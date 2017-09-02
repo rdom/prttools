@@ -1199,7 +1199,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(310,"beam_17244182818",1,3,120.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(310,"beam_17244183924",1,3,130.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(310,"beam_17244184701",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(310,"beam_17244183924",1,3,150.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(310,"beam_17244185431",1,3,150.0,364,85.0,70.00,5,7.0,10,o));
     }
     
     
