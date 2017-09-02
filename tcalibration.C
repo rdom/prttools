@@ -333,7 +333,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
 	// tmp commented! 
 	// timeLe += getTotWalk(timeTot,ch);
-	// if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
+	if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
         if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);
 		
@@ -345,8 +345,9 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  if(gTrigger==trigTof2) timeLe += ( 3.998-0.39)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof2
 
 	  timeLe += simOffset;
-	}else{
+	}else{ // 	 
 	  if(fabs(tof1tot-44.9)<1) timeLe -= (tof1tot-44.9)/8.4; //7.1;
+	  timeLe += simOffset;
 	}
       }   
       
