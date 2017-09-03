@@ -353,7 +353,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	
 	//timeLe-=gEvtOffset;
 
-	if(ch>820 && ch<1340 && ch !=) continue;
+	if(ch>820 && ch<1340) continue;
 	if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
       }
 
