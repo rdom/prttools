@@ -295,7 +295,6 @@ Bool_t TTSelector::Process(Long64_t entry){
       	delete fEvent;
       	return kTRUE;
       }
-      std::cout<<"================= pid "<<tofpid<<std::endl;
     }
   }
   
@@ -353,7 +352,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(ch==trigTof2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 	
 	//timeLe-=gEvtOffset;
-	//if(ch>prt_maxdircch && ch != 1104 && ch != 1344 && ch != 1248) continue;
+
+	if(ch>prt_maxdircch && ch<1340) continue;
 	if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
       }
 
@@ -393,7 +393,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode == 5) gTrigger=816; //816;
+  if(gMode == 5) gTrigger=1398; //816;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

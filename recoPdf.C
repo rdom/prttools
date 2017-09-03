@@ -49,7 +49,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     hnphf = (TH1F*)f.Get("hnphf");
     hnphs = (TH1F*)f.Get("hnphs");
   }
-  for(Int_t i=0; i<prt_maxch; i++){
+  for(Int_t i=0; i<prt_maxdircch; i++){
     hpdff[i] = (TH1F*)f.Get(Form("hf_%d",i));
     hpdfs[i] = (TH1F*)f.Get(Form("hs_%d",i));
     hpdff[i]->SetLineColor(2);
@@ -107,6 +107,14 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t totalf(0),totals(0),mcp,pix,ch, entries = prt_entries; // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = prt_entries;
   if(path.Contains("S.root")) entries = 4000;
+  if(path.Contains("C.root")) entries = 50000;
+
+  Int_t trigT1(816);
+  Int_t trigT2(817);
+  Int_t trigT3h(818);
+  Int_t trigT3v(819);
+  Int_t trigTof1(1392);
+  Int_t trigTof2(1398);
   
   for (Int_t ievent=0; ievent<entries; ievent++){
     prt_nextEvent(ievent,1000);
@@ -115,57 +123,38 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();    
     
     if(prt_event->GetType()==0){
-      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<175.6 ) continue;
-      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>175.1 ) continue;
-      // }
+      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
+      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
+      }
 
-      Bool_t t1(false),t2(false),t3(false);
-      Bool_t tof1(false), tof2(false);
-      Bool_t hodo1(false), hodo2(false);
+      Bool_t t1(true),t2(false),t3h(false),t3v(false);
+      Bool_t tof1(1), tof2(1);
+      Bool_t hodo1(1), hodo2(1);
+      
       for(Int_t h=0; h<nHits; h++) {
-  	fHit = prt_event->GetHit(h);
-  	Int_t gch=fHit.GetChannel();
+      	fHit = prt_event->GetHit(h);
+      	Int_t gch=fHit.GetChannel();	
 	
-	if(gch==818)
-	  t1=true;
-	if(gch==821)
-	  t2=true;
-	if(gch==819)
-	  t3=true;
+	//      	if(gch==trigT2)
+      	  t2=true;
+      	if(gch==trigT3h)
+      	  t3h=true;
+	if(gch==trigT3v)
+      	  t3v=true;
+
 	
-	  //if(gch>1031 && gch<1034)
-	  tof1=true;
-	  //if(gch>651 && gch<657)
-	  tof2=true;
-	    
-	      //	      if(gch>775 && gch<780)
-	  //  if(gch>=778 && gch<=783)
-	  hodo1=true;
-	  //	  if(gch>=791 && gch<=793)
-	  if(gch>=792 && gch<=795)
-	     hodo2=true;
-
-	  // if(gch>775 && gch<778)
-	  //   hodo1=true;
-	  // if(gch>=790 && gch<792)
-	  //   hodo2=true;
-
-	  // if(gch>777 && gch<781)
-	  //   hodo1=true;
-	  // if(gch>=790 && gch<794)
-	  //   hodo2=true;
-	  
-	  
+	 // if(gch>=1350 && gch<=1351) hodo1=true;
+	 // if(gch>=1369 && gch<=1370) hodo2=true;	  
       }
       
-      if(!( t1 && t2 && t3 && tof1 && tof2 && hodo1 && hodo2)) continue;
+      if(!( t1 && t2 && t3h && t3v && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    if(prt_pid==2 && hll[2]->GetEntries()>4500)continue;
-    if(prt_pid==4 && hll[4]->GetEntries()>4500) continue;    
-
+    // if(prt_pid==2 && hll[2]->GetEntries()>4500)continue;
+    // if(prt_pid==4 && hll[4]->GetEntries()>4500) continue;    
+    
     Int_t mult[prt_maxch];
     memset(mult, 0, sizeof(mult));
     for(Int_t i=0; i<nHits; i++){
@@ -175,11 +164,11 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       ch = map_mpc[mcp][pix];
       time = fHit.GetLeadTime();
 
-      //cut-off from c2017
-      if(mcp%3==0 && pix<32) continue;
-      if(mcp%3==2 && pix>=32) continue; 
+      // //cut-off from c2017
+      // if(mcp%3==0 && pix<32) continue;
+      // if(mcp%3==2 && pix>=32) continue; 
       
-      if(ch>prt_maxch) continue;
+      if(ch>prt_maxdircch) continue;
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
       if(++mult[ch]>1 || ch ==0) continue;
 
@@ -191,7 +180,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<0 || time>40) continue;
+	if(time<0 || time>50) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -203,16 +192,16 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       countall[mcp][pix]++;
       if(prt_pid==4){
 	mcpf[mcp]++;
-	//if(mcp ==8) continue;
+	//	if(mcp ==7 || mcp ==10) continue;
 	countgood [mcp][0]++;
-	// if(aminf>amins) countgood [mcp][pix]++;
-	// else countbad[mcp][pix]++;
+	if(aminf>amins) countgood [mcp][pix]++;
+	else countbad[mcp][pix]++;
       }else if (prt_pid==2){
 	mcps[mcp]++;
-	//if(mcp ==8 ) continue;
+	//	if(mcp ==1 || mcp ==3 || mcp ==5) continue;
 	countbad[mcp][0]++;
-	// if(amins>aminf) countgood [mcp][pix]++;
-        // else countbad[mcp][pix]++;
+	if(amins>aminf) countgood [mcp][pix]++;
+        else countbad[mcp][pix]++;
       }
       // if(fabs(aminf-amins)/(aminf+amins)*0.5<0.01) continue;
       
@@ -262,7 +251,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       hl[prt_pid]->Fill(time);
     }
     
-    if(nGoodHits<0) continue;
+    if(nGoodHits<5) continue;
     hnph[prt_pid]->Fill(nGoodHits);
     
     if(ismultnorm){
@@ -280,15 +269,14 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   }
 
   for (Int_t m=0; m <prt_nmcp; m++) {
-    std::cout<<mcpf[m]<< " "<< mcps[m]<<std::endl;
-    
+    std::cout<<mcpf[m]<< " "<< mcps[m]<<std::endl;    
     for(Int_t p=0; p<prt_npix; p++){
       prt_hdigi[m]->Fill(p%8,p/8,countgood[m][0]/(Double_t)countbad[m][0]);
     }
   }
   
-  // prt_drawDigi("m,p,v\n",prt_geometry,1.3,0);
-  // prt_canvasAdd(cDigi);
+  prt_drawDigi("m,p,v\n",2017,1.3,0);
+  prt_canvasAdd(prt_cdigi);
 
   TString name = Form("tis_%d_%d_%1.1f_m%1.1f.root",studyId,prt_theta,sigma,prt_mom);
   if(path.Contains("C.root")) name = Form("tid_%d_%d_%1.1f_m%1.1f.root",studyId,prt_theta,sigma,prt_mom);

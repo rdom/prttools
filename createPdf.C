@@ -42,7 +42,7 @@ TF1 * fitpdf(TH1F *h){
 
 void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentries=-1){
 
-  if(!prt_init(path,1,"data/pdf3")) return;
+  if(!prt_init(path,1,"data/cratePdf_s311")) return;
   gStyle->SetOptStat(0);
 
   Int_t totalmcp[5][prt_nmcp], totalmcpr[5][prt_nmcp];
@@ -61,12 +61,20 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   }
   TH1F *hnphf = new TH1F("hnphf","hnphf",200,0,200);
   TH1F *hnphs = new TH1F("hnphs","hnphs",200,0,200);
+
+  Int_t trigT1(816);
+  Int_t trigT2(817);
+  Int_t trigT3h(818);
+  Int_t trigT3v(819);
+  Int_t trigTof1(1392);
+  Int_t trigTof2(1398);
   
   Double_t time;
   PrtHit hit;
   Int_t totalf(0),totals(0),ch,entries = prt_entries;
   if(aentries>=0) entries = aentries;
-  Int_t start = (path.Contains("S.root"))? 4000 : 0; 
+  Int_t start = (path.Contains("S.root"))? 4000 : 0;
+  start = (path.Contains("C.root"))? 50000 : 0; 
   for (Int_t ievent=start; ievent<entries; ievent++){
     prt_nextEvent(ievent,1000);
 
@@ -75,50 +83,42 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     Int_t pid=prt_event->GetParticle();
     
     if(prt_event->GetType()==0){
-      Bool_t t1(false),t2(false),t3(false);
-      Bool_t tof1(false), tof2(false);
-      Bool_t hodo1(false), hodo2(false);
+      Bool_t t1(1),tof1(1), tof2(1);
+      Bool_t t2(1),t3h(0),t3v(0); 
+      Bool_t hodo1(1), hodo2(1);
+
       for(Int_t h=0; h<nHits; h++) {
-	hit = prt_event->GetHit(h);
-	Int_t gch=hit.GetChannel();
- 
-       	if(gch==818)
-	  t1=true;
-	// if(gch==821)
-	   t2=true;
-	if(gch==819)
-	  t3=true;
-	
-	//if(gch>1031 && gch<1034)
-	  tof1=true;
-	  //if(gch>651 && gch<657)
-	  tof2=true;
-	  
-	  //if(gch>776 && gch<=780) //4
-	  hodo1=true;
-	  if(gch>=789 && gch<=794)
-	    hodo2=true;
+      	hit = prt_event->GetHit(h);
+      	Int_t gch=hit.GetChannel();
+
+	//if(gch==trigT2)  t2=true;
+	if(gch==trigT3h) t3h=true;
+	if(gch==trigT3v) t3v=true;
+
+
+	if(gch>=1349 && gch<=1352) hodo1=true;
+	if(gch>=1368 && gch<=1371  ) hodo2=true;
       }
 
-      if(!(t1 && t2 && t3 && tof1 && tof2 && hodo1 && hodo2)) continue;
+      if(!(t1 && t2 && t3h && t3v && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
     
     Int_t goodhits(0);
     Int_t mult[prt_maxch];
     memset(mult, 0, sizeof(mult));
-
+    
     for(Int_t i=0; i<nHits; i++){
       hit = prt_event->GetHit(i);
       Int_t mcp = hit.GetMcpId();
       Int_t pix = hit.GetPixelId()-1;      
       ch=map_mpc[mcp][pix];
-      if(ch>prt_maxch) continue;
+      if(ch>prt_maxdircch) continue;
       time=hit.GetLeadTime();
       //if(prt_event->GetType()!=0) time += gRandom->Gaus(0,0.3);
       //Double_t tot= hit.GetTotTime();
       //if(tot<2 || tot>8) continue;
       
-      if(++mult[ch]>1) continue;      
+      if(++mult[ch]>1) continue;
       if(time<0 || time>50) continue;
       goodhits++;
 

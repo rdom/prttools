@@ -144,7 +144,6 @@ void MSelector::SlaveBegin(TTree *){
     for(Int_t p=0; p<prt_npix; p++){     
       hPTime[m][p]   = new TH1F(Form("le_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
       hPiTime[m][p]   = new TH1F(Form("lepi_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
-      hPiTime[m][p]->SetLineColor(4);
       hSTime[m][p]   = new TH1F(Form("les_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins1,min1,max1);
       hPTot[m][p]   = new TH1F(Form("tot_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  bins2,min2,max2);
       hPMult[m][p]   = new TH1F(Form("mult_mcp%dpix%d",m,p),Form("mcp %d, pixel %d",m, p),  50,0,50);
@@ -163,8 +162,10 @@ void MSelector::SlaveBegin(TTree *){
       prt_axisTime800x500(hPiTime[m][p]);
       prt_axisTime800x500(hPTot[m][p],"TOT time, [ns]");
       prt_axisTime800x500(hPMult[m][p],"multiplicity, [#]");
+
       hSTime[m][p]->SetLineColor(2);
-      hPiTime[m][p]->SetLineColor(4);
+      hPTime[m][p]->SetLineColor(kRed+1);
+      hPiTime[m][p]->SetLineColor(kBlue+1);
       
       fOutput->Add(hPTime[m][p]);
       fOutput->Add(hPiTime[m][p]);
@@ -185,7 +186,8 @@ void MSelector::SlaveBegin(TTree *){
   prt_axisTime800x500(hTot,"TOT time, [ns]");
   prt_axisTime800x500(hLe,"LE time, [ns]");
   prt_axisTime800x500(hMult,"multiplicity, [#]");
- 
+  hCh->SetLineColor(1);
+  
   gStyle->SetOptStat(1001111);
   
   fOutput->Add(hLe);
@@ -1307,8 +1309,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   
   if(ginFile.Contains("th_")) fEdit1->SetText("400 0 60");
-  //  if(ginFile.Contains("beam")) fEdit1->SetText("400 10 25");
-  if(ginFile.Contains("beam")) fEdit1->SetText("400 -200 -150");
+  if(ginFile.Contains("beam")) fEdit1->SetText("400 0 50");
+  if(ginFile.Contains("aug2017")) fEdit1->SetText("400 -200 -150");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   
   fEdit3->SetText("0 0");

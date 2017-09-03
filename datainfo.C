@@ -1206,7 +1206,7 @@ void datainfo_init(){
     // improved TOF
     study[311]="Angle scan, bar, 3LS lens, all with grease; HV +150V; th offset 600" ;
     {
-      Double_t o =    12.59 + 62 + 100;
+      Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
       dataArray.push_back(DataInfo(311,"beam_s311_20",1,3,20.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(311,"beam_s311_25",1,3,25.0,364,85.0,70.00,5,7.0,10,o));
