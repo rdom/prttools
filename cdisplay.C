@@ -179,7 +179,7 @@ void MSelector::SlaveBegin(TTree *){
   hLes=new TH1F("hLeAs","",2000,0,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",prt_maxch,0,prt_maxch);
-  hTof=new TH1F("hTof","",2000,65,85);
+  hTof=new TH1F("hTof","",2000,25,40);
   //hTof=new TH1F("hTof","",2000,-606,805);
 
   prt_axisTime800x500(hTot,"TOT time, [ns]");
@@ -250,8 +250,8 @@ Bool_t MSelector::Process(Long64_t entry){
       else  thitCount2++;
       
       if(ch == gTrigger && gTrigger>0) triggerLe = hit.GetLeadTime();
-      if(ch==1392) tof1 = hit.GetLeadTime();
-      if(ch==1398) tof2 = hit.GetLeadTime();
+      if(ch==1392 && tof1==0) tof1 = hit.GetLeadTime();
+      if(ch==1398 && tof2==0) tof2 = hit.GetLeadTime();
     }
   }
   if(tof1!=0 && tof2!=0) {    
@@ -668,10 +668,6 @@ void MyMainFrame::DoDraw(){
   fCheckBtn1->SetState(kButtonUp);
 
   prt_drawDigi("m,p,v\n",prt_geometry);
-  prt_cdigi->cd();
-  prt_cdigi_palette->Draw();
-  
-  //(new TPaletteAxis(0.90,0.1,0.94,0.90,prt_hdigi[0]))->Draw();  
 
   updatePlot(gComboId);
 

@@ -1201,6 +1201,39 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(310,"beam_17244184701",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(310,"beam_17244185431",1,3,150.0,364,85.0,70.00,5,7.0,10,o));
     }
+
+
+    // improved TOF
+    study[311]="Angle scan, bar, 3LS lens, all with grease; HV +150V; th offset 600" ;
+    {
+      Double_t o =    12.59 + 62 + 100;
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      dataArray.push_back(DataInfo(311,"beam_s311_20",1,3,20.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_25",1,3,25.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_30",1,3,30.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_50",1,3,50.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_70",1,3,70.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_90",1,3,90.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_110",1,3,110.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_130",1,3,130.0,364,85.0,70.00,5,7.0,10,o));
+
+      dataArray.push_back(DataInfo(311,"beam_s311_35",1,3,35.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_40",1,3,40.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_45",1,3,45.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_55",1,3,55.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_60",1,3,60.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_75",1,3,75.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_80",1,3,80.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_85",1,3,85.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_95",1,3,95.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_100",1,3,100.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_105",1,3,105.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_115",1,3,115.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_120",1,3,120.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_125",1,3,125.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_135",1,3,135.0,364,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(311,"beam_s311_140",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
+    }
     
     
     
