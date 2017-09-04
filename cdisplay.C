@@ -1308,9 +1308,10 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(gMode>=100) fEdit1->SetText("600 0 50");
   
   
-  if(ginFile.Contains("th_")) fEdit1->SetText("400 0 60");
   if(ginFile.Contains("beam")) fEdit1->SetText("400 0 50");
   if(ginFile.Contains("aug2017")) fEdit1->SetText("400 -200 -150");
+  if(ginFile.Contains("th_")) fEdit1->SetText("400 0 60");
+  if(ginFile.Contains("pilas")) fEdit1->SetText("400 20 40");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   
   fEdit3->SetText("0 0");
