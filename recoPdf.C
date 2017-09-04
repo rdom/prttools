@@ -128,32 +128,34 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
       }
 
-      Bool_t t1(true),t2(false),t3h(false),t3v(false);
+      Bool_t t1(1),t2(0),t3h(0),t3v(0);
       Bool_t tof1(1), tof2(1);
-      Bool_t hodo1(1), hodo2(1);
+      Bool_t hodo1(0), hodo2(0);
       
       for(Int_t h=0; h<nHits; h++) {
       	fHit = prt_event->GetHit(h);
       	Int_t gch=fHit.GetChannel();	
 	
-	//      	if(gch==trigT2)
-      	  t2=true;
-      	if(gch==trigT3h)
-      	  t3h=true;
+	//if(gch==trigT2)
+	  t2=true;
+	if(gch==trigT3h)
+	  t3h=true;
 	if(gch==trigT3v)
       	  t3v=true;
-
 	
-	 // if(gch>=1350 && gch<=1351) hodo1=true;
-	 // if(gch>=1369 && gch<=1370) hodo2=true;	  
+	
+	if(gch>=1350 && gch<=1351)
+	  hodo1=true;
+	// if(gch>=1369 && gch<=1370)
+	  hodo2=true;	  
       }
       
       if(!( t1 && t2 && t3h && t3v && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    // if(prt_pid==2 && hll[2]->GetEntries()>4500)continue;
-    // if(prt_pid==4 && hll[4]->GetEntries()>4500) continue;    
+    // if(prt_pid==2 && hll[2]->GetEntries()>3500)continue;
+    // if(prt_pid==4 && hll[4]->GetEntries()>3500) continue;    
     
     Int_t mult[prt_maxch];
     memset(mult, 0, sizeof(mult));
@@ -180,7 +182,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<0 || time>50) continue;
+	if(time<13 || time>30) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
