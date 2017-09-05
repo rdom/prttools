@@ -123,10 +123,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();    
     
     if(prt_event->GetType()==0){
-      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
-      }
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
+      // }
 
       Bool_t t1(1),t2(0),t3h(0),t3v(0);
       Bool_t tof1(1), tof2(1);
@@ -136,17 +136,18 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	fHit = prt_event->GetHit(h);
       	Int_t gch=fHit.GetChannel();	
 	
-	//if(gch==trigT2)
-	  t2=true;
+	if(gch==trigT2)
+	    t2=true;
 	if(gch==trigT3h)
-	  t3h=true;
+	    t3h=true;
 	if(gch==trigT3v)
-      	  t3v=true;
+	  t3v=true;
 	
 	
 	if(gch>=1350 && gch<=1351)
 	  hodo1=true;
-	// if(gch>=1369 && gch<=1370)
+	//	if(gch>=1369 && gch<=1370)
+	if(gch>=1367 && gch<=1372)
 	  hodo2=true;	  
       }
       
@@ -154,8 +155,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    // if(prt_pid==2 && hll[2]->GetEntries()>3500)continue;
-    // if(prt_pid==4 && hll[4]->GetEntries()>3500) continue;    
+    // if(prt_pid==2 && hll[2]->GetEntries()>7000)continue;
+    // if(prt_pid==4 && hll[4]->GetEntries()>7000) continue;    
     
     Int_t mult[prt_maxch];
     memset(mult, 0, sizeof(mult));
@@ -182,7 +183,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<13 || time>30) continue;
+	if(time<0 || time>50) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
