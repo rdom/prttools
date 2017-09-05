@@ -1234,6 +1234,16 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(311,"beam_s311_135",1,3,135.0,364,85.0,70.00,5,7.0,10,o));
       dataArray.push_back(DataInfo(311,"beam_s311_140",1,3,140.0,364,85.0,70.00,5,7.0,10,o));
     }
+
+    
+    study[312]="Theta scan, phi = 10; bar, 3LS lens, all with grease; HV +150V; th offset 600" ;
+    {
+      Double_t o =    12.59 + 62 + 20-63;
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      dataArray.push_back(DataInfo(311,"beam_s311_20",1,3,20.0,364,85.0,70.00,5,7.0,10,o));
+    }
+
+
     
     
     
