@@ -343,7 +343,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
 	  timeLe += simOffset;
 	}	
-	if(!laser) timeLe += simOffset;
+	if(!laser && gMode!=5) timeLe += simOffset;
       }   
       
       if(gMode==5){
