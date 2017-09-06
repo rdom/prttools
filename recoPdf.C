@@ -121,6 +121,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();    
+    std::cout<<"prt_angle "<<prt_theta<<std::endl;
+    
     
     if(prt_event->GetType()==0){
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
@@ -289,7 +291,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   gStyle->SetOptTitle(0);
   prt_normalize(hll[4],hll[2]);
   hll[4]->GetYaxis()->SetNdivisions(9,5,0);
-   
+  
   TF1 *ff;
   Double_t sep(0),esep(0),m1,m2,s1,s2,dm1,dm2,ds1,ds2; 
   if(hll[4]->GetEntries()>10 && hll[2]->GetEntries()>10){

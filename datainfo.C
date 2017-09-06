@@ -1297,11 +1297,12 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(315,"beam_s315_85_5",1,3,85.0,364,85.0,70.00,5,7.0,3,o,5));
       dataArray.push_back(DataInfo(315,"beam_s315_90_5",1,3,90.0,364,85.0,70.00,5,7.0,3,o,5));
       dataArray.push_back(DataInfo(315,"beam_s315_95_5",1,3,95.0,364,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_100_5",1,3,110.0,364,85.0,70.00,5,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_100_5",1,3,100.0,364,85.0,70.00,5,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_110_5",1,3,110.0,364,85.0,70.00,5,7.0,3,o,5));
       dataArray.push_back(DataInfo(315,"beam_s315_120_5",1,3,120.0,364,85.0,70.00,5,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_130_5",1,3,130.0,364,85.0,70.00,5,7.0,3,o,5));
       dataArray.push_back(DataInfo(315,"beam_s315_145_5",1,3,145.0,364,85.0,70.00,5,7.0,3,o,5));      
       dataArray.push_back(DataInfo(315,"beam_s315_150_5",1,3,150.0,364,85.0,70.00,5,7.0,3,o,5));
-
     }
     
   }
