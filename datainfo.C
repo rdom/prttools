@@ -14,6 +14,7 @@ class DataInfo {
   Int_t _radiatorId;
   Int_t _lensId;
   Double_t _angle;
+  Double_t _phi;
   Double_t _z;
   Double_t _x;
   Double_t _xstep;
