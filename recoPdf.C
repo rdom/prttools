@@ -12,7 +12,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   
   Int_t studyId;
   TString tpath=path;
-  tpath.ReplaceAll("oct16","");
+  tpath.ReplaceAll("aug17","");
   sscanf(tpath, "%*[^0-9]%d{3}",&studyId);
 
   if(!prt_init(path,1,Form("data/recopdf_%d",studyId))) return;

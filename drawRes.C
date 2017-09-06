@@ -8,11 +8,12 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   Int_t studyId;
   sscanf(in.Data(),"%*[^0-9]%d{3}",&studyId);
   std::cout<<"studyId "<<studyId <<std::endl;  
-  fSavePath = "data/drawRes";
+  prt_savepath = "data/drawRes";
   //TChain ch("reco"); ch.Add("r152_ad1.root");
   TChain ch("reco"); ch.Add(in);
   
-  Double_t theta,sep,esep,sigma,mom,nph;
+  Double_t sep,esep,sigma,mom,nph;
+  Int_t theta;
   ch.SetBranchAddress("theta",&theta);
   ch.SetBranchAddress("sep",&sep);
   //ch.SetBranchAddress("esep",&esep);
@@ -51,7 +52,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   
   for(Int_t i=0; i<ch.GetEntries()-1; i++){
     ch.GetEvent(i);
-    if(theta>155) continue;
+    if(theta>155 || theta<20) continue;
     Int_t sid = std::distance(vec.begin(),std::find(vec.begin(), vec.end(),sigma));
 
     if(sid==1 && mom==0) continue;
@@ -63,7 +64,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     g[sid]->SetPointEYhigh(ng[sid],err);
     err = sqrt(esep*esep + 0.1*0.1);
     g[sid]->SetPointEYlow(ng[sid]++,err);
-    std::cout<<mom/1000.<<" "<<theta<<" "<<sep <<std::endl;
+    std::cout<<mom<<" "<<theta<<" "<<sep <<std::endl;
     
   }
   
@@ -71,13 +72,13 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     g[i]->Sort();
     gn[i]->Sort();
     g[i]->GetXaxis()->SetLimits(15,160);
-    g[i]->GetYaxis()->SetRangeUser(0,10);
+    g[i]->GetYaxis()->SetRangeUser(0,6);
     if(studyId>159) g[i]->GetYaxis()->SetRangeUser(0,5);
     // if(i==0) g[i]->Draw("apl");
     // g[i]->Draw("same pl");
   }
 
-  canvasAdd( Form("hSep_%d",studyId),800,500);
+  prt_canvasAdd( Form("hSep_%d",studyId),800,500);
 
   if(beamdata){
     g[0]->SetLineColor(1);
@@ -89,15 +90,15 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     gc[i]->SetLineStyle(1);
   }
   
-  // if(beamdata){
-  //   g[0]->Draw("apl");
-  //   gc[0]->Draw("same p");
-  //   g[1]->Draw("same pl");
-  //   gc[1]->Draw("same p");  
-  // }else{
-  //   g[1]->Draw("apl");
-  //   gc[1]->Draw("same p");
-  // }
+  if(beamdata){
+    g[0]->Draw("apl");
+    gc[0]->Draw("same p");
+    g[1]->Draw("same pl");
+    gc[1]->Draw("same p");  
+  }else{
+    g[1]->Draw("apl");
+    gc[1]->Draw("same p");
+  }
   
 
   Int_t colors[]={1,kGreen+1,kRed+2,kRed,4,5,6,7,8,9,10};
@@ -119,7 +120,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   }
   leg->Draw();
 
-  canvasAdd( Form("hNph_%d",studyId),800,500);
+  prt_canvasAdd( Form("hNph_%d",studyId),800,500);
   gn[0]->Sort();
   if(beamdata) gn[0]->Draw("apl");
   else  gn[0]->Draw("apl");
@@ -130,5 +131,5 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   gn[3]->SetMarkerColor(kRed+2);  
   gn[3]->Draw("same pl");
   
-  canvasSave(0,0);
+  prt_canvasSave(0,0);
 }
