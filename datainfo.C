@@ -32,8 +32,8 @@ class DataInfo {
 
 public:
   DataInfo(){_studyId=-1;}; 	//the default constructor
-  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t m, Double_t beamDimension=10, Double_t simToffset=0):
-    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0),_beamDimension(beamDimension),_simToffset(simToffset){
+  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t m, Double_t beamDimension=10, Double_t simToffset=0, Double_t phi=0):
+    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0),_beamDimension(beamDimension),_simToffset(simToffset),_phi(phi){
   };
 
   ~DataInfo() {}
@@ -44,7 +44,7 @@ public:
   };
 
   bool operator == (const DataInfo& d) const{
-    return _studyId == d._studyId && _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum &&_beamDimension == d._beamDimension;
+    return _studyId == d._studyId && _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum &&_beamDimension == d._beamDimension && _phi==d._phi;
   }
 
   bool operator < (const DataInfo& d) const{
@@ -54,6 +54,7 @@ public:
     if(_studyId==5 && _z>d._z) return true; //x
     if(_studyId>100 && _studyId<170 &&_angle<d._angle) return true; //angle
     if(_studyId>169 && _studyId<180 && _momentum < d._momentum) return true; //momentum
+    if(_studyId==313 && _momentum < d._momentum) return true; //momentum
     if(_studyId>179 && _studyId<190 && _z < d._z) return true; //z
     if(_studyId>=200 && _angle<d._angle) return true; //angle
     return false; 
@@ -80,6 +81,7 @@ public:
     info += Form("Radiator Id = %d;",_radiatorId);
     info += Form("Lens Id = %d;",_lensId);
     info += Form("Angle = %f;",_angle);
+    info += Form("Phi = %f [mm];",_phi);
     info += Form("X = %f [mm];",_x);
     info += Form("Z = %f [mm];",_z);
     info += Form("X Step = %f [mm];",_xstep);
@@ -96,6 +98,7 @@ public:
   Int_t getRadiatorId() const {return _radiatorId; }
   Int_t getLensId() const {return _lensId; }
   Double_t getAngle() const { return _angle; }
+  Double_t getPhi() const { return _phi; }
   Double_t getZ() const { return _z; }
   Double_t getX() const { return _x; }
   Double_t getXstep() const { return _xstep; }
