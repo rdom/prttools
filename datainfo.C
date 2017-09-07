@@ -1309,6 +1309,7 @@ void datainfo_init(){
     {
       Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
+      dataArray.push_back(DataInfo(316,"beam_s316_15",2,2,15.0,364,85.0,70.00,5,7.0,3,o,0));
       dataArray.push_back(DataInfo(316,"beam_s316_20",2,2,20.0,364,85.0,70.00,5,7.0,3,o,0));
       dataArray.push_back(DataInfo(316,"beam_s316_25",2,2,25.0,364,85.0,70.00,5,7.0,3,o,0));
       dataArray.push_back(DataInfo(316,"beam_s316_30",2,2,30.0,364,85.0,70.00,5,7.0,3,o,0));
