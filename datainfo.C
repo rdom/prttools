@@ -1304,7 +1304,39 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(315,"beam_s315_145_5",1,3,145.0,364,85.0,70.00,5,7.0,3,o,5));      
       dataArray.push_back(DataInfo(315,"beam_s315_150_5",1,3,150.0,364,85.0,70.00,5,7.0,3,o,5));
     }
-    
+
+    study[316]="Theta scan, phi = 0 ; plate + 2LC lens; HV +150V;";
+    {
+      Double_t o =    12.59 + 62 + 20-63;
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
+      dataArray.push_back(DataInfo(316,"beam_s316_20",2,2,20.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_25",2,2,25.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_30",2,2,30.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_40",2,2,40.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_50",2,2,50.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_60",2,2,60.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_70",2,2,70.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_80",2,2,80.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_90",2,2,90.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_100",2,2,100.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_110",2,2,110.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_120",2,2,120.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_130",2,2,130.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_140",2,2,140.0,364,85.0,70.00,5,7.0,3,o,0));
+
+      dataArray.push_back(DataInfo(316,"beam_s316_125",2,2,125.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_55",2,2,55.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_45",2,2,45.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_35",2,2,35.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_65",2,2,65.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_75",2,2,75.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_85",2,2,85.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_95",2,2,95.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_105",2,2,105.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_115",2,2,115.0,364,85.0,70.00,5,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s316_135",2,2,135.0,364,85.0,70.00,5,7.0,3,o,0));
+
+    }
   }
 }
 
