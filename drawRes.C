@@ -28,12 +28,14 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     ng[i]=0;
     g[i] = new TGraphAsymmErrors();
     g[i]->SetTitle(";#theta [degree]; separation [s.d.]");
+    g[i]->SetName("gr");
     g[i]->SetMarkerStyle(21);
     g[i]->SetMarkerSize(0.8);
     g[i]->SetLineColor(i+1);
 
     gn[i] = new TGraphAsymmErrors();
     gn[i]->SetTitle(";#theta [degree]; detected photons [#]");
+    g[i]->SetName("gr");
     gn[i]->SetMarkerStyle(21);
     gn[i]->SetMarkerSize(0.8);
     gn[i]->SetLineColor(i+1);
@@ -72,7 +74,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     g[i]->Sort();
     gn[i]->Sort();
     g[i]->GetXaxis()->SetLimits(15,160);
-    g[i]->GetYaxis()->SetRangeUser(0,6);
+    g[i]->GetYaxis()->SetRangeUser(0,5);
     if(studyId>159) g[i]->GetYaxis()->SetRangeUser(0,5);
     // if(i==0) g[i]->Draw("apl");
     // g[i]->Draw("same pl");
