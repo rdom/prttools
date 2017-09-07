@@ -1342,7 +1342,10 @@ void datainfo_init(){
     {
       Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(316,"beam_s317_20",2,6,15.0,364,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s317_20",2,6,20.0,364,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s317_25",2,6,25.0,364,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s317_40",2,6,40.0,364,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(316,"beam_s317_50",2,6,50.0,364,85.0,70.00,0,7.0,3,o,0));
     }      
   }
 }
