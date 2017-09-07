@@ -35,7 +35,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
 
     gn[i] = new TGraphAsymmErrors();
     gn[i]->SetTitle(";#theta [degree]; detected photons [#]");
-    g[i]->SetName("gr");
+    gn[i]->SetName("gr");
     gn[i]->SetMarkerStyle(21);
     gn[i]->SetMarkerSize(0.8);
     gn[i]->SetLineColor(i+1);
