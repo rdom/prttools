@@ -121,9 +121,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();    
-    std::cout<<"prt_angle "<<prt_theta<<std::endl;
-    
-    
     if(prt_event->GetType()==0){
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
       // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
