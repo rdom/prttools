@@ -1372,9 +1372,9 @@ void datainfo_init(){
     {
       Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(319,"beam_s319_1",2,6,20.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_2",2,6,20.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_3",2,6,20.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s319_1",2,6,20.0,441,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s319_2",2,6,20.0,442,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s319_3",2,6,20.0,443,85.0,70.00,0,7.0,3,o,0));
     }
     
 
