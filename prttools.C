@@ -62,8 +62,8 @@ const Int_t prt_maxnametdc=10000;
 
 TRandom  prt_rand;
 TChain*  prt_ch = 0;
-Int_t    prt_entries(0),prt_theta(0),prt_particle(0),prt_geometry(2017);
-Double_t prt_test1(0),prt_test2(0),prt_mom(0);
+Int_t    prt_entries(0),prt_theta(0),prt_particle(0),prt_geometry(2017),prt_beamx(0),prt_beamz(0);
+Double_t prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
 TString  prt_savepath(""),prt_info("");
 TH2F*    prt_hdigi[prt_nmcp];
 TPad*    prt_hpads[prt_nmcp], *prt_hpglobal;
@@ -669,6 +669,8 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     prt_theta = prt_event->GetAngle() + 0.01;
     prt_particle =  prt_event->GetParticle();
     prt_geometry= prt_event->GetGeometry();
+    prt_beamx= prt_event->GetBeamX();
+    prt_beamz= prt_event->GetBeamZ();    
     prt_test1 = prt_event->GetTest1();
     prt_test2 = prt_event->GetTest2();
   }
@@ -730,6 +732,8 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     prt_theta = prt_event->GetAngle() + 0.01;
     prt_particle =  prt_event->GetParticle();
     prt_geometry= prt_event->GetGeometry();
+    prt_beamx= prt_event->GetBeamX();
+    prt_beamz= prt_event->GetBeamZ();
     prt_test1 = prt_event->GetTest1();
     prt_test2 = prt_event->GetTest2();
   }

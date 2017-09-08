@@ -102,7 +102,6 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     gc[1]->Draw("same p");
   }
   
-
   Int_t colors[]={1,kGreen+1,kRed+2,kRed,4,5,6,7,8,9,10};
   
   TLegend *leg = new TLegend(0.55,0.65,0.75,0.88);

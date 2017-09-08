@@ -281,8 +281,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   prt_drawDigi("m,p,v\n",2017,1.3,0);
   prt_canvasAdd(prt_cdigi);
 
-  TString name = Form("tis_%d_%d_%1.1f_m%1.1f.root",studyId,prt_theta,sigma,prt_mom);
-  if(path.Contains("C.root")) name = Form("tid_%d_%d_%1.1f_m%1.1f.root",studyId,prt_theta,sigma,prt_mom);
+  TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz);
+  if(path.Contains("C.root")) name =  "tid"+ name;
+  else name = "tis"+ name;
+  
   prt_canvasAdd("ll_"+name,800,500);
   
   gStyle->SetOptStat(0);
@@ -372,6 +374,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   TFile fc(path,"recreate");
   TTree *tc = new TTree("reco","reco");
   tc->Branch("theta",&prt_theta,"prt_theta/I");
+  tc->Branch("phi",&prt_phi,"prt_phi/D");
   tc->Branch("sep",&sep,"sep/D");
   tc->Branch("esep",&esep,"esep/D");
   tc->Branch("sigma",&sigma,"sigma/D");
@@ -379,6 +382,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   tc->Branch("nph",&nph,"nph/D");
   tc->Branch("r1",&r1,"r1/D");
   tc->Branch("r2",&r2,"r2/D");
+  tc->Branch("beamz",&prt_beamz,"prt_beamz/I");
+  tc->Branch("beamx",&prt_beamx,"prt_beamx/I");
   tc->Branch("nforpdf",&nforpdf,"nforpdf/I");
   tc->Fill();
   tc->Write();
