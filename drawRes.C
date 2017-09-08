@@ -52,7 +52,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   Int_t size=vec.size();
   bool beamdata = (vec[0]<0.1)? true: false;
   
-  for(Int_t i=0; i<ch.GetEntries()-1; i++){
+  for(Int_t i=0; i<ch.GetEntries(); i++){
     ch.GetEvent(i);
     if(theta>155 || theta<20) continue;
     Int_t sid = std::distance(vec.begin(),std::find(vec.begin(), vec.end(),sigma));
