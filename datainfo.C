@@ -1379,7 +1379,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(319,"beam_s319_x25" ,2,6,20.0,447,60.0,70.00,0,7.0,3,o,0));
     }
 
-    study[320]="theta scan; phi = 5 ; plate + 3LC lens";
+    study[320]="Theta scan; phi = 5 ; plate + 3LC lens";
     {
       Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi

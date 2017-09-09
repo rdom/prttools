@@ -144,7 +144,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	
 	
 	//if(gch>=1350 && gch<=1351)
-	if(gch>=1349 && gch<=1352)
+	//if(gch>=1349 && gch<=1352)
 	  hodo1=true;
 	//	if(gch>=1369 && gch<=1370)
 	// if(gch>=1367 && gch<=1372)

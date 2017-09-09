@@ -175,7 +175,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   // if(entry >1000 ) return kTRUE;
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
-  Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(12.59-59);
+  Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(31.6);
   Int_t multT1(0), multT2(0), multT3v(0), multT3h(0), multTof1(0), multTof2(0);
   
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
@@ -343,7 +343,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
 	  timeLe += simOffset;
 	}	
-	if(!laser && gMode!=5) timeLe += simOffset;
+	if(!laser && gMode!=5) timeLe += 12.59-59; //simOffset;
       }   
       
       if(gMode==5){
