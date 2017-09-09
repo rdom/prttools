@@ -1383,20 +1383,20 @@ void datainfo_init(){
     {
       Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(319,"beam_s319_20",2,6,20.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_25",2,6,25.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_30",2,6,30.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_40",2,6,40.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_50",2,6,50.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_60",2,6,60.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_70",2,6,70.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_80",2,6,80.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_90",2,6,90.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_100",2,6,100.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_110",2,6,110.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_120",2,6,120.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_130",2,6,130.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(319,"beam_s319_140",2,6,140.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_20",2,6,20.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_25",2,6,25.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_30",2,6,30.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_40",2,6,40.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_50",2,6,50.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_60",2,6,60.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_70",2,6,70.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_80",2,6,80.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_90",2,6,90.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_100",2,6,100.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_110",2,6,110.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_120",2,6,120.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_130",2,6,130.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(319,"beam_s320_140",2,6,140.0,447,85.0,70.00,0,7.0,3,o,0));
     }
 
     
