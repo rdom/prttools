@@ -157,7 +157,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     // if(prt_pid==2 && hll[2]->GetEntries()>7000)continue;
     // if(prt_pid==4 && hll[4]->GetEntries()>7000) continue;    
 
-    if(nHits<50) continue;
     Int_t mult[prt_maxch];
     memset(mult, 0, sizeof(mult));
     for(Int_t i=0; i<nHits; i++){

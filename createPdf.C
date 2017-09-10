@@ -86,7 +86,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       Bool_t t1(1),tof1(1), tof2(1);
       Bool_t t2(0),t3h(0),t3v(0); 
       Bool_t hodo1(0), hodo2(0);
-      if(nHits<50) continue;
+      
       for(Int_t h=0; h<nHits; h++) {
       	hit = prt_event->GetHit(h);
       	Int_t gch=hit.GetChannel();
