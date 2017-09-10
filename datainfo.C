@@ -1342,26 +1342,26 @@ void datainfo_init(){
     {
       Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(316,"beam_s317_20",2,6,20.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_25",2,6,25.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_30",2,6,30.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_40",2,6,40.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_50",2,6,50.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_55",2,6,55.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_60",2,6,60.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_70",2,6,70.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_80",2,6,80.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_90",2,6,90.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_100",2,6,100.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_110",2,6,110.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_120",2,6,120.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_130",2,6,130.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_140",2,6,140.0,447,85.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(316,"beam_s317_125",2,6,125.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_20",2,6,20.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_25",2,6,25.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_30",2,6,30.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_40",2,6,40.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_50",2,6,50.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_55",2,6,55.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_60",2,6,60.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_70",2,6,70.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_80",2,6,80.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_90",2,6,90.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_100",2,6,100.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_110",2,6,110.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_120",2,6,120.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_130",2,6,130.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_140",2,6,140.0,447,85.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(317,"beam_s317_125",2,6,125.0,447,85.0,70.00,0,7.0,3,o,0));
       
     }      
 
-    study[318]="Theta scan, phi = 5 ; plate + 3LC lens";
+    study[318]="Theta scan, phi = 5 ; plate + 3LC lens; bobbles"; 
     {
       Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
@@ -1463,6 +1463,14 @@ void datainfo_init(){
       Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
       dataArray.push_back(DataInfo(324,"beam_s324_5x5",2,6,20.0,447,85.0,70.00,0,7.0,3,o,0));
+    }
+
+    study[325]="X edge scan; theta=25; phi=0; plate + cookies + 3LC lens;";
+    {
+      Double_t o =    12.59 + 62 + 20-63;
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
+      dataArray.push_back(DataInfo(325,"beam_s324_x105",2,6,25.0,447,190.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(325,"beam_s324_x95" ,2,6,25.0,447,180.0,70.00,0,7.0,3,o,0));
     }
 
     
