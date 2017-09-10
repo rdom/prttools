@@ -1469,8 +1469,8 @@ void datainfo_init(){
     {
       Double_t o =    12.59 + 62 + 20-63;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(325,"beam_s324_x105",2,6,25.0,447,190.0,70.00,0,7.0,3,o,0));
-      dataArray.push_back(DataInfo(325,"beam_s324_x95" ,2,6,25.0,447,180.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(325,"beam_s325_x105",2,6,25.0,447,190.0,70.00,0,7.0,3,o,0));
+      dataArray.push_back(DataInfo(325,"beam_s325_x95" ,2,6,25.0,447,180.0,70.00,0,7.0,3,o,0));
     }
 
     
