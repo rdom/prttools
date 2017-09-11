@@ -135,7 +135,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	fHit = prt_event->GetHit(h);
       	Int_t gch=fHit.GetChannel();	
 	
-	//	if(gch==trigT2)
+       	if(gch==trigT2)
 	    t2=true;
 	if(gch==trigT3h)
 	    t3h=true;
@@ -143,7 +143,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	    t3v=true;
 	
 	
-	//if(gch>=1350 && gch<=1351)
+	if(gch>=1350 && gch<=1351)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)
 	  //if(gch>=1367 && gch<=1372)
