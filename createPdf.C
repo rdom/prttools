@@ -75,7 +75,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   if(aentries>=0) entries = aentries;
   Int_t start = (path.Contains("S.root"))? 4000 : 0;
   start = (path.Contains("C.root"))? 50000 : 0; 
-  for (Int_t ievent=start; ievent<1000000; ievent++){ //entries
+  for (Int_t ievent=start; ievent<entries; ievent++){ //entries
     prt_nextEvent(ievent,1000);
 
     Int_t nHits =prt_event->GetHitSize();
