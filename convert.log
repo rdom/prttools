@@ -435,3 +435,16 @@ hadd /d/proc/aug17/332/beam_s332_30.hld.root beam_17255114841.hld.root beam_1725
 +100m beam_17255160454.hld
 
 cp beam_17255152659.hld.root beam_17255152233.hld.root beam_17255151854.hld.root beam_17255151437.hld.root beam_17255151040.hld.root beam_17255150625.hld.root beam_17255150223.hld.root beam_17255145801.hld.root beam_17255145344.hld.root beam_17255144946.hld.root beam_17255144431.hld.root beam_17255143352.hld.root beam_17255141534.hld.root beam_17255141056.hld.root beam_17255140703.hld.root beam_17255134047.hld.root beam_17255134435.hld.root beam_17255134834.hld.root beam_17255135222.hld.root beam_17255135819.hld.root beam_17255140213.hld.root beam_17255153345.hld.root beam_17255153904.hld.root beam_17255154411.hld.root beam_17255154850.hld.root beam_17255155308.hld.root beam_17255155835.hld.root beam_17255160454.hld.root /d/proc/aug17/333/.
+
+
+# 334 theta scan bar+grease+3LS @ 10 GeV/c @ phi=0
+
+hadd /d/proc/aug17/334/beam_s334_20.hld.root beam_17255191030.hld.root beam_17255192118.hld.root beam_17255193201.hld.root beam_17255194246.hld.root beam_17255195249.hld.root beam_17255200143.hld.root beam_17255201043.hld.root beam_17255201925.hld.root beam_17255202810.hld.root beam_17255203649.hld.root beam_17255204534.hld.root beam_17255205413.hld.root beam_17255210258.hld.root beam_17255211123.hld.root beam_17255212019.hld.root beam_17255213222.hld.root 
+
+hadd /d/proc/aug17/334/beam_s334_30.hld.root beam_17255213413.hld.root beam_17255215058.hld.root beam_17255220707.hld.root 
+
+hadd /d/proc/aug17/334/beam_s334_60.hld.root beam_17255221737.hld.root beam_17255224425.hld.root beam_17255231056.hld.root 
+
+hadd /d/proc/aug17/334/beam_s334_25.hld.root beam_17255231438.hld.root beam_17255233338.hld.root beam_17255235102.hld.root beam_17256000602.hld.root beam_17256001825.hld.root beam_17256002600.hld.root beam_17256003347.hld.root beam_17256004129.hld.root beam_17256004901.hld.root beam_17256005636.hld.root beam_17256010401.hld.root beam_17256011136.hld.root beam_17256011918.hld.root beam_17256012658.hld.root beam_17256013437.hld.root beam_17256014211.hld.root beam_17256014946.hld.root beam_17256015712.hld.root beam_17256020454.hld.root beam_17256021212.hld.root beam_17256021954.hld.root beam_17256022741.hld.root beam_17256023523.hld.root beam_17256024310.hld.root beam_17256025049.hld.root beam_17256025837.hld.root beam_17256030625.hld.root beam_17256031413.hld.root beam_17256032201.hld.root beam_17256032958.hld.root beam_17256033753.hld.root beam_17256034542.hld.root beam_17256035349.hld.root beam_17256040213.hld.root beam_17256041018.hld.root beam_17256041759.hld.root beam_17256042546.hld.root beam_17256043334.hld.root beam_17256044130.hld.root beam_17256044924.hld.root beam_17256045734.hld.root beam_17256050530.hld.root beam_17256051337.hld.root beam_17256052201.hld.root beam_17256052949.hld.root beam_17256053723.hld.root beam_17256054511.hld.root 
+
+hadd /d/proc/aug17/334/beam_s334_120.hld.root  beam_17256055216.hld.root beam_17256060141.hld.root beam_17256061107.hld.root beam_17256062028.hld.root beam_17256062949.hld.root beam_17256063931.hld.root beam_17256064836.hld.root beam_17256065807.hld.root beam_17256070727.hld.root
