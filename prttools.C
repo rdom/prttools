@@ -904,8 +904,7 @@ void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_
       
       cc->Modified();
       cc->Update();
-    
-      cc->Print(path+"/"+name+".png");
+      cc->SaveAs(path+"/"+name+".png");
       if(what==0) cc->Print(path+"/"+name+".eps");
       if(what==0) cc->Print(path+"/"+name+".pdf");
       if(what==0 || what==2) cc->Print(path+"/"+name+".root");
@@ -964,7 +963,7 @@ void prt_canvasDel(TString name="c"){
 // what = 0 - save in png, pdf, eps, root formats
 // what = 1 - save in png format
 // what = 2 - save in png and root format
-void prt_canvasSave(Int_t what=0, Int_t style=0){
+void prt_canvasSave(Int_t what=1, Int_t style=0){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
   TString path = prt_createDir();
