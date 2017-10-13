@@ -431,6 +431,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   
 
   prt_cdigi->cd();
+  delete prt_cdigi_palette;
   prt_cdigi_palette = new TPaletteAxis(0.82,0.1,0.86,0.90,(TH1 *) prt_hdigi[nnmax]);
   prt_cdigi_palette->Draw();
   prt_hpads[0]->cd();
