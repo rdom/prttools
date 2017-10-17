@@ -109,7 +109,7 @@ void MSelector::SlaveBegin(TTree *){
   
   for(Int_t i=0; i<maxMult; i++){
     hTotM[i]=new TH1F(Form("hTot%d",i),Form("hTot%d",i),500,min2,max2);
-    hLeM[i]=new TH1F(Form("hLe%d",i),Form("hLe%d",i),5000,-300,300);
+    hLeM[i]=new TH1F(Form("hLe%d",i),Form("hLe%d",i),10000,-300,300);
     fOutput->Add(hTotM[i]);
     fOutput->Add(hLeM[i]);
   }
@@ -176,7 +176,7 @@ void MSelector::SlaveBegin(TTree *){
   }
 
   hTot=new TH1F("hTotA","",500,min2,max2);
-  hLe=new TH1F("hLeA","",2000,-300,300);
+  hLe=new TH1F("hLeA","",10000,-300,300);
   hLes=new TH1F("hLeAs","",2000,0,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",prt_maxch,0,prt_maxch);
@@ -377,7 +377,7 @@ void getTimeOffset(){
       TCutG *cutg = new TCutG("onepeakcut",5);
       cutg->SetVarX("y");
       cutg->SetVarY("x");
-      Double_t range=0.4;
+      Double_t range=0.3;
       cutg->SetPoint(0,mean-range,0.5);
       cutg->SetPoint(1,mean-range,8.5);
       cutg->SetPoint(2,mean+range,8.5);
@@ -397,17 +397,22 @@ void getTimeOffset(){
       for (int i=0;i<hh->GetNbinsY();i++){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
 	Double_t vx(0);
-	if(x>2){
-	  h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
-	  vx = prt_fit((TH1F*)h,0.3,50,0.35).X();
-	  if(vx==0 || fabs(vx-mean)>0.6) vx = mean;
-	}else{
-	  h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);	
-	  vx = prt_fit((TH1F*)h,0.6,50,0.4).X();
-	  if(vx==0 || fabs(vx-mean)>1.5) vx = mean;
-	}
+
+	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
+	vx = prt_fit((TH1F*)h,0.3,50,0.35).X();
+	if(vx==0 || fabs(vx-mean)>0.3) vx = mean;
 	
-	if(fabs(pvx-vx)>0.1) vx += 0.5*(pvx-vx);
+	// if(x>2){
+	//   h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
+	//   vx = prt_fit((TH1F*)h,0.3,50,0.35).X();
+	//   if(vx==0 || fabs(vx-mean)>0.6) vx = mean;
+	// }else{
+	//   h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);	
+	//   vx = prt_fit((TH1F*)h,0.6,50,0.4).X();
+	//   if(vx==0 || fabs(vx-mean)>1.5) vx = mean;
+	// }
+	
+	if(fabs(pvx-vx)>0.05) vx += 0.5*(pvx-vx);
 	
 	gGrDiff[ch]->SetPoint(i,x,vx);
 	gWalk[ch]->SetPoint(i,x,vx-mean);
@@ -1315,8 +1320,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 
 
   fEdit1->SetText("600 20 40");
-  //  fEdit2->SetText("200 1 8");
-  fEdit2->SetText("40 0 6");
+  fEdit2->SetText("200 1 8");
+  // fEdit2->SetText("40 0 6");
   if(gMode>=100) fEdit1->SetText("600 0 50");
   
   
