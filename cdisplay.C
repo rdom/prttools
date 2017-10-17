@@ -372,7 +372,7 @@ void getTimeOffset(){
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
       //hh->RebinY(1);
 
-      mean=30.3;
+      mean=30.2;
 
       TCutG *cutg = new TCutG("onepeakcut",5);
       cutg->SetVarX("y");
@@ -390,7 +390,18 @@ void getTimeOffset(){
       // hh->FitSlicesX(gaust,0,-1,10,"");
       // TGraph * gg = new TGraph((TH1D*)gDirectory->Get("hh_1")); 
       Int_t ch = map_mpc[m][p];
-      gGrDiff[ch] = new TGraph();
+
+      // if(gGrDiff[ch]){
+      // 	for (int i=0;i<hh->GetNbinsY();i++){
+      // 	  gWalk[ch]->SetPoint(i,x,vx-mean);  
+      // 	}
+      // 	return;
+      // }else{	
+      // 	gGrDiff[ch] = new TGraph();
+      // }
+
+
+      
       gWalk[ch] = new TGraph();
       Double_t pvx(mean);
       for (int i=0;i<hh->GetNbinsY();i++){
@@ -399,11 +410,11 @@ void getTimeOffset(){
 	if(x>2){
 	  h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
 	  vx = prt_fit((TH1F*)h,0.3,50,0.35).X();
-	  if(vx==0 || fabs(vx-mean)>0.8) vx = mean;
+	  if(vx==0 || fabs(vx-mean)>0.6) vx = mean;
 	}else{
 	  h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);	
 	  vx = prt_fit((TH1F*)h,0.6,50,0.4).X();
-	  if(vx==0 || fabs(vx-mean)>2) vx = mean;
+	  if(vx==0 || fabs(vx-mean)>1.5) vx = mean;
 	}
 	
 	if(fabs(pvx-vx)>0.1) vx += 0.5*(pvx-vx);
