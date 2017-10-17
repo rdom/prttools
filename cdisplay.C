@@ -391,17 +391,7 @@ void getTimeOffset(){
       // TGraph * gg = new TGraph((TH1D*)gDirectory->Get("hh_1")); 
       Int_t ch = map_mpc[m][p];
 
-      // if(gGrDiff[ch]){
-      // 	for (int i=0;i<hh->GetNbinsY();i++){
-      // 	  gWalk[ch]->SetPoint(i,x,vx-mean);  
-      // 	}
-      // 	return;
-      // }else{	
-      // 	gGrDiff[ch] = new TGraph();
-      // }
-
-
-      
+      gGrDiff[ch] = new TGraph();      
       gWalk[ch] = new TGraph();
       Double_t pvx(mean);
       for (int i=0;i<hh->GetNbinsY();i++){
