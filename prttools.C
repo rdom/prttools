@@ -121,8 +121,9 @@ TF1 *prt_gaust;
 TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1){
   Int_t binmax = h->GetMaximumBin();
   Double_t xmax = h->GetXaxis()->GetBinCenter(binmax);
-  prt_gaust = new TF1("prt_gaust","gaus(0)",xmax-range,xmax+range);
+  prt_gaust = new TF1("prt_gaust","[0]*exp(-0.5*((x-[1])/[2])^2)",xmax-range,xmax+range);
   prt_gaust->SetNpx(500);
+  prt_gaust->SetParNames("const","mean","sigma");
   prt_gaust->SetLineColor(2);
   Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-range),h->GetXaxis()->FindBin(xmax+range));
   Double_t xxmin, xxmax, sigma1(0), mean1(0), sigma2(0), mean2(0);
@@ -132,9 +133,9 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
   if(integral>threshold){
     
     if(peakSearch == 1){
-      prt_gaust->SetParLimits(2,0.005,limit);
       prt_gaust->SetParameter(1,xmax);
       prt_gaust->SetParameter(2,0.2);
+      prt_gaust->SetParLimits(2,0.005,limit);
       h->Fit("prt_gaust","","MQN",xxmin-range, xxmax+range);
     }
     
@@ -178,7 +179,7 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
     sigma1 = prt_gaust->GetParameter(2);
     if(sigma1>10) sigma1=10;
     
-    if(peakSearch == 2){ 
+    if(peakSearch == 2){
       mean2 = (nfound==1) ? prt_gaust->GetParameter(1) : prt_gaust->GetParameter(4);
       sigma2 = (nfound==1) ? prt_gaust->GetParameter(2) : prt_gaust->GetParameter(5);
     }

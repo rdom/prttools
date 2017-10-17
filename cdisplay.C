@@ -372,10 +372,12 @@ void getTimeOffset(){
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
       //hh->RebinY(1);
 
+      mean=30.3;
+
       TCutG *cutg = new TCutG("onepeakcut",5);
       cutg->SetVarX("y");
       cutg->SetVarY("x");
-      Double_t range=0.6;
+      Double_t range=0.4;
       cutg->SetPoint(0,mean-range,0.5);
       cutg->SetPoint(1,mean-range,8.5);
       cutg->SetPoint(2,mean+range,8.5);
@@ -390,20 +392,28 @@ void getTimeOffset(){
       Int_t ch = map_mpc[m][p];
       gGrDiff[ch] = new TGraph();
       gWalk[ch] = new TGraph();
+      Double_t pvx(mean);
       for (int i=0;i<hh->GetNbinsY();i++){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
+	Double_t vx(0);
+	if(x>2){
+	  h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
+	  vx = prt_fit((TH1F*)h,0.3,50,0.35).X();
+	  if(vx==0 || fabs(vx-mean)>0.8) vx = mean;
+	}else{
+	  h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2);	
+	  vx = prt_fit((TH1F*)h,0.6,50,0.4).X();
+	  if(vx==0 || fabs(vx-mean)>2) vx = mean;
+	}
 	
-	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");
-	// cTime->cd();
-	// h->Draw();
-
-	Double_t vx = prt_fit((TH1F*)h,0.4,100).X();
-	if(vx==0 || fabs(vx-mean)>0.6) vx = mean;
+	if(fabs(pvx-vx)>0.1) vx += 0.5*(pvx-vx);
+	
 	gGrDiff[ch]->SetPoint(i,x,vx);
 	gWalk[ch]->SetPoint(i,x,vx-mean);
+	pvx=vx;
 
-	// std::cout<<"vx "<< vx<<std::endl;
-	
+	// cTime->cd();
+	// h->Draw();	
 	// cTime->Update();
 	// cTime->WaitPrimitive();
       }
@@ -827,7 +837,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
       prt_hdigi_temp_updateplot[m] = (TH2F*)prt_hdigi[m]->Clone();
       if(prt_hdigi[m]) prt_hdigi[m]->Reset();
     }
-    TH1F *hSigma = new TH1F("hSigma",";#sigma [ns];entries [#]",300,0,1.5);
+    TH1F *hSigma = new TH1F("hSigma",";#sigma [ns];entries [#]",1000,0,1);
 
     for (Int_t m=0; m <prt_nmcp; m++) {
       for(Int_t p=0; p<prt_npix; p++){
@@ -839,7 +849,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
 	prt_hdigi[m]->Fill(row,col,sigma);
       }
     }
-    prt_drawDigi("m,p,v\n",prt_geometry);
+    prt_drawDigi("m,p,v\n",prt_geometry,-1);
     fBackToHp=true;
 
     cT->cd();
@@ -1304,14 +1314,15 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 
 
   fEdit1->SetText("600 20 40");
-  fEdit2->SetText("200 1 8");
+  //  fEdit2->SetText("200 1 8");
+  fEdit2->SetText("40 0 6");
   if(gMode>=100) fEdit1->SetText("600 0 50");
   
   
   if(ginFile.Contains("beam")) fEdit1->SetText("400 0 50");
   if(ginFile.Contains("aug2017")) fEdit1->SetText("400 -200 -150");
   if(ginFile.Contains("th_")) fEdit1->SetText("400 0 60");
-  if(ginFile.Contains("pilas")) fEdit1->SetText("400 20 40");
+  if(ginFile.Contains("pilas")) fEdit1->SetText("400 28 34");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   
   fEdit3->SetText("0 0");
