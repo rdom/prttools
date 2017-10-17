@@ -368,7 +368,7 @@ void getTimeOffset(){
   TH2F* hh;
   for (Int_t m=0; m <prt_nmcp; m++) {
     for(Int_t p=0; p<prt_npix; p++){
-      Double_t mean = prt_fit(hPTime[m][p],0.5).X();
+      Double_t mean = prt_fit(hPTime[m][p],0.3).X();
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
       //hh->RebinY(1);
 
@@ -484,7 +484,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]};
 	prt_normalize(hh,2);
-	prt_fit(hh[0],0.5,100);
+	prt_fit(hh[0],0.3,100);
 	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
@@ -583,7 +583,7 @@ void MyMainFrame::InterestChanged(){
     prt_normalize(hh,2);
     hh[0]->Draw();
     hPiTime[mcp][pix]->Draw("same");
-    prt_fit(hh[0],0.5,100);
+    prt_fit(hh[0],0.3,100);
     if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
   }
   if(gComboId==2) hPTot[mcp][pix]->Draw();   
@@ -849,7 +849,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
       for(Int_t p=0; p<prt_npix; p++){
 	Int_t col = p/8;
 	Int_t row = p%8;       
-	Double_t sigma = prt_fit(hPTime[m][p],0.5,100).Y();
+	Double_t sigma = prt_fit(hPTime[m][p],0.3,100).Y();
 	hSigma->Fill(sigma);
 	if(sigma>1) sigma = 1;
 	prt_hdigi[m]->Fill(row,col,sigma);
@@ -928,7 +928,7 @@ void MyMainFrame::DoExport(){
 	if(gComboId==0) {
 	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; //,hSTime[m][p]}; 
 	  prt_normalize(hh,2);
-	  prt_fit(hh[0],0.5,1);
+	  prt_fit(hh[0],0.3,1);
 	  hh[0]->Draw();
 	  if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 	  histname=hh[0]->GetName();
@@ -1068,7 +1068,7 @@ void MyMainFrame::DoCheckBtnClecked4(){
       for(Int_t p=0; p<prt_npix; p++){
 	Int_t col = p/8;
 	Int_t row = p%8;
-	Double_t mean = prt_fit(hPTime[m][p],0.5).X();
+	Double_t mean = prt_fit(hPTime[m][p],0.3).X();
 	if(mean>90) mean = 90; 
 	prt_hdigi[m]->Fill(row,col,mean);
       }
