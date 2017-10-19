@@ -172,7 +172,7 @@ void TTSelector::Begin(TTree *){
 }  
 
 Bool_t TTSelector::Process(Long64_t entry){
-  //  if(entry >100000 ) return kTRUE;
+  if(entry >100000 ) return kTRUE;
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
   Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(31.6);
