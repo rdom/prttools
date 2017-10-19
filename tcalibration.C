@@ -172,7 +172,7 @@ void TTSelector::Begin(TTree *){
 }  
 
 Bool_t TTSelector::Process(Long64_t entry){
-  // if(entry >1000 ) return kTRUE;
+  //  if(entry >100000 ) return kTRUE;
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
   Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(31.6);
@@ -337,10 +337,17 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeLe -= gLeOffArr[ch];
 
 	if(!laser && gMode==5){
-	  if(gTrigger==trigT1)   timeLe -= (7.829 +0.32)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree trig1	
-	  if(gTrigger==trigTof1) timeLe -= (24.460+0.32)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof1
-	  if(gTrigger==trigTof2) timeLe += ( 3.998-0.32)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; //25 degree tof2
-
+	  Double_t rad = TMath::Pi()/180.,
+	    zrot=146,
+	    xrot=100.5,
+	    prtangle= fEvent->GetAngle(),
+	    z = fEvent->GetBeamZ(),	  
+	    rot_dist = ((z-zrot)-xrot/cos(prtangle*rad))*tan((90-prtangle)*rad)/1000.;
+	  
+	  if(gTrigger==trigT1)   timeLe -= (7.829 +rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // trig1	
+	  if(gTrigger==trigTof1) timeLe -= (24.460+rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // tof1
+	  if(gTrigger==trigTof2) timeLe += ( 3.998-rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // tof2
+	  
 	  timeLe += simOffset;
 	}	
 	if(!laser && gMode!=5) timeLe += 12.59-59; //simOffset;
@@ -357,12 +364,26 @@ Bool_t TTSelector::Process(Long64_t entry){
       }
 
       if(gMode!=5 || tofpid!=0){
+	Double_t rad = TMath::Pi()/180.0,
+	  zrot=146,
+	  xrot=100.5,
+	  prtangle=fEvent->GetAngle(),
+	  z=fEvent->GetBeamZ(),
+		     b = xrot*tan(0.5*(prtangle-90)*rad),
+		     lenz = (z-zrot+b)/cos((prtangle-90)*rad)+b+zrot;
+
+
+	if(fEvent->GetLens()==6) lenz-=12;
+	if(fEvent->GetLens()==3) lenz-=15;
+	if(fEvent->GetLens()==2) lenz-=14.4;
+	
 	hit.SetTdc(tdc);
 	hit.SetChannel(ch);
 	hit.SetMcpId(map_mcp[ch]);
 	hit.SetPixelId(map_pix[ch]+1);
 	hit.SetLeadTime(timeLe);
 	hit.SetTotTime(timeTot);
+	hit.SetPosition(TVector3(0,0,lenz));
 	fEvent->AddHit(hit);
 	nrhits++;
       }

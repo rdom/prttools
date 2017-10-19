@@ -51,7 +51,7 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   gStyle->SetOptFit(1111);
  
   PrtHit hit;
-  for (auto ievent=0; ievent<prt_entries; ievent++){
+  for (auto ievent=0; ievent<10000; ievent++){
     prt_nextEvent(ievent,1000);
     Int_t counts(0),pid(0);
     Double_t tot(0),time(0);
@@ -102,8 +102,6 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   prt_drawDigi("m,p,v\n",2017,0,0);
   prt_cdigi->SetName(Form("hp_sim_%d_%d",(Int_t)prt_theta,(Int_t)prt_test1));
   prt_canvasAdd(prt_cdigi);
-  prt_cdigi_palette->Draw();
-
 
   prt_canvasAdd("p_le"+ext,800,400);
   prt_fit(hLeA,0.3,100,100).X();
