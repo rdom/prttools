@@ -92,7 +92,12 @@ void procOffsets(TString path="",Int_t corrected=1){
     gr = new TGraph();
     gr->SetPoint(0,prt_theta, xmax2);
     gr->SetName("offsim");    
-    gr->Write();    
+    gr->Write();
+
+    gr = new TGraph();
+    gr->SetPoint(0,prt_theta, xmax1-xmax2);
+    gr->SetName("offdiff");    
+    gr->Write();
     
     efile.Write();
     efile.Close();
