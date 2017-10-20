@@ -12,7 +12,7 @@ void procOffsets(TString path="",Int_t corrected=1){
   
   prt_data_info = getDataInfo(fileid);
  
-  Int_t h1a(0),h1b(400),h2a(0),h2b(400),hbin(15000);//h1a(200),h1b(400)
+  Int_t h1a(0),h1b(50),h2a(0),h2b(50),hbin(5000);//h1a(200),h1b(400)
 
   if(corrected==1){
     h1a=0;
