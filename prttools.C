@@ -701,7 +701,7 @@ bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepa
   prt_ch->SetBranchStatus("fHitArray.fGlobalPos", 0);
   prt_ch->SetBranchStatus("fHitArray.fDigiPos", 0);
   prt_ch->SetBranchStatus("fHitArray.fMomentum", 0);
-  prt_ch->SetBranchStatus("fHitArray.fPosition", 0);
+  // prt_ch->SetBranchStatus("fHitArray.fPosition", 0);
   
   prt_ch->SetBranchStatus("fHitArray.fParentParticleId", 0);
   prt_ch->SetBranchStatus("fHitArray.fNreflectionsInPrizm", 0);
