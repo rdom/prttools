@@ -32,6 +32,7 @@ Double_t tofpi2[]={0,0,72.50,72.50,72.40, 72.20,72.20, 31.95,72.10};
 
 Double_t tofp1[] ={0,0,80.80,75.80,73.80, 73.20,72.65, 32.35,72.30};
 Double_t tofp2[] ={0,0,83.20,77.20,75.00, 73.90,73.40, 33.50,72.90};
+Int_t gg_nevents(0);
    
 Bool_t IsPion(Double_t tof, Int_t mom){  
   return tofpi1[mom]<tof && tof<tofpi2[mom];
@@ -172,7 +173,7 @@ void TTSelector::Begin(TTree *){
 }  
 
 Bool_t TTSelector::Process(Long64_t entry){
-  if(entry >100000 ) return kTRUE;
+  if(gg_nevents >10000 ) return kTRUE;
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
   Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(31.6);
@@ -391,6 +392,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
   
   if(nrhits!=0) {
+    gg_nevents++;
     fEvent->SetParticle(tofpid);
     fEvent->SetTest1(toftime);
     fTree->Fill();

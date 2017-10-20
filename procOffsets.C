@@ -23,42 +23,40 @@ void procOffsets(TString path="",Int_t corrected=1){
   }
   
   TString outdir=path;outdir.Remove(outdir.Last('/'));
-  TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
-  fSavePath = outdir+Form("/%da/%d",prt_data_info.getStudyId(),prt_data_info.getFileId());
-
-  
+  TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));  
   TString insim = path; insim.ReplaceAll("C.root","S.root");
-  PrtInit(path,1);
-  fCh->Add(insim);
-  fNEntries = fCh->GetEntries();
+  
+  if(!prt_init(path,1,outdir+Form("/%da/%d",prt_data_info.getStudyId(),prt_data_info.getFileId()))) return;
+  prt_ch->Add(insim);
 
   TH1F * hLeD  = new TH1F("leD","LE beam data ; LE [ns]; entries [#]",hbin,h1a,h1b);
   TH1F * hLeS  = new TH1F("leS","LE simulation; LE [ns]; entries [#]",hbin,h2a,h2b);
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
 
-  PrtHit fHit;
+  PrtHit hit;
   Int_t maxent(0);
-  for (Int_t ievent=0; ievent<fNEntries; ievent++){
-    PrtNextEvent(ievent,10000);
+  for (Int_t ievent=0; ievent< prt_ch->GetEntries(); ievent++){
+    prt_nextEvent(ievent,10000);
     if(prt_event->GetParticle()!=2212) continue;
     bool bsim(false);
-    TString current_file_name  = fCh->GetCurrentFile()->GetName();
+    TString current_file_name  = prt_ch->GetCurrentFile()->GetName();
     if(current_file_name.Contains("S.root")) bsim = true;
     else maxent++;
     //if(!bsim && maxent>10000) continue;
     
     Double_t time(0);
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){
-      fHit = prt_event->GetHit(i);
+      hit = prt_event->GetHit(i);
 
-      if(fHit.GetChannel()<960 ){
-	if(!bsim) hLeD->Fill(fHit.GetLeadTime());
-	else hLeS->Fill(fHit.GetLeadTime());
+      if(hit.GetChannel()<960 ){
+	if(!bsim) hLeD->Fill(hit.GetLeadTime());
+	else hLeS->Fill(hit.GetLeadTime());
       }
     }
   }
-  canvasAdd("offset",800,400);
+  
+  prt_canvasAdd("offset",800,400);
   hLeS->SetLineColor(kRed);
   hLeS->Draw();
   hLeD->Draw("same");
@@ -71,7 +69,7 @@ void procOffsets(TString path="",Int_t corrected=1){
   leg->AddEntry(hLeS,"simulation","lp");
   leg->Draw();
     
-  canvasSave(1,0);
+  prt_canvasSave(1,0);
 
   if(corrected==0){
     double xmax1 = hLeD->GetXaxis()->GetBinCenter(hLeD->GetMaximumBin());
