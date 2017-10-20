@@ -80,11 +80,23 @@ void procOffsets(TString path="",Int_t corrected=1){
     fileid=path;
     fileid.Remove(0,fileid.Last('_')+1);
     fileid.Remove(fileid.Last('C'));
-    gr->SetName("off_"+fileid);
+    gr->SetName("off_"+fileid);    
     gr->Write();
+
+    gr = new TGraph();
+    gr->SetPoint(0,prt_theta, xmax1);
+    gr->SetName("offbeam");    
+    gr->Write();
+    
+    
+    gr = new TGraph();
+    gr->SetPoint(0,prt_theta, xmax2);
+    gr->SetName("offsim");    
+    gr->Write();    
+    
     efile.Write();
     efile.Close();
-    std::cout<<"new offset "<< xmax1-xmax2 <<std::endl;
+    std::cout<<"new offset "<< xmax1-xmax2 <<std::endl;    
     
   }
 }
