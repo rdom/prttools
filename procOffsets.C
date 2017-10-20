@@ -57,7 +57,9 @@ void procOffsets(TString path="",Int_t corrected=1){
   }
   
   prt_canvasAdd("offset",800,400);
+  
   hLeS->SetLineColor(kRed);
+  prt_normalize(hLeS,hLeD);
   hLeS->Draw();
   hLeD->Draw("same");
   TLegend *leg = new TLegend(0.62,0.7,0.92,0.9);
