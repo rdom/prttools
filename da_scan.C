@@ -4,8 +4,8 @@ void da_scan(TString inFile = "r_spr.root"){
   TString outdir=inFile;outdir.Remove(outdir.Last('/'));
   TString sfile=inFile; sfile.Remove(0,sfile.Last('/')+1);
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
-  fSavePath = outdir+sstudy+"r";
-  if(inFile.Contains("S.root"))  fSavePath = outdir+sstudy+"s";
+  prt_savepath = outdir+sstudy+"r";
+  if(inFile.Contains("S.root"))  prt_savepath = outdir+sstudy+"s";
   TString outFile=outdir+"/c"+sfile;
 
   TChain ch("dirc"); ch.Add(inFile);
@@ -101,15 +101,15 @@ void da_scan(TString inFile = "r_spr.root"){
   TFile *file = new TFile(outFile,"RECREATE");
   TCanvas* c1 = new TCanvas("spr","spr",800,400);c1->SetBottomMargin(0.12);
   gSpr->Draw("APL");
-  canvasAdd(c1);
+  prt_canvasAdd(c1);
   TCanvas* c2 = new TCanvas("nph","nph",800,400);c2->SetBottomMargin(0.12);
   gNph->Draw("APL");
-  canvasAdd(c2);
+  prt_canvasAdd(c2);
   TCanvas* c3 = new TCanvas("trr","trr",800,400);c3->SetBottomMargin(0.12);
   gTrr->Draw("APL");
-  canvasAdd(c3);
+  prt_canvasAdd(c3);
 
-  canvasSave(1,0);
+  prt_canvasSave(1,0);
    
   file->cd();
   c1->Write();
