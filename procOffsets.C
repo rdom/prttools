@@ -12,22 +12,22 @@ void procOffsets(TString path="",Int_t corrected=1){
   
   prt_data_info = getDataInfo(fileid);
  
-  Int_t h1a(0),h1b(50),h2a(0),h2b(50),hbin(5000);//h1a(200),h1b(400)
+  Int_t h1a(0),h1b(50),h2a(0),h2b(50),hbin(1000);//h1a(200),h1b(400)
 
   if(corrected==1){
     h1a=0;
     h1b=50;
     h2a=0;
     h2b=50;
-    hbin=2000;
+    hbin=1000;
   }
   
   TString outdir=path;outdir.Remove(outdir.Last('/'));
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));  
   TString insim = path; insim.ReplaceAll("C.root","S.root");
   
-  if(!prt_init(path,1,outdir+Form("/%da/%d",prt_data_info.getStudyId(),prt_data_info.getFileId()))) return;
-  prt_ch->Add(insim);
+  if(!prt_init(insim,1,outdir+Form("/%da/%d",prt_data_info.getStudyId(),prt_data_info.getFileId()))) return;
+  prt_ch->Add(path);
 
   TH1F * hLeD  = new TH1F("leD","LE beam data ; LE [ns]; entries [#]",hbin,h1a,h1b);
   TH1F * hLeS  = new TH1F("leS","LE simulation; LE [ns]; entries [#]",hbin,h2a,h2b);
@@ -36,17 +36,37 @@ void procOffsets(TString path="",Int_t corrected=1){
 
   PrtHit hit;
   Int_t maxent(0);
-  for (Int_t ievent=0; ievent< prt_ch->GetEntries(); ievent++){
+  for (auto ievent=0; ievent< prt_ch->GetEntries(); ievent++){
+    if(maxent>2500) continue;
     prt_nextEvent(ievent,10000);
+
+    if(prt_event->GetType()==0){
+      
+      Int_t gch, ndirc(0), t2(0), t3h(0), t3v(0);
+      Int_t hodo1(0), hodo2(0);
+      for(auto h=0; h<prt_event->GetHitSize(); h++){
+	gch = prt_event->GetHit(h).GetChannel();
+      
+	if(gch<prt_maxdircch) ndirc++;
+      
+	if(gch==818) t3h++;
+	if(gch==819) t3v++;
+	if(gch>=1350 && gch<=1352) hodo1++;
+	if(gch>=1367 && gch<=1372) hodo2++;
+      }
+      // if(ndirc<5) continue;
+      if(!(t3h && t3v)) continue;
+      // if(!(t3h && t3v && hodo1 && hodo2)) continue;
+    }
+    
     if(prt_event->GetParticle()!=2212) continue;
     bool bsim(false);
     TString current_file_name  = prt_ch->GetCurrentFile()->GetName();
     if(current_file_name.Contains("S.root")) bsim = true;
     else maxent++;
-    //if(!bsim && maxent>10000) continue;
     
     Double_t time(0);
-    for(Int_t i=0; i<prt_event->GetHitSize(); i++){
+    for(auto i=0; i<prt_event->GetHitSize(); i++){
       hit = prt_event->GetHit(i);
 
       if(hit.GetChannel()<960 ){
@@ -74,8 +94,11 @@ void procOffsets(TString path="",Int_t corrected=1){
   prt_canvasSave(1,0);
 
   if(corrected==0){
-    double xmax1 = hLeD->GetXaxis()->GetBinCenter(hLeD->GetMaximumBin());
-    double xmax2 = hLeS->GetXaxis()->GetBinCenter(hLeS->GetMaximumBin());
+    // double xmax1 = hLeD->GetXaxis()->GetBinCenter(hLeD->GetMaximumBin());
+    // double xmax2 = hLeS->GetXaxis()->GetBinCenter(hLeS->GetMaximumBin());
+    double xmax1 = prt_fit(hLeD,0.5,50,1).X();
+    double xmax2 = prt_fit(hLeS,0.5,50,1).X();
+    
     TFile efile(path+ ".off.root","RECREATE");
     TGraph *gr = new TGraph();
     gr->SetPoint(0,xmax1-xmax2,  xmax1-xmax2);
