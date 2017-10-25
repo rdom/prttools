@@ -340,7 +340,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(!laser && gMode==5){
 	  Double_t rad = TMath::Pi()/180.,
 	    zrot=146,
-	    xrot=99.5,
+	    xrot=100,
 	    prtangle= fEvent->GetAngle(),
 	    z = fEvent->GetBeamZ(),	  
 	    rot_dist = ((z-zrot)-xrot/cos(prtangle*rad))*tan((90-prtangle)*rad)/1000.;
@@ -367,7 +367,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(gMode!=5 || tofpid!=0){
 	Double_t rad = TMath::Pi()/180.0,
 	  zrot=146,
-	  xrot=99.5,
+	  xrot=100,
 	  prtangle=fEvent->GetAngle(),
 	  z=fEvent->GetBeamZ(),
 		     b = xrot*tan(0.5*(prtangle-90)*rad),
