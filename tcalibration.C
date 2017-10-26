@@ -344,7 +344,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	    prtangle= fEvent->GetAngle(),
 	    z = fEvent->GetBeamZ(),	  
 	    rot_dist = ((z-zrot)-xrot/cos(prtangle*rad))*tan((90-prtangle)*rad)/1000.;
-	  
+
 	  if(gTrigger==trigT1)   timeLe -= (7.829 +rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // trig1	
 	  if(gTrigger==trigTof1) timeLe -= (24.460+rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // tof1
 	  if(gTrigger==trigTof2) timeLe += ( 3.998-rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // tof2
