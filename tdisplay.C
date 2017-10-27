@@ -74,7 +74,7 @@ void TTSelector::SlaveBegin(TTree *){
   }
   if(fileList[0].Contains("pilas")){
     gTrigger=820;
-    leb = 400; le1=40; le2=80;
+    leb = 2000; le1=40; le2=80;
     totb=240; totl=0; toth=12;
   }
   if(fileList[0].Contains("pico")){
@@ -660,7 +660,7 @@ void Calibrate(){
     for (Int_t m=0; m <prt_nmcp; m++) {
       for(Int_t p=0; p<prt_npix; p++){
 	Int_t ch = map_mpc[m][p];
-	Int_t threshold =  hTimeL[m][p]->GetMaximum()*0.2;      
+	Int_t threshold =  hTimeL[m][p]->GetMaximum()*0.3;      
 	Int_t firstbin = hTimeL[m][p]->FindFirstBinAbove(threshold);
 	Double_t xmax = hTimeL[m][p]->GetXaxis()->GetBinCenter(hTimeL[m][p]->GetMaximumBin());
 	Double_t xle = hTimeL[m][p]->GetXaxis()->GetBinCenter(firstbin);

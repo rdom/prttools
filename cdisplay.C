@@ -368,11 +368,9 @@ void getTimeOffset(){
   TH2F* hh;
   for (Int_t m=0; m <prt_nmcp; m++) {
     for(Int_t p=0; p<prt_npix; p++){
-      Double_t mean = prt_fit(hPTime[m][p],0.5).X();
+      Double_t mean = prt_fit(hPTime[m][p],0.2).X();
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
       //hh->RebinY(1);
-
-      mean=30.2;
 
       TCutG *cutg = new TCutG("onepeakcut",5);
       cutg->SetVarX("y");
