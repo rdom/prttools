@@ -116,10 +116,10 @@ void MSelector::SlaveBegin(TTree *){
 
   hMultEvtNum1=new TH1F("hMultEvtNum1","",1000001,-0.5,1000000.5);
   hMultEvtNum2=new TH1F("hMultEvtNum2","",1000001,-0.5,1000000.5);
-  prt_axisTime800x500(hMultEvtNum1,"event number , [#]");
-  hMultEvtNum1->GetYaxis()->SetTitle("multiplicity, [#]");
-  prt_axisTime800x500(hMultEvtNum2,"event number , [#]");
-  hMultEvtNum2->GetYaxis()->SetTitle("multiplicity, [#]");
+  prt_axisTime800x500(hMultEvtNum1,"event number  [#]");
+  hMultEvtNum1->GetYaxis()->SetTitle("multiplicity [#]");
+  prt_axisTime800x500(hMultEvtNum2,"event number  [#]");
+  hMultEvtNum2->GetYaxis()->SetTitle("multiplicity [#]");
   fOutput->Add(hMultEvtNum1);
   fOutput->Add(hMultEvtNum2);
 
@@ -138,7 +138,7 @@ void MSelector::SlaveBegin(TTree *){
     fOutput->Add(prt_hdigi[m]);
 
     hEMult[m]   = new TH1F(Form("emult_m%d",m),Form("mcp %d",m),  500,0,500);
-    prt_axisTime800x500(hEMult[m],"multiplicity per event, [#]");
+    prt_axisTime800x500(hEMult[m],"multiplicity per event [#]");
     fOutput->Add(hEMult[m]);
 
     for(Int_t p=0; p<prt_npix; p++){     
@@ -151,8 +151,8 @@ void MSelector::SlaveBegin(TTree *){
       if(gMode==1){
 	hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d;LE [ns];offset [mV]",m,p) , bins1,min1,max1,100,-5.1,15);
 	hLeTot[m][p] = new TH2F(Form("hLeTot_mcp%dpix%d" ,m,p), Form("mcp %d, pixel %d;LE [ns];TOT [ns]",m, p), 400,min1,max1, bins2,min2,max2);
-	prt_axisTime800x500(hShape[m][p],"time, [ns]");
-	hShape[m][p]->GetYaxis()->SetTitle("offset to the threshold, [mV]");
+	prt_axisTime800x500(hShape[m][p],"time [ns]");
+	hShape[m][p]->GetYaxis()->SetTitle("offset to the threshold [mV]");
       
 	fOutput->Add(hLeTot[m][p]);
 	fOutput->Add(hShape[m][p]);
@@ -160,8 +160,8 @@ void MSelector::SlaveBegin(TTree *){
 
       prt_axisTime800x500(hPTime[m][p]);
       prt_axisTime800x500(hPiTime[m][p]);
-      prt_axisTime800x500(hPTot[m][p],"TOT time, [ns]");
-      prt_axisTime800x500(hPMult[m][p],"multiplicity, [#]");
+      prt_axisTime800x500(hPTot[m][p],"TOT time [ns]");
+      prt_axisTime800x500(hPMult[m][p],"multiplicity [#]");
 
       hSTime[m][p]->SetLineColor(2);
       hPTime[m][p]->SetLineColor((gMode==100)? 1: kRed+1);
@@ -184,9 +184,9 @@ void MSelector::SlaveBegin(TTree *){
   hTof=new TH1F("hTof","",2000,25,40);
   //hTof=new TH1F("hTof","",2000,-606,805);
 
-  prt_axisTime800x500(hTot,"TOT time, [ns]");
-  prt_axisTime800x500(hLe,"LE time, [ns]");
-  prt_axisTime800x500(hMult,"multiplicity, [#]");
+  prt_axisTime800x500(hTot,"TOT time [ns]");
+  prt_axisTime800x500(hLe,"LE time [ns]");
+  prt_axisTime800x500(hMult,"multiplicity [#]");
   hCh->SetLineColor(1);
   
   gStyle->SetOptStat(1001111);
@@ -307,7 +307,7 @@ Bool_t MSelector::Process(Long64_t entry){
       if(bsim){
 	hSTime[mcp][pix]->Fill(timeDiff);
 	hLes->Fill(le);
-	//continue;
+	continue;
       }
       //timeDiff-=offset;
       if(gMode==1){
@@ -426,8 +426,8 @@ void getTimeOffset(){
       }
 
       gGrDiff[ch]->SetName(Form("gCalib_ch%d",ch));
-      gGrDiff[ch]->GetXaxis()->SetTitle("fine bin, [#]");
-      gGrDiff[ch]->GetYaxis()->SetTitle("fine time, [ns]");
+      gGrDiff[ch]->GetXaxis()->SetTitle("fine bin [#]");
+      gGrDiff[ch]->GetYaxis()->SetTitle("fine time [ns]");
     
     }
   }
