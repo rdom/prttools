@@ -163,9 +163,10 @@ void MSelector::SlaveBegin(TTree *){
       prt_axisTime800x500(hPTot[m][p],"TOT time, [ns]");
       prt_axisTime800x500(hPMult[m][p],"multiplicity, [#]");
 
-      hSTime[m][p]->SetLineColor(2);
+      hSTime[m][p]->SetLineColor((gMode==100)? 1:2);
       hPTime[m][p]->SetLineColor(kRed+1);
       hPiTime[m][p]->SetLineColor(kBlue+1);
+      
       
       fOutput->Add(hPTime[m][p]);
       fOutput->Add(hPiTime[m][p]);
@@ -927,7 +928,8 @@ void MyMainFrame::DoExport(){
       for(Int_t p=0; p<prt_npix; p++){
 	cExport->cd();
 	if(gComboId==0) {
-	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]}; //,hSTime[m][p]}; 
+	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]};
+	  if(gMode==100) hh[1] = hSTime[m][p]}
 	  prt_normalize(hh,2);
 	  prt_fit(hh[0],0.5,1);
 	  hh[0]->Draw();
