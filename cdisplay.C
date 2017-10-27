@@ -582,7 +582,7 @@ void MyMainFrame::InterestChanged(){
     TH1F * hh[] = {hPTime[mcp][pix],hSTime[mcp][pix]}; 
     prt_normalize(hh,2);
     hh[0]->Draw();
-    if(gMode==101) hSTime[mcp][pix]->Draw("same");
+    if(gMode==100) hSTime[mcp][pix]->Draw("same");
     else hPiTime[mcp][pix]->Draw("same");
     prt_fit(hh[0],0.5,100);
     if(hh[0]->GetEntries()>10) hh[1]->Draw("same");
