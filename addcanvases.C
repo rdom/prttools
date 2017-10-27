@@ -2,11 +2,11 @@
 void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root", Int_t data=-1){
   
   TString outdir=f1n;outdir.Remove(outdir.Last('/'));
-  fSavePath = outdir;
+  prt_savepath = outdir;
   if(data==-1) {
     f2n = f1n; f2n.ReplaceAll("S.root","R.root");
     TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
-    fSavePath = outdir+sstudy+"a";
+    prt_savepath = outdir+sstudy+"a";
   }
   
   std::cout<<"reading  "<<f1n <<std::endl;
@@ -49,7 +49,7 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root", Int_
     TH1F *tt = new TH1F(); tt->SetMarkerStyle(20);tt->SetMarkerSize(0.8);
     leg->AddEntry(tt,"beam data","lp");
     carr2[i]->SetName(Form("mix_%s",carr2[i]->GetName()));
-    canvasAdd(carr2[i]);
+    prt_canvasAdd(carr2[i]);
 
     TIter next(carr1[i]->GetListOfPrimitives());
     TObject *obj;
@@ -77,5 +77,5 @@ void addcanvases(TString f1n="cspr_150S.root", TString f2n="spr_150R.root", Int_
     }
   }
   std::cout<<"save all  " <<std::endl;
-  canvasSave(0,3);
+  prt_canvasSave(0,3);
 }

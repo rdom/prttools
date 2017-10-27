@@ -53,7 +53,7 @@ void da_scan(TString inFile = "r_spr.root"){
   gSpr->SetMarkerSize(0.7);
   gNph->SetMarkerSize(0.7);
   gTrr->SetMarkerSize(0.7);
-  gNph->GetYaxis()->SetRangeUser(0,150);
+  gNph->GetYaxis()->SetRangeUser(0,120);
   gSpr->GetYaxis()->SetRangeUser(0,30);
   gTrr->GetYaxis()->SetRangeUser(0,5);
 
@@ -94,9 +94,9 @@ void da_scan(TString inFile = "r_spr.root"){
   gNph->GetYaxis()->SetTitleOffset(0.7);
 
 
-  gSpr->GetXaxis()->SetTitle("#theta_{track} [#circ]");
-  gNph->GetXaxis()->SetTitle("#theta_{track} [#circ]");
-  gTrr->GetXaxis()->SetTitle("#theta_{track} [#circ]");
+  gSpr->GetXaxis()->SetTitle("#theta_{track} [degree]");
+  gNph->GetXaxis()->SetTitle("#theta_{track} [degree]");
+  gTrr->GetXaxis()->SetTitle("#theta_{track} [degree]");
 
   TFile *file = new TFile(outFile,"RECREATE");
   TCanvas* c1 = new TCanvas("spr","spr",800,400);c1->SetBottomMargin(0.12);
