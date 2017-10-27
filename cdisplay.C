@@ -929,7 +929,7 @@ void MyMainFrame::DoExport(){
 	cExport->cd();
 	if(gComboId==0) {
 	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]};
-	  if(gMode==100) hh[1] = hSTime[m][p]}
+	  if(gMode==100) hh[1] = hSTime[m][p];
 	  prt_normalize(hh,2);
 	  prt_fit(hh[0],0.5,1);
 	  hh[0]->Draw();
