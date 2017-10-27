@@ -231,10 +231,9 @@ Bool_t MSelector::Process(Long64_t entry){
       if(current_file_name.Contains("S.root")) bsim = true;
       if(current_file_name.Contains("SF.root")) timeres=0.2;
       if(current_file_name.Contains("SP.root")) timeres=0.2;
-      bsim = true;      
     }
   }
-
+ 
   Double_t le,tot, triggerLe(0),toftime(0), tof(0), tof1(0),tof2(0);
   PrtHit hit;
   Int_t mcp,pix,col,row,ch,chMultiplicity(0);
@@ -400,8 +399,8 @@ void getTimeOffset(){
 	Double_t vx(0);
 
 	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
-	vx = prt_fit((TH1F*)h,0.5,50,0.35).X();
-	if(vx==0 || fabs(vx-mean)>0.3) vx = mean;
+	vx = prt_fit((TH1F*)h,0.2,50,0.35).X();
+	if(vx==0 || fabs(vx-mean)>0.4) vx = mean;
 	
 	// if(x>2){
 	//   h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
@@ -485,7 +484,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[m][p],(gMode==100)? hSTime[m][p]: hPiTime[m][p]};
 	prt_normalize(hh,2);
-	prt_fit(hh[0],0.5,100);
+	prt_fit(hh[0],0.3,100);
 	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
