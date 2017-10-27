@@ -163,8 +163,8 @@ void MSelector::SlaveBegin(TTree *){
       prt_axisTime800x500(hPTot[m][p],"TOT time, [ns]");
       prt_axisTime800x500(hPMult[m][p],"multiplicity, [#]");
 
-      hSTime[m][p]->SetLineColor((gMode==100)? 1:2);
-      hPTime[m][p]->SetLineColor(kRed+1);
+      hSTime[m][p]->SetLineColor(2);
+      hPTime[m][p]->SetLineColor((gMode==100)? 1: kRed+1);
       hPiTime[m][p]->SetLineColor(kBlue+1);
       
       
@@ -483,7 +483,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       //    printf("Canvas %s: event=%d, x=%d, y=%d, p=%d, selected=%d\n", smcp.Data(), event, binx, biny, p,smcp.Atoi());
       cTime->cd();
       if(gComboId==0) {
-	TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]};
+	TH1F * hh[] = {hPTime[m][p],(gMode==100)? hSTime[m][p]: hPiTime[m][p]};
 	prt_normalize(hh,2);
 	prt_fit(hh[0],0.5,100);
 	hh[0]->Draw();
@@ -928,8 +928,7 @@ void MyMainFrame::DoExport(){
       for(Int_t p=0; p<prt_npix; p++){
 	cExport->cd();
 	if(gComboId==0) {
-	  TH1F * hh[] = {hPTime[m][p],hPiTime[m][p]};
-	  if(gMode==100) hh[1] = hSTime[m][p];
+	  TH1F * hh[] = {hPTime[m][p],(gMode==100)? hSTime[m][p]: hPiTime[m][p]};
 	  prt_normalize(hh,2);
 	  prt_fit(hh[0],0.5,1);
 	  hh[0]->Draw();
