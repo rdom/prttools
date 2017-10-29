@@ -403,10 +403,10 @@ void getTimeOffset(){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
 	Double_t vx(0);
  
-	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");
+	h = hh->ProjectionX(Form("bin%d",i),i,i,"[onepeakcut]");
 	vx = h->GetXaxis()->GetBinCenter(h->GetMaximumBin());
 	// vx = prt_fit((TH1F*)h,0.2,50,0.35).X();
-	// if(vx==0 || fabs(vx-mean)>0.4) vx = mean;
+	if(vx==0 || fabs(vx-mean)>0.5) vx = mean;
 	
 	// if(x>2){
 	//   h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
