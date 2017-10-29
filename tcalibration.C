@@ -135,7 +135,7 @@ void TTSelector::Begin(TTree *){
 	}
       }else if(ch == 10001){ // read tot offsets
 	for(Int_t i=0; i<prt_maxch; i++){
-	  gr->GetPoint(i,x,gTotO[i]);
+	  gr->GetPoint(i,gTotO[i],y);
 	  //std::cout<<"ch  "<<i<< " TOT off "<<  gTotO[i]<<std::endl;
 	}
       }else if(ch == 10002){ // read tot peaks
