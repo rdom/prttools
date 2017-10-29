@@ -399,6 +399,8 @@ void getTimeOffset(){
       gGrDiff[ch] = new TGraph();      
       gWalk[ch] = new TGraph();
       Double_t pvx(mean);
+      TGraph* gsmooth = new TGraph();
+      TGraph* gsmoothw = new TGraph();
       for (int i=0;i<hh->GetNbinsY();i++){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
 	Double_t vx(0);
@@ -410,7 +412,7 @@ void getTimeOffset(){
 	
 	// vx = h->GetXaxis()->GetBinCenter(h->GetMaximumBin());
 	// vx = prt_fit((TH1F*)h,0.2,50,0.35).X();
-        if(vx==0 || fabs(vx-front)>1.0) vx = front;
+        if(vx==0 || fabs(vx-front)>1.5) vx = front;
 	
 	// if(x>2){
 	//   h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
@@ -422,10 +424,14 @@ void getTimeOffset(){
 	//   if(vx==0 || fabs(vx-mean)>1.5) vx = mean;
 	// }
 	
-	//if(fabs(pvx-vx)>0.05) vx += 0.5*(pvx-vx);
+	if(fabs(pvx-vx)>0.05) vx += 0.5*(pvx-vx);
 	
-	gGrDiff[ch]->SetPoint(i,x,vx);
-	gWalk[ch]->SetPoint(i,x,vx-front);
+	// gGrDiff[ch]->SetPoint(i,x,vx);
+	// gWalk[ch]->SetPoint(i,x,vx-front);
+	
+	gsmooth->SetPoint(i,x,vx);
+	gsmoothw->SetPoint(i,x,vx-front);
+	
 	pvx=vx;
 
 	// cTime->cd();
@@ -433,7 +439,10 @@ void getTimeOffset(){
 	// cTime->Update();
 	// cTime->WaitPrimitive();
       }
-
+      
+      gWalk[ch] = prt_smooth(gsmoothw,10);
+      gGrDiff[ch] = prt_smooth(gsmooth,10);
+      
       gGrDiff[ch]->SetName(Form("gCalib_ch%d",ch));
       gGrDiff[ch]->GetXaxis()->SetTitle("fine bin [#]");
       gGrDiff[ch]->GetYaxis()->SetTitle("fine time [ns]");
@@ -511,8 +520,10 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 
 	  TGraph* gr = new TGraph(gGrDiff[ch]->GetN(),yy,xx);
 	  gr->SetMarkerStyle(7);
-	  gr->SetMarkerColor(2);
+	  gr->SetMarkerColor(2); 
+	
 	  gr->Draw("PL same");
+	  // prt_smooth(gr,10)->Draw("PL same");
 	}else{
 	  std::cout<<"Press the btn \"Export offsets\" "<<std::endl;
 	  

@@ -9,6 +9,7 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "TGraph.h"
+#include "TSpline.h"
 #include "TF1.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -1022,6 +1023,28 @@ void prt_normalize(TH1F* h1,TH1F* h2){
   max += max*0.1;
   h1->GetYaxis()->SetRangeUser(0,max);
   h2->GetYaxis()->SetRangeUser(0,max);
+}
+
+
+// just x for now
+TGraph* prt_smooth(TGraph* g,Int_t smoothness=1){
+  Double_t x, y;
+  Int_t n = g->GetN();
+  TH1F *h = new TH1F("h","h",g->GetN(),0,n);
+  TGraph *gr = new TGraph();
+  gr->SetName(g->GetName());
+  for(auto i=0; i<n; i++){
+    g->GetPoint(i,x,y);
+    h->Fill(i,x);
+  }
+
+  h->Smooth(smoothness);
+  
+  for(auto i=0;i<n;i++){
+    g->GetPoint(i,x,y);
+    gr->SetPoint(i,h->GetBinContent(i),y);
+  }
+  return gr;
 }
 
 
