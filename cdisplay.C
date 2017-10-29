@@ -408,7 +408,7 @@ void getTimeOffset(){
 	vx = h->GetXaxis()->GetBinCenter(fb);
 
 	
-	vx = h->GetXaxis()->GetBinCenter(h->GetMaximumBin());
+	// vx = h->GetXaxis()->GetBinCenter(h->GetMaximumBin());
 	// vx = prt_fit((TH1F*)h,0.2,50,0.35).X();
 	if(vx==0 || fabs(vx-mean)>0.7) vx = mean;
 	
