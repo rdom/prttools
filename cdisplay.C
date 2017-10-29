@@ -368,10 +368,10 @@ void getTimeOffset(){
   TH2F* hh;
   for (Int_t m=0; m <prt_nmcp; m++) {
     for(Int_t p=0; p<prt_npix; p++){
-      Double_t mean = prt_fit(hPTime[m][p],0.2).X();
+      //      Double_t mean = prt_fit(hPTime[m][p],0.2).X();
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
 
-      Double_t xmax = hPTime[m][p]->GetXaxis()->GetBinCenter(hPTime[m][p]->GetMaximumBin());
+      Double_t mean = hPTime[m][p]->GetXaxis()->GetBinCenter(hPTime[m][p]->GetMaximumBin());
       
       Int_t threshold =  hPTime[m][p]->GetMaximum()*0.3;      
       Int_t firstbin = hPTime[m][p]->FindFirstBinAbove(threshold);
@@ -402,9 +402,9 @@ void getTimeOffset(){
       for (int i=0;i<hh->GetNbinsY();i++){
 	Double_t x = hh->GetYaxis()->GetBinCenter(i);
 	Double_t vx(0);
-	vx = hh->GetXaxis()->GetBinCenter(hh->GetMaximumBin());
  
-	// h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");	
+	h = hh->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[onepeakcut]");
+	vx = h->GetXaxis()->GetBinCenter(h->GetMaximumBin());
 	// vx = prt_fit((TH1F*)h,0.2,50,0.35).X();
 	// if(vx==0 || fabs(vx-mean)>0.4) vx = mean;
 	
@@ -418,7 +418,7 @@ void getTimeOffset(){
 	//   if(vx==0 || fabs(vx-mean)>1.5) vx = mean;
 	// }
 	
-	if(fabs(pvx-vx)>0.05) vx += 0.5*(pvx-vx);
+	//if(fabs(pvx-vx)>0.05) vx += 0.5*(pvx-vx);
 	
 	gGrDiff[ch]->SetPoint(i,x,vx);
 	gWalk[ch]->SetPoint(i,x,vx-front);
