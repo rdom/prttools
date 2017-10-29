@@ -370,12 +370,17 @@ void getTimeOffset(){
     for(Int_t p=0; p<prt_npix; p++){
       Double_t mean = prt_fit(hPTime[m][p],0.2).X();
       hh =(TH2F*) hLeTot[m][p]->Clone("hh");
+
+      Int_t threshold =  hPTime[m][p]->GetMaximum()*0.3;      
+      Int_t firstbin = hPTime[m][p]->FindFirstBinAbove(threshold);
+      mean = hPTime[m][p]->GetXaxis()->GetBinCenter(firstbin);
+      
       //hh->RebinY(1);
 
       TCutG *cutg = new TCutG("onepeakcut",5);
       cutg->SetVarX("y");
       cutg->SetVarY("x");
-      Double_t range=0.3;
+      Double_t range=0.5;
       cutg->SetPoint(0,mean-range,0.5);
       cutg->SetPoint(1,mean-range,8.5);
       cutg->SetPoint(2,mean+range,8.5);
