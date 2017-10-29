@@ -377,7 +377,7 @@ void getTimeOffset(){
       Int_t firstbin = hPTime[m][p]->FindFirstBinAbove(threshold);
       Double_t front = hPTime[m][p]->GetXaxis()->GetBinCenter(firstbin);
       
-      //hh->RebinY(1);
+      hh->RebinY(2);
 
       TCutG *cutg = new TCutG("onepeakcut",5);
       cutg->SetVarX("y");
