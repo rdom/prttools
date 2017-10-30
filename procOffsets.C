@@ -55,7 +55,7 @@ void procOffsets(TString path="",Int_t corrected=1){
 	if(gch>=1367 && gch<=1372) hodo2++;
       }
       // if(ndirc<5) continue;
-      if(!(t3h && t3v)) continue;
+      // if(!(t3h && t3v)) continue;
       // if(!(t3h && t3v && hodo1 && hodo2)) continue;
     }
     
