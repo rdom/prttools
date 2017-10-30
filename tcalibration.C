@@ -343,7 +343,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	    zrot=145,
 	    xrot=100, //100
 	    prtangle= fEvent->GetAngle(),
-	    z = 450,//fEvent->GetBeamZ(),	  
+	    z = 455,//fEvent->GetBeamZ(),	  
 	    rot_dist = ((z-zrot)-xrot/cos(prtangle*rad))*tan((90-prtangle)*rad)/1000.;
 
 	  if(gTrigger==trigT1)   timeLe -= (7.829 +rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // trig1	
