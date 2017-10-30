@@ -342,7 +342,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  Double_t rad = TMath::Pi()/180.,
 	    zrot=145,
 	    xrot=100, //100
-	    prtangle= fEvent->GetAngle()+0.1,
+	    prtangle= fEvent->GetAngle()-0.1,
 	    z = fEvent->GetBeamZ(),	  
 	    rot_dist = ((z-zrot)-xrot/cos(prtangle*rad))*tan((90-prtangle)*rad)/1000.;
 
