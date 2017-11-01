@@ -37,7 +37,7 @@ void procOffsets(TString path="",Int_t corrected=1){
   PrtHit hit;
   Int_t maxent(0);
   for (auto ievent=0; ievent< prt_ch->GetEntries(); ievent++){
-    if(maxent>5000) continue;
+    if(maxent>2000) continue;
     prt_nextEvent(ievent,10000);
 
     if(prt_event->GetType()==0){
