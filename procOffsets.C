@@ -59,7 +59,7 @@ void procOffsets(TString path="",Int_t corrected=1){
       // if(!(t3h && t3v && hodo1 && hodo2)) continue;
     }
     
-    if(prt_event->GetParticle()!=2212) continue;
+    if(prt_event->GetParticle()==2212) continue;
     bool bsim(false);
     TString current_file_name  = prt_ch->GetCurrentFile()->GetName();
     if(current_file_name.Contains("S.root")) bsim = true;
