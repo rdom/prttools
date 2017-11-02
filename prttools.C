@@ -59,7 +59,7 @@ const Int_t prt_nmcp = 12;
 const Int_t prt_npix = 64;
 const Int_t prt_ntdc = 32;
 const Int_t prt_maxdircch(prt_nmcp*prt_npix);
-const Int_t prt_maxch(prt_ntdc*48);
+const Int_t prt_maxch = prt_ntdc*48;
 const Int_t prt_maxnametdc=10000;
 
 TRandom  prt_rand;
@@ -73,7 +73,7 @@ TCanvas* prt_cdigi;
 TSpectrum *prt_spect = new TSpectrum(2);
 
 Int_t map_tdc[prt_maxnametdc];
-Int_t map_mpc[prt_nmcp][prt_npix];
+Int_t map_mpc[prt_maxch/64][prt_npix];
 Int_t map_mcp[prt_maxch];
 Int_t map_pix[prt_maxch];
 Int_t map_row[prt_maxch];
@@ -235,13 +235,13 @@ void prt_createMap(){
     Int_t col = pix/2 - 8*(pix/16);
     Int_t row = pix%2 + 2*(pix/16);
     pix = col+8*row;
-      
+
     map_mpc[mcp][pix]=ch;
     map_mcp[ch] = mcp;
     map_pix[ch] = pix;
     map_row[ch] = row;
     map_col[ch] = col;
-  }
+  } 
 
   for(Int_t i=0; i<5; i++){
     prt_particleArray[prt_pdg[i]]=i;
@@ -264,7 +264,7 @@ Int_t prt_addRefChannels(Int_t ch,Int_t tdcSeqId){
 }
 
 Bool_t prt_isBadChannel(Int_t ch){
-  if(ch<0) return true;
+  if(ch<0 || ch>prt_maxdircch) return true;
   
   // // bad pixels july15
 
@@ -671,6 +671,7 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     prt_info += prt_event->PrintInfo();
     prt_mom = prt_event->GetMomentum().Mag() +0.01;
     prt_theta = prt_event->GetAngle() + 0.01;
+    prt_phi = prt_event->GetPhi();
     prt_particle =  prt_event->GetParticle();
     prt_geometry= prt_event->GetGeometry();
     prt_beamx= prt_event->GetBeamX();
@@ -734,6 +735,7 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     prt_info += prt_event->PrintInfo();
     prt_mom = prt_event->GetMomentum().Mag() +0.01;
     prt_theta = prt_event->GetAngle() + 0.01;
+    prt_phi = prt_event->GetPhi();
     prt_particle =  prt_event->GetParticle();
     prt_geometry= prt_event->GetGeometry();
     prt_beamx= prt_event->GetBeamX();

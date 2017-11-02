@@ -304,7 +304,7 @@ Bool_t MSelector::Process(Long64_t entry){
     if(triggerLe!=-1 || gTrigger==0) {
       //Double_t offset = 284.89;
       if(bsim){
-	hSTime[mcp][pix]->Fill(timeDiff);
+	if(particleId==2212) hSTime[mcp][pix]->Fill(timeDiff);
 	hLes->Fill(le);
 	continue;
       }
