@@ -9,7 +9,7 @@
 #include "../../prtdirc/src/PrtEvent.h"
 #include "../prttools.C"
 
-double tpar;
+double tpar,chisq;
 int status=0, iter;
 ifstream gStatusFileR;
 ofstream gStatusFileW;
@@ -62,13 +62,13 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
 double getChiSq(const double *xx){
 
   iter++;
-  TString command = Form("( ./botfit %d %f %f %f  %f )", iter, xx[0], xx[1], xx[2], xx[3]);
+  TString command = Form("( ./botfit %d %f %f %f  %f %f )", iter, xx[0], xx[1], xx[2], xx[3],chisq);
   gSystem->Exec(command.Data());
 
   while(status<1){
     gSystem->Sleep(1000);
     gStatusFileR.open("status.dat");
-    gStatusFileR >> status >> iter >> tpar >> tpar >> tpar >> tpar;
+    gStatusFileR >> status >> iter >> tpar >> tpar >> tpar >> tpar >>tpar;
     std::cout<<"status "<<status<<std::endl;
     
     gStatusFileR.close();
@@ -76,7 +76,8 @@ double getChiSq(const double *xx){
 
   getRatioArray(Form("hits_%d.root",iter));
 
-  double chi,chisq(0);
+  double chi;
+  chisq = 0;
   for(auto i=0; i<prt_maxdircch; i++){
     chi = fabs(ratiodat[i]-ratiosim[i])/0.1;
     chisq += chi*chi;
