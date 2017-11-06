@@ -13,7 +13,7 @@ rm b_*[root,log]
 
 for i in {0..30}; do
     ~/dirc/prtdirc/build/prtdirc -o b_h$i.root \
-				 -p 7 -h 1 -l 3 -gz 447 -gx 87 -gsx $gsx -gsy $gsy -g 2017 -c 2017 -phi $phi \
+				 -p 7 -h 1 -l 3 -gz 447 -gx 87 -gsx $gsx -gsy $gsy -g 2017 -c 2017 -phi $phi -z 10 \
 				 -a $theta -e 500 -x "mix" -b 1 -r $i > b_l$i.log &
 done
 
