@@ -6,7 +6,7 @@ phi=$3
 gsx=$4
 gsy=$5
 
-echo "Iteratiion # $iter with theta = $theta phi = $phi  gsx = $gsx  gsy = $gsy"
+echo "Iteratiion # $iter  with theta = $theta phi = $phi  gsx = $gsx  gsy = $gsy"
 
 rm b_*[root,log] 
 
