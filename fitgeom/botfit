@@ -5,6 +5,7 @@ theta=$2
 phi=$3
 gsx=$4
 gsy=$5
+chisq=$6
 
 echo "Iteratiion # $iter  with theta = $theta phi = $phi  gsx = $gsx  gsy = $gsy"
 
@@ -38,6 +39,6 @@ sleep 1
 hadd -f hits_${iter}.root b_h*.root
 
 status=1
-res="$status $iter $theta $phi $gsx $gsy"
+res="$status $iter $theta $phi $gsx $gsy $chisq"
 sed '1s/.*/'"$res"'/' -i status.dat
 echo "$res">>status.log 
