@@ -1,0 +1,43 @@
+#!/bin/bash
+
+iter=$1
+theta=$2
+phi=$3
+gsx=$4
+gsy=$5
+
+echo "Iteratiion # $iter with theta = $theta phi = $phi  gsx = $gsx  gsy = $gsy"
+
+rm b_*[root,log] 
+
+tseed=$(($(date +%s%N)/1000000-1393400000000))
+
+echo $tseed
+
+for i in {0..5}; do
+    ~/dirc/prtdirc/build/prtdirc -o b_h$i.root \
+				 -p 7 -h 1 -l 3 -gz 447 -gx 87 -gsx $gsx -gsy $gsy -g 2017 -c 2017 -phi $phi \
+				 -a $theta -e 500 -x "mix" -b 1 -r $tseed$i > b_l$i.log &
+done
+
+sleep 1
+  
+while : 
+do
+    activth=$(ps aux | grep "[p]rt" | grep "b_h" | wc -l)
+    diffth=$(($maxnthr-$activth))
+    echo "We have $activth active prt simulations " 
+    if [ "$activth" -eq 0 ]; then 
+      break  
+    fi
+    sleep 1
+done
+
+sleep 1
+
+hadd -f hits_${iter}.root b_h*.root
+
+status=1
+res="$status $iter $theta $phi $gsx $gsy"
+sed '1s/.*/'"$res"'/' -i status.dat
+echo "$res">>status.log 
