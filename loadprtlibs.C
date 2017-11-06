@@ -1,7 +1,7 @@
-void loadprtlibs(){
-  gROOT->ProcessLine(".L ../prtdirc/src/PrtHit.cxx+");
-  gROOT->ProcessLine(".L ../prtdirc/src/PrtEvent.cxx+");
+void loadprtlibs(TString path=""){
+  gROOT->ProcessLine(".L "+path+"../prtdirc/src/PrtHit.cxx+");
+  gROOT->ProcessLine(".L "+path+"../prtdirc/src/PrtEvent.cxx+");
 
-  gSystem->Load("../prtdirc/src/PrtHit_cxx.so");
-  gSystem->Load("../prtdirc/src/PrtEvent_cxx.so");
+  gSystem->Load(path+"../prtdirc/src/PrtHit_cxx.so");
+  gSystem->Load(path+"../prtdirc/src/PrtEvent_cxx.so");
 }

@@ -503,7 +503,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[m][p],(gMode==100)? hSTime[m][p]: hPiTime[m][p]};
 	prt_normalize(hh,2);
-	prt_fit(hh[0],0.3,100);
+	prt_fit(hh[0],0.5,100);
 	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
