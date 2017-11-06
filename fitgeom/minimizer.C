@@ -109,7 +109,7 @@ int minimizer(){
 
   const int npar=4;
   ROOT::Math::Functor f(&getChiSq,npar); 
-  double step[npar] ={ 0.1  0.1,  0.5,  0.5};
+  double step[npar] ={ 0.1, 0.1,  0.5,  0.5};
   double par[npar] = {50.0, 0.0, 70.0, 16.5};
   min->SetFunction(f);
    
