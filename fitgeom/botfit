@@ -14,10 +14,10 @@ tseed=$(($(date +%s%N)/1000000-1393400000000))
 
 echo $tseed
 
-for i in {0..5}; do
+for i in {0..30}; do
     ~/dirc/prtdirc/build/prtdirc -o b_h$i.root \
 				 -p 7 -h 1 -l 3 -gz 447 -gx 87 -gsx $gsx -gsy $gsy -g 2017 -c 2017 -phi $phi \
-				 -a $theta -e 500 -x "mix" -b 1 -r $tseed$i > b_l$i.log &
+				 -a $theta -e 200 -x "mix" -b 1 -r $tseed$i > b_l$i.log &
 done
 
 sleep 1
