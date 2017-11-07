@@ -97,7 +97,7 @@ int minimizer(){
   
   iter = 0;
   // algoName Migrad, Simplex,Combined,Scan  (default is Migrad)
-  ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Simplex");
+  ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Migrad");
 
   // set tolerance , etc...
   min->SetMaxFunctionCalls(10000); // for Minuit/Minuit2 
