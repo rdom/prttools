@@ -15,10 +15,10 @@ rpath=$HOME/dirc/prtdirc/build
 wpath=$HOME/dirc/prttools/fitgeom
 
 cd  $rpath
-for i in {0..3}; do
+for i in {0..30}; do
     ./prtdirc -o $wpath/b_h$i.root \
 	      -p 7 -h 1 -l 3 -gz 447 -gx 87 -gsx $gsx -gsy $gsy -g 2017 -c 2017 -phi $phi -z 10 \
-	      -a $theta -e 100 -x "mix" -b 1 -r $i > $wpath/b_l$i.log &
+	      -a $theta -e 500 -x "mix" -b 1 -r $i > $wpath/b_l$i.log &
 done
 
 sleep 1
