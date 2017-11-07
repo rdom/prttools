@@ -11,10 +11,13 @@ echo "Iteratiion # $iter  with theta = $theta phi = $phi  gsx = $gsx  gsy = $gsy
 
 rm b_*[root,log] 
 
+cd  ~/dirc/prtdirc/build
+wpath="~/dirc/prttools/fitgeom"
+
 for i in {0..30}; do
-    ~/dirc/prtdirc/build/prtdirc -o b_h$i.root \
-				 -p 7 -h 1 -l 3 -gz 447 -gx 87 -gsx $gsx -gsy $gsy -g 2017 -c 2017 -phi $phi -z 10 \
-				 -a $theta -e 500 -x "mix" -b 1 -r $i > b_l$i.log &
+    prtdirc -o $wpath/b_h$i.root \
+	      -p 7 -h 1 -l 3 -gz 447 -gx 87 -gsx $gsx -gsy $gsy -g 2017 -c 2017 -phi $phi -z 10 \
+	      -a $theta -e 500 -x "mix" -b 1 -r $i > b_l$i.log &
 done
 
 sleep 1
@@ -32,9 +35,9 @@ done
 
 sleep 1
 
-hadd -f hits_${iter}.root b_h*.root
+hadd -f $wpath/hits_${iter}.root $wpath/b_h*.root
 
 status=1
 res="$status $iter $theta $phi $gsx $gsy $chisq"
-sed '1s/.*/'"$res"'/' -i status.dat
-echo "$res">>status.log 
+sed '1s/.*/'"$res"'/' -i $wpath/status.dat
+echo "$res">>$wpath/status.log 
