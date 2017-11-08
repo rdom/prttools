@@ -446,18 +446,21 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 
 void prt_initDigi(Int_t type=0){  
   if(type == 0){
-    for(Int_t m=0; m<prt_nmcp;m++){	
-      prt_hdigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),8,0.,8.,8,0.,8.);
-      prt_hdigi[m]->SetStats(0);
-      prt_hdigi[m]->SetTitle(0);
-      prt_hdigi[m]->GetXaxis()->SetNdivisions(10);
-      prt_hdigi[m]->GetYaxis()->SetNdivisions(10);
-      prt_hdigi[m]->GetXaxis()->SetLabelOffset(100);
-      prt_hdigi[m]->GetYaxis()->SetLabelOffset(100);
-      prt_hdigi[m]->GetXaxis()->SetTickLength(1);
-      prt_hdigi[m]->GetYaxis()->SetTickLength(1);
-      prt_hdigi[m]->GetXaxis()->SetAxisColor(15);
-      prt_hdigi[m]->GetYaxis()->SetAxisColor(15);
+    for(Int_t m=0; m<prt_nmcp;m++){
+      if(prt_hdigi[m]) prt_hdigi[m]->Reset();
+      else{
+	prt_hdigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),8,0.,8.,8,0.,8.);
+	prt_hdigi[m]->SetStats(0);
+	prt_hdigi[m]->SetTitle(0);
+	prt_hdigi[m]->GetXaxis()->SetNdivisions(10);
+	prt_hdigi[m]->GetYaxis()->SetNdivisions(10);
+	prt_hdigi[m]->GetXaxis()->SetLabelOffset(100);
+	prt_hdigi[m]->GetYaxis()->SetLabelOffset(100);
+	prt_hdigi[m]->GetXaxis()->SetTickLength(1);
+	prt_hdigi[m]->GetYaxis()->SetTickLength(1);
+	prt_hdigi[m]->GetXaxis()->SetAxisColor(15);
+	prt_hdigi[m]->GetYaxis()->SetAxisColor(15);
+      }
     }
   }
 }

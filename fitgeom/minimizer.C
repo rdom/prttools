@@ -46,12 +46,13 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
     if(sim)ratiosim[i]=0;
     else ratiodat[i]=0;
 
-    if(mult[2][i]<10 || mult[4][i]<20) continue;
+    if(mult[4][i]>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
+    
+    if(mult[2][i]<20 || mult[4][i]<20) continue;
 
     if(sim) ratiosim[i]=mult[2][i]/(double)mult[4][i];
     else ratiodat[i]=mult[2][i]/(double)mult[4][i];
     
-    prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
   }
 
   prt_drawDigi("m,p,v\n",2017,4,0);
@@ -85,11 +86,12 @@ double getChiSq(const double *xx){
     chi = fabs(ratiodat[i]-ratiosim[i])/0.1;
     chisq += chi*chi;
   }
+  status=0;
+  chisq = chisq/(double)ndof;
   
   std::cout<<"chisq "<<chisq << " ndof "<<ndof<<" "<<  xx[0]<<" " <<xx[1]<<" "<< xx[2]<<" "<< xx[3]<<std::endl;
   
-  status=0;
-  return chisq/(double)ndof;
+  return chisq;
 }
  
 int minimizer(){
