@@ -78,24 +78,24 @@ double getChiSq(const double *xx){
 
   double chi;
   chisq = 0;
+  int ndof(4);
   for(auto i=0; i<prt_maxdircch; i++){
     if(ratiodat[i]<0.0001 || ratiosim[i]<0.0001) continue;
+    ndof++;
     chi = fabs(ratiodat[i]-ratiosim[i])/0.1;
     chisq += chi*chi;
   }
-  std::cout<<"chisq "<<chisq <<" "<<  xx[0]<<" " <<xx[1]<<" "<< xx[2]<<" "<< xx[3]<<std::endl;
+  
+  std::cout<<"chisq "<<chisq << " ndof "<<ndof<<" "<<  xx[0]<<" " <<xx[1]<<" "<< xx[2]<<" "<< xx[3]<<std::endl;
   
   status=0;
-  return chisq;
+  return chisq/(double)ndof;
 }
  
 int minimizer(){
   
   getRatioArray("/d/proc/aug17/332/beam_s332_50S.root",true);
 
-  std::cout<<"test "<<ratiosim[10]<<" "<< ratiosim[100]<<std::endl;
-  
-  
   iter = 0;
   // algoName Migrad, Simplex,Combined,Scan  (default is Migrad)
   ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Simplex");
