@@ -46,7 +46,7 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
     if(sim)ratiosim[i]=0;
     else ratiodat[i]=0;
 
-    if(mult[2][i]<10 || mult[4][i]<10) continue;
+    if(mult[2][i]<10 || mult[4][i]<20) continue;
 
     if(sim) ratiosim[i]=mult[2][i]/(double)mult[4][i];
     else ratiodat[i]=mult[2][i]/(double)mult[4][i];
@@ -79,6 +79,7 @@ double getChiSq(const double *xx){
   double chi;
   chisq = 0;
   for(auto i=0; i<prt_maxdircch; i++){
+    if(ratiodat[i]<0.0001 || ratiosim[i]<0.0001) continue;
     chi = fabs(ratiodat[i]-ratiosim[i])/0.1;
     chisq += chi*chi;
   }
@@ -97,13 +98,13 @@ int minimizer(){
   
   iter = 0;
   // algoName Migrad, Simplex,Combined,Scan  (default is Migrad)
-  ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Migrad");
+  ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Simplex");
 
   // set tolerance , etc...
   min->SetMaxFunctionCalls(10000); // for Minuit/Minuit2 
   min->SetMaxIterations(10000);  // for GSL 
   min->SetTolerance(0.001);
-  min->SetPrintLevel(1);
+  min->SetPrintLevel(2);
 
   // create funciton wrapper for minmizer. a IMultiGenFunction type 
 
@@ -137,3 +138,4 @@ int minimizer(){
  
   return 0;
 }
+
