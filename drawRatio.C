@@ -7,7 +7,7 @@ void drawRatio(TString infile="../prtdirc/macro/hits.root"){
   
   if(!prt_init(infile,1,"data/drawRatio")) return;
  
-  Double_t mult[5][prt_maxdircch];
+  Double_t mult[5][prt_maxdircch]={{0}};    
   PrtHit hit;
   for (Int_t ievent=0; ievent< prt_entries; ievent++){
     prt_nextEvent(ievent,1000);
@@ -26,7 +26,9 @@ void drawRatio(TString infile="../prtdirc/macro/hits.root"){
   for(auto i=0; i<prt_maxdircch; i++){
     Int_t mcpid = map_mcp[i];
     Int_t pixid = map_pix[i];
-    if(mult[2][i]>10)
+    // if(mult[2][i]>10)
+    std::cout<<"pi "<<mult[2][i]<<" "<<mult[4][i]<<std::endl;
+    
       prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
   }
 
@@ -36,5 +38,5 @@ void drawRatio(TString infile="../prtdirc/macro/hits.root"){
   prt_drawDigi("m,p,v\n",2017,4,0);
   prt_cdigi->SetName(Form("hp_ratio_dat_%d_%2.1f",(Int_t)prt_theta,prt_phi));
   prt_canvasAdd(prt_cdigi);
-  prt_canvasSave(1,0);
+  // prt_canvasSave(1,0);
 }

@@ -19,12 +19,7 @@ double ratiosim[prt_maxdircch],ratiodat[prt_maxdircch];
 void getRatioArray(TString infile="hits.root",bool sim=false){
   if(!prt_init(infile,1,"data/fitgeom")) return;
  
-  Double_t mult[5][prt_maxdircch];
-  for(auto i=0; i<5; i++){
-    for(auto c=0; c<prt_maxdircch; c++){
-      mult[i][c]=0;;
-    }
-  }
+  Double_t mult[5][prt_maxdircch]={{0}};
   
   PrtHit hit;
   for (auto ievent=0; ievent< prt_entries; ievent++){
