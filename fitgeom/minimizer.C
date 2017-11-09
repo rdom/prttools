@@ -70,7 +70,8 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
   gdelta->SetPoint(0,minsum,0.5);
   gdelta->SetPoint(1,maxsum,0.05);
   
-  prt_drawDigi("m,p,v\n",2017,4,0);
+  if(isratio) prt_drawDigi("m,p,v\n",2017,4,0);
+  else prt_drawDigi("m,p,v\n",2017);
   if(sim) prt_cdigi->Print(Form("hp_sfit_%d.png",iter));
   else prt_cdigi->Print(Form("hp_dfit_%d.png",iter));
 }
