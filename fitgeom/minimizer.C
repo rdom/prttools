@@ -57,7 +57,7 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
     if(isratio && mult[4][i]>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
     else if(maxsum>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,summult[i]/maxsum);
 
-    if(mult[2][i]<20 || mult[4][i]<20) continue;
+    if(mult[2][i]<10 || mult[4][i]<10) continue;
 
     if(isratio){
       if(sim) ratiosim[i]=mult[2][i]/(double)mult[4][i];
