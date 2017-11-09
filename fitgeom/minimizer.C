@@ -108,19 +108,19 @@ int minimizer(){
 
   iter = 0;
   // algoName Migrad, Simplex,Combined,Scan  (default is Migrad)
-  ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Simplex");
+  ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Migrad");
 
   // set tolerance , etc...
-  min->SetMaxFunctionCalls(10000); // for Minuit/Minuit2 
-  min->SetMaxIterations(10000);  // for GSL 
+  min->SetMaxFunctionCalls(200); // for Minuit/Minuit2 
+  min->SetMaxIterations(200);  // for GSL 
   min->SetTolerance(0.001);
-  min->SetPrintLevel(2);
+  min->SetPrintLevel(1);
 
   // create funciton wrapper for minmizer. a IMultiGenFunction type 
 
   const int npar=4;
   ROOT::Math::Functor f(&getChiSq,npar); 
-  double step[npar] ={ 0.1, 0.1,  0.5,  0.5};
+  double step[npar] ={ 0.2, 0.2,  2.0,  1.0};
   double par[npar] = {50.0, 0.0, 70.0, 16.5};
   min->SetFunction(f);
    
