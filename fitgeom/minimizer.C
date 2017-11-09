@@ -40,23 +40,24 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
 
   minsum=100000000;
   maxsum=0;
+  
+  for(auto i=0; i<prt_maxdircch; i++){   
+    summult[i]=mult[2][i]+mult[4][i];
+    if(summult[i]>maxsum) maxsum =  summult[i];
+    if(summult[i]<minsum) minsum =  summult[i];
+  }
+   
   for(auto i=0; i<prt_maxdircch; i++){
     Int_t mcpid = map_mcp[i];
     Int_t pixid = map_pix[i];
 
     if(sim)ratiosim[i]=0;
     else ratiodat[i]=0;
-    summult[i]=0;
     
     if(isratio && mult[4][i]>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
-    else prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]+mult[4][i]);
+    else if(maxsum>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,summult[i]/maxsum);
 
     if(mult[2][i]<20 || mult[4][i]<20) continue;
-
-    summult[i]=mult[2][i]+mult[4][i];
- 
-    if(summult[i]>maxsum) maxsum =  summult[i];
-    if(summult[i]<minsum) minsum =  summult[i];
 
     if(isratio){
       if(sim) ratiosim[i]=mult[2][i]/(double)mult[4][i];
