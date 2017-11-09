@@ -83,7 +83,7 @@ double getChiSq(const double *xx){
   for(auto i=0; i<prt_maxdircch; i++){
     if(ratiodat[i]<0.0001 || ratiosim[i]<0.0001) continue;
     ndof++;
-    chi = fabs(ratiodat[i]-ratiosim[i])/0.1;
+    chi = fabs(ratiodat[i]-ratiosim[i])/0.2;
     chisq += chi*chi;
   }
   status=0;
