@@ -15,6 +15,10 @@ ifstream gStatusFileR;
 ofstream gStatusFileW;
 
 double ratiosim[prt_maxdircch],ratiodat[prt_maxdircch];
+double summult[prt_maxdircch]={0};
+double minsum,maxsum;
+TGraph * gdelta = new TGraph();
+
 
 void getRatioArray(TString infile="hits.root",bool sim=false){
   if(!prt_init(infile,1,"data/fitgeom")) return;
@@ -34,22 +38,31 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
     }
   }
 
+  minsum=100000000;
+  maxsum=0;
   for(auto i=0; i<prt_maxdircch; i++){
     Int_t mcpid = map_mcp[i];
     Int_t pixid = map_pix[i];
 
     if(sim)ratiosim[i]=0;
     else ratiodat[i]=0;
-
-    if(mult[4][i]>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
+    summult[i]=0;
     
+    if(mult[4][i]>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
     if(mult[2][i]<20 || mult[4][i]<20) continue;
 
+    summult[i]=mult[2][i]+mult[4][i];
+ 
+    if(summult[i]>maxsum) maxsum =  summult[i];
+    if(summult[i]<minsum) minsum =  summult[i];
+    
     if(sim) ratiosim[i]=mult[2][i]/(double)mult[4][i];
     else ratiodat[i]=mult[2][i]/(double)mult[4][i];
     
   }
-
+  gdelta->SetPoint(0,minsum,0.5);
+  gdelta->SetPoint(1,maxsum,0.05);
+  
   prt_drawDigi("m,p,v\n",2017,4,0);
   if(sim) prt_cdigi->Print(Form("hp_sfit_%d.png",iter));
   else prt_cdigi->Print(Form("hp_dfit_%d.png",iter));
@@ -78,7 +91,7 @@ double getChiSq(const double *xx){
   for(auto i=0; i<prt_maxdircch; i++){
     if(ratiodat[i]<0.0001 || ratiosim[i]<0.0001) continue;
     ndof++;
-    chi = fabs(ratiodat[i]-ratiosim[i])/0.2;
+    chi = fabs(ratiodat[i]-ratiosim[i])/gdelta->Eval(summult[i]);    
     chisq += chi*chi;
   }
   status=0;
