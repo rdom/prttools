@@ -18,7 +18,7 @@ cd  $rpath
 for i in {1..30}; do
     ./prtdirc -o $wpath/b_h$i.root \
 	      -p 7 -h 1 -l 3 -gz 447 -gx 87 -gsx $gsx -gsy $gsy -g 2017 -c 2017 -phi $phi -z 10 \
-	      -a $theta -e 200 -x "mix" -b 1 -r $i > $wpath/b_l$i.log &
+	      -a $theta -e 300 -x "mix" -b 1 -r $i > $wpath/b_l$i.log &
 done
 
 sleep 1

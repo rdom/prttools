@@ -91,7 +91,7 @@ double getChiSq(const double *xx){
  
 int minimizer(){
   
-  getRatioArray("/d/proc/aug17/332/beam_s332_50S.root",true);
+  getRatioArray("/d/proc/aug17/332/beam_s332_50C.root",true);
 
   iter = 0;
   // algoName Migrad, Simplex,Combined,Scan  (default is Migrad)
