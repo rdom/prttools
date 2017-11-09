@@ -147,7 +147,7 @@ int minimizer(){
   min->Minimize(); 
     
   const double *xs = min->X();
-  std::cout << "Minimum: f(" << xs[0] << "," << xs[1] << "): " 
+  std::cout << "Minimum: f(" << xs[0] << "," << xs[1] << "," << xs[2] << "," << xs[3] << "): " 
 	    << min->MinValue()  << std::endl;
 
   if( min->MinValue() < 8 ) 
