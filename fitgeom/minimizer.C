@@ -18,7 +18,7 @@ double ratiosim[prt_maxdircch],ratiodat[prt_maxdircch];
 double summult[prt_maxdircch]={0};
 double minsum,maxsum;
 TGraph * gdelta = new TGraph();
-
+bool isratio=false;
 
 void getRatioArray(TString infile="hits.root",bool sim=false){
   if(!prt_init(infile,1,"data/fitgeom")) return;
@@ -48,16 +48,23 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
     else ratiodat[i]=0;
     summult[i]=0;
     
-    if(mult[4][i]>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
+    if(isratio && mult[4][i]>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
+    else prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]+mult[4][i]);
+
     if(mult[2][i]<20 || mult[4][i]<20) continue;
 
     summult[i]=mult[2][i]+mult[4][i];
  
     if(summult[i]>maxsum) maxsum =  summult[i];
     if(summult[i]<minsum) minsum =  summult[i];
-    
-    if(sim) ratiosim[i]=mult[2][i]/(double)mult[4][i];
-    else ratiodat[i]=mult[2][i]/(double)mult[4][i];
+
+    if(isratio){
+      if(sim) ratiosim[i]=mult[2][i]/(double)mult[4][i];
+      else ratiodat[i]=mult[2][i]/(double)mult[4][i];
+    }else{
+      if(sim) ratiosim[i]=summult[i]/maxsum;
+      else ratiodat[i]=summult[i]/maxsum;
+    }
     
   }
   gdelta->SetPoint(0,minsum,0.5);
@@ -91,7 +98,8 @@ double getChiSq(const double *xx){
   for(auto i=0; i<prt_maxdircch; i++){
     if(ratiodat[i]<0.0001 || ratiosim[i]<0.0001) continue;
     ndof++;
-    chi = fabs(ratiodat[i]-ratiosim[i])/gdelta->Eval(summult[i]);    
+    if(isratio) chi = fabs(ratiodat[i]-ratiosim[i])/gdelta->Eval(summult[i]);
+    else  chi = fabs(ratiodat[i]-ratiosim[i])/(TMath::Sqrt(summult[i])/maxsum);
     chisq += chi*chi;
   }
   status=0;
@@ -108,7 +116,7 @@ int minimizer(){
 
   iter = 0;
   // algoName Migrad, Simplex,Combined,Scan  (default is Migrad)
-  ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Migrad");
+  ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Simplex");
 
   // set tolerance , etc...
   min->SetMaxFunctionCalls(200); // for Minuit/Minuit2 
