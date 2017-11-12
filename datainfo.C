@@ -1578,7 +1578,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(332,"beam_s332_120",1,3,120.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
       dataArray.push_back(DataInfo(332,"beam_s332_130",1,3,130.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
       dataArray.push_back(DataInfo(332,"beam_s332_140",1,3,140.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-    . dataArray.push_back(DataInfo(332,"beam_s332_150",1,3,150.0,447,85.0,68.00,14,4,7.0,3,o,0.6));
+      dataArray.push_back(DataInfo(332,"beam_s332_150",1,3,150.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
     }
 
     study[333]="X scan; theta=25; phi=0; bar + grease + 3LS lens";
