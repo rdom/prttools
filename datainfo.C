@@ -1300,6 +1300,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(315,"beam_s315_110_5",1,3,110.0,447,85.0,70.00,5,7.0,3,o,5));
       dataArray.push_back(DataInfo(315,"beam_s315_120_5",1,3,120.0,447,85.0,70.00,5,7.0,3,o,5));
       dataArray.push_back(DataInfo(315,"beam_s315_130_5",1,3,130.0,447,85.0,70.00,5,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_140_5",1,3,140.0,447,85.0,70.00,5,7.0,3,o,5));
       dataArray.push_back(DataInfo(315,"beam_s315_145_5",1,3,145.0,447,85.0,70.00,5,7.0,3,o,5));      
       dataArray.push_back(DataInfo(315,"beam_s315_150_5",1,3,150.0,447,85.0,70.00,5,7.0,3,o,5));
     }
