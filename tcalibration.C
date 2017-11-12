@@ -314,7 +314,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
-      if(!trbdata) continue;
+      //if(!trbdata && prt_isBadChannel(ch)) continue;
       
       if(gMode>0){
 	timeLe = time[i]-tdcRefTime[tdc];
