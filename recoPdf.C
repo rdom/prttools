@@ -146,7 +146,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	if(gch>=1350 && gch<=1351)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)
-	  //if(gch>=1367 && gch<=1372)
+	//if(gch>=1367 && gch<=1372)
  	  hodo2=true;	  
       }
       
@@ -172,7 +172,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       
       if(ch>prt_maxdircch) continue;
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
-      if(++mult[ch]>1 || ch ==0) continue;
+      //      if(++mult[ch]>1 || ch ==0) continue;
 
       { //time cuts
       	// Double_t cut1(11);
