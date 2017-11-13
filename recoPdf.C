@@ -76,7 +76,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
  
   if(path.Contains("C.root")) sigma=0;
   if(path.Contains("Z.root")) sigma=0;
-  // if(path.Contains("F.root")) sigma=200;
+  if(path.Contains("S.root")) sigma=400;
 
   TF1 *F1 = new TF1("gaus0","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
   TF1 *F2 = new TF1("gaus1","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
