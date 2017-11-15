@@ -80,7 +80,10 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
 double getChiSq(const double *xx){
 
   iter++;
-  TString command = Form("( ./botfit %d %f %f %f  %f %f )", iter, xx[0], xx[1], xx[2], xx[3],chisq);
+  TString opts = prt_data_info.getOpt()+Form(" -a %2.2f -phi %2.2f -gsx %2.2f -gsy %2.2f ",xx[0], xx[1], xx[2], xx[3]);
+  TString command = Form("( ./botfit %d '%s' '%s' %f )", iter,opts.Data(),prt_data_info.getAlias().Data(),chisq);
+  std::cout<<"command "<<command<<std::endl;
+  
   gSystem->Exec(command.Data());
 
   while(status<1){
@@ -112,9 +115,10 @@ double getChiSq(const double *xx){
   return chisq;
 }
  
-int minimizer(){
-  
-  getRatioArray("/d/proc/aug17/332/beam_s332_50C.root",true);
+int minimizer(TString in="/d/proc/aug17/332/beam_s332_50C.root"){
+  prt_data_info = getDataInfo(in);
+  std::cout<<"opt  "<<prt_data_info.getOpt() <<std::endl;
+  getRatioArray(in,true);
 
   iter = 0;
   // algoName Migrad, Simplex,Combined,Scan  (default is Migrad)

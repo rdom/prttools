@@ -131,6 +131,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   gn[3]->SetLineColor(kRed+2);
   gn[3]->SetMarkerColor(kRed+2);  
   gn[3]->Draw("same pl");
+
   
   prt_canvasSave(0,0);
 }

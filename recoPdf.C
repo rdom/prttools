@@ -76,7 +76,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
  
   if(path.Contains("C.root")) sigma=0;
   if(path.Contains("Z.root")) sigma=0;
-  if(path.Contains("S.root")) sigma=400;
+  if(path.Contains("F.root")) sigma=400;
 
   TF1 *F1 = new TF1("gaus0","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
   TF1 *F2 = new TF1("gaus1","[0]*exp(-0.5*((x-[1])/[2])*(x-[1])/[2])",0,150);
@@ -182,7 +182,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<0 || time>50) continue;
+	//if(time<0 || time>50) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -276,6 +276,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       prt_hdigi[m]->Fill(p%8,p/8,countgood[m][0]/(Double_t)countbad[m][0]);
     }
   }
+
+
+  gStyle->SetOptStat(0);
+  gStyle->SetOptTitle(0);
   
   prt_drawDigi("m,p,v\n",2017,1.3,0);
   prt_canvasAdd(prt_cdigi);
@@ -284,10 +288,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   if(path.Contains("C.root")) name =  "tid"+ name;
   else name = "tis"+ name;
   
-  prt_canvasAdd("ll_"+name,800,500);
+  prt_canvasAdd("ll_"+name,800,400);
   
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
   prt_normalize(hll[4],hll[2]);
   hll[4]->GetYaxis()->SetNdivisions(9,5,0);
   
@@ -348,8 +350,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   // hl3->SetLineColor(2);
   // hl3->Draw("same");
 
-  gStyle->SetOptFit(1);
-  prt_canvasAdd("hnph_"+name,800,500);
+  //  gStyle->SetOptFit(1);
+  prt_canvasAdd("hnph_"+name,800,400);
+
+
   prt_normalize(hnph[4],hnph[2]);
   hnph[4]->Fit("gaus");
   ff = hnph[4]->GetFunction("gaus");
@@ -359,6 +363,16 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   hnph[4]->Draw();
   hnph[2]->SetLineColor(4);
   hnph[2]->Draw("same");
+
+  TLegend *leg1 = new TLegend(0.65,0.65,0.83,0.87);
+  leg1->SetFillColor(0);
+  leg1->SetFillStyle(0);
+  leg1->SetBorderSize(0);
+  leg1->SetFillStyle(0);
+  leg1->AddEntry(hnph[2],"pions ","lp");
+  leg1->AddEntry(hnph[4],"protons","lp");
+  leg1->Draw();
+  
   
   prt_canvasSave(0,0);
   
