@@ -26,7 +26,7 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
   Double_t mult[5][prt_maxdircch]={{0}};
   
   PrtHit hit;
-  for (auto ievent=0; ievent< prt_entries && ievent <200000; ievent++){
+  for (auto ievent=0; ievent< prt_entries && ievent <500000; ievent++){
     prt_nextEvent(ievent,1000);
     for(auto h=0; h<prt_event->GetHitSize(); h++){
       hit = prt_event->GetHit(h);
@@ -42,7 +42,8 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
   maxsum=0;
   
   for(auto i=0; i<prt_maxdircch; i++){   
-    summult[i]=mult[4][i];//+mult[2][i];
+    summult[i]=mult[4][i];
+    if(isratio) summult[i] += mult[2][i];
     if(summult[i]>maxsum) maxsum =  summult[i];
     if(summult[i]<minsum) minsum =  summult[i];
   }
