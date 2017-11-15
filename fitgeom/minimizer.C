@@ -26,7 +26,7 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
   Double_t mult[5][prt_maxdircch]={{0}};
   
   PrtHit hit;
-  for (auto ievent=0; ievent< prt_entries; ievent++){
+  for (auto ievent=0; ievent< prt_entries && ievent <200000; ievent++){
     prt_nextEvent(ievent,1000);
     for(auto h=0; h<prt_event->GetHitSize(); h++){
       hit = prt_event->GetHit(h);
