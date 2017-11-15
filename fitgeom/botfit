@@ -13,9 +13,9 @@ rpath=$HOME/dirc/prtdirc/build
 wpath=$HOME/dirc/prttools/fitgeom
 
 cd  $rpath
-for i in {1..30}; do
+for i in {1..32}; do
     ./prtdirc -o $wpath/b_h$i.root $opts \
-	      -tr 0.25 -e 100 -x "proton" -b 1 -r $i > $wpath/b_l$i.log &
+	      -z 10 -tr 0.25 -e 150 -x "proton" -b 1 -r $i > $wpath/b_l$i.log &
 done
 
 sleep 1

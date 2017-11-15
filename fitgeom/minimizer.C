@@ -16,47 +16,48 @@ ofstream gStatusFileW;
 
 double ratiosim[prt_maxdircch],ratiodat[prt_maxdircch];
 double summult[prt_maxdircch]={0};
-double minsum,maxsum;
+double minsum,maxsum[12];
 TGraph * gdelta = new TGraph();
 bool isratio=false;
 
 void getRatioArray(TString infile="hits.root",bool sim=false){
   if(!prt_init(infile,1,"data/fitgeom")) return;
  
-  Double_t mult[5][prt_maxdircch]={{0}};
+  double mult[5][prt_maxdircch]={{0}};
   
   PrtHit hit;
   for (auto ievent=0; ievent< prt_entries && ievent <500000; ievent++){
     prt_nextEvent(ievent,1000);
     for(auto h=0; h<prt_event->GetHitSize(); h++){
       hit = prt_event->GetHit(h);
-      Int_t mcpid = hit.GetMcpId();
-      Int_t pixid = hit.GetPixelId()-1;
-      Int_t ch = map_mpc[mcpid][pixid];
+      int mcpid = hit.GetMcpId();
+      int pixid = hit.GetPixelId()-1;
+      int ch = map_mpc[mcpid][pixid];
       if(prt_isBadChannel(ch)) continue;
       mult[prt_pid][ch]++;
     }
   }
 
   minsum=100000000;
-  maxsum=0;
-  
-  for(auto i=0; i<prt_maxdircch; i++){   
+  for(auto i=0; i<12; i++) maxsum[i]=0;
+   
+  for(auto i=0; i<prt_maxdircch; i++){
+    int mcpid = 0; //map_mcp[i];
     summult[i]=mult[4][i];
     if(isratio) summult[i] += mult[2][i];
-    if(summult[i]>maxsum) maxsum =  summult[i];
-    if(summult[i]<minsum) minsum =  summult[i];
+    if(summult[i]>maxsum[mcpid]) maxsum[mcpid] = summult[i];
+    if(summult[i]<minsum) minsum = summult[i];
   }
    
   for(auto i=0; i<prt_maxdircch; i++){
-    Int_t mcpid = map_mcp[i];
-    Int_t pixid = map_pix[i];
+    int mcpid = map_mcp[i];
+    int pixid = map_pix[i];
 
     if(sim)ratiosim[i]=0;
     else ratiodat[i]=0;
     
     if(isratio && mult[4][i]>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,mult[2][i]/(double)mult[4][i]);
-    else if(maxsum>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,summult[i]/maxsum);
+    else if(maxsum[0]>0) prt_hdigi[mcpid]->Fill(pixid%8, pixid/8,summult[i]/maxsum[0]);
 
     if(isratio){
       if(mult[2][i]<10 || mult[4][i]<10) continue;
@@ -64,13 +65,13 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
       else ratiodat[i]=mult[2][i]/(double)mult[4][i];
     }else{
       if(summult[i]<10) continue;
-      if(sim) ratiosim[i]=summult[i]/maxsum;
-      else ratiodat[i]=summult[i]/maxsum;
+      if(sim) ratiosim[i]=summult[i]/maxsum[0];
+      else ratiodat[i]=summult[i]/maxsum[0];
     }
     
   }
   gdelta->SetPoint(0,minsum,0.5);
-  gdelta->SetPoint(1,maxsum,0.05);
+  gdelta->SetPoint(1,maxsum[0],0.05);
   
   if(isratio) prt_drawDigi("m,p,v\n",2017,4,0);
   else prt_drawDigi("m,p,v\n",2017);
@@ -103,9 +104,10 @@ double getChiSq(const double *xx){
   int ndof(4);
   for(auto i=0; i<prt_maxdircch; i++){
     if(ratiodat[i]<0.0001 || ratiosim[i]<0.0001) continue;
+    int mcpid = 0;//map_mcp[i];
     ndof++;
     if(isratio) chi = fabs(ratiodat[i]-ratiosim[i])/gdelta->Eval(summult[i]);
-    else  chi = fabs(ratiodat[i]-ratiosim[i])/(TMath::Sqrt(summult[i])/maxsum);
+    else  chi = fabs(ratiodat[i]-ratiosim[i])/(TMath::Sqrt(summult[i])/maxsum[mcpid]);
     chisq += chi*chi;
   }
   status=0;
@@ -126,8 +128,8 @@ int minimizer(TString in="/d/proc/aug17/332/beam_s332_50C.root"){
   ROOT::Math::Minimizer* min = ROOT::Math::Factory::CreateMinimizer("Minuit", "Simplex");
 
   // set tolerance , etc...
-  min->SetMaxFunctionCalls(200); // for Minuit/Minuit2 
-  min->SetMaxIterations(200);  // for GSL 
+  min->SetMaxFunctionCalls(150); // for Minuit/Minuit2 
+  min->SetMaxIterations(150);  // for GSL 
   min->SetTolerance(0.001);
   min->SetPrintLevel(1);
 

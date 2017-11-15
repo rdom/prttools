@@ -447,7 +447,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 void prt_initDigi(Int_t type=0){  
   if(type == 0){
     for(Int_t m=0; m<prt_nmcp;m++){
-      if(prt_hdigi[m]) prt_hdigi[m]->Reset();
+      if(prt_hdigi[m]) prt_hdigi[m]->Reset("M");
       else{
 	prt_hdigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),8,0.,8.,8,0.,8.);
 	prt_hdigi[m]->SetStats(0);
