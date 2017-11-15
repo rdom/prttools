@@ -1581,21 +1581,21 @@ void datainfo_init(){
     {
       Double_t o = 28.81;//   12.59 + 62 + 20-63-2.95;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(332,"beam_s332_20",1,3,20.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_25",1,3,25.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_30",1,3,30.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_40",1,3,40.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
+      dataArray.push_back(DataInfo(332,"beam_s332_20",1,3,20.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_25",1,3,25.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_30",1,3,30.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_40",1,3,40.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
       dataArray.push_back(DataInfo(332,"beam_s332_50",1,3,50.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_60",1,3,60.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_70",1,3,70.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_80",1,3,80.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_90",1,3,90.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_100",1,3,100.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_110",1,3,110.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_120",1,3,120.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_130",1,3,130.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_140",1,3,140.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
-      dataArray.push_back(DataInfo(332,"beam_s332_150",1,3,150.0,447,85.0,68.00,14.4,7.0,3,o,0.6));
+      dataArray.push_back(DataInfo(332,"beam_s332_60",1,3,60.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_70",1,3,70.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_80",1,3,80.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_90",1,3,90.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_100",1,3,100.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_110",1,3,110.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_120",1,3,120.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_130",1,3,130.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_140",1,3,140.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
+      dataArray.push_back(DataInfo(332,"beam_s332_150",1,3,150.0,447,85.0,68.00,14.4,7.0,3,o,0.3));
     }
 
     study[333]="X scan; theta=25; phi=0; bar + grease + 3LS lens";
