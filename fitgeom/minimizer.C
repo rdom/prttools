@@ -80,7 +80,7 @@ void getRatioArray(TString infile="hits.root",bool sim=false){
 double getChiSq(const double *xx){
 
   iter++;
-  TString opts = prt_data_info.getOpt()+Form(" -a %2.2f -phi %2.2f -gsx %2.2f -gsy %2.2f ",xx[0], xx[1], xx[2], xx[3]);
+  TString opts = prt_data_info.getOpt()+Form(" -a %2.3f -phi %2.3f -gsx %2.3f -gsy %2.3f ",xx[0], xx[1], xx[2], xx[3]);
   TString command = Form("( ./botfit %d '%s' '%s' %f )", iter,opts.Data(),prt_data_info.getAlias().Data(),chisq);
   std::cout<<"command "<<command<<std::endl;
   
