@@ -15,11 +15,19 @@ waitForMe (){
 	fi
     done
 }
-for theta in `LANG=en_us seq -0.02 0.001 0.02`; do
-    for phi in `LANG=en_us seq -0.01 0.0005 0.01`; do
-	${binpath}/prtdirc -s 2 -i /d/proc/aug17/332/beam_s332_20C.root -u /d/proc/aug17/332/lut_beam_s332_25S10M_cs_avr.root -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 1000 -tr 2.0 -t1 $theta -t2 $phi -v 0 -b 1 &
-	waitForMe $threads
+
+
+for theta in `LANG=en_us seq 20 10 150` 25; do
+
+    datapath=/d/proc/aug17/332/beam_s332_${a}C.root
+    rm $respath/reco*.root    
+
+    for theta in `LANG=en_us seq -0.02 0.001 0.02`; do
+	for phi in `LANG=en_us seq -0.01 0.0005 0.01`; do
+	    ${binpath}/prtdirc -s 2 -i $datapath -u /d/proc/aug17/332/lut_beam_s332_25S10M_cs_avr.root -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 1000 -tr 2.0 -t1 $theta -t2 $phi -v 0 -b 1 &
+	    waitForMe $threads
+	done
     done
+    hadd -f $respath/map_${a}.root $respath/reco*.root
 done
-hadd -f $respath/rt.root $respath/reco*.root 
 
