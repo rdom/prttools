@@ -17,7 +17,7 @@ waitForMe (){
 }
 
 
-for theta in `LANG=en_us seq 20 10 150` 25; do
+for a in `LANG=en_us seq 20 10 150` 25; do
 
     datapath=/d/proc/aug17/332/beam_s332_${a}C.root
     rm $respath/reco*.root    
