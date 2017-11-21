@@ -15,7 +15,7 @@ wpath=$HOME/dirc/prttools/fitgeom
 cd  $rpath
 for i in {1..32}; do
     ./prtdirc -o $wpath/b_h$i.root $opts \
-	      -z 10 -tr 0.25 -e 150 -x "proton" -b 1 -r $i > $wpath/b_l$i.log &
+	      -z 10 -tr 0.25 -e 50 -x "mix" -b 1 -r $i > $wpath/b_l$i.log &
 done
 
 sleep 1

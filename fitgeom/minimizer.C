@@ -147,6 +147,9 @@ int minimizer(TString in="/d/proc/aug17/332/beam_s332_50C.root"){
   min->SetVariable(2,"gsx",par[2], step[2]);
   min->SetVariable(3,"gsy",par[3], step[3]);
 
+  min->FixVariable(2);
+  min->FixVariable(3);
+
   min->SetVariableLimits(0, par[0]-0.4, par[0]+0.4);
   min->SetVariableLimits(1, par[1]-0.8, par[1]+0.8);
   min->SetVariableLimits(2, par[2]-10, par[2]+10);
