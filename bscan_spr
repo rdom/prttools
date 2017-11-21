@@ -17,7 +17,7 @@ waitForMe (){
 }
 for theta in `LANG=en_us seq -0.02 0.002 0.02`; do
     for phi in `LANG=en_us seq -0.01 0.0005 0.01`; do
-	${binpath}/prtdirc -s 2 -i ~/sim4/d/proc/aug17/332/beam_s332_20C.root -u ~/sim4/d/proc/aug17/332/lut_beam_s332_25S10M_cs_avr.root -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 1000 -tr 2.0 -t1 $theta -t2 $phi -v 0 -b 1 &
+	${binpath}/prtdirc -s 2 -i /d/proc/aug17/332/beam_s332_20C.root -u /d/proc/aug17/332/lut_beam_s332_25S10M_cs_avr.root -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 1000 -tr 2.0 -t1 $theta -t2 $phi -v 0 -b 1 &
 	waitForMe $threads
     done
 done
