@@ -202,6 +202,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       mom = prt_data_info.getMomentum();
       simOffset = prt_data_info.getSimTO();
       fEvent->SetAngle(prt_data_info.getAngle());
+      fEvent->SetPhi(prt_data_info.getPhi());
       fEvent->SetMomentum(TVector3(0,0,mom));
       fEvent->SetTrigger(816);
       fEvent->SetGeometry(studyId);
