@@ -374,7 +374,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   leg1->Draw();
   
   
-  prt_canvasSave(0,0);
+  prt_canvasSave();
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;

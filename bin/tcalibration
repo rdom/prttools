@@ -18,6 +18,8 @@ show_help(){
         path to the file with calibration curves
      -t 
         path to the file with time offsets from pilas
+     -o 
+        output folder (input file's folder by default)
      -j
         number of threads 
      -e 
@@ -29,7 +31,7 @@ show_help(){
 }
 
 OPTIND=1 
-while getopts "h?r:lm:c:t:j:e:" opt; do
+while getopts "h?r:lm:c:t:o:j:e:" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -45,6 +47,8 @@ while getopts "h?r:lm:c:t:j:e:" opt; do
 	    ;;
 	t)  tFile=$OPTARG
 	    ;;
+	o)  outDir=$OPTARG
+	    ;;
 	j)  threads=$OPTARG
             ;;
 	e)  events=$OPTARG
@@ -55,6 +59,7 @@ refChannel=${refChannel:-0}
 mode=${mode:-1}
 threads=${threads:-0}
 tFile=${tFile:-""}
+outDir=${outDir:-""}
 events=${events:-0}
 
 shift $((OPTIND-1))
@@ -87,6 +92,7 @@ if [[ $tFile  != "" ]]; then
     tFile=$(readlink -f $tFile) 
 fi
 
+
 suf="C"
 #if [[ $tFile  == "" ]]; then
 #    suf="C0"
@@ -99,8 +105,16 @@ fi
 
 inFile=$(readlink -f $fileName)
 inName=$(basename $inFile)
-inDir=$(dirname $inFile)/
 fileId="${inName%.*.*}"
+
+if [[ $outDir != "" ]]; then
+    if [ ! -d "$outDir" ]; then
+	mkdir -p "$outDir"
+    fi 
+    outDir=${outDir}/  
+else
+    outDir=$(dirname $inFile)/
+fi
 
 waitForMe (){
     spin='-\|/'
@@ -152,20 +166,20 @@ else
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$inDir${fileId}${suf}${i}j.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode)" > /dev/null  2>/dev/null &
+	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$outDir${fileId}${suf}${i}j.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode)" > /dev/null  2>/dev/null &
 	done
 	
 	waitForMe
 	statusline="$statusline merging .."
 	printf "\r$statusline"
-	rm -f "${inDir}${fileId}${suf}".root
-	list="${inDir}${fileId}${suf}"*j.root
-	hadd  "${inDir}${fileId}${suf}.root" $list >/dev/null 2>/dev/null
+	rm -f "${outDir}${fileId}${suf}".root
+	list="${outDir}${fileId}${suf}"*j.root
+	hadd  "${outDir}${fileId}${suf}.root" $list >/dev/null 2>/dev/null
 	rm $list
 	finish_time=$(date +%s)
 	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
     else
-	root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"${inDir}${fileId}${suf}.root\",\"$cFile\", \"$tFile\", $refChannel,0,$events,$mode)"
+	root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"${outDir}${fileId}${suf}.root\",\"$cFile\", \"$tFile\", $refChannel,0,$events,$mode)"
     fi
     cd -> /dev/null
 fi

@@ -893,6 +893,14 @@ void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_
 	    
 	    hh->GetXaxis()->SetTitleOffset(0.85);
 	    hh->GetYaxis()->SetTitleOffset(0.76);
+
+	    if(fabs(cc->GetBottomMargin()-0.12)<0.001){
+	      TPaletteAxis *palette = (TPaletteAxis*)hh->GetListOfFunctions()->FindObject("palette");
+	      if(palette) {
+		palette->SetY1NDC(0.12);
+		cc->Modified();
+	      }
+	    }
 	  }
 	  if(obj->InheritsFrom("TGraph")){
 	    TGraph *gg = (TGraph*)obj;
