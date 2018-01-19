@@ -2,7 +2,7 @@
 
 binpath=~/dirc/prtdirc/build
 respath=~/dirc/prttools/tdata
-threads=30
+threads=5
 start_time=$(date +%s)
 
 waitForMe (){
@@ -50,19 +50,21 @@ waitForMe (){
 
 rm $respath/reco*.root
 datapath=/d/proc/aug17/pro/332/beam_s332_20C.root
-
+if [ ! -f "$datapath" ]; then
+    datapath=~/sim4/${datapath}
+fi
+ 
 cd ~/dirc/prtdirc/macro
 for step in `LANG=en_us seq 60 0.5 75`; do
     
-    (${binpath}/prtdirc -o "${respath}/lut_beam_${step}_S10M.root" -p 7 -h 1 -l 3 -a 20.11 -gz 447 -gx 85 -gsx $step -gsy 14.8 -z 3 -g 2017 -c 2017 \
-	       -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -e 100000 -b 1 && \          
-     root -b -q loadlib.C lutmean_cs.C"(\"${respath}/lut_beam_${step}_S10M.root\")" && \
-	 ${binpath}/prtdirc -s 2 -i $datapath -u ${respath}/lut_beam_${step}_S10M_cs_avr.root -o ${respath}/reco_${step}.root -gsx $step -gsy 14.8 -f 0 -e 5000 -tr 2.0 -v 0 -b 1 ) > /dev/null &
+    ( ${binpath}/prtdirc -o "${respath}/lut_beam_${step}_S10M.root" -p 7 -h 1 -l 3 -a 20.11 -gz 447 -gx 85 -gsx $step -gsy 14.8 -z 3 -g 2017 -c 2017 -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -e 10000000 -b 1 && \
+      root -b -q loadlib.C lutmean_cs.C"(\"${respath}/lut_beam_${step}_S10M.root\")" && \
+	  ${binpath}/prtdirc -s 2 -i $datapath -u ${respath}/lut_beam_${step}_S10M_cs_avr.root -o ${respath}/reco_${step}.root -gsx $step -gsy 14.8 -f 0 -e 5000 -tr 2.0 -v 0 -b 1 ) > /dev/null &
     
     waitForMe $threads
 done
 cd -
 
 waitForMe 1
-hadd -f $respath/scan_xstep_${a}.root $respath/reco*.root
+hadd -f $respath/scan_xstep_20.root $respath/reco*.root
 
