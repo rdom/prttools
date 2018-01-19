@@ -3,13 +3,14 @@
 binpath=~/dirc/prtdirc/build
 respath=~/dirc/prttools/tdata
 threads=30
+start_time=$(date +%s)
 
 waitForMe (){
     while : 
     do 
-	activth=$(ps aux | grep "root.exe.*[p]rocData\|[p]rtdirc " | wc -l)
+	activth=$(ps aux | grep "root.exe.*[p]rocData\|[p]rtdirc -[^m]" | wc -l)
 	printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
-	sleep .1
+	sleep .5
 	if [ "$activth" -lt "$1" ]; then 
 	    break  
 	fi
@@ -32,18 +33,36 @@ waitForMe (){
 # done
 
 
-for a in `LANG=en_us seq 70 10 150` 25; do
+# for a in `LANG=en_us seq 70 10 150` 25; do
 
-    datapath=/d/proc/aug17/332/beam_s332_${a}C.root
-    rm $respath/reco*.root    
+#     datapath=/d/proc/aug17/332/beam_s332_${a}C.root
+#     rm $respath/reco*.root    
 
-    for theta in `LANG=en_us seq -0.02 0.001 0.02`; do
-	for phi in `LANG=en_us seq -0.01 0.0005 0.01`; do
-	    ${binpath}/prtdirc -s 2 -i $datapath -u /d/proc/aug17/332/lut_beam_s332_25S10M_cs_avr.root -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 1000 -tr 2.0 -t1 $theta -t2 $phi -v 0 -b 1 &
-	    waitForMe $threads
-	done
-    done
-    hadd -f $respath/map_${a}.root $respath/reco*.root
+#     for theta in `LANG=en_us seq -0.02 0.001 0.02`; do
+# 	for phi in `LANG=en_us seq -0.01 0.0005 0.01`; do
+# 	    ${binpath}/prtdirc -s 2 -i $datapath -u /d/proc/aug17/332/lut_beam_s332_25S10M_cs_avr.root -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 1000 -tr 2.0 -t1 $theta -t2 $phi -v 0 -b 1 &
+# 	    waitForMe $threads
+# 	done
+#     done
+#     hadd -f $respath/map_${a}.root $respath/reco*.root
+# done
+
+
+rm $respath/reco*.root
+datapath=~/sim4/d/proc/aug17/pro/332/beam_s332_20C.root
+
+cd ~/dirc/prtdirc/macro
+for step in `LANG=en_us seq 60 0.5 75`; do
+    
+    (${binpath}/prtdirc -o "${respath}/lut_beam_${step}_S10M.root" -p 7 -h 1 -l 3 -a 20.11 -gz 447 -gx 85 -gsx $step -gsy 14.8 -z 3 -g 2017 -c 2017 \
+	       -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -e 100000 -b 1 && \          
+     root -b -q loadlib.C lutmean_cs.C"(\"${respath}/lut_beam_${step}_S10M.root\")" && \
+	 ${binpath}/prtdirc -s 2 -i $datapath -u ${respath}/lut_beam_${step}_S10M_cs_avr.root -o ${respath}/reco_${step}.root -gsx $step -gsy 14.8 -f 0 -e 5000 -tr 2.0 -v 0 -b 1 ) > /dev/null &
+    
+    waitForMe $threads
 done
+cd -
 
+waitForMe 1
+hadd -f $respath/scan_xstep_${a}.root $respath/reco*.root
 
