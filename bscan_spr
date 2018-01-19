@@ -68,7 +68,7 @@ waitForMe (){
 
 
 rm $respath/reco*.root
-datapath=/d/proc/aug17/pro/332/beam_s332_20C.root
+datapath=/d/proc/aug17/pro/332/beam_s332_30C.root
 if [ ! -f "$datapath" ]; then
     datapath=~/sim4/${datapath}
 fi
@@ -86,5 +86,5 @@ done
 cd -
 
 waitForMe 1
-hadd -f $respath/scan_ystep_20.root $respath/reco*.root
+hadd -f $respath/scan_ystep_30.root $respath/reco*.root
 
