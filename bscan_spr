@@ -55,7 +55,7 @@ if [ ! -f "$datapath" ]; then
 fi
 
 cd ~/dirc/prtdirc/macro
-for step in `LANG=en_us seq 60 0.5 65`; do
+for step in `LANG=en_us seq 60 0.5 75`; do
     
     ( ${binpath}/prtdirc -o "${respath}/lut_beam_${step}_S10M.root" -p 7 -h 1 -l 3 -a 20.11 -gz 447 -gx 85 -gsx $step -gsy 14.8 -z 3 -g 2017 -c 2017 \
 	-s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -e 10000000 -b 1 ;
