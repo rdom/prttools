@@ -143,7 +143,7 @@ const Int_t gg_nstudies = 400;
 Int_t gg_studyArray[gg_nstudies];
 TString study[gg_nstudies];
 void datainfo_init(){
-
+  
   for(Int_t i=0; i<gg_nstudies; i++) gg_studyArray[i]=0;
   
   // study[0]="Angle scan. July 14.";
@@ -1643,7 +1643,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(334,"beam_s334_120",1,3,120.0,447,85.0,70.00,0,10.0,3,o,0));
     }
     
-  }  
+  }
 }
 
 std::vector<DataInfo> getStudy(Int_t id){
