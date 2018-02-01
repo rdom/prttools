@@ -107,7 +107,7 @@ processOneSim (){
 	for ((fk=1;fk<${#file[@]};fk++)); do
 	    if [ ${level} -eq "3" ]; then
 		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x "proton" -e 10000 -b 1  > "${datapath}/${file[fk]}S.log" && \
-		    ./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV"  -e 500000  -b 1 >> "${datapath}/${file[fk]}L.log" && \
+		    ./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -phi 0 -x "opticalphoton" -p "3.18 eV"  -e 500000  -b 1 >> "${datapath}/${file[fk]}L.log" && \
 		    ./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 0 -tr 1   >> "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "4" ]; then
@@ -120,7 +120,7 @@ processOneSim (){
 		fi
 	    fi
 	    if [ ${level} -eq "5" ]; then
-		./prtdirc -o "${datapath}/lut_${file[fk]}S10M.root" ${args[fk]} -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -e 10000000  -b 1 > "${datapath}/${file[fk]}L.log" &
+		./prtdirc -o "${datapath}/lut_${file[fk]}S10M.root" ${args[fk]} -s 1 -z 0 -a 180 -phi 0 -x "opticalphoton" -p "3.18 eV" -e 10000000  -b 1 > "${datapath}/${file[fk]}L.log" &
 	    fi
 	    if [ ${level} -eq "6" ]; then
 		./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S10M_cs_avr.root" -o "${datapath}/reco_${file[fk]}S.root" -f 0 -e 0 -tr 1.5 -v 1 > "${datapath}/${file[fk]}SR.log" &
