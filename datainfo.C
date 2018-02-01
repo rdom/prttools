@@ -1302,24 +1302,24 @@ void datainfo_init(){
     {
       Double_t o = 28.81;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(315,"beam_s315_20_5",1,3,20.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_25_5",1,3,25.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_30_5",1,3,30.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_40_5",1,3,40.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_50_5",1,3,50.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_60_5",1,3,60.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_70_5",1,3,70.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_80_5",1,3,80.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_85_5",1,3,85.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_90_5",1,3,90.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_95_5",1,3,95.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_100_5",1,3,100.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_110_5",1,3,110.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_120_5",1,3,120.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_130_5",1,3,130.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_140_5",1,3,140.0,447,85.0,70.00,5,7.0,3,o,5));
-      dataArray.push_back(DataInfo(315,"beam_s315_145_5",1,3,145.0,447,85.0,70.00,5,7.0,3,o,5));      
-      dataArray.push_back(DataInfo(315,"beam_s315_150_5",1,3,150.0,447,85.0,70.00,5,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_20_5",1,3,20.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_25_5",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_30_5",1,3,30.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_40_5",1,3,40.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_50_5",1,3,50.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_60_5",1,3,60.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_70_5",1,3,70.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_80_5",1,3,80.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_85_5",1,3,85.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_90_5",1,3,90.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_95_5",1,3,95.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_100_5",1,3,100.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_110_5",1,3,110.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_120_5",1,3,120.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_130_5",1,3,130.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_140_5",1,3,140.0,447,85.0,70.00,14.8,7.0,3,o,5));
+      dataArray.push_back(DataInfo(315,"beam_s315_145_5",1,3,145.0,447,85.0,70.00,14.8,7.0,3,o,5));      
+      dataArray.push_back(DataInfo(315,"beam_s315_150_5",1,3,150.0,447,85.0,70.00,14.8,7.0,3,o,5));
     }
     
     study[316]="Theta scan, phi = 0 ; plate + 2LC lens; HV +150V;";
@@ -1763,19 +1763,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
 
   if(format==3){ // prtdirc
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout//<<newset[i].getChildRunId(0)<<":  "
-	       <<" -p "<< newset[i].getMomentum() <<" -h "<<newset[i].getRadiatorId()
-	       <<" -l "<<newset[i].getLensId()
-	       <<" -a "<<newset[i].getAngle()<<" -gz "<<newset[i].getZ()
-	       <<" -gx "<<newset[i].getX()<<" -gsx "<<newset[i].getXstep()<<" -gsy "<<newset[i].getYstep()
-	       <<" -z " <<newset[i].getBeamDimension();
-
-      if(newset[i].getStudyId()>=150){
-	if(newset[i].getStudyId()<200) std::cout<<" -g 2015 -c 2015 "<<std::endl;
-	else if(newset[i].getStudyId()==252) std::cout<<" -g 2021 -c 2021 "<<std::endl;
-	else if(newset[i].getStudyId()>299) std::cout<<" -g 2017 -c 2017 "<<std::endl;
-      }
-      else  std::cout<<" "<<std::endl;
+      std::cout<< newset[i].getOpt()<<std::endl;
     }
   }
 
