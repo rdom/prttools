@@ -385,7 +385,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   else path=prt_savepath+"/reco_"+name;
   if(nforpdf!=0) path=prt_savepath+Form("/reco_%d.root",nforpdf);
   
-  TFile fc(path,"recreate");[
+  TFile fc(path,"recreate");
   TTree *tc = new TTree("reco","reco");
   tc->Branch("theta",&prt_theta,"prt_theta/I");
   tc->Branch("phi",&prt_phi,"prt_phi/D");
