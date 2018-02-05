@@ -76,8 +76,8 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     g[i]->GetXaxis()->SetLimits(15,160);
     g[i]->GetYaxis()->SetRangeUser(0,5);
     if(studyId>159) g[i]->GetYaxis()->SetRangeUser(0,5);
-    // if(i==0) g[i]->Draw("apl");
-    // g[i]->Draw("same pl");
+    if(i==0) g[i]->Draw("apl");
+    g[i]->Draw("same pl");
   }
 
   prt_canvasAdd( Form("hSep_%d",studyId),800,500);

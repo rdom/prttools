@@ -1289,13 +1289,13 @@ void datainfo_init(){
     {
       Double_t o = 28.81;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(314,"beam_s314_25_1",1,3,25.0,447,85.0,70.00,5,7.0,3,o,1));
-      dataArray.push_back(DataInfo(314,"beam_s314_25_2.5",1,3,25.0,447,85.0,70.00,5,7.0,3,o,2.5));
-      dataArray.push_back(DataInfo(314,"beam_s314_25_5.0",1,3,25.0,447,85.0,70.00,5,7.0,3,o,5.0));	    
-      dataArray.push_back(DataInfo(314,"beam_s314_25_7.5",1,3,25.0,447,85.0,70.00,5,7.0,3,o,7.5));
-      dataArray.push_back(DataInfo(314,"beam_s314_25_10",1,3,25.0,447,85.0,70.00,5,7.0,3,o,10));
-      dataArray.push_back(DataInfo(314,"beam_s314_25_12.5",1,3,25.0,447,85.0,70.00,5,7.0,3,o,12.5));
-      dataArray.push_back(DataInfo(314,"beam_s314_25_15",1,3,25.0,447,85.0,70.00,5,7.0,3,o,15));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_1",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,1));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_2.5",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,2.5));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_5.0",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,5.0));	    
+      dataArray.push_back(DataInfo(314,"beam_s314_25_7.5",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,7.5));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_10",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,10));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_12.5",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,12.5));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_15",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,15));
     }
 
     study[315]="Theta scan, phi = 5 ; bar + 3LS lens; HV +150V;";

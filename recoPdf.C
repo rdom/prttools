@@ -154,8 +154,9 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    // if(prt_pid==2 && hll[2]->GetEntries()>7000)continue;
-    // if(prt_pid==4 && hll[4]->GetEntries()>7000) continue;    
+    // if(prt_pid==2 && hll[2]->GetEntries()>3400)continue;
+    // if(prt_pid==4 && hll[4]->GetEntries()>3400) continue;   
+    
 
     Int_t mult[prt_maxch];
     memset(mult, 0, sizeof(mult));
@@ -237,7 +238,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       }
       // if(aminf==0 || amins==0) continue;
 
-      Double_t noise = 1e-6; //1e-7; // nHits //1e-5
+      Double_t noise = 1e-5; //1e-7; // nHits //1e-5
       
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));
