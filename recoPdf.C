@@ -56,8 +56,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     hpdfs[i]->SetLineColor(4);
     if(sigma >0) hpdff[i]->Rebin(binfactor);
     if(sigma >0) hpdfs[i]->Rebin(binfactor);
-    hpdff[i]->Smooth(1);
-    hpdfs[i]->Smooth(1);
+    //f hpdff[i]->Smooth(1);
+    //f hpdfs[i]->Smooth(1);
     // hpdff[i]->Scale(1/hpdff[i]->Integral());
     // hpdfs[i]->Scale(1/hpdfs[i]->Integral());
 

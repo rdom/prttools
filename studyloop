@@ -113,9 +113,9 @@ processOneSim (){
 	    if [ ${level} -eq "4" ]; then
 		
 		if [ $1 -eq "250" ] || [ $1 -eq "201" ] || [ $1 -eq "202" ]; then	
-		    ./prtdirc -o "${datapath}/${file[fk]}SP.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 1000 -r 0 -b 1  > "${datapath}/${file[fk]}SP.log" &
+		    ./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 1000 -r 0 -b 1  > "${datapath}/${file[fk]}S.log" &
 		else		
-		   ./prtdirc -o "${datapath}/${file[fk]}SP.root" ${args[fk]} -x mix -tr 0.0 -z 10 -e 45000 -r 2704161 -b 1  > "${datapath}/${file[fk]}SP.log" &
+		   ./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x mix -tr 0.0 -z 10 -e 45000 -r 2704161 -b 1  > "${datapath}/${file[fk]}S.log" &
 		 #   ./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x proton -tr 0.25 -z 10 -e 1000 -r 2704162 -b 1  > "${datapath}/${file[fk]}S.log" &
 		fi
 	    fi
