@@ -26,7 +26,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
-    hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",200,-50,50); //120,-60,60
+    hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",160,-40,40); //120,-60,60
   }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
@@ -107,7 +107,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t totalf(0),totals(0),mcp,pix,ch, entries = prt_entries; // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = prt_entries;
   if(path.Contains("S.root")) entries = 4000;
-  if(path.Contains("C.root")) entries = 50000;
+  if(path.Contains("C.root")) entries = 100000;
 
   Int_t trigT1(816);
   Int_t trigT2(817);
@@ -122,10 +122,12 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();
     if(prt_event->GetType()==0){
-      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.6 ) continue;
-      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
-      // }
+
+      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.65 ) continue;
+      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.68 ) continue;
+      }
+
 
       Bool_t t1(1),t2(0),t3h(0),t3v(0);
       Bool_t tof1(1), tof2(1);
@@ -135,27 +137,27 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	fHit = prt_event->GetHit(h);
       	Int_t gch=fHit.GetChannel();	
 	
-       	if(gch==trigT2)
-	    t2=true;
+	if(gch==trigT2)
+	  t2=true;
 	if(gch==trigT3h)
-	    t3h=true;
+	  t3h=true;
 	if(gch==trigT3v)
-	    t3v=true;
-	
-	
+	  t3v=true;
+
+	//if(gch>=1350 && gch<=1351)
 	if(gch>=1350 && gch<=1351)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)
-	//if(gch>=1367 && gch<=1372)
- 	  hodo2=true;	  
+	//if(gch>=1364 && gch<=1374)
+	hodo2=true;	  
       }
       
       if(!( t1 && t2 && t3h && t3v && tof1 && tof2 && hodo1 && hodo2)) continue;
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    // if(prt_pid==2 && hll[2]->GetEntries()>3400)continue;
-    // if(prt_pid==4 && hll[4]->GetEntries()>3400) continue;   
+    // if(prt_pid==2 && hll[2]->GetEntries()>2900)continue;
+    // if(prt_pid==4 && hll[4]->GetEntries()>2900) continue;   
     
 
     Int_t mult[prt_maxch];
@@ -172,7 +174,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // if(mcp%3==2 && pix>=32) continue; 
       
       if(ch>prt_maxdircch) continue;
-      if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.002);
+      if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
       //      if(++mult[ch]>1 || ch ==0) continue;
 
       { //time cuts
@@ -238,7 +240,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       }
       // if(aminf==0 || amins==0) continue;
 
-      Double_t noise = 1e-5; //1e-7; // nHits //1e-5
+      Double_t noise = 1e-6; //1e-7; // nHits //1e-5
       
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));
@@ -282,8 +284,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   
-  prt_drawDigi("m,p,v\n",2017,1.3,0);
-  prt_canvasAdd(prt_cdigi);
+  // prt_drawDigi("m,p,v\n",2017,1.3,0);
+  // prt_canvasAdd(prt_cdigi);
 
   TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz);
   if(path.Contains("C.root")) name =  "tid"+ name;

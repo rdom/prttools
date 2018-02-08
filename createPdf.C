@@ -75,7 +75,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   if(aentries>=0) entries = aentries;
   Int_t start = 0;
   if(path.Contains("S.root")) start=4000;
-  if(path.Contains("C.root")) start=50000;
+  if(path.Contains("C.root")) start=100000;
   
   for (Int_t ievent=start; ievent<entries; ievent++){ //entries
     prt_nextEvent(ievent,1000);
@@ -85,6 +85,11 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     Int_t pid=prt_event->GetParticle();
     
     if(prt_event->GetType()==0){
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && tof<32.4 ) continue;
+      // 	if( prt_event->GetParticle()==211  && tof>31.9 ) continue;
+      // }
+      
       Bool_t t1(1),tof1(1), tof2(1);
       Bool_t t2(0),t3h(0),t3v(0); 
       Bool_t hodo1(0), hodo2(0);
@@ -101,7 +106,8 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 	  t3v=true;
 
 
-	if(gch>=1348 && gch<=1352)
+	//	if(gch>=1348 && gch<=1352)
+	if(gch>=1347 && gch<=1353)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)
 	  hodo2=true;
