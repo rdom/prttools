@@ -31,7 +31,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
   TH1F *hnphs =  new TH1F("hnphs","hnphs",200,0,200);
-
+  TH1F *hTof =  new TH1F("fTof",";TOF2-TOF1 [ns];entries [#]",400,30,34);
+ 
   Bool_t ismultnorm(false);
   //  if(pdfEnding.Contains("pdf0")) ismultnorm=true;
   TRandom rand;
@@ -127,7 +128,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.65 ) continue;
       	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.68 ) continue;
       }
-
+      hTof->Fill(prt_event->GetTest1());
 
       Bool_t t1(1),t2(0),t3h(0),t3v(0);
       Bool_t tof1(1), tof2(1);
@@ -156,8 +157,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    // if(prt_pid==2 && hll[2]->GetEntries()>2900)continue;
-    // if(prt_pid==4 && hll[4]->GetEntries()>2900) continue;   
+    if(prt_pid==2 && hll[2]->GetEntries()>2900)continue;
+    if(prt_pid==4 && hll[4]->GetEntries()>2900) continue;   
     
 
     Int_t mult[prt_maxch];
@@ -172,10 +173,12 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // //cut-off from c2017
       // if(mcp%3==0 && pix<32) continue;
       // if(mcp%3==2 && pix>=32) continue; 
-      
+
       if(ch>prt_maxdircch) continue;
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
       //      if(++mult[ch]>1 || ch ==0) continue;
+ 
+      prt_hdigi[mcp]->Fill(pix%8, pix/8);
 
       { //time cuts
       	// Double_t cut1(11);
@@ -221,7 +224,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	hpdff[ch]->SetLineColor(2);
 	hpdfs[ch]->SetLineColor(4);
 	hpdff[ch]->Draw();
-	hpdff[ch]->SetTitle("");
+	hpdff[ch]->SetTitle(Form("mcp=%d  pix=%d",mcp,pix));
 	hpdff[ch]->GetXaxis()->SetTitle("LE time [ns]");
 	hpdff[ch]->GetYaxis()->SetTitle("PDF value");
 	hpdff[ch]->GetXaxis()->SetRangeUser(0,40);
@@ -276,16 +279,17 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   for (Int_t m=0; m <prt_nmcp; m++) {
     std::cout<<mcpf[m]<< " "<< mcps[m]<<std::endl;    
     for(Int_t p=0; p<prt_npix; p++){
-      prt_hdigi[m]->Fill(p%8,p/8,countgood[m][0]/(Double_t)countbad[m][0]);
+      //prt_hdigi[m]->Fill(p%8,p/8,countgood[m][0]/(Double_t)countbad[m][0]);
     }
   }
 
 
   gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
+  //gStyle->SetOptTitle(0);
   
-  // prt_drawDigi("m,p,v\n",2017,1.3,0);
-  // prt_canvasAdd(prt_cdigi);
+  //  prt_drawDigi("m,p,v\n",2017,1.3,0);
+  prt_drawDigi("m,p,v\n",2017);
+  prt_canvasAdd(prt_cdigi);
 
   TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz);
   if(path.Contains("C.root")) name =  "tid"+ name;
@@ -376,6 +380,15 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   leg1->AddEntry(hnph[4],"protons","lp");
   leg1->Draw();
   
+  
+  prt_canvasAdd("hTof_"+name,800,400);
+  hTof->Draw();
+  // gLine->SetLineWidth(2);
+  // gLine->SetX1(32.65);
+  // gLine->SetX2(32.65);
+  // gLine->SetY1(gPad->GetUymin());
+  // gLine->SetY2(gPad->GetUymax());
+  //gLine->Draw();
   
   prt_canvasSave();
   

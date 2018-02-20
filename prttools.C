@@ -675,13 +675,13 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     prt_mom = prt_event->GetMomentum().Mag() +0.01;
     prt_theta = prt_event->GetAngle() + 0.01;
     prt_phi = prt_event->GetPhi();
-    prt_particle =  prt_event->GetParticle();
     prt_geometry= prt_event->GetGeometry();
     prt_beamx= prt_event->GetBeamX();
     prt_beamz= prt_event->GetBeamZ();    
     prt_test1 = prt_event->GetTest1();
     prt_test2 = prt_event->GetTest2();
   }
+  prt_particle =  prt_event->GetParticle();
   if(prt_event->GetParticle()<3000 && prt_event->GetParticle()>0){
     prt_pid=prt_particleArray[prt_event->GetParticle()];
   }
@@ -739,13 +739,13 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     prt_mom = prt_event->GetMomentum().Mag() +0.01;
     prt_theta = prt_event->GetAngle() + 0.01;
     prt_phi = prt_event->GetPhi();
-    prt_particle =  prt_event->GetParticle();
     prt_geometry= prt_event->GetGeometry();
     prt_beamx= prt_event->GetBeamX();
     prt_beamz= prt_event->GetBeamZ();
     prt_test1 = prt_event->GetTest1();
     prt_test2 = prt_event->GetTest2();
   }
+  prt_particle =  prt_event->GetParticle();
   if(prt_event->GetParticle()<3000 && prt_event->GetParticle()>0){
     prt_pid=prt_particleArray[prt_event->GetParticle()];
   }

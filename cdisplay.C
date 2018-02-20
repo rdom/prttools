@@ -213,7 +213,7 @@ Bool_t MSelector::Process(Long64_t entry){
   bool bsim(false);
   Double_t offset=0;
   
-  if(gMode>0){
+  if(gMode>-1){
     TString current_file_name  = MSelector::fChain->GetCurrentFile()->GetName();
     current_file_name.Remove(0, current_file_name.Last('/')+1);
 
@@ -232,6 +232,7 @@ Bool_t MSelector::Process(Long64_t entry){
       if(current_file_name.Contains("SF.root")) timeres=0.2;
       if(current_file_name.Contains("SP.root")) timeres=0.2;
     }
+    if(current_file_name.Contains("S.root")) timeres=0.3;
   }
  
   Double_t le,tot, triggerLe(0),toftime(0), tof(0), tof1(0),tof2(0);
@@ -286,7 +287,7 @@ Bool_t MSelector::Process(Long64_t entry){
     col = pix%8;
     
     le = hit.GetLeadTime();
-    if(timeres>0) le += prt_rand.Gaus(0,0.2);
+    if(timeres>0) le += prt_rand.Gaus(0,timeres);
     tot = hit.GetTotTime();   
 
     if(prt_isBadChannel(ch)) continue;
