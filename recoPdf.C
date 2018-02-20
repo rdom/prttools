@@ -157,8 +157,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    if(prt_pid==2 && hll[2]->GetEntries()>2900)continue;
-    if(prt_pid==4 && hll[4]->GetEntries()>2900) continue;   
+    if(prt_pid==2 && hll[2]->GetEntries()>1900)continue;
+    if(prt_pid==4 && hll[4]->GetEntries()>1900) continue;   
     
 
     Int_t mult[prt_maxch];
