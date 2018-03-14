@@ -128,6 +128,13 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.65 ) continue;
       	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.68 ) continue;
       }
+
+      // //plate
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
+      // }
+	
       hTof->Fill(prt_event->GetTest1());
 
       Bool_t t1(1),t2(0),t3h(0),t3v(0);
@@ -157,8 +164,9 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    if(prt_pid==2 && hll[2]->GetEntries()>1900)continue;
-    if(prt_pid==4 && hll[4]->GetEntries()>1900) continue;   
+    // if(prt_pid==2 && hll[2]->GetEntries()>1900)continue;
+    // if(prt_pid==4 && hll[4]->GetEntries()>1900) continue;  
+    
     
 
     Int_t mult[prt_maxch];
@@ -395,9 +403,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
   std::cout<<"entries:  pi "<<hll[2]->GetEntries()<<" p "<<hll[4]->GetEntries() <<std::endl;
-  
-  if(path.Contains("X.root")) path.ReplaceAll("S.root","R.root");
-  else path=prt_savepath+"/reco_"+name;
+
+  path.ReplaceAll("S.root","R.root");
+  // if(path.Contains("X.root")) path.ReplaceAll("S.root","R.root");
+  // else path=prt_savepath+"/reco_"+name;
   if(nforpdf!=0) path=prt_savepath+Form("/reco_%d.root",nforpdf);
   
   TFile fc(path,"recreate");

@@ -28,14 +28,14 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     int col= (i<5)? i+1: i+5;
     ng[i]=0;
     g[i] = new TGraphAsymmErrors();
-    g[i]->SetTitle(";polar angle, #theta [degree]; separation [s.d.]");
+    g[i]->SetTitle(";polar angle [deg]; separation [s.d.]");
     g[i]->SetName("gr");
     g[i]->SetMarkerStyle(20);
     g[i]->SetMarkerSize(0.8);
     g[i]->SetLineColor(col);
 
     gn[i] = new TGraphAsymmErrors();
-    gn[i]->SetTitle(";polar angle, #theta [degree]; detected photons [#]");
+    gn[i]->SetTitle(";polar angle [deg]; detected photons [#]");
     gn[i]->SetName("gr");
     gn[i]->SetMarkerStyle(20);
     gn[i]->SetMarkerSize(0.8);
@@ -53,7 +53,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   int size=vec.size();
   bool beamdata = (vec[0]<0.1)? true: false;
   
-  for(int i=0; i<ch.GetEntries(); i++){
+  for(int i=0; i<ch.GetEntries(); i++){    
     ch.GetEvent(i);
     if(theta>155 || theta<20) continue;
     int sid = std::distance(vec.begin(),std::find(vec.begin(), vec.end(),sigma));
