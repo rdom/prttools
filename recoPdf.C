@@ -26,7 +26,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
-    hll[i] = new TH1F(Form("hll_%d",i),"hll;ln L(p) - ln L(#pi); entries [#]",160,-40,40); //120,-60,60
+    hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
   }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
@@ -164,8 +164,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    // if(prt_pid==2 && hll[2]->GetEntries()>1900)continue;
-    // if(prt_pid==4 && hll[4]->GetEntries()>1900) continue;  
+     // if(prt_pid==2 && hll[2]->GetEntries()>2200)continue;
+     // if(prt_pid==4 && hll[4]->GetEntries()>2200) continue;  
     
     
 
@@ -303,7 +303,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   if(path.Contains("C.root")) name =  "tid"+ name;
   else name = "tis"+ name;
   
-  prt_canvasAdd("ll_"+name,800,400);
+  //prt_canvasAdd("ll_"+name,800,400);
+  prt_canvasAdd("ll_"+name,1200,600);
   
   prt_normalize(hll[4],hll[2]);
   hll[4]->GetYaxis()->SetNdivisions(9,5,0);
@@ -337,13 +338,13 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     esep=sqrt(e1*e1+e2*e2+e3*e3+e4*e4);
   }
   
-  hll[4]->SetTitle(Form("separation = %1.2f",sep));
+  // hll[4]->SetTitle(Form("separation = %1.2f",sep));
   hll[4]->SetLineColor(2);
   hll[4]->Draw();
   hll[2]->SetLineColor(4);
   hll[2]->Draw("same");
 
-  TLegend *leg = new TLegend(0.65,0.65,0.83,0.87);
+  TLegend *leg = new TLegend(0.70,0.65,0.88,0.87);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
@@ -367,7 +368,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 
   //  gStyle->SetOptFit(1);
   prt_canvasAdd("hnph_"+name,800,400);
-
 
   prt_normalize(hnph[4],hnph[2]);
   hnph[4]->Fit("gaus");
@@ -398,15 +398,16 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   // gLine->SetY2(gPad->GetUymax());
   //gLine->Draw();
   
-  prt_canvasSave();
+  prt_canvasSave(0);
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
   std::cout<<"entries:  pi "<<hll[2]->GetEntries()<<" p "<<hll[4]->GetEntries() <<std::endl;
 
   path.ReplaceAll("S.root","R.root");
-  // if(path.Contains("X.root")) path.ReplaceAll("S.root","R.root");
-  // else path=prt_savepath+"/reco_"+name;
+  if(path.Contains("X.root")) path.ReplaceAll("S.root","R.root");
+  else path=prt_savepath+"/reco_"+name;
+
   if(nforpdf!=0) path=prt_savepath+Form("/reco_%d.root",nforpdf);
   
   TFile fc(path,"recreate");
