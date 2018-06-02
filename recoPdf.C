@@ -124,10 +124,12 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();
     if(prt_event->GetType()==0){
 
-      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.65 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.68 ) continue;
-      }
+
+      // // 332
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.65 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.68 ) continue;
+      // }
 
       // //plate
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
