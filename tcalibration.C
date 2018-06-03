@@ -372,8 +372,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  xrot=100,
 	  prtangle=fEvent->GetAngle(),
 	  z=fEvent->GetBeamZ(),
-		     b = xrot*tan(0.5*(prtangle-90)*rad),
-		     lenz = (z-zrot+b)/cos((prtangle-90)*rad)+b+zrot;
+	  b = xrot*tan(0.5*(prtangle-90)*rad),
+	  lenz = (z-zrot+b)/cos((prtangle-90)*rad)+b+zrot;
 
 
 	if(fEvent->GetLens()==6) lenz-=12;

@@ -105,8 +105,8 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 	if(gch==trigT3v)
 	  t3v=true;
 
-	if(gch>=1349 && gch<=1352) //332
-	//if(gch>=1348 && gch<=1353)
+	//if(gch>=1349 && gch<=1352) //332
+	if(gch>=1348 && gch<=1352)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)
 	  hodo2=true;

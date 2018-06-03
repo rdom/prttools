@@ -233,12 +233,12 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	prt_normalize(hpdff[ch],hpdfs[ch]);
 	hpdff[ch]->SetLineColor(2);
 	hpdfs[ch]->SetLineColor(4);
-	hpdff[ch]->Draw();
+	hpdff[ch]->Draw("HIST");
 	hpdff[ch]->SetTitle(Form("mcp=%d  pix=%d",mcp,pix));
 	hpdff[ch]->GetXaxis()->SetTitle("LE time [ns]");
 	hpdff[ch]->GetYaxis()->SetTitle("PDF value");
 	hpdff[ch]->GetXaxis()->SetRangeUser(0,40);
-	hpdfs[ch]->Draw("same");
+	hpdfs[ch]->Draw("HIST same");
 	gpdff[ch]->Draw("PL same");
 	gpdfs[ch]->Draw("PL same");
 	cc->Update();
