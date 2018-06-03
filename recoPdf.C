@@ -18,8 +18,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   if(!prt_init(path,1,Form("data/recopdf_%d",studyId))) return;
   TGaxis::SetMaxDigits(4);
   
-  TCanvas *cc;
-  if(debug) cc = new TCanvas("cc","cc",800,400);
+  TCanvas *cc = (debug)? new TCanvas("cc","cc",800,400): NULL ;
 
   TH1F *hpdff[prt_maxch],*hpdfs[prt_maxch], *hl[5],*hnph[5],*hll[5];
   TGraph *gpdff[prt_maxch],*gpdfs[prt_maxch];
@@ -155,7 +154,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	  t3v=true;
 
 	//if(gch>=1350 && gch<=1351)
-	if(gch>=1350 && gch<=1351)
+	if(gch>=1351 && gch<=1352)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)
 	//if(gch>=1364 && gch<=1374)
@@ -305,8 +304,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   if(path.Contains("C.root")) name =  "tid"+ name;
   else name = "tis"+ name;
   
-  //prt_canvasAdd("ll_"+name,800,400);
-  prt_canvasAdd("ll_"+name,1200,600);
+  prt_canvasAdd("ll_"+name,800,400);
   
   prt_normalize(hll[4],hll[2]);
   hll[4]->GetYaxis()->SetNdivisions(9,5,0);
@@ -340,7 +338,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     esep=sqrt(e1*e1+e2*e2+e3*e3+e4*e4);
   }
   
-  // hll[4]->SetTitle(Form("separation = %1.2f",sep));
+  hll[4]->SetTitle(Form("separation = %1.2f",sep));
   hll[4]->SetLineColor(2);
   hll[4]->Draw();
   hll[2]->SetLineColor(4);
