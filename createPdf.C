@@ -98,7 +98,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       	hit = prt_event->GetHit(h);
       	Int_t gch=hit.GetChannel();
 
-	if(gch==trigT2)
+	//if(gch==trigT2)//332
 	  t2=true;
 	if(gch==trigT3h)
 	  t3h=true;
@@ -106,8 +106,8 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 	  t3v=true;
 
 
-	if(gch>=1349 && gch<=1352)
-	// if(gch>=1347 && gch<=1353) //332
+	//if(gch>=1349 && gch<=1352) //332
+	if(gch>=1348 && gch<=1353)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)
 	  hodo2=true;
