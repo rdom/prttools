@@ -1511,7 +1511,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(326,"beam_17253141820",2,6,150.0,447,85.0,70.00,0,7.0,3,o,0));      
     }
 
-    study[330]="Theta scan; phi=0; bar + grease + 3LC lens";
+    study[330]="Theta scan; phi=0; bar + grease + 3LC lens"; //Zygo bar #2.
     {
       Double_t o = 28.81;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
@@ -1544,7 +1544,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(330,"beam_s330_145",1,6,145.0,447,85.0,70.00,0,7.0,3,o,0));      
     }
 
-    study[331]="Theta scan; phi=0; bar + grease + 3LC lens";
+    study[331]="Theta scan; phi=0; bar + grease + 3LC lens";  //Zygo bar #2.
     {
       Double_t o = 28.81;      
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi

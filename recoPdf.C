@@ -153,9 +153,9 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	if(gch==trigT3v)
 	  t3v=true;
 
-	//if(gch>=1350 && gch<=1351)
+	if(gch>=1350 && gch<=1351)
 	//if(gch>=1351 && gch<=1352)
-	if(gch>=1350 && gch<=1350)
+	//if(gch>=1350 && gch<=1350)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)
 	//if(gch>=1364 && gch<=1374)
@@ -399,7 +399,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   // gLine->SetY2(gPad->GetUymax());
   //gLine->Draw();
   
-  //prt_canvasSave(0);
+  prt_canvasSave(0);
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
