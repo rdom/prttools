@@ -115,6 +115,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t trigT3v(819);
   Int_t trigTof1(1392);
   Int_t trigTof2(1398);
+  Double_t noise = 1e-4; //1e-7; // nHits //1e-5
   
   for (Int_t ievent=0; ievent<entries; ievent++){
     prt_nextEvent(ievent,1000);
@@ -135,6 +136,36 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
       // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
       // }
+      
+      if(fabs(prt_event->GetMomentum().Mag()-3)<0.1){
+	noise = 1e-4;
+	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
+	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
+      }
+      if(fabs(prt_event->GetMomentum().Mag()-5)<0.1){
+	noise = 1e-4;
+      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
+      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.78 ) continue;
+      }
+      if(fabs(prt_event->GetMomentum().Mag()-6)<0.1){
+      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.75 ) continue;
+      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
+      }
+      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.6 ) continue;
+      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.75 ) continue;
+      }
+      if(fabs(prt_event->GetMomentum().Mag()-8)<0.1){
+      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
+      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.64 ) continue;
+      }
+
+      if(fabs(prt_event->GetMomentum().Mag()-10)<0.1){
+      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.32 ) continue;
+      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.645 ) continue;
+      }
+
+
 	
       hTof->Fill(prt_event->GetTest1());
 
@@ -153,11 +184,11 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	if(gch==trigT3v)
 	  t3v=true;
 
-	if(gch>=1351 && gch<=1352)
+	if(gch>=1350 && gch<=1352)
 	//if(gch>=1351 && gch<=1352)
 	//if(gch>=1350 && gch<=1350)
 	  hodo1=true;
-	//if(gch>=1369 && gch<=1370)
+	  //if(gch>=1369 && gch<=1370)
 	//if(gch>=1364 && gch<=1374)
 	hodo2=true;	  
       }
@@ -252,8 +283,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	cc->WaitPrimitive();
       }
       // if(aminf==0 || amins==0) continue;
-
-      Double_t noise = 1e-4; //1e-7; // nHits //1e-5
       
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));
