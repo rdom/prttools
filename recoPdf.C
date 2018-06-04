@@ -153,7 +153,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	if(gch==trigT3v)
 	  t3v=true;
 
-	if(gch>=1350 && gch<=1351)
+	if(gch>=1351 && gch<=1352)
 	//if(gch>=1351 && gch<=1352)
 	//if(gch>=1350 && gch<=1350)
 	  hodo1=true;
@@ -253,11 +253,11 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       }
       // if(aminf==0 || amins==0) continue;
 
-      Double_t noise = 1e-6; //1e-7; // nHits //1e-5
+      Double_t noise = 1e-4; //1e-7; // nHits //1e-5
       
       sumf+=TMath::Log((aminf+noise));
       sums+=TMath::Log((amins+noise));
-      
+
       // Double_t res;
       // if(aminf>amins){
       // 	res=100*(aminf-amins)/amins;
@@ -283,7 +283,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     // sums += 10*TMath::Log(F1->Eval(nHits));
     // sum = sumf-sums;
     
-    hll[prt_pid]->Fill(sum);
+    hll[prt_pid]->Fill(sum);    
   }
 
   for (Int_t m=0; m <prt_nmcp; m++) {
