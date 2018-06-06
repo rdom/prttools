@@ -198,6 +198,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   fEvent = new PrtEvent();
   if(gMode==5){
     Int_t studyId=prt_data_info.getStudyId();
+    
     if(studyId>0) {
       mom = prt_data_info.getMomentum();
       simOffset = prt_data_info.getSimTO();
