@@ -151,10 +151,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.75 ) continue;
       	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
       }
-      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.6 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.75 ) continue;
-      }
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.6 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.75 ) continue;
+      // }
       if(fabs(prt_event->GetMomentum().Mag()-8)<0.1){
       	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
       	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.64 ) continue;
@@ -184,7 +184,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	if(gch==trigT3v)
 	  t3v=true;
 
-	if(gch>=1350 && gch<=1352)
+	if(gch>=1350 && gch<=1350)
 	//if(gch>=1351 && gch<=1352)
 	//if(gch>=1350 && gch<=1350)
 	  hodo1=true;
@@ -222,13 +222,12 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       prt_hdigi[mcp]->Fill(pix%8, pix/8);
 
       { //time cuts
-      	// Double_t cut1(11);
-      	// if(studyId==157 || studyId==155) cut1=8;
-      	// if(theta<=80){
-      	//   if(time<cut1 || time>75) continue; //45
-      	// }else if(theta>94){
-      	//   if(time<3 || time>40) continue; //40
-      	// }
+	Double_t cut1(10);
+      	if(theta<=80){
+      	  if(time<cut1 || time>75) continue; //45
+      	}else if(theta>94){
+      	  if(time<3 || time>40) continue; //40
+      	}
 	//if(time<0 || time>50) continue;
       }
       nGoodHits++;
@@ -326,11 +325,11 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   gStyle->SetOptStat(0);
   //gStyle->SetOptTitle(0);
   
-  //  prt_drawDigi("m,p,v\n",2017,1.3,0);
+  //prt_drawDigi("m,p,v\n",2017,1.3,0);
   prt_drawDigi("m,p,v\n",2017);
   prt_canvasAdd(prt_cdigi);
 
-  TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz);
+  TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d_%2.1f.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz,prt_phi);
   if(path.Contains("C.root")) name =  "tid"+ name;
   else name = "tis"+ name;
   
@@ -383,18 +382,18 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   leg->AddEntry(hll[4],"protons","lp");
   leg->Draw();
   
-  // prt_canvasAdd("hl_"+name,800,500);
-  // // hl[4]->Scale(1/hl[4]->GetMaximum());
-  // // hl[2]->Scale(1/hl[2]->GetMaximum());
-  // // hl3->Scale(1/hl3->GetMaximum());
+  prt_canvasAdd("hl_"+name,800,500);
+  // hl[4]->Scale(1/hl[4]->GetMaximum());
+  // hl[2]->Scale(1/hl[2]->GetMaximum());
+  // hl3->Scale(1/hl3->GetMaximum());
 
-  // prt_normalize(hl[4],hl[2]);
+  prt_normalize(hl[4],hl[2]);
   
-  // hl[4]->Draw();
-  // hl[2]->SetLineColor(4);
-  // hl[2]->Draw("same");
-  // hl3->SetLineColor(2);
-  // hl3->Draw("same");
+  hl[4]->Draw();
+  hl[2]->SetLineColor(4);
+  hl[2]->Draw("same");
+  hl3->SetLineColor(2);
+  hl3->Draw("same");
 
   //  gStyle->SetOptFit(1);
   prt_canvasAdd("hnph_"+name,800,400);
