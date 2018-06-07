@@ -96,7 +96,6 @@ public:
 
   
   TString getOpt(){
-    std::cout<<"info() "<<info()<<std::endl;
     
     TString sopt =  Form(" -h %d -l %d -p %2.2f -a %2.2f -phi %2.2f -gz %2.2f -gx %2.2f -gsx %2.2f -gsy %2.2f -z %2.2f",
 			 _radiatorId,_lensId,_momentum,_angle,_phi,_z,_x,_xstep,_ystep,_beamDimension);
