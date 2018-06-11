@@ -151,7 +151,7 @@ TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t li
     }
     
     if(peakSearch == 2){
-      nfound = prt_spect->Search(h,4,"",0.1);
+      nfound = prt_spect->Search(h,4,"goff",0.1);
       std::cout<<"nfound  "<<nfound <<std::endl;
       if(nfound==1){
 	prt_gaust =new TF1("prt_gaust","gaus(0)",xmax-range,xmax+range);

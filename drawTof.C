@@ -50,7 +50,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   Int_t momentum = prt_data_info.getMomentum();
   Int_t studyId = prt_data_info.getStudyId();
   if(studyId<0) studyId=1000;
-  if(!prt_init(infile,1,Form("data/drawTof/%d/%d",studyId,prt_data_info.getFileId()))) return;
+  if(!prt_init(infile,1,Form("data/drawTof/%d/%2.1f",studyId,prt_data_info.getMomentum()))) return;
   
   Int_t le1(30), le2(34);
   Int_t l1(30), l2(34);  

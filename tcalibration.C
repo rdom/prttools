@@ -27,11 +27,11 @@ Double_t tof1tota[]={0,0,45.14,45.11,45.05,45.03,44.97, 47.24, 44.91};
 Double_t tof2tota[]={0,0,45.26,45.31,45.32,45.34,45.36, 47.09, 45.38};
 
 //aug 2017
-Double_t tofpi1[]={0,0,71.50,71.50,71.60, 71.50,71.55, 31.00,71.60};
-Double_t tofpi2[]={0,0,72.50,72.50,72.40, 72.20,72.20, 31.95,72.10};
+Double_t tofpi1[]={0,0,71.50,31.50,0.00, 31.00,31.00, 31.00,31.00, 0, 31.0};
+Double_t tofpi2[]={0,0,72.50,32.20,0.00, 32.20,32.00, 31.95,31.80, 0 ,31.8};
 
-Double_t tofp1[] ={0,0,80.80,75.80,73.80, 73.20,72.65, 32.35,72.30};
-Double_t tofp2[] ={0,0,83.20,77.20,75.00, 73.90,73.40, 33.50,72.90};
+Double_t tofp1[] ={0,0,80.80,35.70,0.00, 33.00,32.60, 32.35,32.40, 0, 32.2};
+Double_t tofp2[] ={0,0,83.20,37.00,0.00, 34.00,33.50, 33.50,33.00, 0, 33.0};
 Int_t gg_nevents(0);
    
 Bool_t IsPion(Double_t tof, Int_t mom){  
@@ -198,6 +198,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   fEvent = new PrtEvent();
   if(gMode==5){
     Int_t studyId=prt_data_info.getStudyId();
+    
     if(studyId>0) {
       mom = prt_data_info.getMomentum();
       simOffset = prt_data_info.getSimTO();
@@ -372,8 +373,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  xrot=100,
 	  prtangle=fEvent->GetAngle(),
 	  z=fEvent->GetBeamZ(),
-		     b = xrot*tan(0.5*(prtangle-90)*rad),
-		     lenz = (z-zrot+b)/cos((prtangle-90)*rad)+b+zrot;
+	  b = xrot*tan(0.5*(prtangle-90)*rad),
+	  lenz = (z-zrot+b)/cos((prtangle-90)*rad)+b+zrot;
 
 
 	if(fEvent->GetLens()==6) lenz-=12;

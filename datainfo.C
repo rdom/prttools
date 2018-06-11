@@ -45,7 +45,7 @@ public:
   };
 
   bool operator == (const DataInfo& d) const{
-    return _studyId == d._studyId && _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum &&_beamDimension == d._beamDimension && _phi==d._phi;
+    return _studyId == d._studyId && _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum &&_beamDimension == d._beamDimension && _phi == d._phi;
   }
 
   bool operator < (const DataInfo& d) const{
@@ -58,6 +58,7 @@ public:
     if((_studyId==313 || _studyId==322) && _momentum < d._momentum) return true; //momentum
     if(_studyId>179 && _studyId<190 && _z < d._z) return true; //z
     if(_studyId>=200 && _angle<d._angle) return true; //angle
+    if(_studyId==314 && _phi<d._phi) return true; //angle
     return false; 
   }
 
@@ -95,6 +96,7 @@ public:
 
   
   TString getOpt(){
+    
     TString sopt =  Form(" -h %d -l %d -p %2.2f -a %2.2f -phi %2.2f -gz %2.2f -gx %2.2f -gsx %2.2f -gsy %2.2f -z %2.2f",
 			 _radiatorId,_lensId,_momentum,_angle,_phi,_z,_x,_xstep,_ystep,_beamDimension);
 
@@ -1277,11 +1279,11 @@ void datainfo_init(){
     {
       Double_t o = 28.81;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(313,"beam_s313_25_3",1,3,20.0,447,85.0,70.00,5,10.0,3,o,0));
-      dataArray.push_back(DataInfo(313,"beam_s313_25_5",1,3,20.0,447,85.0,70.00,5,10.0,5,o,0));
-      dataArray.push_back(DataInfo(313,"beam_s313_25_6",1,3,20.0,447,85.0,70.00,5,10.0,6,o,0));
-      dataArray.push_back(DataInfo(313,"beam_s313_25_7",1,3,20.0,447,85.0,70.00,5,10.0,7,o,0));
-      dataArray.push_back(DataInfo(313,"beam_s313_25_8",1,3,20.0,447,85.0,70.00,5,10.0,8,o,0));
+      dataArray.push_back(DataInfo(313,"beam_s313_25_3",1,3,20.0,447,85.0,70.00,5,3.0,10,o,0));
+      dataArray.push_back(DataInfo(313,"beam_s313_25_5",1,3,20.0,447,85.0,70.00,5,5.0,10,o,0));
+      dataArray.push_back(DataInfo(313,"beam_s313_25_6",1,3,20.0,447,85.0,70.00,5,6.0,10,o,0));
+      dataArray.push_back(DataInfo(313,"beam_s313_25_7",1,3,20.0,447,85.0,70.00,5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(313,"beam_s313_25_8",1,3,20.0,447,85.0,70.00,5,8.0,10,o,0));
       dataArray.push_back(DataInfo(313,"beam_s313_25_10",1,3,20.0,447,85.0,70.00,5,10.0,10,o,0));
     }
     
@@ -1289,13 +1291,13 @@ void datainfo_init(){
     {
       Double_t o = 28.81;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(314,"beam_s314_25_1",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,1));
-      dataArray.push_back(DataInfo(314,"beam_s314_25_2.5",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,2.5));
-      dataArray.push_back(DataInfo(314,"beam_s314_25_5.0",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,5.0));	    
-      dataArray.push_back(DataInfo(314,"beam_s314_25_7.5",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,7.5));
-      dataArray.push_back(DataInfo(314,"beam_s314_25_10",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,10));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_1",   1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,1));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_2.5", 1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,2.5));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_5.0", 1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,5.0));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_7.5", 1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,7.5));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_10",  1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,10));
       dataArray.push_back(DataInfo(314,"beam_s314_25_12.5",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,12.5));
-      dataArray.push_back(DataInfo(314,"beam_s314_25_15",1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,15));
+      dataArray.push_back(DataInfo(314,"beam_s314_25_15",  1,3,25.0,447,85.0,70.00,14.8,7.0,3,o,15));
     }
 
     study[315]="Theta scan, phi = 5 ; bar + 3LS lens; HV +150V;";
@@ -1511,7 +1513,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(326,"beam_17253141820",2,6,150.0,447,85.0,70.00,0,7.0,3,o,0));      
     }
 
-    study[330]="Theta scan; phi=0; bar + grease + 3LC lens";
+    study[330]="Theta scan; phi=0; bar + grease + 3LC lens"; //Zygo bar #2.
     {
       Double_t o = 28.81;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
@@ -1544,7 +1546,7 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(330,"beam_s330_145",1,6,145.0,447,85.0,70.00,0,7.0,3,o,0));      
     }
 
-    study[331]="Theta scan; phi=0; bar + grease + 3LC lens";
+    study[331]="Theta scan; phi=0; bar + grease + 3LC lens";  //Zygo bar #2.
     {
       Double_t o = 28.81;      
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
@@ -1669,7 +1671,7 @@ void createAliases(){
     }
     
     for(UInt_t j = 0; j != dataArray.size(); j++) {
-      if(dataArray[i] == dataArray[j] && dataArray[i].getRunId() != dataArray[j].getRunId()){
+      if(dataArray[i] == dataArray[j] && dataArray[i].getRunId() != dataArray[j].getRunId()){	
     	dataArray[j].setAliasId(dataArray[i].getAliasId());
        	same += " "+dataArray[j].getRunId();
       }
@@ -1924,8 +1926,7 @@ DataInfo getDataInfo(TString name){
   
   for(UInt_t i = 0; i < aliasArray.size(); i++) {
     TString sname = aliasArray[i].getRunId();
-    // if(sname.Contains(name)) return aliasArray[i];
-    if(name.Contains(sname)) return aliasArray[i];
+    if(sname == name) return aliasArray[i];
   }
   return DataInfo();
 }

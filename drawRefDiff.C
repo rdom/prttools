@@ -21,10 +21,10 @@ Bool_t gDrawLine(1);
 
 
 void TTSelector::Begin(TTree *){
-  SetRootPalette(1);
-  fSavePath = "auto";
+  prt_setRootPalette(1);
+  prt_savepath = "auto";
   gStyle->SetOptStat(1001111);
-  CreateMap();
+  prt_createMap();
   
   
   for(Int_t i=0; i<50; i++){
@@ -151,6 +151,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
   }
       
   cRef->cd();
+  hDif[gRef][binx]->SetTitle(prt_tdcsid[gRef]+"-"+prt_tdcsid[binx]);
   hDif[gRef][binx]->Draw();
   cRef->Update(); 
 }
