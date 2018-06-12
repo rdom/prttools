@@ -222,12 +222,12 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       prt_hdigi[mcp]->Fill(pix%8, pix/8);
 
       { //time cuts
-	Double_t cut1(10);
-      	if(theta<=80){
-      	  if(time<cut1 || time>75) continue; //45
-      	}else if(theta>94){
-      	  if(time<3 || time>40) continue; //40
-      	}
+	// Double_t cut1(10);
+      	// if(theta<=80){
+      	//   if(time<cut1 || time>75) continue; //45
+      	// }else if(theta>94){
+      	//   if(time<3 || time>40) continue; //40
+      	// }
 	//if(time<0 || time>50) continue;
       }
       nGoodHits++;
