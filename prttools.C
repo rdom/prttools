@@ -42,8 +42,7 @@
 #include <fstream>
 #include <sstream>
 
-
-#if defined(prt__sim) || defined(prt__beam)
+#if defined(prt__sim) || defined(prt__beam) || defined(eic__sim)
 
 #if defined(prt__beam)
 #include "datainfo.C"
@@ -52,11 +51,21 @@
 class PrtEvent;
 class PrtHit;
 PrtEvent* prt_event = 0;
+#endif 
+
+#if defined(prt__sim) || defined(prt__beam)
 DataInfo prt_data_info;
 #endif 
 
+
+#if defined(eic__sim) 
+const Int_t prt_nmcp = 4*6;
+const Int_t prt_npix = 16*16;
+#else
 const Int_t prt_nmcp = 12;
 const Int_t prt_npix = 64;
+#endif
+
 const Int_t prt_ntdc = 32;
 const Int_t prt_maxdircch(prt_nmcp*prt_npix);
 const Int_t prt_maxch = prt_ntdc*48;
@@ -297,6 +306,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     if(layoutId==2021) prt_hpglobal = new TPad("P","T",0.12,0.02,0.78,0.98);
     if(layoutId==2016) prt_hpglobal = new TPad("P","T",0.2,0.02,0.75,0.98);
     if(layoutId==2017) prt_hpglobal = new TPad("P","T",0.15,0.02,0.80,0.98);
+    if(layoutId==2030) prt_hpglobal = new TPad("P","T",0.10,0.01,0.82,0.99);
     if(!prt_hpglobal)  prt_hpglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
     
     prt_hpglobal->SetFillStyle(0);
@@ -306,10 +316,10 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 
   
   Int_t nrow = 3, ncol = 5;
-
   if(layoutId ==2016) ncol=3;
   if(layoutId ==2017) ncol=4;
   if(layoutId ==2021) ncol=4;
+  if(layoutId ==2030) {nrow=4; ncol=6;}
   
   if(layoutId > 1){
     float tbw(0.02), tbh(0.01), shift(0),shiftw(0.02),shifth(0),margin(0.01);
@@ -335,6 +345,12 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 	    shift = 0; shiftw=0.01; tbw=0.005; tbh=0.006;
 	    //if(j==1) shift += 0.015;
 	  }
+	  if(layoutId == 2030) {
+	    margin= 0.1;
+	    shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
+	    padi=j*ncol+i;
+	  }
+
 	  prt_hpads[padi] =  new TPad(Form("P%d",i*10+j),"T",
 				      i/(ncol+2*margin)+tbw+shift+shiftw,
 				      j/(Double_t)nrow+tbh+shifth,
@@ -444,8 +460,8 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   return digidata;
 }
 
-void prt_initDigi(Int_t type=0){  
-  if(type == 0){
+void prt_initDigi(Int_t type=1){  
+  if(type == 1){
     for(Int_t m=0; m<prt_nmcp;m++){
       if(prt_hdigi[m]) prt_hdigi[m]->Reset("M");
       else{
@@ -463,6 +479,25 @@ void prt_initDigi(Int_t type=0){
       }
     }
   }
+  if(type == 2){ //eic
+    for(Int_t m=0; m<6*4;m++){
+      if(prt_hdigi[m]) prt_hdigi[m]->Reset("M");
+      else{
+	prt_hdigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),16,0,16,16,0,16);
+	prt_hdigi[m]->SetStats(0);
+	prt_hdigi[m]->SetTitle(0);
+	prt_hdigi[m]->GetXaxis()->SetNdivisions(20);
+	prt_hdigi[m]->GetYaxis()->SetNdivisions(20);
+	prt_hdigi[m]->GetXaxis()->SetLabelOffset(100);
+	prt_hdigi[m]->GetYaxis()->SetLabelOffset(100);
+	prt_hdigi[m]->GetXaxis()->SetTickLength(1);
+	prt_hdigi[m]->GetYaxis()->SetTickLength(1);
+	prt_hdigi[m]->GetXaxis()->SetAxisColor(15);
+	prt_hdigi[m]->GetYaxis()->SetAxisColor(15);
+      }
+    }
+  }
+
 }
 
 void prt_resetDigi(){
@@ -639,7 +674,7 @@ void prt_setRootPalette(Int_t pal = 0){
  
 }
 
-#ifdef prt__sim
+#if defined(prt__sim) || defined(eic__sim)
 bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepath=""){
 
   if(inFile=="") return false;
@@ -655,7 +690,7 @@ bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepa
   
   prt_entries = prt_ch->GetEntries();
   std::cout<<"Entries in chain:  "<<prt_entries <<std::endl;
-  if(bdigi == 1) prt_initDigi();
+  if(bdigi) prt_initDigi(bdigi);
   return true;
 }
 
@@ -718,7 +753,7 @@ bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepa
 
   prt_entries = prt_ch->GetEntries();
   std::cout<<"Entries in chain: "<<prt_entries <<std::endl;
-  if(bdigi == 1) prt_initDigi();
+  if(bdigi) prt_initDigi(bdigi);
   return true;
 }
 
