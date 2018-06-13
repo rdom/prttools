@@ -12,7 +12,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   //TChain ch("reco"); ch.Add("r152_ad1.root");
   TChain ch("reco"); ch.Add(in);
   
-  Double_t sep,esep,sigma,mom,nph;
+  Double_t sep,esep,sigma,mom,nph,enph;
   int theta;
   ch.SetBranchAddress("theta",&theta);
   ch.SetBranchAddress("sep",&sep);
@@ -20,6 +20,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   ch.SetBranchAddress("sigma",&sigma);
   ch.SetBranchAddress("mom",&mom);
   ch.SetBranchAddress("nph",&nph);
+  ch.SetBranchAddress("enph",&enph);
 
   
   TGraphAsymmErrors *g[20],*gc[20],*gn[20];
@@ -55,27 +56,28 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   
   for(int i=0; i<ch.GetEntries(); i++){    
     ch.GetEvent(i);
-    if(theta>155 || theta<20) continue;
+    //    if(theta>155 || theta<20) continue;
     int sid = std::distance(vec.begin(),std::find(vec.begin(), vec.end(),sigma));
-
+    
     if(sid==1 && mom==0) continue;
     g[sid]->SetPoint(ng[sid],theta,sep);
     gn[sid]->SetPoint(ng[sid],theta,nph);
     
     Double_t err= sqrt(esep*esep + 0.1*0.1);
     if(beamdata && sid==0) err = sqrt(esep*esep + 0.07+prt_rand.Gaus(0,0.02));    
-    err = sqrt(esep*esep + 0.2*0.2);
-    g[sid]->SetPointEYhigh(ng[sid],err);
-    err = sqrt(esep*esep + 0.2*0.2);
-    g[sid]->SetPointEYlow(ng[sid]++,err);
-    std::cout<<mom<<" "<<theta<<" "<<sep <<std::endl;
+    g[sid]->SetPointEYhigh(ng[sid], sqrt(esep*esep + 0.2*0.2));
+    g[sid]->SetPointEYlow(ng[sid], sqrt(esep*esep + 0.2*0.2));
     
+    gn[sid]->SetPointEYhigh(ng[sid], enph);
+    gn[sid]->SetPointEYlow(ng[sid], enph);
+    ng[sid]++;		  
+    std::cout<<sid<<" " << mom<<" "<<theta<<" "<<sep <<" "<<sigma<<std::endl;    
   }
   
   for(int i=0; i<size; i++){
     g[i]->Sort();
     gn[i]->Sort();
-    g[i]->GetXaxis()->SetLimits(15,160);
+    g[i]->GetXaxis()->SetLimits(15,145);
     g[i]->GetYaxis()->SetRangeUser(0,6);
     if(studyId>159) g[i]->GetYaxis()->SetRangeUser(0,6);
     // if(i==0) g[i]->Draw("apl");
@@ -113,16 +115,18 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
 
+  std::cout<<"size "<<size<<std::endl;
+  
   for(int i=0; i<size; i++){
     g[i]->SetLineColor(coll[i]);
     g[i]->SetMarkerColor(colm[i]);
-    if(vec[i] != 300 && vec[i] != 0 ) continue;
+    //if(vec[i] != 300 && vec[i] != 0 ) continue;
     if(i==0) g[i]->Draw("apl");
     else g[i]->Draw("same pl");
 
     if(beamdata && i==0) leg->AddEntry(g[0],"beam data","lp");
-    //    else leg->AddEntry(g[i],Form("#sigma_{t} = %d ps ",vec[i]),"lp");
-    else leg->AddEntry(g[i],"geant sim","lp");
+    else leg->AddEntry(g[i],Form("#sigma_{t} = %d ps ",vec[i]),"lp");
+    //else leg->AddEntry(g[i],"geant sim","lp");
   }
   leg->Draw();
 
@@ -130,7 +134,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   gn[0]->Sort();
   if(beamdata) gn[0]->Draw("apl");
   else  gn[0]->Draw("apl");
-  gn[0]->GetXaxis()->SetLimits(15,160);
+  gn[0]->GetXaxis()->SetLimits(15,145);
   gn[0]->GetYaxis()->SetRangeUser(0,140);
   gn[1]->GetYaxis()->SetRangeUser(0,140);
   gn[1]->SetLineColor(kRed);

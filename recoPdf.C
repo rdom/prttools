@@ -102,7 +102,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   
   Double_t theta(0);
   TVirtualFitter *fitter;
-  Double_t nph,time,timeres(-1);
+  Double_t nph,enph,time,timeres(-1);
   PrtHit fHit;
   Int_t totalf(0),totals(0),mcp,pix,ch, entries = prt_entries; // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = prt_entries;
@@ -402,7 +402,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   hnph[4]->Fit("gaus");
   ff = hnph[4]->GetFunction("gaus");
   ff->SetLineColor(1);
-  nph=ff->GetParameter(1);  
+  nph=ff->GetParameter(1);
+  enph=ff->GetParameter(2);  
   hnph[4]->SetLineColor(2);
   hnph[4]->Draw();
   hnph[2]->SetLineColor(4);
@@ -448,6 +449,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   tc->Branch("sigma",&sigma,"sigma/D");
   tc->Branch("mom",&prt_mom,"prt_mom/D");
   tc->Branch("nph",&nph,"nph/D");
+  tc->Branch("enph",&enph,"enph/D");
   tc->Branch("r1",&r1,"r1/D");
   tc->Branch("r2",&r2,"r2/D");
   tc->Branch("beamz",&prt_beamz,"prt_beamz/I");
