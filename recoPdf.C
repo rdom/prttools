@@ -228,7 +228,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	//if(time<0 || time>50) continue;
+	if(time<0 || time>35) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
@@ -427,7 +427,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   // gLine->SetY2(gPad->GetUymax());
   //gLine->Draw();
   
-  prt_canvasSave(0);
+  // prt_canvasSave(0);
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
