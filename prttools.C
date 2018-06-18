@@ -1095,7 +1095,7 @@ TGraph* prt_smooth(TGraph* g,Int_t smoothness=1){
 }
 
 double prt_get_momentum_from_tof(double dist,double dtof){
-  double s = dt*0.299792458/dist;
+  double s = dtof*0.299792458/dist;
   double x = s*s;
   double a = prt_mass[1]*prt_mass[1]; //pi
   double b = prt_mass[4]*prt_mass[4]; //p
