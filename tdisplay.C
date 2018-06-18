@@ -73,12 +73,12 @@ void TTSelector::SlaveBegin(TTree *){
     leb=4000, le1=-5, le2=5;
   }
   if(fileList[0].Contains("pilas")){
-    gTrigger=820;
+    if(!gTrigger) gTrigger=820;
     leb = 2000; le1=40; le2=80;
     totb=240; totl=0; toth=12;
   }
   if(fileList[0].Contains("pico")){
-    gTrigger=820;
+   if(!gTrigger) gTrigger=820;
     totb=240; totl=0; toth=12;
     leb = 400; le1=10; le2=40; //20 40
   }
@@ -129,7 +129,7 @@ void TTSelector::SlaveBegin(TTree *){
   // }
 
   
-  if(gcFile!="0"){
+if(gcFile!="0"){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
     TKey *key;
@@ -203,7 +203,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
   if(gMode==4) if(current_file_name.Contains("cc"))  fileid=1;
   Bool_t calib = current_file_name.Contains("trb");
-  
+
   GetEntry(entry);
   memset(mult, 0, sizeof(mult));
   Int_t hh(0);
@@ -242,7 +242,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
   //if(hh<20) return kTRUE;
   // if((grTime0>0 && grTime1>0) || gTrigger==0)
-  {
+    {
     for(auto i=0; i<Hits_ && i<maxhits; i++){
       
       //if(Hits_nTdcErrCode[i]!=0) continue;
@@ -260,7 +260,6 @@ Bool_t TTSelector::Process(Long64_t entry){
 
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
       //      if(ch<prt_maxdircch)
-      
       {
 	mcp = map_mcp[ch];
 	pix = map_pix[ch];	
@@ -288,8 +287,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 	    //timeLe -= gLeOffArr[ch];
 	  }
 
+	  
 	  if(mcp< prt_nmcp) {
 	    prt_hdigi[mcp]->Fill(map_col[ch],map_row[ch]);
+	  
 	    TString tdchex = TString::BaseConvert(Form("%d",Hits_nTrbAddress[i]),10,16);
 	    hFine[fileid][ch]->SetTitle(Form("tdc 0x%s, chain %d, lch %d = ch %d, m%dp%d ",tdchex.Data() ,(ch/16)%3,ch%16,ch, mcp, pix));
 	    hTimeL[mcp][pix]->Fill(timeLe); 
@@ -304,7 +305,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       }
     }
   }
-  
+
   for(Int_t i=0; i<prt_ntdc; i++) tdcRefTime[i]=0;
   
   return kTRUE;
@@ -847,7 +848,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   updatePlot(0); //gComboId
 
   prt_cdigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
-		     "exec3event(Int_t,Int_t,Int_t,TObject*)");
+		 "exec3event(Int_t,Int_t,Int_t,TObject*)");
   MapWindow();
 }
 

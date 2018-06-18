@@ -1073,7 +1073,6 @@ void prt_normalize(TH1F* h1,TH1F* h2){
   h2->GetYaxis()->SetRangeUser(0,max);
 }
 
-
 // just x for now
 TGraph* prt_smooth(TGraph* g,Int_t smoothness=1){
   Double_t x, y;
@@ -1095,5 +1094,13 @@ TGraph* prt_smooth(TGraph* g,Int_t smoothness=1){
   return gr;
 }
 
+double prt_get_momentum_from_tof(double dist,double dtof){
+  double s = dt*0.299792458/dist;
+  double x = s*s;
+  double a = prt_mass[1]*prt_mass[1]; //pi
+  double b = prt_mass[4]*prt_mass[4]; //p
+  double p = sqrt((a*x - 2*s*sqrt(a*a+a*b*x-2*a*b+b*b) + b*x)/(x - 4))/s;  
+  return p;
+}
 
 
