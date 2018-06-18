@@ -68,8 +68,8 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     g[sid]->SetPointEYhigh(ng[sid], sqrt(esep*esep + 0.2*0.2));
     g[sid]->SetPointEYlow(ng[sid], sqrt(esep*esep + 0.2*0.2));
     
-    gn[sid]->SetPointEYhigh(ng[sid], enph);
-    gn[sid]->SetPointEYlow(ng[sid], enph);
+    gn[sid]->SetPointEYhigh(ng[sid], sqrt(nph));
+    gn[sid]->SetPointEYlow(ng[sid], sqrt(nph));
     ng[sid]++;		  
     std::cout<<sid<<" " << mom<<" "<<theta<<" "<<sep <<" "<<sigma<<std::endl;    
   }
@@ -141,7 +141,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   gn[1]->SetMarkerColor(kRed+1);  
   gn[1]->Draw("same pl");
 
-  TLegend *leg1 = new TLegend(0.55,0.65,0.75,0.88);
+  TLegend *leg1 = new TLegend(0.55,0.65,0.80,0.85);
   leg1->SetFillColor(0);
   leg1->SetFillStyle(0);
   leg1->SetBorderSize(0);

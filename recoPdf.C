@@ -25,7 +25,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
-    hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
+    //hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
+    hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",120,-5,5);
   }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
@@ -115,7 +116,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t trigT3v(819);
   Int_t trigTof1(1392);
   Int_t trigTof2(1398);
-  Double_t noise = 1e-4; //1e-7; // nHits //1e-5
+  Double_t noise = 1e-5; //1e-7; // nHits //1e-5
   
   for (Int_t ievent=0; ievent<entries; ievent++){
     prt_nextEvent(ievent,1000);
@@ -151,10 +152,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.75 ) continue;
       	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
       }
-      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.6 ) continue;
-      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.75 ) continue;
-      // }
+      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.6 ) continue;
+      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.75 ) continue;
+      }
       if(fabs(prt_event->GetMomentum().Mag()-8)<0.1){
       	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
       	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.64 ) continue;
@@ -197,8 +198,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-     // if(prt_pid==2 && hll[2]->GetEntries()>2200)continue;
-     // if(prt_pid==4 && hll[4]->GetEntries()>2200) continue;  
+     if(prt_pid==2 && hll[2]->GetEntries()>3000)continue;
+     if(prt_pid==4 && hll[4]->GetEntries()>3000) continue;  
     
     
 
@@ -323,7 +324,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 
 
   gStyle->SetOptStat(0);
-  //gStyle->SetOptTitle(0);
+  gStyle->SetOptTitle(0);
   
   //prt_drawDigi("m,p,v\n",2017,1.3,0);
   prt_drawDigi("m,p,v\n",2017);
@@ -333,7 +334,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   if(path.Contains("C.root")) name =  "tid"+ name;
   else name = "tis"+ name;
   
-  prt_canvasAdd("ll_"+name,800,400);
+  prt_canvasAdd("ll_"+name,800,500);
   
   prt_normalize(hll[4],hll[2]);
   hll[4]->GetYaxis()->SetNdivisions(9,5,0);
@@ -428,7 +429,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   // gLine->SetY2(gPad->GetUymax());
   //gLine->Draw();
   
-  // prt_canvasSave(0);
+  //prt_canvasSave(0);
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
