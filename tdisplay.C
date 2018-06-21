@@ -70,7 +70,7 @@ void TTSelector::SlaveBegin(TTree *){
   Int_t leb(400), le1(20), le2(40);
   if(fileList[0].Contains("trb")){
     gTrigger=0;
-    // totb=4000; totl=-1000; toth=1000;
+    //totb=4000; totl=-1000; toth=1000;
     // leb=4000, le1=-5, le2=100;
 
     totb=4000; totl=50; toth=80;
@@ -182,7 +182,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   Int_t tdc,ch,mcp,pix,col,row;
   Double_t triggerLe(0),triggerTot(0), grTime0(0), grTime1(0),grTime2(0),timeLe(0), timeTe(0), offset(0);
-  const Int_t maxhits(10000);
+  const Int_t maxhits(100000);
   Double_t timeL[maxhits], timeT[maxhits];
 
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
@@ -251,8 +251,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(tdc<0) continue;
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge
       
-      ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
-            
+      ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;      
       hFine[fileid][prt_addRefChannels(ch+1,tdc)]->Fill(Hits_nFineTime[i]);	  
       //if(mult[ch]>1) continue;
 
