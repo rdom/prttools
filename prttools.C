@@ -129,7 +129,7 @@ TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006",
 
 
 TF1 *prt_gaust;
-TVector3 prt_fit(TH1F *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1){
+TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1){
   Int_t binmax = h->GetMaximumBin();
   Double_t xmax = h->GetXaxis()->GetBinCenter(binmax);
   prt_gaust = new TF1("prt_gaust","[0]*exp(-0.5*((x-[1])/[2])^2)",xmax-range,xmax+range);
@@ -813,7 +813,7 @@ Int_t prt_getColorId(Int_t ind, Int_t style =0){
   return cid;
 }
 
-Int_t prt_shiftHist(TH1F *hist, Double_t double_shift){
+Int_t prt_shiftHist(TH1 *hist, Double_t double_shift){
   Int_t bins=hist->GetXaxis()->GetNbins();
   Double_t xmin=hist->GetXaxis()->GetBinLowEdge(1);
   Double_t xmax=hist->GetXaxis()->GetBinUpEdge(bins);
@@ -1097,9 +1097,10 @@ TGraph* prt_smooth(TGraph* g,Int_t smoothness=1){
 double prt_get_momentum_from_tof(double dist,double dtof){
   double s = dtof*0.299792458/dist;
   double x = s*s;
-  double a = prt_mass[1]*prt_mass[1]; //pi
+  double a = prt_mass[2]*prt_mass[2]; //pi
   double b = prt_mass[4]*prt_mass[4]; //p
-  double p = sqrt((a*x - 2*s*sqrt(a*a+a*b*x-2*a*b+b*b) + b*x)/(x - 4))/s;  
+  double p = sqrt((a - 2*sqrt(a*a+a*b*x-2*a*b+b*b)/s + b)/(x - 4));
+  
   return p;
 }
 

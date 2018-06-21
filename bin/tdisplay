@@ -14,6 +14,8 @@ show_help(){
         reference channel id
      -l
         use latest *hld.root file in current folder
+     -e 
+        number of events for processing  (0 - all events)
      -c 
         path to the file with calibration curves
      -a 
@@ -25,7 +27,7 @@ show_help(){
 }
 
 OPTIND=1 
-while getopts "h?r:lc:a:j:" opt; do
+while getopts "h?r:le:c:a:j:" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -35,6 +37,8 @@ while getopts "h?r:lc:a:j:" opt; do
 	    ;;
 	l)  latestFile=1
 	    ;;
+	e)  events=$OPTARG
+	    ;;	
 	c)  cFile=$OPTARG
 	    ;;
 	a)  mode=$OPTARG
@@ -45,6 +49,7 @@ while getopts "h?r:lc:a:j:" opt; do
 done
 refChannel=${refChannel:-0}
 mode=${mode:-0}
+events=${events:-0}
 threads=${threads:-4}
 shift $((OPTIND-1))
 
@@ -83,6 +88,6 @@ else
 	cd $HOME/dirc/prttools
     fi
 
-    root -l tdisplay.C+"(\"$inFile\",$refChannel,$mode,$threads,\"$cFile\")"
+    root -l tdisplay.C+"(\"$inFile\",$refChannel,$mode,$threads,\"$cFile\", $events)"
     cd -
 fi

@@ -7,7 +7,7 @@
 
 const Int_t maxfiles = 150;
 const Int_t geometry=2017;
-Int_t gSetup=2015, gTrigger, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
+Int_t gSetup=2015, gTrigger,gEntries=0, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
 TString ginFile(""),gcFile(""), fileList[maxfiles];
 TH1F *hCh, *hRefDiff, *hFine[maxfiles][prt_maxch], *hTot[maxfiles][prt_maxch],
   *hTimeL[prt_nmcp][prt_npix], *hTimeT[prt_nmcp][prt_npix], *hSigma[prt_ntdc];
@@ -32,6 +32,7 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
 	}
       }
     }
+    
     Double_t wcorr(8);
     if(ch/48==1) wcorr=0;
     if(ch/48==5) wcorr=0;
@@ -69,6 +70,9 @@ void TTSelector::SlaveBegin(TTree *){
   Int_t leb(400), le1(20), le2(40);
   if(fileList[0].Contains("trb")){
     gTrigger=0;
+    // totb=4000; totl=-1000; toth=1000;
+    // leb=4000, le1=-5, le2=100;
+
     totb=4000; totl=50; toth=80;
     leb=4000, le1=-5, le2=5;
   }
@@ -122,14 +126,8 @@ void TTSelector::SlaveBegin(TTree *){
   }
   fOutput->Add(hRefDiff);
   prt_createMap();
-
   
-  // for(auto ch=0; ch<prt_maxch; ch++){
-  //   std::cout<< ch << " "<<prt_tdcsid[ch/48]<<" "<<ch%48+1<<" "<<map_mcp[ch]<<" "<<map_pix[ch]<<" "<<map_row[ch]+1<<" "<<map_col[ch]+1<<std::endl;      
-  // }
-
-  
-if(gcFile!="0"){
+  if(gcFile!="0"){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
     TKey *key;
@@ -826,8 +824,12 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   std::cout<<"nfiles "<<nfiles <<std::endl;
 
   Int_t entries = ch->GetEntries();
-  std::cout<<"Entries in chain:  "<< entries<<std::endl;
- 
+  std::cout<<"Entries in chain: "<< entries<<std::endl;
+  if(gEntries>0) {
+    entries=gEntries;
+    std::cout<<"Proccesing "<<entries<<" entries"<<std::endl;
+  }
+  
   TString workers = Form("workers=%d",gWorkers);
   TProof *proof;
   if(gWorkers>1){
@@ -857,10 +859,11 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4, TString cFile= "calib.root"){
+void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4, TString cFile= "calib.root",Int_t entries=0){
   //inFile= "data/dirc/scan1/th_1*.hld.root";
   ginFile = inFile;
   gTrigger = trigger;
+  gEntries=entries;
   gcFile = (cFile!="")? cFile: "0"; // fine time calibration
   gMode=mode;
   gSetup = 2015;
