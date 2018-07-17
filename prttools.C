@@ -410,7 +410,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     Double_t integral;
     for(Int_t i=0; i<tbins; i++){
       integral = h->Integral(0,i);
-      if(integral>5) {
+      if(integral>0) {
 	if(minz==-2) minz = h->GetBinCenter(i);
 	break;
       } 
