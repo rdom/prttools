@@ -504,7 +504,7 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[m][p],(gMode==100)? hSTime[m][p]: hPiTime[m][p]};
 	prt_normalize(hh,2);
-	prt_fit(hh[0],0.5,100);
+	prt_fit(hh[0],0.25,100);
 	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 
@@ -872,7 +872,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
       for(Int_t p=0; p<prt_npix; p++){
 	Int_t col = p/8;
 	Int_t row = p%8;       
-	Double_t sigma = prt_fit(hPTime[m][p],0.5,100).Y();
+	Double_t sigma = prt_fit(hPTime[m][p],0.25,100).Y();
 	hSigma->Fill(sigma);
 	if(sigma>1) sigma = 1;
 	prt_hdigi[m]->Fill(row,col,sigma);
