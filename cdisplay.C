@@ -878,7 +878,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
 	prt_hdigi[m]->Fill(row,col,sigma);
       }
     }
-    prt_drawDigi("m,p,v\n",prt_geometry,-1);
+    prt_drawDigi("m,p,v\n",prt_geometry,0);
     fBackToHp=true;
 
     cT->cd();
