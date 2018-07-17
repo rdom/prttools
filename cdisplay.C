@@ -864,7 +864,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
     TVector3 res;
     for(Int_t m=0; m<prt_nmcp; m++){
       prt_hdigi_temp_updateplot[m] = (TH2F*)prt_hdigi[m]->Clone();
-      if(prt_hdigi[m]) prt_hdigi[m]->Reset();
+      if(prt_hdigi[m]) prt_hdigi[m]->Reset("M");
     }
     TH1F *hSigma = new TH1F("hSigma",";#sigma [ns];entries [#]",1000,0,1);
 
@@ -882,7 +882,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
     fBackToHp=true;
 
     cT->cd();
-    hSigma->Fit("gaus");
+    //hSigma->Fit("gaus");
     hSigma->Draw();
     
     break;    

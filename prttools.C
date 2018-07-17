@@ -393,12 +393,12 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     max = maxz;
   }
   
-  if(maxz==-2 && minz<-1){ // optimize range
+  if(maxz==-2 || minz==-2){ // optimize range
     for(Int_t p=0; p<nrow*ncol;p++){
       tmax = prt_hdigi[p]->GetMaximum();
       if(max<tmax) max = tmax;
     }
-    if(max < 100) max = 100;
+    if(max < 10) max = 10;
     Int_t tbins = 2000;
     TH1F *h = new TH1F("","",tbins,0,max);
     for(Int_t p=0; p<nrow*ncol;p++){
@@ -411,19 +411,18 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     for(Int_t i=0; i<tbins; i++){
       integral = h->Integral(0,i);
       if(integral>5) {
-	if(minz>-3) minz = h->GetBinCenter(i);
-	else minz=0;
+	if(minz==-2) minz = h->GetBinCenter(i);
 	break;
       } 
     }
 
     for(Int_t i=tbins; i>0; i--){
       integral = h->Integral(i,tbins);
-      if(integral>5) {
-	max = h->GetBinCenter(i);
+      if(integral>20) {
+	if(maxz==-2) max = h->GetBinCenter(i);
 	break;
       } 
-    }
+    }    
   }
   Int_t nnmax(0);
   for(Int_t p=0; p<nrow*ncol;p++){
