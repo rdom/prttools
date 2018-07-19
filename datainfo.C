@@ -1646,6 +1646,18 @@ void datainfo_init(){
     }
     
   }
+  
+
+  study[450]="Theta scan; phi=0; bar + grease + 3LS ";
+  {
+    Double_t o = 28.81;
+    // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
+    for(auto i=20; i<150; i=i+5){
+      dataArray.push_back(DataInfo(450,Form("beam_450_%d",i),1,3,i,447,85.0,66.80,14.8,7.0,3,o, 0.23));
+    }
+  }
+
+  
 }
 
 std::vector<DataInfo> getStudy(Int_t id){
