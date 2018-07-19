@@ -298,7 +298,7 @@ TPaletteAxis* prt_cdigi_palette;
 TH1 * prt_cdigi_th;
 TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
   if(prt_geometry==2021) layoutId=2021;
-  if(!prt_cdigi) prt_cdigi = new TCanvas("prt_cdigi","prt_cdigi",0,0,800,400);
+  if(!prt_cdigi) prt_cdigi = new TCanvas("prt_cdigi","prt_cdigi",800,400);
   prt_cdigi->cd();
   
   if(!prt_hpglobal){
@@ -306,18 +306,21 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     if(layoutId==2021) prt_hpglobal = new TPad("P","T",0.12,0.02,0.78,0.98);
     if(layoutId==2016) prt_hpglobal = new TPad("P","T",0.2,0.02,0.75,0.98);
     if(layoutId==2017) prt_hpglobal = new TPad("P","T",0.15,0.02,0.80,0.98);
+    if(layoutId==2018) prt_hpglobal = new TPad("P","T",0.05,0.07,0.9,0.93);
     if(layoutId==2030) prt_hpglobal = new TPad("P","T",0.10,0.01,0.82,0.99);
     if(!prt_hpglobal)  prt_hpglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
     
     prt_hpglobal->SetFillStyle(0);
     prt_hpglobal->Draw();
   }
+
   prt_hpglobal->cd();
 
   
   Int_t nrow = 3, ncol = 5;
   if(layoutId ==2016) ncol=3;
   if(layoutId ==2017) ncol=4;
+  if(layoutId ==2018) {nrow=2; ncol=4;}
   if(layoutId ==2021) ncol=4;
   if(layoutId ==2030) {nrow=4; ncol=6;}
   
@@ -344,6 +347,10 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 	    margin= 0.1;
 	    shift = 0; shiftw=0.01; tbw=0.005; tbh=0.006;
 	    //if(j==1) shift += 0.015;
+	  }
+	  if(layoutId == 2018) {
+	    margin= 0.1;
+	    shift = 0; shiftw=0.01; tbw=0.005; tbh=0.006;
 	  }
 	  if(layoutId == 2030) {
 	    margin= 0.1;
@@ -452,7 +459,9 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 
   prt_cdigi->cd();
   delete prt_cdigi_palette;
-  prt_cdigi_palette = new TPaletteAxis(0.82,0.1,0.86,0.90,(TH1 *) prt_hdigi[nnmax]);
+  if(layoutId==2018)  prt_cdigi_palette = new TPaletteAxis(0.89,0.1,0.93,0.90,(TH1 *) prt_hdigi[nnmax]);
+  else prt_cdigi_palette = new TPaletteAxis(0.82,0.1,0.86,0.90,(TH1 *) prt_hdigi[nnmax]);
+ 
   prt_cdigi_palette->Draw();
   prt_hpads[0]->cd();
     
@@ -906,8 +915,9 @@ void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_
 
       TCanvas *cc;
       cc = (TCanvas*) c;
-      if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) cc = (TCanvas*) c;
-      else {
+      if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) {
+	cc =  (TCanvas*)c;
+      }else{
       	cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
       	cc = (TCanvas*) c->DrawClone();      
       	cc->SetCanvasSize(w,h);
