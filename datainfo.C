@@ -104,6 +104,7 @@ public:
     else if(_studyId==252) sopt += " -g 2021 -c 2021 ";
     else if(_studyId<300) sopt += " -g 2016 -c 2016 ";
     else if(_studyId>299) sopt += " -g 2017 -c 2017 ";
+    else if(_studyId>=400) sopt += " -g 2018 -c 2018 ";
     return sopt;
   }
 
