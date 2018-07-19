@@ -42,7 +42,7 @@ TF1 * fitpdf(TH1F *h){
 
 void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentries=-1){
 
-  if(!prt_init(path,1,"data/cratePdf_s311")) return;
+  if(!prt_init(path,1,"data/cratePdf")) return;
   gStyle->SetOptStat(0);
 
   Int_t totalmcp[5][prt_nmcp], totalmcpr[5][prt_nmcp];
