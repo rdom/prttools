@@ -12,7 +12,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   
   Int_t studyId;
   TString tpath=path;
-  tpath.ReplaceAll("aug17","");
+  tpath.ReplaceAll("aug18","");
   sscanf(tpath, "%*[^0-9]%d{3}",&studyId);
 
   if(!prt_init(path,1,Form("data/recopdf_%d",studyId))) return;
@@ -25,8 +25,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
-    //hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
-    hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",120,-5,5);
+    hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
+    //hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",120,-5,5);
   }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
@@ -327,7 +327,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   gStyle->SetOptTitle(0);
   
   //prt_drawDigi("m,p,v\n",2017,1.3,0);
-  prt_drawDigi("m,p,v\n",2017);
+  prt_drawDigi("m,p,v\n",2018);
   prt_canvasAdd(prt_cdigi);
 
   TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d_%2.1f.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz,prt_phi);
@@ -429,7 +429,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   // gLine->SetY2(gPad->GetUymax());
   //gLine->Draw();
   
-  //prt_canvasSave(0);
+  prt_canvasSave(0);
   
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;

@@ -89,7 +89,7 @@ waitForMe (){
     done
 }
 
-datadir="/d/proc/aug17/pro/"
+datadir="/d/proc/jul18/"
 
 processOneSim (){
 	OIFS="$IFS"
