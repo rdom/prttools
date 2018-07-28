@@ -6,7 +6,7 @@
 #include "tdisplay.h"
 
 const Int_t maxfiles = 150;
-const Int_t geometry=2017;
+const Int_t geometry=2018;
 Int_t gSetup=2015, gTrigger,gEntries=0, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
 TString ginFile(""),gcFile(""), fileList[maxfiles];
 TH1F *hCh, *hRefDiff, *hFine[maxfiles][prt_maxch], *hTot[maxfiles][prt_maxch],
@@ -846,7 +846,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   ch->Process(selector,option,entries);
 
-  prt_drawDigi("m,p,v\n",geometry,0,0);
+  prt_drawDigi("m,p,v\n",geometry,-2,0);
   updatePlot(0); //gComboId
 
   prt_cdigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,

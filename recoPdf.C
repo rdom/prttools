@@ -328,6 +328,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   
   //prt_drawDigi("m,p,v\n",2017,1.3,0);
   prt_drawDigi("m,p,v\n",2018);
+  prt_cdigi->SetName(Form("hp_cdigi_%d",prt_theta));
   prt_canvasAdd(prt_cdigi);
 
   TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d_%2.1f.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz,prt_phi);

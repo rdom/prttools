@@ -73,7 +73,7 @@ const Int_t prt_maxnametdc=10000;
 
 TRandom  prt_rand;
 TChain*  prt_ch = 0;
-Int_t    prt_entries(0),prt_theta(0),prt_particle(0),prt_geometry(2017),prt_beamx(0),prt_beamz(0);
+Int_t    prt_entries(0),prt_theta(0),prt_particle(0),prt_geometry(2018),prt_beamx(0),prt_beamz(0);
 Double_t prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
 TString  prt_savepath(""),prt_info("");
 TH2F*    prt_hdigi[prt_nmcp];
@@ -261,6 +261,15 @@ void prt_createMap(){
 Int_t prt_getChannelNumber(Int_t tdc, Int_t tdcChannel){
   Int_t ch = -1;
   if(tdc>=0) ch = 48*tdc+tdcChannel;
+  if(prt_geometry==2018){
+    ch=0;
+    for(auto i=0; i<=tdc; i++){
+      if(i==tdc && (i==2 || i==6 || i==10 || i==14)) ch += tdcChannel-32;
+      else if(i==tdc) ch += tdcChannel;
+      else if(i==1 || i==2 || i==5 || i==6 || i==9 || i==10 || i==13 || i==14) ch += 16;
+      else ch += 48;    
+    }
+  }
   return ch;
 }
 
