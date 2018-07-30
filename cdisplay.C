@@ -548,9 +548,9 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	list->RemoveAll();
 
         ps->AddText(Form("Entries %d",(Int_t)hCh->GetEntries()));
-	ps->AddText("TDC = 0x"+prt_tdcsid[ch/48]);
+	ps->AddText("TDC = 0x"+prt_getTdcName(ch));
 	ps->AddText(Form("Global ch = %d",ch));
-	ps->AddText(Form("TDC ch = %d",ch%48+1));
+	ps->AddText(Form("TDC ch = %d",prt_getTdcChannel(ch)));
 	ps->AddText(Form("PADIWA ch =  %d",(ch%48)%16+1));
 	
       }
@@ -585,12 +585,12 @@ void exec4event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
   TPaveStats *ps = (TPaveStats*)hCh->GetListOfFunctions()->FindObject("stats");
   TList *list = ps->GetListOfLines();
   list->RemoveAll();
-
+  
   ps->AddText(Form("Entries %d",(Int_t)hCh->GetEntries()));
-  ps->AddText("TDC = 0x"+prt_tdcsid[ch/48]);
+  ps->AddText("TDC = 0x"+prt_getTdcName(ch));
   ps->AddText(Form("Global ch = %d",ch));
-  ps->AddText(Form("TDC ch = %d",ch%48+1));
-  ps->AddText(Form("PADIWA ch =  %d",(ch%48)%16+1));
+  ps->AddText(Form("TDC ch = %d",prt_getTdcChannel(ch)));
+  ps->AddText(Form("PADIWA ch =  %d",(ch%48)%16+1));	
   cTime->Update();
 }
 

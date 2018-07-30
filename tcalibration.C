@@ -188,12 +188,19 @@ Bool_t TTSelector::Process(Long64_t entry){
   if(entry%10000==0) std::cout<<"event # "<< entry <<std::endl;
   GetEntry(entry);
 
-  Int_t trigT1(816);
+  // Int_t trigT1(816);
+  // Int_t trigT2(817);
+  // Int_t trigT3h(818);
+  // Int_t trigT3v(819);  
+  // Int_t trigTof1(1392);
+  // Int_t trigTof2(1398);
+
+  Int_t trigT1(520);
   Int_t trigT2(817);
   Int_t trigT3h(818);
   Int_t trigT3v(819);  
-  Int_t trigTof1(1392);
-  Int_t trigTof2(1398);
+  Int_t trigTof1(1136);
+  Int_t trigTof2(1138);
     
   fEvent = new PrtEvent();
   if(gMode==5){
@@ -219,6 +226,7 @@ Bool_t TTSelector::Process(Long64_t entry){
     tdc = map_tdc[Hits_nTrbAddress[i]];
     if(tdc<0) continue;
     ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
+    
     time[i] = 5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0") {
       //spline calib
@@ -253,11 +261,11 @@ Bool_t TTSelector::Process(Long64_t entry){
   
   if(gMode==5){
     //    if(multT1<1 || multTof1<1 || multTof2<1 || multT3h<1 || multT3v<1){ //  || mult2!=1 || mult5!=1
-    if(multT1<1 || multTof1<1 || multTof2<1){ //  || mult2!=1 || mult5!=1
-      fEvent->Clear();
-      delete fEvent;
-      return kTRUE;
-    }
+    // if(multT1<1 || multTof1<1 || multTof2<1){ //  || mult2!=1 || mult5!=1
+    //   fEvent->Clear();
+    //   delete fEvent;
+    //   return kTRUE;
+    // }
  
     for(Int_t i=0; i<Hits_ && i<10000; i++){
       if(Hits_nTdcErrCode[i]!=0) continue;
@@ -276,30 +284,30 @@ Bool_t TTSelector::Process(Long64_t entry){
       }      
     }
 
-    if(tof1!=0 && tof2!=0) {
-      Double_t time = tof2-tof1;
-      // time += (tot1-tof1tot)*tan(walktheta);
-      // time += (tot2-tof2tot)*tan(-walktheta);
+  //   if(tof1!=0 && tof2!=0) {
+  //     Double_t time = tof2-tof1;
+  //     // time += (tot1-tof1tot)*tan(walktheta);
+  //     // time += (tot2-tof2tot)*tan(-walktheta);
 
-      time += (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
-      time += (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
+  //     time += (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
+  //     time += (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 
-      toftime = time;
-      Int_t m = (Double_t) (mom+0.1);
+  //     toftime = time;
+  //     Int_t m = (Double_t) (mom+0.1);
 
-      if(IsPion(time,m)){
-	tofpid=211;
-	mass=0.13957018;
-      }else if(IsProton(time,m)){ 
-	tofpid=2212;
-	mass = 0.938272046;
-      }else{
-      	fEvent->Clear();
-      	delete fEvent;
-      	return kTRUE;
-      }
-    }
-  }
+  //     if(IsPion(time,m)){
+  // 	tofpid=211;
+  // 	mass=0.13957018;
+  //     }else if(IsProton(time,m)){ 
+  // 	tofpid=2212;
+  // 	mass = 0.938272046;
+  //     }else{
+  //     	fEvent->Clear();
+  //     	delete fEvent;
+  //     	return kTRUE;
+  //     }
+  //   }
+  // }
   
   PrtHit hit;
   Int_t nrhits=0;
@@ -317,7 +325,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
       //if(!trbdata && prt_isBadChannel(ch)) continue;
-      
+
       if(gMode>0){
 	timeLe = time[i]-tdcRefTime[tdc];
 	if(gTrigger!=0 && ch<prt_maxdircch) timeLe = timeLe - (grTime1-grTime0);
@@ -361,10 +369,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(ch==trigTof1) timeLe -= (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
 	if(ch==trigTof2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 	
-	//timeLe-=gEvtOffset;
+	////timeLe-=gEvtOffset;
 
-	if(ch>820 && ch<1340) continue;
-	if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
+	// if(ch>820 && ch<1340) continue;
+	// if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
       }
 
       if(gMode!=5 || tofpid!=0){
@@ -418,7 +426,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode == 5) gTrigger=1398; //816;
+  if(gMode == 5) gTrigger=1136;//1398; //816;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

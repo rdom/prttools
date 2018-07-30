@@ -80,8 +80,8 @@ void TTSelector::SlaveBegin(TTree *){
     if(!gTrigger) gTrigger=820;
     if(geometry==2018) gTrigger=520;
     // leb = 2000; le1=40; le2=80;
-    //leb = 2000; le1=-60; le2=-20;
-    leb = 2000; le1=75; le2=100;
+    leb = 2000; le1=55; le2=85;
+    //  leb = 2000; le1=75; le2=100;
     totb=240; totl=0; toth=12;
   }
   if(fileList[0].Contains("pico")){
@@ -210,11 +210,12 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t hh(0);
   for(auto i=0; i<Hits_&& i<maxhits; i++){
 
+    if( Hits_nTrbAddress[i]  ==8221)std::cout<<" FFFFFFFFFFF "<<std::endl;
     tdc = map_tdc[Hits_nTrbAddress[i]];
+
     if(tdc<0) continue;
     ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
     //if(Hits_nTdcErrCode[i]!=0) continue;
-
     timeL[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
     if(gcFile!="0"){
       //spline calib
@@ -257,7 +258,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;      
       hFine[fileid][prt_addRefChannels(ch+1,tdc)]->Fill(Hits_nFineTime[i]);	  
       //if(mult[ch]>1) continue;
-
+      
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
       //      if(ch<prt_maxdircch)
       {

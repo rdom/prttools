@@ -62,7 +62,7 @@ DataInfo prt_data_info;
 const Int_t prt_nmcp = 4*6;
 const Int_t prt_npix = 16*16;
 #else
-const Int_t prt_nmcp = 12;
+const Int_t prt_nmcp = 8;
 const Int_t prt_npix = 64;
 #endif
 
@@ -273,6 +273,40 @@ Int_t prt_getChannelNumber(Int_t tdc, Int_t tdcChannel){
   return ch;
 }
 
+TString prt_getTdcName(Int_t ch){
+  Int_t tch=0;
+  TString tdcn="";
+  if(prt_geometry==2018){
+    for(auto i=0; i<=prt_ntdc; i++){
+      tdcn=prt_tdcsid[i];
+      if(i==2 || i==6 || i==10 || i==14) tch += 16;
+      else if(i==1 || i==2 || i==5 || i==6 || i==9 || i==10 || i==13 || i==14) tch += 16;
+      else tch += 48;
+      if(tch>ch) break;
+    }
+  }else{
+    tdcn=prt_tdcsid[ch/48];
+  }
+  return tdcn;
+}
+
+Int_t prt_getTdcChannel(Int_t ch){
+  Int_t tch=0,tdcc=0;
+  if(prt_geometry==2018){
+    for(auto i=0; i<=prt_ntdc; i++){
+      tdcc=ch-tch+1;
+      if(i==2 || i==6 || i==10 || i==14 || i==1 || i==2 || i==5 || i==6 || i==9 || i==10 || i==13 || i==14) tch += 16;
+      else tch += 48;
+      if(tch>ch){
+	break;
+      };
+    }
+  }else{
+    tdcc=ch%48+1;
+  }
+  return tdcc;
+}
+
 Int_t prt_removeRefChannels(Int_t ch, Int_t tdcSeqId){
   return ch - tdcSeqId;
 }
@@ -436,7 +470,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 
     for(Int_t i=tbins; i>0; i--){
       integral = h->Integral(i,tbins);
-      if(integral>20) {
+      if(integral>10) {
 	if(maxz==-2) max = h->GetBinCenter(i);
 	break;
       } 
