@@ -28,7 +28,7 @@ show_help(){
         batch processing option 
         1 run hldtools -j10 -d for undecoded .hld files in current folder.
         101 run hldtools -j10 -d for all .hld files in current folder.
-        2 run tcalibration -j10 -c c_XXX.root -r820 for not calibrated .hld.root files in current folder.
+        2 run tcalibration -j10 -c c_XXX.root -r1136 for not calibrated .hld.root files in current folder.
         3 run tcalibration -j10 -c c_XXX.root -r816 for not calibrated .hld.root files in current folder.
         102 run tcalibration -j10 -c calib_1810_1.root for all .hld.root files in current folder 
         5 run on the cluster
@@ -117,7 +117,7 @@ fi
 if (( $batchmode == 2 || $batchmode == 102  )); then
     for x in $(ls *.hld.root); do
 	if [ ! -f  ${x%.*.*}"C.root" ] || [ $batchmode == 102 ]; then
-	    tcalibration -j10 -r820 -c /home/d/aug2017/c_2808w.root $x
+	    tcalibration -j10 -r1136 -c /d/jul2018/calib/cw31.root $x
 	fi
     done
     exit 0
