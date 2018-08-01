@@ -115,7 +115,7 @@ if (( $batchmode == 1 || $batchmode == 101 )); then
 fi
 
 if (( $batchmode == 2 || $batchmode == 102  )); then
-    for x in $(ls *.hld.root); do
+    for x in $(ls beam_*.hld.root); do
 	if [ ! -f  ${x%.*.*}"C.root" ] || [ $batchmode == 102 ]; then
 	    tcalibration -j10 -r1136 -c /d/jul2018/calib/cw31.root $x
 	fi
