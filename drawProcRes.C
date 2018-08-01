@@ -32,7 +32,7 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   }
   gNph->Sort();
 
-  TString names[300];
+  TString names[500];
   names[150]="bar 2LS @ 7 GeV/c";
   names[151]="bar 3LS @ 7 GeV/c";
   names[152]="plate WL @ 7 GeV/c";
@@ -47,6 +47,8 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   names[219]="data, plate with 2LCL @ 7 GeV/c";
   names[221]="data, plate w/o lens @ 7 GeV/c";
 
+  names[400]="Fast angle scan, bar, 3LS lens  @ 7 GeV/c";
+  
   
   
   gNph->SetTitle(names[studyId]);
@@ -54,8 +56,6 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   gNph->SetLineColor(38);
   gNph->SetMarkerStyle(20);
   gNph->SetMarkerSize(0.7);
-  gNph->GetYaxis()->SetRangeUser(0,170);
-  gNph->GetXaxis()->SetRangeUser(10,170);
   gNph->GetYaxis()->SetTitle("multiplicity [#]");
 
 
@@ -67,22 +67,25 @@ void drawProcRes(TString inFile = "../data/res151.root"){
   gNph->GetYaxis()->SetTitleSize(0.06);
   gNph->GetYaxis()->SetTitleOffset(0.7);
 
-  gNph->GetXaxis()->SetTitle("#theta_{track} [#circ]");
+  gNph->GetXaxis()->SetTitle("#theta_{track} [deg]");
 
   TCanvas* c2 = new TCanvas(Form("mult_%d",studyId),"c2",800,500);c2->SetBottomMargin(0.12);
   gNph->Draw("APL");
+  gNph->GetYaxis()->SetRangeUser(0,100);
+  gNph->GetXaxis()->SetRangeUser(10,170);
+  
   prt_canvasAdd(c2);
 
-  TLegend *leg = new TLegend(0.2,0.7,0.5,0.9);
-  leg->SetFillColor(0);
-  leg->SetFillStyle(0);
-  leg->SetBorderSize(0);
-  leg->SetFillStyle(0);
-  leg->AddEntry("S221",names[221],"lp");
-  leg->AddEntry("S219",names[219],"lp");
-  leg->AddEntry("S201",names[201],"lp");
-  leg->AddEntry("S202",names[202],"lp");   
-  leg->Draw();
+  // TLegend *leg = new TLegend(0.2,0.7,0.5,0.9);
+  // leg->SetFillColor(0);
+  // leg->SetFillStyle(0);
+  // leg->SetBorderSize(0);
+  // leg->SetFillStyle(0);
+  // leg->AddEntry("S221",names[221],"lp");
+  // leg->AddEntry("S219",names[219],"lp");
+  // leg->AddEntry("S201",names[201],"lp");
+  // leg->AddEntry("S202",names[202],"lp");   
+  // leg->Draw();
   
   prt_canvasSave(0,1);
 }

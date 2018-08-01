@@ -26,12 +26,20 @@ Double_t tof2lea[]= {0,0,72.12,72.03,71.99,71.96,71.94, 32.58, 72.55};
 Double_t tof1tota[]={0,0,45.14,45.11,45.05,45.03,44.97, 47.24, 44.91};
 Double_t tof2tota[]={0,0,45.26,45.31,45.32,45.34,45.36, 47.09, 45.38};
 
-//aug 2017
-Double_t tofpi1[]={0,0,71.50,31.50,0.00, 31.00,31.00, 31.00,31.00, 0, 31.0};
-Double_t tofpi2[]={0,0,72.50,32.20,0.00, 32.20,32.00, 31.95,31.80, 0 ,31.8};
+// //aug 2017
+// Double_t tofpi1[]={0,0,71.50,31.50,0.00, 31.00,31.00, 31.00,31.00, 0, 31.0};
+// Double_t tofpi2[]={0,0,72.50,32.20,0.00, 32.20,32.00, 31.95,31.80, 0 ,31.8};
 
-Double_t tofp1[] ={0,0,80.80,35.70,0.00, 33.00,32.60, 32.35,32.40, 0, 32.2};
+// Double_t tofp1[] ={0,0,80.80,35.70,0.00, 33.00,32.60, 32.35,32.40, 0, 32.2};
+// Double_t tofp2[] ={0,0,83.20,37.00,0.00, 34.00,33.50, 33.50,33.00, 0, 33.0};
+
+//jul 2018
+Double_t tofpi1[]={0,0,71.50,31.50,0.00, 31.00,31.00, 31.00,31.00, 0, 31.0};
+Double_t tofpi2[]={0,0,72.50,32.20,0.00, 32.20,32.00, 32.00,31.80, 0 ,31.8};
+
+Double_t tofp1[] ={0,0,80.80,35.70,0.00, 33.00,32.60, 32.60,32.40, 0, 32.2};
 Double_t tofp2[] ={0,0,83.20,37.00,0.00, 34.00,33.50, 33.50,33.00, 0, 33.0};
+
 Int_t gg_nevents(0);
    
 Bool_t IsPion(Double_t tof, Int_t mom){  
@@ -176,7 +184,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   // if(gg_nevents >= 50000 ) return kTRUE;
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
-  Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(31.6);
+  Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(74.20);
   Int_t multT1(0), multT2(0), multT3v(0), multT3h(0), multTof1(0), multTof2(0);
   
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
@@ -196,9 +204,9 @@ Bool_t TTSelector::Process(Long64_t entry){
   // Int_t trigTof2(1398);
 
   Int_t trigT1(520);
-  Int_t trigT2(817);
-  Int_t trigT3h(818);
-  Int_t trigT3v(819);  
+  Int_t trigT2(513);
+  Int_t trigT3h(514);
+  Int_t trigT3v(515);  
   Int_t trigTof1(1136);
   Int_t trigTof2(1138);
     
@@ -243,7 +251,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch==gTrigger && grTime1==0) grTime1 = time[i];
       if(Hits_nTdcChannel[i]==0) { //ref channel
 	tdcRefTime[tdc] = time[i];
-	if(gTrigger/48==tdc) grTime0 = time[i];
+	if(prt_getTdcId(gTrigger)==tdc) grTime0 = time[i];
       }
       if(ch==trigT1) multT1++; //trigger1
       if(ch==trigT2) multT2++; //trigger2
@@ -260,12 +268,12 @@ Bool_t TTSelector::Process(Long64_t entry){
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
   
   if(gMode==5){
-    //    if(multT1<1 || multTof1<1 || multTof2<1 || multT3h<1 || multT3v<1){ //  || mult2!=1 || mult5!=1
-    // if(multT1<1 || multTof1<1 || multTof2<1){ //  || mult2!=1 || mult5!=1
-    //   fEvent->Clear();
-    //   delete fEvent;
-    //   return kTRUE;
-    // }
+    //if(multT1<1 || multTof1<1 || multTof2<1 || multT3h<1 || multT3v<1){ //  || mult2!=1 || mult5!=1
+    if(multT1<1 || multTof1<1 || multTof2<1){ //  || mult2!=1 || mult5!=1
+      fEvent->Clear();
+      delete fEvent;
+      return kTRUE;
+    }
  
     for(Int_t i=0; i<Hits_ && i<10000; i++){
       if(Hits_nTdcErrCode[i]!=0) continue;
@@ -281,36 +289,37 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch==trigTof2 && tof2==0){
     	tof2 = time[i]-tdcRefTime[tdc];
     	tot2 = timeT[i+1] - time[i];
-      }      
+      }
     }
 
-  //   if(tof1!=0 && tof2!=0) {
-  //     Double_t time = tof2-tof1;
-  //     // time += (tot1-tof1tot)*tan(walktheta);
-  //     // time += (tot2-tof2tot)*tan(-walktheta);
+    if(tof1!=0 && tof2!=0) {
+      Double_t time = tof2-tof1;
+      // time += (tot1-tof1tot)*tan(walktheta);
+      // time += (tot2-tof2tot)*tan(-walktheta);
 
-  //     time += (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
-  //     time += (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
+      // time += (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
+      // time += (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 
-  //     toftime = time;
-  //     Int_t m = (Double_t) (mom+0.1);
+      toftime = time;
+      Int_t m = (Double_t) (mom+0.1);
 
-  //     if(IsPion(time,m)){
-  // 	tofpid=211;
-  // 	mass=0.13957018;
-  //     }else if(IsProton(time,m)){ 
-  // 	tofpid=2212;
-  // 	mass = 0.938272046;
-  //     }else{
-  //     	fEvent->Clear();
-  //     	delete fEvent;
-  //     	return kTRUE;
-  //     }
-  //   }
-  // }
+      if(IsPion(time,m)){
+    	tofpid=211;
+    	mass=0.13957018;
+      }else if(IsProton(time,m)){ 
+    	tofpid=2212;
+    	mass = 0.938272046;
+      }else{
+      	fEvent->Clear();
+      	delete fEvent;
+      	return kTRUE;
+      }
+    }
+  }
   
   PrtHit hit;
   Int_t nrhits=0;
+  
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     if(gTrigger!=0) {
       triggerLe = grTime1 - grTime0;
@@ -324,6 +333,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
+      
       //if(!trbdata && prt_isBadChannel(ch)) continue;
 
       if(gMode>0){
@@ -335,13 +345,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       }
       
       timeTot = timeT[i+1] - time[i];
-
-      if(ch<prt_maxdircch) {
+      if(ch<prt_maxdircch){
 	timeTot += 30-gTotO[ch];
 
-	// tmp commented! 
-	// timeLe += getTotWalk(timeTot,ch);
-	// if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
+	//timeLe += getTotWalk(timeTot,ch);
+	//if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
 	if(fabs(tot2-tof2tot)<1.2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.); //7.1;
 	
@@ -351,9 +359,9 @@ Bool_t TTSelector::Process(Long64_t entry){
 	if(!laser && gMode==5){
 	  Double_t rad = TMath::Pi()/180.,
 	    zrot=145,
-	    xrot=100, //100
+	    xrot=100,
 	    prtangle= fEvent->GetAngle(),
-	    z = fEvent->GetBeamZ(),	  
+	    z = fEvent->GetBeamZ(),
 	    rot_dist = ((z-zrot)-xrot/cos(prtangle*rad))*tan((90-prtangle)*rad)/1000.;
 
 	  if(gTrigger==trigT1)   timeLe -= (7.829 +rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // trig1	
@@ -362,12 +370,12 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  
 	  timeLe += simOffset;
 	}	
-	if(!laser && gMode!=5) timeLe += 12.59-59; //simOffset;
-      }   
+	if(!laser && gMode!=5) timeLe += -2.5; //simOffset;
+      }
       
       if(gMode==5){
-	if(ch==trigTof1) timeLe -= (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
-	if(ch==trigTof2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
+	// if(ch==trigTof1) timeLe -= (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
+	// if(ch==trigTof2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 	
 	////timeLe-=gEvtOffset;
 
@@ -375,7 +383,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	// if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
       }
 
-      if(gMode!=5 || tofpid!=0){
+      //if(gMode!=5 || tofpid!=0)
+      { 
 	Double_t rad = TMath::Pi()/180.0,
 	  zrot=146,
 	  xrot=100,
@@ -426,7 +435,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode == 5) gTrigger=1136;//1398; //816;
+  if(gMode == 5) gTrigger=1136;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

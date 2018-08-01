@@ -150,35 +150,42 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
       h->Fit("prt_gaust","","MQN",xxmin-range, xxmax+range);
     }
     
-    if(peakSearch == 2){
+    if(peakSearch>1){
       nfound = prt_spect->Search(h,4,"goff",0.1);
       std::cout<<"nfound  "<<nfound <<std::endl;
       if(nfound==1){
 	prt_gaust =new TF1("prt_gaust","gaus(0)",xmax-range,xmax+range);
 	prt_gaust->SetNpx(500);
 	prt_gaust->SetParameter(1,prt_spect->GetPositionX()[0]);
-      }else if(nfound==2) {
+      }else if(nfound>=2){
 	Double_t p1 = prt_spect->GetPositionX()[0];
 	Double_t p2 = prt_spect->GetPositionX()[1];
 	if(p1>p2) {
 	  xxmax = p1;
 	  xxmin = p2;
 	}else {
-	  xxmax = p1;
-	  xxmin = p2;
+	  xxmax = p2;
+	  xxmin = p1;
 	}
-	prt_gaust =new TF1("prt_gaust","gaus(0)+gaus(3)",xmax-range,xmax+range);
-	prt_gaust->SetNpx(500);
-	prt_gaust->SetParameter(0,1000);
-	prt_gaust->SetParameter(3,1000);
+	if(peakSearch==20){
+	  xxmax=xxmin;
+	  prt_gaust =new TF1("prt_gaust","gaus(0)",xxmin-range,xxmin+range);
+	  prt_gaust->SetNpx(500);
+	  prt_gaust->SetParameter(1,prt_spect->GetPositionX()[0]);
+	}else{
+	  prt_gaust =new TF1("prt_gaust","gaus(0)+gaus(3)",xmax-range,xmax+range);
+	  prt_gaust->SetNpx(500);
+	  prt_gaust->SetParameter(0,1000);
+	  prt_gaust->SetParameter(3,1000);
 	
-	prt_gaust->FixParameter(1,xxmin);
-	prt_gaust->FixParameter(4,xxmax);
-	prt_gaust->SetParameter(2,0.1);
-	prt_gaust->SetParameter(5,0.1);
-	h->Fit("prt_gaust","","MQN",xxmin-range, xxmax+range);
-	prt_gaust->ReleaseParameter(1);
-	prt_gaust->ReleaseParameter(4);
+	  prt_gaust->FixParameter(1,xxmin);
+	  prt_gaust->FixParameter(4,xxmax);
+	  prt_gaust->SetParameter(2,0.1);
+	  prt_gaust->SetParameter(5,0.1);
+	  h->Fit("prt_gaust","","MQN",xxmin-range, xxmax+range);
+	  prt_gaust->ReleaseParameter(1);
+	  prt_gaust->ReleaseParameter(4);
+	}
       }
     
       prt_gaust->SetParameter(2,0.2);
@@ -273,27 +280,30 @@ Int_t prt_getChannelNumber(Int_t tdc, Int_t tdcChannel){
   return ch;
 }
 
-TString prt_getTdcName(Int_t ch){
-  Int_t tch=0;
-  TString tdcn="";
+Int_t prt_getTdcId(Int_t ch){
+  Int_t tch=0, tdcid;
   if(prt_geometry==2018){
-    for(auto i=0; i<=prt_ntdc; i++){
-      tdcn=prt_tdcsid[i];
+    for(int i=0; i<=prt_ntdc; i++){
+      tdcid=i;
       if(i==2 || i==6 || i==10 || i==14) tch += 16;
       else if(i==1 || i==2 || i==5 || i==6 || i==9 || i==10 || i==13 || i==14) tch += 16;
       else tch += 48;
       if(tch>ch) break;
     }
   }else{
-    tdcn=prt_tdcsid[ch/48];
+    tdcid=ch/48;
   }
-  return tdcn;
+  return tdcid;
+}
+
+TString prt_getTdcName(Int_t ch){
+  return prt_tdcsid[prt_getTdcId(ch)];
 }
 
 Int_t prt_getTdcChannel(Int_t ch){
   Int_t tch=0,tdcc=0;
   if(prt_geometry==2018){
-    for(auto i=0; i<=prt_ntdc; i++){
+    for(int i=0; i<=prt_ntdc; i++){
       tdcc=ch-tch+1;
       if(i==2 || i==6 || i==10 || i==14 || i==1 || i==2 || i==5 || i==6 || i==9 || i==10 || i==13 || i==14) tch += 16;
       else tch += 48;

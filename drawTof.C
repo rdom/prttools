@@ -28,7 +28,7 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
     TKey *key;
-    
+
     while ((key = (TKey*)nextkey())) {
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
@@ -52,9 +52,13 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   if(studyId<0) studyId=1000;
   if(!prt_init(infile,1,Form("data/drawTof/%d/%2.1f",studyId,prt_data_info.getMomentum()))) return;
   
-  Int_t le1(30), le2(34);
-  Int_t l1(30), l2(34);  
+   Int_t le1(30), le2(34);
+   Int_t l1(30), l2(35);
 
+  // //SiTil
+  // Int_t le1(34), le2(40);
+  // Int_t l1(34), l2(40);
+  
   if(studyId<1000 && momentum<7){
     le2=80;
     l2=80;
@@ -64,7 +68,6 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
     l2=85;
   }
  
-  
   c1y=fr11[momentum];
   c2y=fr21[momentum];
   c1x=fr12[momentum];
@@ -85,49 +88,82 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   TH1F * hTofC  = new TH1F("tofC ","tofC;TOF2-TOF1 [ns]; entries [#]",600,le1,le2);
   TH1F * hTot  = new TH1F("tot ","tot;TOT1,TOT2 [ns]; entries [#]",   600,0,100);
  
-  TH2F * hLeTot  = new TH2F("letot ","letot;TOF2-TOF1 [ns]; TOT1 [ns]",      500,l1,l2,125,43,49);
-  TH2F * hLeTotW  = new TH2F("letotW ","letotW;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,43,49);
-  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,43,49);
-  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,125,43,49);
+  TH2F * hLeTot1  = new TH2F("letot1 ","letot1;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,45,50);
+  TH2F * hLeTot2  = new TH2F("letot2 ","letot2;TOF2-TOF1 [ns]; TOT2 [ns]",   500,l1,l2,125,34,37);
+  //  TH2F * hLeTot  = new TH2F("letot ","letot;TOF2-TOF1 [ns]; TOT1 [ns]",      500,l1,l2,125,20,50);
+  TH2F * hLeTotW  = new TH2F("letotW ","letotW;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,45,50);
+  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,45,50);
+  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,125,34,37);
 
 
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit();
   
   PrtHit hit;
-  for (Int_t ievent=0; ievent< prt_entries; ievent++){ //prt_entries
+  for (Int_t ievent=0; ievent<prt_entries && ievent<1000000; ievent++){ //prt_entries
     prt_nextEvent(ievent,10000);
     
-    Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false);
-    Double_t tot1(0),tot2(0),tof1(0),tof2(0);
+    Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false),
+      str1b(false),stl1b(false),str3b(false),stl3b(false);
+    Double_t tot1(0),tot2(0),tof1(0),tof2(0),
+      str1l(0),stl1l(0),str3l(0),stl3l(0),str1t(0),stl1t(0),str3t(0),stl3t(0);      
     Int_t mult1(0), mult2(0), mult3(0), mult4(0);
     
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){
       hit = prt_event->GetHit(i);
-      if(hit.GetChannel()==816) {//trigger 1
+      if(hit.GetChannel()==520) {//trigger 1
 	btrig = true;
 	mult1++;
       }
-      if(hit.GetChannel()==817){ // trigger 2
+      if(hit.GetChannel()==513){ // trigger 2
 	bmcpout = true;
 	mult2++;
       }
-      if(hit.GetChannel()==1392 && tof1==0){ //tof1
+
+      if(hit.GetChannel()==1136 && tof1==0){ //tof1
 	btof1 = true;
 	tof1=hit.GetLeadTime();
 	tot1=hit.GetTotTime();
 	mult3++;
       }
-      if(hit.GetChannel()==1398 && tof2==0){ //tof2
+      if(hit.GetChannel()==1138 && tof2==0){ //tof2
 	btof2 = true;
 	tof2 = hit.GetLeadTime();
 	tot2=hit.GetTotTime();
 	mult4++;
       }
+
+      if(hit.GetChannel()==1140 && !str1b){
+      	str1b=true;
+      	str1l=hit.GetLeadTime();
+      	str1t=hit.GetTotTime();
+      }
+      if(hit.GetChannel()==1142 && !stl1b){
+      	stl1b=true;
+      	stl1l=hit.GetLeadTime();
+      	stl1t=hit.GetTotTime();
+      }
+      if(hit.GetChannel()==1148 && !str3b){
+      	str3b=true;
+      	str3l=hit.GetLeadTime();
+      	str3t=hit.GetTotTime();
+      }
+      if(hit.GetChannel()==1150 && !stl3b){
+      	stl3b=true;
+      	stl3l=hit.GetLeadTime();
+      	stl3t=hit.GetTotTime();
+      }      
     }
     
-    //if(!(btrig && btof1 && btof2)) continue;
+    if(!(btrig && btof1 && btof2)) continue;
     if(!(btof1 && btof2)) continue;
+    
+    // if(!(str1b && stl1b && str3b && stl3b)) continue;
+    // tof1=(str1l+stl1l)/2.;
+    // tof2=(str3l+stl3l)/2.;
+    // tot1=str1t;
+    // tot2=str3t;
+    
     //if(fabs(tot1-tof1tot)>0.5 ||fabs(tot2-tof2tot)>0.5 )  continue;
 
     hMult[0]->Fill(mult1);
@@ -144,14 +180,15 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
       Double_t time = tof2-tof1;
       hTof->Fill(time);	
       hLeTotW->Fill(time,tot1);
-      // time += (tot1-tof1tot)*tan(walktheta);
-      // time += (tot2-tof2tot)*tan(-walktheta);
-      
-      time += (tot1-47.1)*tan(-7*TMath::Pi()/180.);
-      time += (tot2-46.5)*tan(2*TMath::Pi()/180.);
 
-      // time += (tot1-tof2tot)*tan(-6*TMath::Pi()/180.);
-      // time += (tot2-tof1tot)*tan(0.5*TMath::Pi()/180.);
+      // //SiTil
+      // time += (tot1-47.14)*tan(-7*TMath::Pi()/180.);
+      // time += (tot2-46.5)*tan(2*TMath::Pi()/180.);
+
+
+      // time += (tot1-44.78)*tan(-7*TMath::Pi()/180.);
+      // time += (tot2-48.62)*tan(2*TMath::Pi()/180.);
+
       
       
       hTofC->Fill(time);
@@ -164,14 +201,18 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
       // 	hLeTotC2->Fill(time,tot2);
       // }
 	
-      hLeTot->Fill(tof2-tof1,tot1);
+      hLeTot1->Fill(tof2-tof1,tot1);
+      hLeTot2->Fill(tof2-tof1,tot2);
     }
       
   }
 
-  prt_canvasAdd("LeTot",800,400);
-  hLeTot->Draw("colz");
+  prt_canvasAdd("LeTot1",800,400);
+  hLeTot1->Draw("colz");
+  prt_canvasAdd("LeTot2",800,400);
+  hLeTot2->Draw("colz");
 
+  
   // prt_canvasAdd("LeTotW",800,400);
   // hLeTotW->Draw("colz");
   
@@ -242,5 +283,5 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   leg->Draw();
   
   gStyle->SetOptTitle(0);
-  prt_canvasSave(0,0);
+  //prt_canvasSave(0,0);
 }

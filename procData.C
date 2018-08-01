@@ -85,7 +85,7 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   }
 
   angle = prt_theta;
-  TString ext = Form("_%d_%d",studyId,fileId);
+  TString ext = Form("_%d_%d_%d",studyId,fileId,(Int_t)prt_theta);
   // TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
   // cExport->SetCanvasSize(800,400);
   // for(Int_t i=0; i<maxch_dirc; i++){
@@ -99,7 +99,7 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   //   canvasSave(1,0);
   // }  
   
-  prt_drawDigi("m,p,v\n",2017,0,0);
+  prt_drawDigi("m,p,v\n",2018,0,0);
   prt_cdigi->SetName(Form("hp_sim_%d_%d",(Int_t)prt_theta,(Int_t)prt_test1));
   prt_canvasAdd(prt_cdigi);
 

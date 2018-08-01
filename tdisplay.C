@@ -209,8 +209,6 @@ Bool_t TTSelector::Process(Long64_t entry){
   memset(mult, 0, sizeof(mult));
   Int_t hh(0);
   for(auto i=0; i<Hits_&& i<maxhits; i++){
-
-    if( Hits_nTrbAddress[i]  ==8221)std::cout<<" FFFFFFFFFFF "<<std::endl;
     tdc = map_tdc[Hits_nTrbAddress[i]];
 
     if(tdc<0) continue;
@@ -234,7 +232,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch==gTrigger) grTime1 = timeL[i];
       if(Hits_nTdcChannel[i]==0) { //ref channel
 	tdcRefTime[tdc] = timeL[i];
-	if(gTrigger/48==tdc) grTime0 = timeL[i];
+	if(prt_getTdcId(gTrigger)==tdc) grTime0 = timeL[i];
       }
     }else{
       timeT[i]=timeL[i];
@@ -648,14 +646,14 @@ void Calibrate(){
   for(Int_t m=0; m<prt_nmcp; m++){
     for(Int_t p=0; p<prt_npix; p++){
       if(hTimeL[m][p]->Integral()>100){
-	double sigma = prt_fit(hTimeL[m][p],0.25).Y();
+	double sigma = prt_fit(hTimeL[m][p],0.25,20,2,20).Y();
 	hRefDiff->Fill(sigma);
 	Int_t ch = map_mpc[m][p];
 	hSigma[(ch/48)%4]->Fill(sigma);
       }
     }
   }
-  
+
   if(true){
     std::cout<<"Getting LE offsets"<<std::endl;
     for (Int_t m=0; m <prt_nmcp; m++) {

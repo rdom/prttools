@@ -142,7 +142,7 @@ public:
 Int_t gg_alias=0;
 std::vector<DataInfo> dataArray;
 std::vector<DataInfo> aliasArray;
-const Int_t gg_nstudies = 400;
+const Int_t gg_nstudies = 500;
 Int_t gg_studyArray[gg_nstudies];
 TString study[gg_nstudies];
 void datainfo_init(){
@@ -1649,15 +1649,47 @@ void datainfo_init(){
   }
   
 
-  study[450]="Theta scan; phi=0; bar + grease + 3LS ";
+  // Jul2018
   {
-    Double_t o = 28.81;
-    // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-    for(auto i=20; i<150; i=i+5){
-      dataArray.push_back(DataInfo(450,Form("beam_450_%d",i),1,3,i,447,85.0,66.80,14.8,7.0,3,o, 0.23));
+    study[400]="Fast angle scan, bar, 3LS lens, grease everywere";
+    {
+      Double_t o =  74.20;
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      dataArray.push_back(DataInfo(400,"beam_18212214716",1,3,150.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212214000",1,3,140.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212212157",1,3,130.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212211420",1,3,120.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212210407",1,3,110.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212205205",1,3,100.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212203705",1,3, 90.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212202744",1,3, 80.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212201933",1,3, 70.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212200803",1,3, 60.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212195303",1,3, 50.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212194136",1,3, 40.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212193358",1,3, 30.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212192707",1,3, 25.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212192129",1,3, 20.0,447,85.0,70.00,5,7.0,10,o));
+    }
+    
+    study[450]="Theta scan; phi=0; bar + grease + 3LS; mcp3,4 have custom CS";
+    {    
+      Double_t o = 28.81;
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
+      for(auto i=20; i<150; i=i+5){
+	dataArray.push_back(DataInfo(450,Form("beam_450_%d",i),1,3,i,447,85.0,66.80,14.8,7.0,3,o, 0.23));
+      }
+    }
+
+    study[451]="Theta scan; phi=0; bar + grease + 3LS ";
+    {    
+      Double_t o = 28.81;
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
+      for(auto i=20; i<150; i=i+5){
+	dataArray.push_back(DataInfo(451,Form("beam_451_%d",i),1,3,i,447,85.0,66.80,14.8,7.0,3,o, 0.23));
+      }
     }
   }
-
   
 }
 
@@ -1796,7 +1828,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   
   if(format==6){ // reco
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"\"/d/proc/oct16/"<<newset[i].getStudyId()<<"\",\""<<newset[i].getChildRunId(0)<<"C.root\","
+      std::cout<<"\"/d/proc/jul18/"<<newset[i].getStudyId()<<"/"<<newset[i].getChildRunId(0)<<"C.root\","
 	       << newset[i].getStudyId() <<","<<i<<","<<newset[i].getMomentum() << ","<<newset[i].getRadiatorId()
 	       <<","<<newset[i].getLensId()
 	       <<","<<newset[i].getAngle()<<","<<newset[i].getZ()
@@ -1807,7 +1839,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   
   if(format==7){ // reco sim
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"\"/d/proc/oct16/"<<newset[i].getStudyId()<<"\",\""<<newset[i].getChildRunId(0)<<"S.root\","
+      std::cout<<"\"/d/proc/jul18/"<<newset[i].getStudyId()<<"/"<<newset[i].getChildRunId(0)<<"S.root\","
 	       << newset[i].getStudyId() <<","<<i<<","<<newset[i].getMomentum() << ","<<newset[i].getRadiatorId()
 	       <<","<<newset[i].getLensId()
 	       <<","<<newset[i].getAngle()<<","<<newset[i].getZ()

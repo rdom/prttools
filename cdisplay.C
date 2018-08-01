@@ -182,8 +182,7 @@ void MSelector::SlaveBegin(TTree *){
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",prt_maxch,0,prt_maxch);
   hTof=new TH1F("hTof","",2000,25,40);
-  //hTof=new TH1F("hTof","",2000,-606,805);
-
+ 
   prt_axisTime800x500(hTot,"TOT time [ns]");
   prt_axisTime800x500(hLe,"LE time [ns]");
   prt_axisTime800x500(hMult,"multiplicity [#]");
@@ -253,8 +252,8 @@ Bool_t MSelector::Process(Long64_t entry){
       else  thitCount2++;
       
       if(ch == gTrigger && gTrigger>0) triggerLe = hit.GetLeadTime();
-      if(ch==1392 && tof1==0) tof1 = hit.GetLeadTime();
-      if(ch==1398 && tof2==0) tof2 = hit.GetLeadTime();
+      if(ch==1136 && tof1==0) tof1 = hit.GetLeadTime();
+      if(ch==1138 && tof2==0) tof2 = hit.GetLeadTime();
     }
   }
   if(tof1!=0 && tof2!=0) {    
