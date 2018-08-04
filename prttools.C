@@ -345,7 +345,8 @@ Bool_t prt_isBadChannel(Int_t ch){
 // layoutId == 5    - 5 row's design for the PANDA Barrel DIRC
 // layoutId == 2015 - cern 2015
 // layoutId == 2016 - cern 2016
-// layoutId == 2017 - cern 2016
+// layoutId == 2017 - cern 2017
+// layoutId == 2018 - cern 2018
 // layoutId == 2021 - new 3.6 row's design for the PANDA Barrel DIRC
 TPaletteAxis* prt_cdigi_palette;
 TH1 * prt_cdigi_th;

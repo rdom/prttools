@@ -62,12 +62,18 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   TH1F *hnphf = new TH1F("hnphf","hnphf",200,0,200);
   TH1F *hnphs = new TH1F("hnphs","hnphs",200,0,200);
 
-  Int_t trigT1(816);
-  Int_t trigT2(817);
-  Int_t trigT3h(818);
-  Int_t trigT3v(819);
-  Int_t trigTof1(1392);
-  Int_t trigTof2(1398);
+  // Int_t trigT1(816);
+  // Int_t trigT2(817);
+  // Int_t trigT3h(818);
+  // Int_t trigT3v(819);
+  // Int_t trigTof1(1392);
+  // Int_t trigTof2(1398);
+  Int_t trigT1(520);
+  Int_t trigT2(513);
+  Int_t trigT3h(514);
+  Int_t trigT3v(515);  
+  Int_t trigTof1(1136);
+  Int_t trigTof2(1138);
   
   Double_t time;
   PrtHit hit;
@@ -75,7 +81,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   if(aentries>=0) entries = aentries;
   Int_t start = 0;
   if(path.Contains("S.root")) start=4000;
-  if(path.Contains("C.root")) start=100000;
+  if(path.Contains("C.root")) start=50000;
   
   for (Int_t ievent=start; ievent<entries; ievent++){ //entries
     prt_nextEvent(ievent,1000);
@@ -106,7 +112,7 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 	  t3v=true;
 
 
-	if(gch>=1349 && gch<=1352) //332
+	//if(gch>=1349 && gch<=1352) //332
 	//if(gch>=1348 && gch<=1353)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)

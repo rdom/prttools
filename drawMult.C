@@ -29,8 +29,7 @@ void drawMult(TString infile="hits.root"){
       hTime->Fill(time);
       
       if(time<20 || time > 40)  continue;
-      //      if(ch==551) counts++;
-      if(ch==423) counts++;
+      counts++;
       count[prt_pid][mcp][pix]++;
     }
 
@@ -51,12 +50,7 @@ void drawMult(TString infile="hits.root"){
     // }
   }
 
-  
-
-  prt_drawDigi("m,p,v\n",2017,0,0);
-
-  prt_canvasAdd("Time",800,500);
-  hTime->Draw();
+  prt_drawDigi("m,p,v\n",2018,0,0);
   prt_canvasAdd("Mult",800,500);
   hMult->Draw();
   

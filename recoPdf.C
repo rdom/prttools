@@ -108,16 +108,22 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t totalf(0),totals(0),mcp,pix,ch, entries = prt_entries; // [50000-rest] - is for pdf generation
   if(path.Contains("F.root")) entries = prt_entries;
   if(path.Contains("S.root")) entries = 4000;
-  if(path.Contains("C.root")) entries = 100000;
+  if(path.Contains("C.root")) entries = 50000;
 
-  Int_t trigT1(816);
-  Int_t trigT2(817);
-  Int_t trigT3h(818);
-  Int_t trigT3v(819);
-  Int_t trigTof1(1392);
-  Int_t trigTof2(1398);
-  Double_t noise = 1e-5; //1e-7; // nHits //1e-5
+  // Int_t trigT1(816);
+  // Int_t trigT2(817);
+  // Int_t trigT3h(818);
+  // Int_t trigT3v(819);
+  // Int_t trigTof1(1392);
+  // Int_t trigTof2(1398);
+  Int_t trigT1(520);
+  Int_t trigT2(513);
+  Int_t trigT3h(514);
+  Int_t trigT3v(515);  
+  Int_t trigTof1(1136);
+  Int_t trigTof2(1138);
   
+  Double_t noise = 1e-5; //1e-7; // nHits //1e-5
   for (Int_t ievent=0; ievent<entries; ievent++){
     prt_nextEvent(ievent,1000);
     timeres = prt_event->GetTimeRes();
@@ -125,46 +131,33 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();
     if(prt_event->GetType()==0){
 
-
-      // // 332
-      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.65 ) continue;
-      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.68 ) continue;
-      // }
-
-      // //plate
-      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
+      // if(fabs(prt_event->GetMomentum().Mag()-3)<0.1){
+      // 	noise = 1e-4;
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
       // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
       // }
-      
-      if(fabs(prt_event->GetMomentum().Mag()-3)<0.1){
-	noise = 1e-4;
-	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
-	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
-      }
-      if(fabs(prt_event->GetMomentum().Mag()-5)<0.1){
-	noise = 1e-4;
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.78 ) continue;
-      }
-      if(fabs(prt_event->GetMomentum().Mag()-6)<0.1){
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.75 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
-      }
-      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.6 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.75 ) continue;
-      }
-      if(fabs(prt_event->GetMomentum().Mag()-8)<0.1){
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.64 ) continue;
-      }
+      // if(fabs(prt_event->GetMomentum().Mag()-5)<0.1){
+      // 	noise = 1e-4;
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.78 ) continue;
+      // }
+      // if(fabs(prt_event->GetMomentum().Mag()-6)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.75 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
+      // }
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.6 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.75 ) continue;
+      // }
+      // if(fabs(prt_event->GetMomentum().Mag()-8)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.5 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.64 ) continue;
+      // }
 
-      if(fabs(prt_event->GetMomentum().Mag()-10)<0.1){
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.32 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.645 ) continue;
-      }
+      // if(fabs(prt_event->GetMomentum().Mag()-10)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.32 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.645 ) continue;
+      // }
 
 
 	
@@ -185,12 +178,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	if(gch==trigT3v)
 	  t3v=true;
 
-	if(gch>=1350 && gch<=1350)
-	//if(gch>=1351 && gch<=1352)
 	//if(gch>=1350 && gch<=1350)
-	  hodo1=true;
-	  //if(gch>=1369 && gch<=1370)
-	//if(gch>=1364 && gch<=1374)
+	if(gch>=1096 && gch<=1101)
+	hodo1=true;
+	//if(gch>=1110 && gch<=1120)
 	hodo2=true;	  
       }
       
@@ -198,8 +189,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-     if(prt_pid==2 && hll[2]->GetEntries()>3000)continue;
-     if(prt_pid==4 && hll[4]->GetEntries()>3000) continue;  
+     // if(prt_pid==2 && hll[2]->GetEntries()>3000)continue;
+     // if(prt_pid==4 && hll[4]->GetEntries()>3000) continue;  
     
     
 
@@ -216,7 +207,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // if(mcp%3==0 && pix<32) continue;
       // if(mcp%3==2 && pix>=32) continue; 
 
-      if(ch>prt_maxdircch) continue;
+      if(ch>prt_maxdircch-1) continue;
+      
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
       //      if(++mult[ch]>1 || ch ==0) continue;
  
@@ -324,7 +316,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 
 
   gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
+  gStyle->SetOptTitle(1);
   
   //prt_drawDigi("m,p,v\n",2017,1.3,0);
   prt_drawDigi("m,p,v\n",2018);

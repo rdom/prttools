@@ -56,7 +56,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   
   for(int i=0; i<ch.GetEntries(); i++){    
     ch.GetEvent(i);
-    //    if(theta>155 || theta<20) continue;
+    if(theta>140) continue;
     int sid = std::distance(vec.begin(),std::find(vec.begin(), vec.end(),sigma));
     
     if(sid==1 && mom==0) continue;
@@ -109,7 +109,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   int coll[]={kBlack,kGreen+1,kRed,kRed,4,kCyan-6,6,7,8,9,10};
   int colm[]={kBlack,kGreen+2,kRed+1,kRed+1,4,kCyan-6,6,7,8,9,10};
    
-  TLegend *leg = new TLegend(0.55,0.65,0.75,0.88);
+  TLegend *leg = new TLegend(0.50,0.65,0.88,0.88);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
@@ -117,7 +117,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
 
   std::cout<<"size "<<size<<std::endl;
   
-  for(int i=0; i<size; i++){
+  for(int i=0; i<2; i++){
     g[i]->SetLineColor(coll[i]);
     g[i]->SetMarkerColor(colm[i]);
     //if(vec[i] != 300 && vec[i] != 0 ) continue;
@@ -125,7 +125,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
     else g[i]->Draw("same pl");
 
     if(beamdata && i==0) leg->AddEntry(g[0],"beam data","lp");
-    else leg->AddEntry(g[i],Form("#sigma_{t} = %d ps ",vec[i]),"lp");
+    else leg->AddEntry(g[i],Form("geant #sigma_{t} = %d ps ",vec[i]),"lp");
     //else leg->AddEntry(g[i],"geant sim","lp");
   }
   leg->Draw();

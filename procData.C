@@ -2,6 +2,8 @@
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
+#include "TLatex.h"
+
 
 void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
   
@@ -51,7 +53,7 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   gStyle->SetOptFit(1111);
  
   PrtHit hit;
-  for (auto ievent=0; ievent<10000; ievent++){
+  for (auto ievent=0; ievent<prt_entries; ievent++){
     prt_nextEvent(ievent,1000);
     Int_t counts(0),pid(0);
     Double_t tot(0),time(0);
@@ -100,7 +102,14 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   // }  
   
   prt_drawDigi("m,p,v\n",2018,0,0);
-  prt_cdigi->SetName(Form("hp_sim_%d_%d",(Int_t)prt_theta,(Int_t)prt_test1));
+  prt_cdigi->cd();
+
+  TLatex Tl;
+  Tl.SetTextAlign(23);
+  Tl.SetTextSize(0.05);
+  Tl.DrawLatex(0.48,0.99,Form("%d deg",(Int_t)prt_theta));
+  
+  prt_cdigi->SetName(Form("hp_%d_%d",(Int_t)prt_theta,(Int_t)prt_test1)+ext);
   prt_canvasAdd(prt_cdigi);
 
   prt_canvasAdd("p_le"+ext,800,400);

@@ -38,7 +38,7 @@ void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
 }
 
 void init(){
-  if(!prt_init(ginFile,1,"data/drawHP")) return;
+  if(!prt_init(ginFile,1,"")) return;
   
   TString insim =  ginFile;
   insim.ReplaceAll("C.root","S.root");
@@ -152,6 +152,7 @@ void MSelector::SlaveBegin(TTree *){
 	hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d;LE [ns];offset [mV]",m,p) , bins1,min1,max1,100,-5.1,15);
 	hLeTot[m][p] = new TH2F(Form("hLeTot_mcp%dpix%d" ,m,p), Form("mcp %d, pixel %d;LE [ns];TOT [ns]",m, p), 400,min1,max1, bins2,min2,max2);
 	prt_axisTime800x500(hShape[m][p],"time [ns]");
+	hShape[m][p]->GetYaxis()->SetRangeUser(-4,10);
 	hShape[m][p]->GetYaxis()->SetTitle("offset to the threshold [mV]");
       
 	fOutput->Add(hLeTot[m][p]);
@@ -926,6 +927,7 @@ void MyMainFrame::DoSavePng(){
 }
 
 void MyMainFrame::DoExport(){
+
   gROOT->SetBatch(1);
   TCanvas *cExport = new TCanvas("cExport","cExport",0,0,800,400);
   cExport->SetCanvasSize(800,400);
@@ -933,13 +935,14 @@ void MyMainFrame::DoExport(){
   TString histname="", filedir=ginFile;
   filedir.Remove(filedir.Last('/'));
   if(prt_savepath == "") prt_createDir(filedir+"/auto");
-  
-  prt_canvasAdd("digi",800,400);
-  prt_cdigi->DrawClonePad();
-  prt_canvasSave(1,0);    
+
+  //prt_canvasAdd("hp",800,400);
+  prt_canvasAdd(prt_cdigi); 
+  //prt_cdigi->DrawClonePad();
+  prt_canvasSave(1,0);
   
   std::cout<<"Exporting into  "<<prt_savepath <<std::endl;
-  prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry)); //prt_geometry,-2,-2
+  prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry));
   
   pbar->Reset();
   Float_t total = (prt_nmcp-1)*(prt_npix-1);
@@ -1349,7 +1352,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   if(ginFile.Contains("beam")) fEdit1->SetText("400 0 50");
   if(ginFile.Contains("aug2017")) fEdit1->SetText("400 -200 -150");
-  if(ginFile.Contains("th_")) fEdit1->SetText("400 0 60");
+  if(ginFile.Contains("th_")) fEdit1->SetText("400 24 50");
   if(ginFile.Contains("pilas")) fEdit1->SetText("400 28 34");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
   

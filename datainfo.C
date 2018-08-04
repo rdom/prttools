@@ -15,6 +15,7 @@ class DataInfo {
   Int_t _lensId;
   Double_t _angle;
   Double_t _phi;
+  Double_t _test;
   Double_t _z;
   Double_t _x;
   Double_t _xstep;
@@ -33,8 +34,8 @@ class DataInfo {
 
 public:
   DataInfo(){_studyId=-1;}; 	//the default constructor
-  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t m, Double_t beamDimension=10, Double_t simToffset=0, Double_t phi=0):
-    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0),_beamDimension(beamDimension),_simToffset(simToffset),_phi(phi){
+  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t m, Double_t beamDimension=10, Double_t simToffset=0, Double_t phi=0, Double_t test=0):
+    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0),_beamDimension(beamDimension),_simToffset(simToffset),_phi(phi),_test(test){
   };
 
   ~DataInfo() {}
@@ -45,7 +46,7 @@ public:
   };
 
   bool operator == (const DataInfo& d) const{
-    return _studyId == d._studyId && _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum &&_beamDimension == d._beamDimension && _phi == d._phi;
+    return _studyId == d._studyId && _radiatorId == d._radiatorId && _lensId == d._lensId && _angle == d._angle && _z == d._z && _x == d._x && _xstep == d._xstep && _ystep == d._ystep && _momentum == d._momentum &&_beamDimension == d._beamDimension && _phi == d._phi && _test == d._test;
   }
 
   bool operator < (const DataInfo& d) const{
@@ -57,6 +58,7 @@ public:
     if(_studyId>169 && _studyId<180 && _momentum < d._momentum) return true; //momentum
     if((_studyId==313 || _studyId==322) && _momentum < d._momentum) return true; //momentum
     if(_studyId>179 && _studyId<190 && _z < d._z) return true; //z
+    if(_studyId==404 && _test<d._test) return true; //test value
     if(_studyId>=200 && _angle<d._angle) return true; //angle
     if(_studyId==314 && _phi<d._phi) return true; //angle
     return false; 
@@ -89,6 +91,7 @@ public:
     info += Form("X Step = %f [mm];",_xstep);
     info += Form("Y Step = %f [mm];",_ystep);
     info += Form("Momentum = %f [mm];",_momentum);
+    info += Form("Test = %f [mm];",_test);
     info += Form("Uniq file id for current study = %d;",_fileId);
     info += Form("Folder path = %d/%d;",_studyId,_fileId);
     return info;
@@ -119,6 +122,7 @@ public:
   Int_t getLensId() const {return _lensId; }
   Double_t getAngle() const { return _angle; }
   Double_t getPhi() const { return _phi; }
+  Double_t getTest() const { return _test; }
   Double_t getZ() const { return _z; }
   Double_t getX() const { return _x; }
   Double_t getXstep() const { return _xstep; }
@@ -1651,29 +1655,96 @@ void datainfo_init(){
 
   // Jul2018
   {
-    study[400]="Fast angle scan, bar, 3LS lens, grease everywere";
+    study[400]="Fast angle scan. Bar, 3LS lens, grease everywere";
     {
       Double_t o =  74.20;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
-      dataArray.push_back(DataInfo(400,"beam_18212214716",1,3,150.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212214000",1,3,140.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212212157",1,3,130.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212211420",1,3,120.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212210407",1,3,110.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212205205",1,3,100.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212203705",1,3, 90.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212202744",1,3, 80.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212201933",1,3, 70.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212200803",1,3, 60.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212195303",1,3, 50.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212194136",1,3, 40.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212193358",1,3, 30.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212192707",1,3, 25.0,447,85.0,70.00,5,7.0,10,o));
-      dataArray.push_back(DataInfo(400,"beam_18212192129",1,3, 20.0,447,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212214716",1,3,150.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212214000",1,3,140.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212212157",1,3,130.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212211420",1,3,120.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212210407",1,3,110.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212205205",1,3,100.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212203705",1,3, 90.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212202744",1,3, 80.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212201933",1,3, 70.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212200803",1,3, 60.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212195303",1,3, 50.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212194136",1,3, 40.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212193358",1,3, 30.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212192707",1,3, 25.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(400,"beam_18212192129",1,3, 20.0,442,85.0,70.00,5,7.0,10,o));
+    }
+      
+    study[401]="High stat scan. Bar, 3LS lens, grease everywere";
+    {
+      Double_t o =  74.20;
+      
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      dataArray.push_back(DataInfo(401,"beam_401_20",1,3, 20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(401,"beam_401_25",1,3, 25.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(401,"beam_401_30",1,3, 30.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(401,"beam_401_60",1,3, 60.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(401,"beam_401_90",1,3, 90.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(401,"beam_401_140",1,3, 140.0,442,85.0,70.00,5,7.0,10,o));
+    }
+
+    study[402]="Offset study. Bar, 3LS lens, grease everywere, 20 deg, 2 mV";
+    {
+      Double_t o =  74.20;
+      
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      dataArray.push_back(DataInfo(402,"beam_402_20",1,3, 20.0,442,85.0,70.00,5,7.0,10,o));
+    }
+
+    study[403]="Fast angle scan. Bar, 3LS lens, grease everywere";
+    {
+      Double_t o =  74.20;
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      dataArray.push_back(DataInfo(403,"beam_18215163732",1,3,20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215164946",1,3,25.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215170338",1,3,30.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215172752",1,3,35.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215174559",1,3,40.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215180516",1,3,45.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215182758",1,3,50.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215190401",1,3,60.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215192247",1,3,65.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215194145",1,3,70.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215200044",1,3,75.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215201936",1,3,80.0,442,85.0,70.00,5,7.0,10,o));		  
+      dataArray.push_back(DataInfo(403,"beam_18215203823",1,3,85.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215210112",1,3,90.0,442,85.0,70.00,5,7.0,10,o));		  
+      dataArray.push_back(DataInfo(403,"beam_18215212118",1,3,95.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215213958",1,3,100.0,442,85.0,70.00,5,7.0,10,o));		  
+      dataArray.push_back(DataInfo(403,"beam_18215220217",1,3,105.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215222213",1,3,110.0,442,85.0,70.00,5,7.0,10,o));		  
+      dataArray.push_back(DataInfo(403,"beam_18215224129",1,3,115.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215230158",1,3,120.0,442,85.0,70.00,5,7.0,10,o));		  
+      dataArray.push_back(DataInfo(403,"beam_18215231920",1,3,125.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18215233358",1,3,130.0,442,85.0,70.00,5,7.0,10,o));		  
+      dataArray.push_back(DataInfo(403,"beam_18215234920",1,3,135.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(403,"beam_18216000538",1,3,140.0,442,85.0,70.00,5,7.0,10,o));      
+    }
+    
+    study[404]="Threshold scan @ 20 deg @ 7 GeV/c. Bar, 3LS lens, grease everywere";
+    {
+      Double_t o =  74.20;
+      // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
+      dataArray.push_back(DataInfo(404,"beam_18216095817",1,3,20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(404,"beam_18216101618",1,3,20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(404,"beam_18216103400",1,3,20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(404,"beam_18216105109",1,3,20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(404,"beam_",1,3,20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(404,"beam_",1,3,20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(404,"beam_",1,3,20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(404,"beam_",1,3,20.0,442,85.0,70.00,5,7.0,10,o));   
+      dataArray.push_back(DataInfo(404,"beam_",1,3,20.0,442,85.0,70.00,5,7.0,10,o));
+      dataArray.push_back(DataInfo(404,"beam_",1,3,20.0,442,85.0,70.00,5,7.0,10,o));   
     }
     
     study[450]="Theta scan; phi=0; bar + grease + 3LS; mcp3,4 have custom CS";
-    {    
+    {
       Double_t o = 28.81;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
       for(auto i=20; i<150; i=i+5){
@@ -1682,7 +1753,7 @@ void datainfo_init(){
     }
 
     study[451]="Theta scan; phi=0; bar + grease + 3LS ";
-    {    
+    {
       Double_t o = 28.81;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
       for(auto i=20; i<150; i=i+5){

@@ -76,7 +76,7 @@ void TTSelector::SlaveBegin(TTree *){
     totb=4000; totl=50; toth=80;
     leb=4000, le1=-5, le2=5;
   }
-  if(fileList[0].Contains("pilas")){
+  if(fileList[0].Contains("pilas") || fileList[0].Contains("th_") ){
     if(!gTrigger) gTrigger=820;
     if(geometry==2018) gTrigger=520;
     // leb = 2000; le1=40; le2=80;
@@ -298,7 +298,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	  
 	    hLeTot[ch]->Fill(timeLe,tot);
 	    hShape[mcp][pix]->Fill(timeLe,offset);
-	    hShape[mcp][pix]->Fill(timeTe,offset);
+	    hShape[mcp][pix]->Fill(timeLe+tot,offset);
 	  }
 	}
       }

@@ -34,11 +34,11 @@ Double_t tof2tota[]={0,0,45.26,45.31,45.32,45.34,45.36, 47.09, 45.38};
 // Double_t tofp2[] ={0,0,83.20,37.00,0.00, 34.00,33.50, 33.50,33.00, 0, 33.0};
 
 //jul 2018
-Double_t tofpi1[]={0,0,71.50,31.50,0.00, 31.00,31.00, 31.00,31.00, 0, 31.0};
-Double_t tofpi2[]={0,0,72.50,32.20,0.00, 32.20,32.00, 32.00,31.80, 0 ,31.8};
+Double_t tofpi1[]={0,0,71.50,31.50,0.00, 31.00,31.00, 32.00,31.00, 0, 31.0};
+Double_t tofpi2[]={0,0,72.50,32.20,0.00, 32.20,32.00, 33.50,31.80, 0 ,31.8};
 
-Double_t tofp1[] ={0,0,80.80,35.70,0.00, 33.00,32.60, 32.60,32.40, 0, 32.2};
-Double_t tofp2[] ={0,0,83.20,37.00,0.00, 34.00,33.50, 33.50,33.00, 0, 33.0};
+Double_t tofp1[] ={0,0,80.80,35.70,0.00, 33.00,32.60, 33.90,32.40, 0, 32.2};
+Double_t tofp2[] ={0,0,83.20,37.00,0.00, 34.00,33.50, 35.50,33.00, 0, 33.0};
 
 Int_t gg_nevents(0);
    
@@ -170,7 +170,25 @@ void TTSelector::Begin(TTree *){
   prt_data_info = getDataInfo(fileid);
   Int_t momentum = prt_data_info.getMomentum();
   std::cout<<fileid<<" study id "<<prt_data_info.getStudyId() << " mom "<<momentum <<std::endl;
-   
+
+  {
+    if(prt_data_info.getStudyId()==400
+       || fileid.Contains("401_20C")
+       || fileid.Contains("401_25C")
+       || fileid.Contains("401_30C")){
+      tofpi1[7]=31.00;
+      tofpi2[7]=32.00;
+      tofp1[7]=32.60;
+      tofp2[7]=33.50;
+    }
+    if(fileid.Contains("401_90C")){
+      tofpi1[7]=31.00;
+      tofpi2[7]=31.9;
+      tofp1[7]=32.30;
+      tofp2[7]=33.50;
+    }
+  }
+  
   if(prt_data_info.getStudyId()<0) momentum=7;
   c1y=fr11[momentum];
   c2y=fr21[momentum];
