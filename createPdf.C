@@ -74,6 +74,11 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
   Int_t trigT3v(515);  
   Int_t trigTof1(1136);
   Int_t trigTof2(1138);
+   
+  Int_t trigStr1(1140);
+  Int_t trigStl1(1142);
+  Int_t trigStr2(1144);
+  Int_t trigStl2(1146);
   
   Double_t time;
   PrtHit hit;
@@ -92,6 +97,11 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
     
     if(prt_event->GetType()==0){
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<34 ) continue;
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()>34.5 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>33.4 ) continue;
+      // }
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
       // 	if( prt_event->GetParticle()==2212 && tof<32.4 ) continue;
       // 	if( prt_event->GetParticle()==211  && tof>31.9 ) continue;
       // }      
@@ -99,12 +109,21 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
       Bool_t t1(1),tof1(1), tof2(1);
       Bool_t t2(0),t3h(0),t3v(0); 
       Bool_t hodo1(0), hodo2(0);
-      
+      Bool_t str1(0),stl1(0),str2(0),stl2(0);
+       
       for(Int_t h=0; h<nHits; h++) {
       	hit = prt_event->GetHit(h);
       	Int_t gch=hit.GetChannel();
+	if(gch==trigStr1)
+	  str1=true;
+	if(gch==trigStl1)
+	  stl1=true;
+	if(gch==trigStr2)
+	  str2=true;
+	if(gch==trigStl2)
+	  stl2=true;
 
-	if(gch==trigT2)//332
+	//if(gch==trigT2)
 	  t2=true;
 	if(gch==trigT3h)
 	  t3h=true;
@@ -114,12 +133,14 @@ void createPdf(TString path="", Int_t normtype=1 ,Bool_t save=false, Int_t aentr
 
 	//if(gch>=1349 && gch<=1352) //332
 	//if(gch>=1348 && gch<=1353)
+	if(gch>=1090 && gch<=1101)
 	  hodo1=true;
 	//if(gch>=1369 && gch<=1370)
 	  hodo2=true;
       }
 
       if(!(t1 && t2 && t3h && t3v && tof1 && tof2 && hodo1 && hodo2)) continue;
+      if(!( stl1 && str1 && stl2 && str2)) continue;
     }
     
     Int_t goodhits(0);

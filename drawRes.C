@@ -4,13 +4,13 @@
 #include <TGraphAsymmErrors.h>
 
 
-void drawRes(TString in="data/recopdf_151/reco*root"){
+void drawRes(TString in="data/recopdf_151/reco*root",TString in2=""){
   int studyId;
   sscanf(in.Data(),"%*[^0-9]%d{3}",&studyId);
   std::cout<<"studyId "<<studyId <<std::endl;  
   prt_savepath = "data/drawRes";
   //TChain ch("reco"); ch.Add("r152_ad1.root");
-  TChain ch("reco"); ch.Add(in);
+  TChain ch("reco"); ch.Add(in); ch.Add(in2);
   
   Double_t sep,esep,sigma,mom,nph,enph;
   int theta;
@@ -22,25 +22,37 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   ch.SetBranchAddress("nph",&nph);
   ch.SetBranchAddress("enph",&enph);
 
-  
+  TString names[500]={""};
+  names[403]="#varphi = 0 deg";
+  names[406]="#varphi = 5 deg";
+  names[407]="#varphi = 10 deg";
+  names[408]="#varphi = 15 deg";
+  names[409]="#varphi = 2.5 deg";
+
+  int coll[]={kBlack,kRed+1,kGreen,kRed,4,kCyan-6,6,7,8,9,10};
+  int colm[]={kBlack,kRed+1,kGreen+2,kRed+1,4,kCyan-6,6,7,8,9,10};
+
   TGraphAsymmErrors *g[20],*gc[20],*gn[20];
   int ng[20];
   for(int i=0; i<20; i++){
-    int col= (i<5)? i+1: i+5;
     ng[i]=0;
     g[i] = new TGraphAsymmErrors();
     g[i]->SetTitle(";polar angle [deg]; separation [s.d.]");
     g[i]->SetName("gr");
     g[i]->SetMarkerStyle(20);
     g[i]->SetMarkerSize(0.8);
-    g[i]->SetLineColor(col);
-
+    g[i]->SetLineColor(coll[i]);
+    g[i]->SetMarkerColor(colm[i]);
+    g[i]->SetLineStyle((i==0)? 1:2);
+    
     gn[i] = new TGraphAsymmErrors();
     gn[i]->SetTitle(";polar angle [deg]; detected photons [#]");
     gn[i]->SetName("gr");
     gn[i]->SetMarkerStyle(20);
     gn[i]->SetMarkerSize(0.8);
-    gn[i]->SetLineColor(col);
+    gn[i]->SetLineColor(coll[i]);
+    gn[i]->SetMarkerColor(colm[i]);
+    gn[i]->SetLineStyle((i==0)? 1:2);
   }
   
   prt_rand.SetSeed(445);
@@ -86,11 +98,6 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
 
   prt_canvasAdd( Form("hSep_%d",studyId),800,500);
 
-  if(beamdata){
-    g[0]->SetLineColor(1);
-    g[0]->SetLineStyle(2);
-  }
-
   for(int i=0; i<20; i++){
     gc[i] = (TGraphAsymmErrors*) g[i]->Clone();
     gc[i]->SetLineStyle(1);
@@ -105,10 +112,7 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   //   g[1]->Draw("apl");
   //   gc[1]->Draw("same p");
   // }
-  
-  int coll[]={kBlack,kGreen+1,kRed,kRed,4,kCyan-6,6,7,8,9,10};
-  int colm[]={kBlack,kGreen+2,kRed+1,kRed+1,4,kCyan-6,6,7,8,9,10};
-   
+     
   TLegend *leg = new TLegend(0.50,0.65,0.88,0.88);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
@@ -118,35 +122,26 @@ void drawRes(TString in="data/recopdf_151/reco*root"){
   std::cout<<"size "<<size<<std::endl;
   
   for(int i=0; i<2; i++){
-    g[i]->SetLineColor(coll[i]);
-    g[i]->SetMarkerColor(colm[i]);
-    //if(vec[i] != 300 && vec[i] != 0 ) continue;
-    if(i==0) g[i]->Draw("apl");
-    else g[i]->Draw("same pl");
+    g[i]->Draw((i==0)? "apl":"same pl");
 
-    if(beamdata && i==0) leg->AddEntry(g[0],"beam data","lp");
+    if(beamdata && i==0) leg->AddEntry(g[0],"beam data "+names[studyId],"lp");
     else leg->AddEntry(g[i],Form("geant #sigma_{t} = %d ps ",vec[i]),"lp");
-    //else leg->AddEntry(g[i],"geant sim","lp");
   }
   leg->Draw();
 
   prt_canvasAdd( Form("hNph_%d",studyId),800,500);
-  gn[0]->Sort();
-  if(beamdata) gn[0]->Draw("apl");
-  else  gn[0]->Draw("apl");
-  gn[0]->GetXaxis()->SetLimits(15,145);
-  gn[0]->GetYaxis()->SetRangeUser(0,140);
-  gn[1]->GetYaxis()->SetRangeUser(0,140);
-  gn[1]->SetLineColor(kRed);
-  gn[1]->SetMarkerColor(kRed+1);  
-  gn[1]->Draw("same pl");
+  for(int i=0; i<2; i++){
+    gn[i]->GetXaxis()->SetLimits(15,145);
+    gn[i]->GetYaxis()->SetRangeUser(0,100);
+    gn[i]->Draw((i==0)? "apl":"same pl");
+  }
 
-  TLegend *leg1 = new TLegend(0.55,0.65,0.80,0.85);
+  TLegend *leg1 = new TLegend(0.50,0.65,0.88,0.88);
   leg1->SetFillColor(0);
   leg1->SetFillStyle(0);
   leg1->SetBorderSize(0);
   leg1->SetFillStyle(0);
-  leg1->AddEntry(gn[0],"beam data","lp");
+  leg1->AddEntry(gn[0],"beam data "+names[studyId],"lp");
   leg1->AddEntry(gn[1],"geant sim","lp");
   leg1->Draw();
 

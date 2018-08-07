@@ -850,9 +850,9 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
     hMultEvtNum1->SetMaximum(max+0.05*max);
     hMultEvtNum1->SetMinimum(0);
     hMultEvtNum1->SetLineColor(2);
-    hMultEvtNum1->Draw();
+    hMultEvtNum1->Draw("hist");
     hMultEvtNum2->SetLineColor(4);
-    hMultEvtNum2->Draw("same");
+    hMultEvtNum2->Draw("same hist");
     leg = new TLegend(0.5,0.7,0.9,0.9);
     leg->SetFillColor(0);
     leg->AddEntry(hMultEvtNum2,"Dirc MCPs","l");

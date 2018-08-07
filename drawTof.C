@@ -23,7 +23,7 @@ Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double
   return xx*xx/(r1*r1)+yy*yy/(r2*r2)<=1;
 }
 
-void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
+void drawTof(TString infile="hits.root",TString gcFile="0"){
   if(gcFile!="0"){
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());
@@ -51,13 +51,14 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   Int_t studyId = prt_data_info.getStudyId();
   if(studyId<0) studyId=1000;
   if(!prt_init(infile,1,Form("data/drawTof/%d/%2.1f",studyId,prt_data_info.getMomentum()))) return;
-  
-   Int_t le1(30), le2(34);
-   Int_t l1(30), l2(35);
 
-  // //SiTil
-  // Int_t le1(34), le2(40);
-  // Int_t l1(34), l2(40);
+  // // MCP-TOF
+  // double le1(32), le2(36), l1(30), l2(35);
+  // double t11(45), t12(50), t21(47), t22(52);
+
+  // SiTil
+  double le1(32), le2(36),l1(32), l2(36);
+  double t11(46), t12(50), t21(35), t22(39);
   
   if(studyId<1000 && momentum<7){
     le2=80;
@@ -87,26 +88,25 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   TH1F * hTof  = new TH1F("tof ","tof;TOF2-TOF1 [ns]; entries [#]",   600,le1,le2);
   TH1F * hTofC  = new TH1F("tofC ","tofC;TOF2-TOF1 [ns]; entries [#]",600,le1,le2);
   TH1F * hTot  = new TH1F("tot ","tot;TOT1,TOT2 [ns]; entries [#]",   600,0,100);
- 
-  TH2F * hLeTot1  = new TH2F("letot1 ","letot1;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,45,50);
-  TH2F * hLeTot2  = new TH2F("letot2 ","letot2;TOF2-TOF1 [ns]; TOT2 [ns]",   500,l1,l2,125,34,37);
-  //  TH2F * hLeTot  = new TH2F("letot ","letot;TOF2-TOF1 [ns]; TOT1 [ns]",      500,l1,l2,125,20,50);
-  TH2F * hLeTotW  = new TH2F("letotW ","letotW;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,45,50);
-  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,45,50);
-  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,125,34,37);
+  
+  TH2F * hLeTot1  = new TH2F("letot1 ","letot1;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,t11,t12);
+  TH2F * hLeTot2  = new TH2F("letot2 ","letot2;TOF2-TOF1 [ns]; TOT2 [ns]",   500,l1,l2,125,t21,t22);
+  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,t11,t12);
+  TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,125,t21,t22);
 
 
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit();
   
   PrtHit hit;
-  for (Int_t ievent=0; ievent<prt_entries && ievent<1000000; ievent++){ //prt_entries
+  for (Int_t ievent=0; ievent<prt_entries && ievent<100000; ievent++){ //prt_entries
     prt_nextEvent(ievent,10000);
     
     Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false),
-      str1b(false),stl1b(false),str3b(false),stl3b(false);
+      str1b(false),stl1b(false),stl2b(false),str2b(false),str3b(false),stl3b(false);
     Double_t tot1(0),tot2(0),tof1(0),tof2(0),
-      str1l(0),stl1l(0),str3l(0),stl3l(0),str1t(0),stl1t(0),str3t(0),stl3t(0);      
+      str1l(0),stl1l(0),str3l(0),stl3l(0),str1t(0),stl1t(0),str3t(0),stl3t(0),
+      str2l(0),stl2l(0),str2t(0),stl2t(0);      
     Int_t mult1(0), mult2(0), mult3(0), mult4(0);
     
     for(Int_t i=0; i<prt_event->GetHitSize(); i++){
@@ -143,6 +143,18 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
       	stl1l=hit.GetLeadTime();
       	stl1t=hit.GetTotTime();
       }
+      
+      if(hit.GetChannel()==1144 && !str2b){ 
+      	str2b=true;
+      	str2l=hit.GetLeadTime();
+      	str2t=hit.GetTotTime();
+      }
+      if(hit.GetChannel()==1146 && !stl2b){
+      	stl2b=true;
+      	stl2l=hit.GetLeadTime();
+      	stl2t=hit.GetTotTime();
+      }
+	
       if(hit.GetChannel()==1148 && !str3b){
       	str3b=true;
       	str3l=hit.GetLeadTime();
@@ -158,11 +170,13 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
     if(!(btrig && btof1 && btof2)) continue;
     if(!(btof1 && btof2)) continue;
     
-    // if(!(str1b && stl1b && str3b && stl3b)) continue;
-    // tof1=(str1l+stl1l)/2.;
-    // tof2=(str3l+stl3l)/2.;
-    // tot1=str1t;
-    // tot2=str3t;
+    //    if(!(str1b && stl1b && str2b && stl2b)) continue;
+    if(!(str1b && stl1b && str2b && stl2b && str3b && stl3b)) continue;
+    tof1=(str1l+stl1l)/2.;
+    tof2=(str2l+stl2l)/2.;
+
+    tot1=str1t;
+    tot2=str3t;
     
     //if(fabs(tot1-tof1tot)>0.5 ||fabs(tot2-tof2tot)>0.5 )  continue;
 
@@ -179,15 +193,19 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
     if(tof1!=0 && tof2!=0){
       Double_t time = tof2-tof1;
       hTof->Fill(time);	
-      hLeTotW->Fill(time,tot1);
 
-      // //SiTil
-      // time += (tot1-47.14)*tan(-7*TMath::Pi()/180.);
-      // time += (tot2-46.5)*tan(2*TMath::Pi()/180.);
+      // //SiTil 1-3
+      // time += (tot1-48.65)*tan(-6*TMath::Pi()/180.);
+      // time += (tot2-36.83)*tan(5*TMath::Pi()/180.);
+
+      // //SiTil 1-2
+      // time += (tot1-48.65)*tan(-4*TMath::Pi()/180.);
+      // time += (tot2-36.83)*tan(2*TMath::Pi()/180.);
 
 
-      // time += (tot1-44.78)*tan(-7*TMath::Pi()/180.);
-      // time += (tot2-48.62)*tan(2*TMath::Pi()/180.);
+      // MCP-TOF
+      time += (tot1-47.28)*tan(-2*TMath::Pi()/180.);
+      time += (tot2-49.59)*tan(-1*TMath::Pi()/180.);
 
       
       
@@ -211,10 +229,6 @@ void drawTof(TString infile="hits.root",TString gcFile="calib_2610.root"){
   hLeTot1->Draw("colz");
   prt_canvasAdd("LeTot2",800,400);
   hLeTot2->Draw("colz");
-
-  
-  // prt_canvasAdd("LeTotW",800,400);
-  // hLeTotW->Draw("colz");
   
   prt_canvasAdd("LeTotC",800,400);
   hLeTotC->Draw("colz");

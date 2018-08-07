@@ -227,6 +227,12 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t trigT3v(515);  
   Int_t trigTof1(1136);
   Int_t trigTof2(1138);
+
+  Int_t trigStr1(1140);
+  Int_t trigStl1(1142);
+  Int_t trigStr2(1144);
+  Int_t trigStl2(1146);
+
     
   fEvent = new PrtEvent();
   if(gMode==5){
@@ -284,6 +290,8 @@ Bool_t TTSelector::Process(Long64_t entry){
   }
   
   Double_t tof1(0),tof2(0),tot1(0),tot2(0),toftime(0),mass(0);
+  Double_t tofstr1(0),tofstr2(0),totstr1(0),totstr2(0),
+		   tofstl1(0),tofstl2(0),totstl1(0),totstl2(0);
   
   if(gMode==5){
     //if(multT1<1 || multTof1<1 || multTof2<1 || multT3h<1 || multT3v<1){ //  || mult2!=1 || mult5!=1
@@ -307,6 +315,22 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch==trigTof2 && tof2==0){
     	tof2 = time[i]-tdcRefTime[tdc];
     	tot2 = timeT[i+1] - time[i];
+      }
+      if(ch==trigStr1 && tofstr1==0){
+    	tofstr1 = time[i]-tdcRefTime[tdc];
+    	totstr1 = timeT[i+1] - time[i];
+      }
+      if(ch==trigStr2 && tofstr2==0){
+    	tofstr2 = time[i]-tdcRefTime[tdc];
+    	totstr2 = timeT[i+1] - time[i];
+      }
+      if(ch==trigStl1 && tofstl1==0){
+    	tofstl1 = time[i]-tdcRefTime[tdc];
+    	totstl1 = timeT[i+1] - time[i];
+      }
+      if(ch==trigStl2 && tofstl2==0){
+    	tofstl2 = time[i]-tdcRefTime[tdc];
+    	totstl2 = timeT[i+1] - time[i];
       }
     }
 
@@ -333,6 +357,30 @@ Bool_t TTSelector::Process(Long64_t entry){
       	return kTRUE;
       }
     }
+
+    // if(tofstr1!=0 && tofstr2!=0 && tofstl1!=0 && tofstl2!=0 ) { 
+    //   tofpi1[7]=32.0;
+    //   tofpi2[7]=33.3;      
+    //   tofp1[7] =33.7;
+    //   tofp2[7] =35;
+	
+    //   Double_t time =(tofstr2+tofstl2)/2.-(tofstr1+tofstl1)/2.;
+      
+    //   toftime = time;
+    //   Int_t m = (Double_t) (mom+0.1);
+
+    //   if(IsPion(time,m)){
+    // 	tofpid=211;
+    // 	mass=0.13957018;
+    //   }else if(IsProton(time,m)){ 
+    // 	tofpid=2212;
+    // 	mass = 0.938272046;
+    //   }else{
+    //   	fEvent->Clear();
+    //   	delete fEvent;
+    //   	return kTRUE;
+    //   }
+    // }
   }
   
   PrtHit hit;

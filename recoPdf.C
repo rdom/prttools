@@ -1,6 +1,7 @@
 #define prt__beam
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
+#include "datainfo.C"
 #include "prttools.C"
 #include <TVirtualFitter.h>
 #include <TKey.h>
@@ -12,9 +13,19 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   
   Int_t studyId;
   TString tpath=path;
-  tpath.ReplaceAll("aug18","");
+  tpath.ReplaceAll("jul18","");
   sscanf(tpath, "%*[^0-9]%d{3}",&studyId);
 
+  TString fileid(path);
+  fileid.Remove(0,fileid.Last('/')+1);
+  fileid.ReplaceAll("C.root","");
+  fileid.ReplaceAll("S.root","");
+  prt_data_info = getDataInfo(fileid);
+  r1=prt_data_info.getTest();
+  studyId=prt_data_info.getStudyId();
+  std::cout<<"studyId "<<studyId<<std::endl;
+  
+  
   if(!prt_init(path,1,Form("data/recopdf_%d",studyId))) return;
   TGaxis::SetMaxDigits(4);
   
@@ -31,7 +42,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
   TH1F *hnphs =  new TH1F("hnphs","hnphs",200,0,200);
-  TH1F *hTof =  new TH1F("fTof",";TOF2-TOF1 [ns];entries [#]",400,30,34);
+  TH1F *hTof =  new TH1F("fTof",";TOF2-TOF1 [ns];entries [#]",400,30,36);
  
   Bool_t ismultnorm(false);
   //  if(pdfEnding.Contains("pdf0")) ismultnorm=true;
@@ -42,7 +53,9 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   pdf.ReplaceAll(".root",pdfEnding);
   TFile f(pdf);
 
-  Int_t binfactor = (Int_t)(sigma/50.+0.1);
+  Int_t binfactor = 10;
+  if(path.Contains("C.root")) binfactor=15;//(Int_t)(sigma/50.+0.1);
+
   if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
 
@@ -123,6 +136,11 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t trigTof1(1136);
   Int_t trigTof2(1138);
   
+  Int_t trigStr1(1140);
+  Int_t trigStl1(1142);
+  Int_t trigStr2(1144);
+  Int_t trigStl2(1146);
+  
   Double_t noise = 1e-5; //1e-7; // nHits //1e-5
   for (Int_t ievent=0; ievent<entries; ievent++){
     prt_nextEvent(ievent,1000);
@@ -159,19 +177,32 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.645 ) continue;
       // }
 
-
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<34.1 ) continue;
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()>34.5 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>33.3 ) continue;
+      // }
 	
-      hTof->Fill(prt_event->GetTest1());
+
 
       Bool_t t1(1),t2(0),t3h(0),t3v(0);
       Bool_t tof1(1), tof2(1);
       Bool_t hodo1(0), hodo2(0);
-      
+      Bool_t str1(0),stl1(0),str2(0),stl2(0);
+	
       for(Int_t h=0; h<nHits; h++) {
       	fHit = prt_event->GetHit(h);
       	Int_t gch=fHit.GetChannel();	
-	
-	if(gch==trigT2)
+	if(gch==trigStr1)
+	  str1=true;
+	if(gch==trigStl1)
+	  stl1=true;
+	if(gch==trigStr2)
+	  str2=true;
+	if(gch==trigStl2)
+	  stl2=true;
+
+	//f(gch==trigT2)
 	  t2=true;
 	if(gch==trigT3h)
 	  t3h=true;
@@ -179,13 +210,15 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	  t3v=true;
 
 	//if(gch>=1350 && gch<=1350)
-	if(gch>=1096 && gch<=1101)
-	hodo1=true;
+	//	if(gch>=1096 && gch<=1101)
+	if(gch>=1094 && gch<=1101)
+	  hodo1=true;
 	//if(gch>=1110 && gch<=1120)
 	hodo2=true;	  
       }
       
       if(!( t1 && t2 && t3h && t3v && tof1 && tof2 && hodo1 && hodo2)) continue;
+      if(!( stl1 && str1 && stl2 && str2)) continue;
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
@@ -194,6 +227,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     
     
 
+    hTof->Fill(prt_event->GetTest1());
+    
     Int_t mult[prt_maxch];
     memset(mult, 0, sizeof(mult));
     for(Int_t i=0; i<nHits; i++){
@@ -323,7 +358,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   prt_cdigi->SetName(Form("hp_cdigi_%d",prt_theta));
   prt_canvasAdd(prt_cdigi);
 
-  TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d_%2.1f.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz,prt_phi);
+  TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d_%2.1f_%2.1f.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz,prt_phi,r1);
   if(path.Contains("C.root")) name =  "tid"+ name;
   else name = "tis"+ name;
   
@@ -449,6 +484,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   tc->Branch("beamz",&prt_beamz,"prt_beamz/I");
   tc->Branch("beamx",&prt_beamx,"prt_beamx/I");
   tc->Branch("nforpdf",&nforpdf,"nforpdf/I");
+  tc->Branch("studyId",&studyId,"studyId/I");
   tc->Fill();
   tc->Write();
   fc.Write();

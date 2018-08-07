@@ -1,6 +1,7 @@
 #define prt__beam
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
+#include "datainfo.C"
 #include "prttools.C"
 #include "TLatex.h"
 
@@ -8,7 +9,18 @@
 void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom=0,Int_t radiatorId=0, Int_t lensId=0, Double_t angle=0, Double_t z=0, Double_t x=0, Double_t xstep=0, Double_t ystep=0){
   
   if(infile=="") return;
+  TString fileid(infile);
+  fileid.Remove(0,fileid.Last('/')+1);
+  fileid.ReplaceAll("C.root","");
+  prt_data_info = getDataInfo(fileid);
+  studyId=prt_data_info.getStudyId();
 
+  TString savepath="data/procData";
+  if(studyId>0) {
+    savepath = infile;
+    savepath.Remove(savepath.Last('/'));
+    savepath += Form("/P%d",studyId);
+  }
   Double_t mult(0),le1(0),le2(150),offset(0),timeres(0);
 
   if(infile.Contains("C.root")) { // beam data
@@ -18,8 +30,8 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   if(infile.Contains("SP.root")) { // PDF data
     timeres=0.2;
   }
- 
-  if(!prt_init(infile,1,"data/procData")) return;   
+  
+  if(!prt_init(infile,1,savepath)) return;   
 
   
   TFile *file = new TFile(infile.ReplaceAll(".root",".res.root"),"recreate");
@@ -53,13 +65,11 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
   gStyle->SetOptFit(1111);
  
   PrtHit hit;
-  for (auto ievent=0; ievent<prt_entries; ievent++){
+  for(int ievent=0; ievent<prt_entries; ievent++){
     prt_nextEvent(ievent,1000);
-    Int_t counts(0),pid(0);
+    Int_t counts(0);
     Double_t tot(0),time(0);
-    if(prt_event->GetParticle()==211) pid=1;
-    
-    for(auto i=0; i<prt_event->GetHitSize(); i++){
+    for(int i=0; i<prt_event->GetHitSize(); i++){
       hit = prt_event->GetHit(i);
       Int_t mcpid = hit.GetMcpId();
       Int_t pixid = hit.GetPixelId()-1;
@@ -70,7 +80,7 @@ void procData(TString infile="", Int_t studyId = 0, Int_t fileId=0, Double_t mom
 	time = hit.GetLeadTime()-offset;
 	//if(timeres>0) time=prt_rand.Gaus(time,timeres);
 	tot = hit.GetTotTime();
-	hLe[ch][pid]->Fill(time);
+	hLe[ch][prt_pid]->Fill(time);
 	hLeA->Fill(time);
 	hTot->Fill(tot);
 
