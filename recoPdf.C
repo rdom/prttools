@@ -42,7 +42,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
   TH1F *hnphs =  new TH1F("hnphs","hnphs",200,0,200);
-  TH1F *hTof =  new TH1F("fTof",";TOF2-TOF1 [ns];entries [#]",400,30,36);
+  TH1F *hTof =  new TH1F("fTof",";TOF2-TOF1 [ns];entries [#]",400,30,40);
  
   Bool_t ismultnorm(false);
   //  if(pdfEnding.Contains("pdf0")) ismultnorm=true;
@@ -54,7 +54,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   TFile f(pdf);
 
   Int_t binfactor = 10;
-  if(path.Contains("C.root")) binfactor=15;//(Int_t)(sigma/50.+0.1);
+  if(path.Contains("C.root")) binfactor=15;//(Int_t)(sigma/50.+0.1); //403
 
   if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
@@ -101,19 +101,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   F1->SetParameter(2,11);
   F2->SetParameter(2,9);
 
-  Int_t countall[prt_nmcp][64],countgood[prt_nmcp][64],countbad[prt_nmcp][64];
-  Int_t mcpf[prt_nmcp], mcps[prt_nmcp];
-      
-  for (Int_t m=0; m<prt_nmcp; m++) {
-    mcpf[m]=0;
-    mcps[m]=0;
-    for(Int_t p=0; p<prt_npix; p++){
-      countall[m][p]=0;
-      countgood[m][p]=0;
-      countbad[m][p]=0;
-    }
-  }  
-  
+  Int_t countall[prt_nmcp][64]={{0}},countgood[prt_nmcp][64]={{0}},countbad[prt_nmcp][64]={{0}};
+  Int_t mcpf[prt_nmcp]={0}, mcps[prt_nmcp]={0};  
   Double_t theta(0);
   TVirtualFitter *fitter;
   Double_t nph,enph,time,timeres(-1);
@@ -178,9 +167,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // }
 
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<34.1 ) continue;
-      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()>34.5 ) continue;
-      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>33.3 ) continue;
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<36.6 ) continue;
       // }
 	
 
@@ -202,18 +189,18 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 	if(gch==trigStl2)
 	  stl2=true;
 
-	//f(gch==trigT2)
+	//if(gch==trigT2)
 	  t2=true;
 	if(gch==trigT3h)
 	  t3h=true;
 	if(gch==trigT3v)
 	  t3v=true;
 
-	//if(gch>=1350 && gch<=1350)
-	//	if(gch>=1096 && gch<=1101)
-	if(gch>=1094 && gch<=1101)
+	
+	//if(gch>=1096 && gch<=1101) //403
+	if(gch>=1098 && gch<=1101)
 	  hodo1=true;
-	//if(gch>=1110 && gch<=1120)
+	// if(gch>=1115 && gch<=1120)
 	hodo2=true;	  
       }
       
@@ -222,8 +209,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-     // if(prt_pid==2 && hll[2]->GetEntries()>3000)continue;
-     // if(prt_pid==4 && hll[4]->GetEntries()>3000) continue;  
+    if(prt_pid==2 && hll[2]->GetEntries()>1600)continue;
+    if(prt_pid==4 && hll[4]->GetEntries()>1600) continue;  
     
     
 

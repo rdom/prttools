@@ -182,7 +182,7 @@ void MSelector::SlaveBegin(TTree *){
   hLes=new TH1F("hLeAs","",2000,0,100);
   hMult=new TH1F("hMultA","",50,0,50);
   hCh=new TH1F("hChA","",prt_maxch,0,prt_maxch);
-  //  hTof=new TH1F("hTof","",2000,25,40);
+  //hTof=new TH1F("hTof","",2000,25,40);
   hTof=new TH1F("hTof","",2000,25,70);
  
   prt_axisTime800x500(hTot,"TOT time [ns]");
@@ -505,7 +505,8 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
       if(gComboId==0) {
 	TH1F * hh[] = {hPTime[m][p],(gMode==100)? hSTime[m][p]: hPiTime[m][p]};
 	prt_normalize(hh,2);
-	prt_fit(hh[0],0.25,100);
+	//	prt_fit(hh[0],0.25,100); //pilas
+	prt_fit(hh[0],1,100); //beam
 	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
 

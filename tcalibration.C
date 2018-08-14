@@ -34,20 +34,29 @@ Double_t tof2tota[]={0,0,45.26,45.31,45.32,45.34,45.36, 47.09, 45.38};
 // Double_t tofp2[] ={0,0,83.20,37.00,0.00, 34.00,33.50, 33.50,33.00, 0, 33.0};
 
 //jul 2018
-Double_t tofpi1[]={0,0,71.50,31.50,0.00, 31.00,31.00, 32.00,31.00, 0, 31.0};
-Double_t tofpi2[]={0,0,72.50,32.20,0.00, 32.20,32.00, 33.50,31.80, 0 ,31.8};
+Double_t tofpi1a[]={0,0,71.50,31.50,0.00, 31.00,31.00, 32.00,31.00, 0, 31.0};
+Double_t tofpi2a[]={0,0,72.50,32.20,0.00, 32.20,32.00, 33.50,31.80, 0 ,31.8};
 
-Double_t tofp1[] ={0,0,80.80,35.70,0.00, 33.00,32.60, 33.90,32.40, 0, 32.2};
-Double_t tofp2[] ={0,0,83.20,37.00,0.00, 34.00,33.50, 35.50,33.00, 0, 33.0};
+Double_t tofp1a[] ={0,0,80.80,35.70,0.00, 33.00,32.60, 33.90,32.40, 0, 32.2};
+Double_t tofp2a[] ={0,0,83.20,37.00,0.00, 34.00,33.50, 35.50,33.00, 0, 33.0};
+
+Double_t tofpi1[]={0,0,35.00,35.00,35.00, 35.00,35.00, 35.00,35.00, 35.00, 35.0};
+Double_t tofpi2[]={0,0,36.60,36.60,36.20, 36.30,36.20, 36.00,35.80, 35.80 ,35.6};
+
+Double_t tofp1[] ={0,0,44.20,39.50,37.80, 37.00,36.60, 36.45,36.30, 36.25, 36.2};
+Double_t tofp2[] ={0,0,47.50,41.50,39.20, 38.20,37.60, 37.20,37.00, 37.00, 36.7};
 
 Int_t gg_nevents(0);
-   
-Bool_t IsPion(Double_t tof, Int_t mom){  
-  return tofpi1[mom]<tof && tof<tofpi2[mom];
+
+Bool_t IsPion(Double_t tof, Int_t mom){
+  
+  if(prt_data_info.getStudyId()<415) return tofpi1a[mom]<tof && tof<tofpi2a[mom];
+  else return tofpi1[mom]<tof && tof<tofpi2[mom];
 }
 
 Bool_t IsProton(Double_t tof, Int_t mom){
-  return tofp1[mom]<tof && tof<tofp2[mom];
+  if(prt_data_info.getStudyId()<415) return tofp1a[mom]<tof && tof<tofp2a[mom];
+  else return tofp1[mom]<tof && tof<tofp2[mom];
 }
 
 Bool_t insideOfEllipce(Double_t x, Double_t y, Double_t x0, Double_t y0,  Double_t r1, Double_t r2, Double_t w=0){
@@ -203,7 +212,8 @@ Bool_t TTSelector::Process(Long64_t entry){
   Int_t tdc,ch,tofpid(0);
   Double_t grTime0(0), grTime1(0),grTime2(0),coarseTime(0),offset(0),triggerLe(0),triggerTot(0);
   Double_t time[10000], timeLe(0),timeT[10000],timeTot(0),mom(7),simOffset(74.20);
-  Int_t multT1(0), multT2(0), multT3v(0), multT3h(0), multTof1(0), multTof2(0);
+  Int_t multT1(0), multT2(0), multT3v(0), multT3h(0), multTof1(0), multTof2(0),
+    multStr1(0),multStl1(0),multStr2(0),multStl2(0);
   
   TString current_file_name  = TTSelector::fChain->GetCurrentFile()->GetName();
   Bool_t trbdata = current_file_name.Contains("trb");
@@ -283,6 +293,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch==trigTof2) multTof2++; //tof2
       if(ch==trigT3h) multT3h++; //trigger3h
       if(ch==trigT3v) multT3v++; //trigger3v
+      
+      if(ch==trigStr1) multStr1++;
+      if(ch==trigStl1) multStl1++;
+      if(ch==trigStr2) multStr2++;
+      if(ch==trigStl2) multStl2++;
     }else{
       timeT[i]=time[i];
       if(ch==gTrigger && grTime2==0) grTime2=time[i];
@@ -294,8 +309,9 @@ Bool_t TTSelector::Process(Long64_t entry){
 		   tofstl1(0),tofstl2(0),totstl1(0),totstl2(0);
   
   if(gMode==5){
-    //if(multT1<1 || multTof1<1 || multTof2<1 || multT3h<1 || multT3v<1){ //  || mult2!=1 || mult5!=1
-    if(multT1<1 || multTof1<1 || multTof2<1){ //  || mult2!=1 || mult5!=1
+    if(multT1<1 || multTof1<1 || multTof2<1 || multT3h<1 || multT3v<1){ //  || mult2!=1 || mult5!=1
+    //if(multT1<1 || multTof1<1 || multTof2<1 || multStr1<1 ||  multStl1<1|| multStr2<1 ||  multStl2<1 || multT3h<1 || multT3v<1){
+    //if(multT1<1 || multTof1<1 || multTof2<1){ //  || mult2!=1 || mult5!=1
       fEvent->Clear();
       delete fEvent;
       return kTRUE;
@@ -342,6 +358,9 @@ Bool_t TTSelector::Process(Long64_t entry){
       // time += (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
       // time += (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 
+      // time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
+      // time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
+
       toftime = time;
       Int_t m = (Double_t) (mom+0.1);
 
@@ -359,27 +378,26 @@ Bool_t TTSelector::Process(Long64_t entry){
     }
 
     // if(tofstr1!=0 && tofstr2!=0 && tofstl1!=0 && tofstl2!=0 ) { 
-    //   tofpi1[7]=32.0;
-    //   tofpi2[7]=33.3;      
-    //   tofp1[7] =33.7;
-    //   tofp2[7] =35;
-	
-    //   Double_t time =(tofstr2+tofstl2)/2.-(tofstr1+tofstl1)/2.;
-      
-    //   toftime = time;
-    //   Int_t m = (Double_t) (mom+0.1);
+    // tofpi1[7]=32.0;
+    // tofpi2[7]=33.3;      
+    // tofp1[7] =33.7;
+    // tofp2[7] =35;	
+    // Double_t time =(tofstr2+tofstl2)/2.-(tofstr1+tofstl1)/2.;
 
-    //   if(IsPion(time,m)){
+    // toftime = time;
+    // Int_t m = (Double_t) (mom+0.1);
+
+    // if(IsPion(time,m)){
     // 	tofpid=211;
     // 	mass=0.13957018;
-    //   }else if(IsProton(time,m)){ 
+    // }else if(IsProton(time,m)){ 
     // 	tofpid=2212;
     // 	mass = 0.938272046;
-    //   }else{
-    //   	fEvent->Clear();
-    //   	delete fEvent;
-    //   	return kTRUE;
-    //   }
+    // }else{
+    // 	fEvent->Clear();
+    // 	delete fEvent;
+    // 	return kTRUE;
+    // }
     // }
   }
   
@@ -389,6 +407,8 @@ Bool_t TTSelector::Process(Long64_t entry){
   if((grTime0>0 && grTime1>0) || gTrigger==0){
     if(gTrigger!=0) {
       triggerLe = grTime1 - grTime0;
+      if(gTrigger==1140) triggerLe = (tofstr1+tofstl1)/2.;
+      if(gTrigger==1144) triggerLe = (tofstr2+tofstl2)/2.;
       triggerTot= grTime2 - grTime1;
     }
     
@@ -404,7 +424,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 
       if(gMode>0){
 	timeLe = time[i]-tdcRefTime[tdc];
-	if(gTrigger!=0 && ch<prt_maxdircch) timeLe = timeLe - (grTime1-grTime0);
+	if(gTrigger!=0 && ch<prt_maxdircch) timeLe = timeLe - triggerLe;
       }else {
 	timeLe = time[i];
 	if(gTrigger!=0 && ch<prt_maxdircch) timeLe = timeLe - grTime1;
@@ -432,9 +452,12 @@ Bool_t TTSelector::Process(Long64_t entry){
 
 	  if(gTrigger==trigT1)   timeLe -= ( 2.719+rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // trig1	
 	  if(gTrigger==trigTof1) timeLe -= (24.490+rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // tof1
+	  if(gTrigger==1140)     timeLe -= (24.490+0.030+rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // tof1
 	  if(gTrigger==trigTof2) timeLe += ( 4.151-rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // tof2
+	  if(gTrigger==1144)     timeLe += ( 4.151-rot_dist)/((mom/sqrt(mass*mass+mom*mom)*299792458))*1E9; // scitil2
 	  
 	  timeLe += simOffset;
+	  if(gTrigger==trigTof2) timeLe -= 59;
 	}	
 	if(!laser && gMode!=5) timeLe += -2.5; //simOffset;
       }
@@ -446,10 +469,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 	////timeLe-=gEvtOffset;
 
 	// if(ch>820 && ch<1340) continue;
-	// if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
+        // if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
       }
 
-      //if(gMode!=5 || tofpid!=0)
+      if(gMode!=5 || tofpid!=0)
       { 
 	Double_t rad = TMath::Pi()/180.0,
 	  zrot=146,
@@ -501,7 +524,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
-  if(gMode == 5) gTrigger=1136;
+  if(gMode == 5) gTrigger=1136; //1136
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

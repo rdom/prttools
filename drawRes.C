@@ -132,7 +132,7 @@ void drawRes(TString in="data/recopdf_151/reco*root",TString in2=""){
   prt_canvasAdd( Form("hNph_%d",studyId),800,500);
   for(int i=0; i<2; i++){
     gn[i]->GetXaxis()->SetLimits(15,145);
-    gn[i]->GetYaxis()->SetRangeUser(0,100);
+    gn[i]->GetYaxis()->SetRangeUser(0,140);
     gn[i]->Draw((i==0)? "apl":"same pl");
   }
 
@@ -142,7 +142,7 @@ void drawRes(TString in="data/recopdf_151/reco*root",TString in2=""){
   leg1->SetBorderSize(0);
   leg1->SetFillStyle(0);
   leg1->AddEntry(gn[0],"beam data "+names[studyId],"lp");
-  leg1->AddEntry(gn[1],"geant sim","lp");
+  leg1->AddEntry(gn[1],"geant sim         ","lp");
   leg1->Draw();
 
   prt_canvasSave(0,0);

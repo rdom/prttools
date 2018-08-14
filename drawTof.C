@@ -52,13 +52,16 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
   if(studyId<0) studyId=1000;
   if(!prt_init(infile,1,Form("data/drawTof/%d/%2.1f",studyId,prt_data_info.getMomentum()))) return;
 
-  // // MCP-TOF
+  // MCP-TOF
   // double le1(32), le2(36), l1(30), l2(35);
   // double t11(45), t12(50), t21(47), t22(52);
+  double le1(34), le2(40), l1(34), l2(40);
+  double t11(36), t12(45), t21(36), t22(45);
 
-  // SiTil
-  double le1(32), le2(36),l1(32), l2(36);
-  double t11(46), t12(50), t21(35), t22(39);
+  
+  // // SiTil
+  // double le1(32), le2(36),l1(32), l2(36);
+  // double t11(46), t12(50), t21(35), t22(39);
   
   if(studyId<1000 && momentum<7){
     le2=80;
@@ -99,7 +102,7 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
   gStyle->SetOptFit();
   
   PrtHit hit;
-  for (Int_t ievent=0; ievent<prt_entries && ievent<100000; ievent++){ //prt_entries
+  for (Int_t ievent=0; ievent<prt_entries; ievent++){ //prt_entries
     prt_nextEvent(ievent,10000);
     
     Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false),
@@ -170,13 +173,13 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
     if(!(btrig && btof1 && btof2)) continue;
     if(!(btof1 && btof2)) continue;
     
-    //    if(!(str1b && stl1b && str2b && stl2b)) continue;
-    if(!(str1b && stl1b && str2b && stl2b && str3b && stl3b)) continue;
-    tof1=(str1l+stl1l)/2.;
-    tof2=(str2l+stl2l)/2.;
+    // //    if(!(str1b && stl1b && str2b && stl2b)) continue;
+    // if(!(str1b && stl1b && str2b && stl2b && str3b && stl3b)) continue;
+    // tof1=(str1l+stl1l)/2.;
+    // tof2=(str2l+stl2l)/2.;
 
-    tot1=str1t;
-    tot2=str3t;
+    // tot1=str1t;
+    // tot2=str3t;
     
     //if(fabs(tot1-tof1tot)>0.5 ||fabs(tot2-tof2tot)>0.5 )  continue;
 
@@ -190,7 +193,8 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
 
     
     
-    if(tof1!=0 && tof2!=0){
+    if(tof1!=0 && tof2!=0)
+      {
       Double_t time = tof2-tof1;
       hTof->Fill(time);	
 
@@ -204,9 +208,10 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
 
 
       // MCP-TOF
-      time += (tot1-47.28)*tan(-2*TMath::Pi()/180.);
-      time += (tot2-49.59)*tan(-1*TMath::Pi()/180.);
-
+      // time += (tot1-47.28)*tan(-2*TMath::Pi()/180.);
+      // time += (tot2-49.59)*tan(-1*TMath::Pi()/180.);
+      time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
+      time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
       
       
       hTofC->Fill(time);

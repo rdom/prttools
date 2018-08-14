@@ -659,6 +659,19 @@ void prt_setPrettyStyle(){
   // gStyle->SetOptStat(0);
 }
 
+void prt_setGStyle(TGraph *g, int id){
+  int prt_coll[]={kBlack,kRed+1,kGreen,  kBlue,  4,kCyan-6,kOrange,  7,8,9,10,1,1,1};
+  int prt_colm[]={kBlack,kRed+1,kGreen+2,kBlue+1,4,kCyan-6,kOrange+1,7,8,9,10,1,1,1};
+
+  int cl=(id<10)? prt_coll[id]:id;
+  int cm=(id<10)? prt_colm[id]:id;
+  g->SetLineColor(cl);
+  g->SetMarkerColor(cm);
+  g->SetMarkerStyle(20);
+  g->SetMarkerSize(0.8);
+  g->SetName(Form("gr_%d",id));
+}
+
 void prt_setRootPalette(Int_t pal = 0){
 
   // pal =  1: rainbow\n"

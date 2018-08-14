@@ -126,9 +126,11 @@ fi
 if (( $batchmode == 3 || $batchmode == 103 )); then
     for x in $(ls *.hld.root); do
 	if [ ! -f  ${x%.*.*}"C.root" ] || [ $batchmode == 103 ]; then
-	   if [[ $x == beam* ]] ; then tcalibration -j10 -m5 -c /d/jul2018/calib/cw_0208.root $x ; fi
-	   if [[ $x == pilas* ]] ; then tcalibration -j10 -r520 -c /d/jul2018/calib/cw_0208.root $x ; fi
-	   if [[ $x == trb* ]] ; then tcalibration -j10 -c /d/jul2018/calib/cw_0208.root $x ; fi
+	    # S<435 cw_0208.root
+	    # S>435 cw_1108.root
+	   if [[ $x == beam* ]] ; then tcalibration -j10 -m5 -c /d/jul2018/calib/cw_1108.root $x ; fi
+	   if [[ $x == pilas* ]] ; then tcalibration -j10 -r520 -c /d/jul2018/calib/cw_1108.root $x ; fi
+	   if [[ $x == trb* ]] ; then tcalibration -j10 -c /d/jul2018/calib/cw_1108.root $x ; fi
 	fi
     done
     exit 0
