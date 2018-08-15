@@ -2086,12 +2086,8 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(442,"beam_18226185930",1,3,60.0,442,85.0,70.00,16.45,7.0,10,o));
       dataArray.push_back(DataInfo(442,"beam_18226192230",1,3,70.0,442,85.0,70.00,16.45,7.0,10,o));
       dataArray.push_back(DataInfo(442,"beam_18226194717",1,3,80.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(442,"",1,3,90.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(442,"",1,3,100.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(442,"",1,3,110.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(442,"",1,3,110.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(442,"",1,3,110.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(442,"",1,3,110.0,442,85.0,70.00,16.45,7.0,10,o));
+      dataArray.push_back(DataInfo(442,"beam_442_90",1,3,90.0,442,85.0,70.00,16.45,7.0,10,o));
+      dataArray.push_back(DataInfo(442,"beam_18226205028",1,3,100.0,442,85.0,70.00,16.45,7.0,10,o));
     }
     
     study[450]="Theta scan; phi=0; bar + grease + 3LS; mcp3,4 have custom CS";
