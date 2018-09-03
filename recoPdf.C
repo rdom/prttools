@@ -55,7 +55,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 
   Int_t binfactor = 10;
   if(path.Contains("C.root")) binfactor=15;//(Int_t)(sigma/50.+0.1); //403
-
+			      
   if(sigma >0) hl3->Rebin(binfactor);
   Double_t integ1(0), integ2(0);
 
@@ -168,9 +168,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 
       // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
       // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<36.6 ) continue;
-      // }
-	
-
+      // }       
 
       Bool_t t1(1),t2(0),t3h(0),t3v(0);
       Bool_t tof1(1), tof2(1);
@@ -209,8 +207,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    if(prt_pid==2 && hll[2]->GetEntries()>1600)continue;
-    if(prt_pid==4 && hll[4]->GetEntries()>1600) continue;  
+    if(prt_pid==2 && hll[2]->GetEntries()>2000)continue;
+    if(prt_pid==4 && hll[4]->GetEntries()>2000) continue;  
     
     
 

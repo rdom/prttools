@@ -683,7 +683,6 @@ void datainfo_init(){
       dataArray.push_back(DataInfo(402,"beam_402_20",1,3, 20.0,442,85.0,70.00,16.45,7.0,10,o));
     }
     
-
     study[403]="Theta scan @ phi=0 deg. Bar, 3LS lens, grease everywere";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
