@@ -10,7 +10,7 @@ waitForMe (){
     do 
 	activth=$(ps aux | grep "root.exe.*[p]rocData\|[p]rtdirc -[^m]" | wc -l)
 	printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
-	sleep .1
+	sleep .05
 	if [ "$activth" -lt "$1" ]; then 
 	    break  
 	fi
@@ -18,7 +18,7 @@ waitForMe (){
 }
 
 aa=0
-for f in /d/proc/jul18/403/beam_18215163732C.root; do
+for f in /d/proc/jul18/403/beam_*C.root; do
     rm $respath/reco*.root    
     
     for theta in `LANG=en_us seq -0.02 0.001 0.02`; do
