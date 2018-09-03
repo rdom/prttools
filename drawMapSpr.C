@@ -17,7 +17,6 @@ void drawMapSpr(TString in="tdata/rt.root"){
   ch.SetBranchAddress("theta",&theta);
   ch.SetBranchAddress("phi",&phi);
 
-
   gStyle->SetOptStat(0);
   // TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,40,-10,10);
   TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,40,-20,20);

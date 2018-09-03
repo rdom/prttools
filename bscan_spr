@@ -17,6 +17,7 @@ waitForMe (){
     done
 }
 
+aa=0
 for f in /d/proc/jul18/403/beam_18215163732C.root; do
     rm $respath/reco*.root    
     
@@ -26,7 +27,7 @@ for f in /d/proc/jul18/403/beam_18215163732C.root; do
 	    waitForMe $threads
 	done
     done
-    hadd -f $respath/map_${a}.root $respath/reco*.root
+    hadd -f $respath/map_$((aa++)).root $respath/reco*.root
 done
 
 # for a in `LANG=en_us seq 70 10 150` 25; do
