@@ -21,7 +21,7 @@ for f in /d/proc/jul18/403/beam_18215163732C.root; do
     rm $respath/reco*.root    
     
     for theta in `LANG=en_us seq -0.02 0.001 0.02`; do
-	for phi in `LANG=en_us seq -0.015 0.001 0.015`; do
+	for phi in `LANG=en_us seq -0.02 0.001 0.02`; do
 	    ${binpath}/prtdirc -s 2 -i $f -u /d/proc/jul18/403/lut_beam_18215163732S_cs_avr.root -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 1000 -tr 1.5 -t1 $theta -t2 $phi -v 0 -b 1 &
 	    waitForMe $threads
 	done

@@ -20,7 +20,7 @@ void drawMapSpr(TString in="tdata/rt.root"){
 
   gStyle->SetOptStat(0);
   // TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,40,-10,10);
-  TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,30,15,15);
+  TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,40,-20,20);
 
   for (auto i = 0; i < ch.GetEntries(); i++) {
     ch.GetEvent(i);
