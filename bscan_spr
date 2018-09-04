@@ -2,18 +2,18 @@
 
 binpath=~/dirc/prtdirc/build
 respath=~/dirc/prttools/tdata
-threads=30
+threads=50
 start_time=$(date +%s)
 
 waitForMe (){
     while : 
     do 
-	activth=$(ps aux | grep "root.exe.*[p]rocData\|[p]rtdirc -[^m]" | wc -l)
+	activth=$(ps aux | grep "root.exe.*[p]rocData\|[p]rtdirc -[^m,^c]" | wc -l)
 	printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
-	sleep .05
 	if [ "$activth" -lt "$1" ]; then 
 	    break  
 	fi
+	sleep .1
     done
 }
 
