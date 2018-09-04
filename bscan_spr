@@ -9,11 +9,11 @@ waitForMe (){
     while : 
     do 
 	activth=$(ps aux | grep "root.exe.*[p]rocData\|[p]rtdirc -[^m,^c]" | wc -l)
-	printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
+	#printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
 	if [ "$activth" -lt "$1" ]; then 
 	    break  
 	fi
-	sleep .1
+	sleep .5
     done
 }
 
@@ -24,7 +24,7 @@ for f in /d/proc/jul18/403/beam_*C.root; do
     
     for theta in `LANG=en_us seq -0.02 0.001 0.02`; do
 	for phi in `LANG=en_us seq -0.02 0.001 0.02`; do
-	    ${binpath}/prtdirc -s 2 -i $f -u /d/proc/jul18/403/lut_beam_18215163732S_cs_avr.root -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 1000 -tr 1.5 -t1 $theta -t2 $phi -v 0 -b 1 > /dev/null 2> /dev/null &
+	    ${binpath}/prtdirc -s 2 -i $f -u /d/proc/jul18/403/lut_beam_18215163732S_cs_avr.root -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 1000 -tr 1.5 -t1 ${theta} -t2 ${phi} -v 0 -b 1 > /dev/null 2> /dev/null &
 	    waitForMe $threads
 	done
     done
