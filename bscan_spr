@@ -4,6 +4,7 @@ binpath=~/dirc/prtdirc/build
 respath=~/dirc/prttools/tdata
 threads=50
 start_time=$(date +%s)
+statusline="reco "
 
 waitForMe (){
     while : 

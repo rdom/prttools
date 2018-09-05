@@ -1,7 +1,7 @@
 #include "prttools.C"
 
 void drawMapSpr(TString in="tdata/rt.root"){
-  prt_savepath = "data/drawMapSpr_phi_pi_j18";
+  prt_savepath = "data/drawMapSpr_phi_pi_j18_4amb";
   prt_setRootPalette(1);
   TChain ch("dirc"); ch.Add(in);
   double cangle,spr,trr,nph,par1,par2,par3,par4,par5,par6,test1,test2,theta,phi; 
