@@ -27,6 +27,7 @@ void drawMapSpr(TString in="tdata/rt.root"){
   }
 
   prt_canvasAdd(Form("hspr_%d",(int)theta),800,500);
+  hSpr->GetYaxis()->SetRangeUser(-10, 20);
   hSpr->Draw("colz");
   
   // int binx,biny,binz;  
@@ -35,6 +36,17 @@ void drawMapSpr(TString in="tdata/rt.root"){
   // Double_t binyCenter = hSpr->GetYaxis()->GetBinCenter(biny);
   // TEllipse *el = new TEllipse(binxCenter,binyCenter,.5,.5);
   // el->Draw();
+
+
+  int n =25;
+  double th[]  ={  20,  25,  30,  35,   40,   45,   50,   55,   60,   65,   70,   75,   80,   85,   90,   95,  100,  105,  110, 115,   120,  125,  130,  135,  140};
+  //p
+  double a[]   ={5.00,9.00,7.00,4.00, 5.00, 3.00, 4.00, 4.00, -4.0,-7.00, -4.0, -2.00, -5.0, -6.0, 5.00, 5.00, 12.0, 16.0, 7.00, 10.0, 10.0, 5.00, 0.00, 4.00, 8.00};
+  double ph[]  ={20.0,15.0,14.0,13.0, 11.0, 9.00, 11.0, 11.0, 8.00, 6.00, 8.00,  6.00, 8.00, 5.00, 8.00, 7.00, 6.00, 3.00, 5.00, 8.00, 6.00, 10.0, 10.0, 7.00, 8.00};
+  for(int i=0; i<n; i++){
+    std::cout<<" "<<ph[i]/TMath::Pi()*0.180<<std::endl;
+    
+  }
   
   // int n =15;
   // double th[]  ={  20,   25,  30,  40,   50,   60,   70,   80,  90,  100,  110,  120,  130,  140,  150};
@@ -46,18 +58,18 @@ void drawMapSpr(TString in="tdata/rt.root"){
   // double a_pi[]   ={-2.23,0.43,0.18,1.60,-3.71,-1.01, 2.94, 1.10,0.00,-5.50, 1.30, 0.3, 7.00, 5.90, 1.9};
   // double ph_pi[]  ={3.11 ,5.21,4.34,5.82, 2.25, 2.31, 1.51, 1.90,0.00,-1.30,-3.70,-4.2,-5.10,-5.20,-5.1};
 
-  // TGraph *gadiff = new TGraph(n,th,a);
-  // TGraph *gphi = new TGraph(n,th,ph);
-  // gadiff->SetTitle(";#theta [degree]; #theta - #theta_{fit} [mrad]");
-  // gadiff->SetMarkerStyle(20);
-  // gadiff->SetMarkerSize(0.8);
-  // gadiff->SetLineColor(kBlue+1);
-  // gadiff->SetMarkerColor(kBlue+1);
-  // gphi->SetTitle(";#theta [degree]; #varphi_{fit} [mrad]");
-  // gphi->SetMarkerStyle(20);
-  // gphi->SetMarkerSize(0.8);
-  // gphi->SetLineColor(kBlue+1);
-  // gphi->SetMarkerColor(kBlue+1);
+  TGraph *gadiff = new TGraph(n,th,a);
+  TGraph *gphi = new TGraph(n,th,ph);
+  gadiff->SetTitle(";#theta [degree]; #theta - #theta_{fit} [mrad]");
+  gadiff->SetMarkerStyle(20);
+  gadiff->SetMarkerSize(0.8);
+  gadiff->SetLineColor(kBlue+1);
+  gadiff->SetMarkerColor(kBlue+1);
+  gphi->SetTitle(";#theta [degree]; #varphi_{fit} [mrad]");
+  gphi->SetMarkerStyle(20);
+  gphi->SetMarkerSize(0.8);
+  gphi->SetLineColor(kBlue+1);
+  gphi->SetMarkerColor(kBlue+1);
   
   // TGraph *gadiff_pi = new TGraph(n,th,a_pi);
   // TGraph *gphi_pi = new TGraph(n,th,ph_pi);
@@ -73,13 +85,13 @@ void drawMapSpr(TString in="tdata/rt.root"){
   // gphi_pi->SetMarkerColor(kRed+1);
 
 
-  // TLegend *leg_p = new TLegend(0.2,0.7,0.5,0.87);
-  // leg_p->SetFillColor(0);
-  // leg_p->SetFillStyle(0);
-  // leg_p->SetBorderSize(0);
-  // leg_p->SetFillStyle(0);
-  // leg_p->AddEntry(gphi,"protons ","lp");
-  // leg_p->AddEntry(gphi_pi,"pions","lp");
+  TLegend *leg_p = new TLegend(0.2,0.7,0.5,0.87);
+  leg_p->SetFillColor(0);
+  leg_p->SetFillStyle(0);
+  leg_p->SetBorderSize(0);
+  leg_p->SetFillStyle(0);
+  leg_p->AddEntry(gphi,"protons ","lp");
+  //leg_p->AddEntry(gphi_pi,"pions","lp");
   
   // TLegend *leg_pi = new TLegend(0.6,0.7,0.9,0.87);
   // leg_pi->SetFillColor(0);
@@ -89,12 +101,12 @@ void drawMapSpr(TString in="tdata/rt.root"){
   // leg_pi->AddEntry(gadiff,"protons ","lp");
   // leg_pi->AddEntry(gadiff_pi,"pions","lp");
 
-  // prt_canvasAdd("adiff",800,400);
-  // gadiff->Draw("APL");
-  // gadiff_pi->Draw("same PL");
-  // leg_p->Draw();
-  // prt_canvasAdd("phi",800,400);
-  // gphi->Draw("APL");
+  prt_canvasAdd("adiff",800,400);
+  gadiff->Draw("APL");
+  //gadiff_pi->Draw("same PL");
+  leg_p->Draw();
+  prt_canvasAdd("phi",800,400);
+  gphi->Draw("APL");
   // gphi_pi->Draw("same PL");
   // leg_pi->Draw();
   
