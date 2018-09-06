@@ -25,9 +25,10 @@ void drawMapSpr(TString in="tdata/rt.root"){
     ch.GetEvent(i);
     hSpr->Fill(test1*1000,test2*1000,spr);
   }
-
-  prt_canvasAdd(Form("hspr_%d",(int)theta),800,500);
-  hSpr->GetYaxis()->SetRangeUser(-10, 20);
+  std::cout<<"theta "<<theta<<std::endl;
+ 
+  prt_canvasAdd(Form("hspr_%d",(int)(theta+0.6)),800,500);
+  hSpr->GetYaxis()->SetRangeUser(-20, 10);
   hSpr->Draw("colz");
   
   // int binx,biny,binz;  
@@ -63,13 +64,13 @@ void drawMapSpr(TString in="tdata/rt.root"){
   gadiff->SetTitle(";#theta [degree]; #theta - #theta_{fit} [mrad]");
   gadiff->SetMarkerStyle(20);
   gadiff->SetMarkerSize(0.8);
-  gadiff->SetLineColor(kBlue+1);
-  gadiff->SetMarkerColor(kBlue+1);
+  gadiff->SetLineColor(kBlack);
+  gadiff->SetMarkerColor(kBlack);
   gphi->SetTitle(";#theta [degree]; #varphi_{fit} [mrad]");
   gphi->SetMarkerStyle(20);
   gphi->SetMarkerSize(0.8);
-  gphi->SetLineColor(kBlue+1);
-  gphi->SetMarkerColor(kBlue+1);
+  gphi->SetLineColor(kBlack);
+  gphi->SetMarkerColor(kBlack);
   
   // TGraph *gadiff_pi = new TGraph(n,th,a_pi);
   // TGraph *gphi_pi = new TGraph(n,th,ph_pi);
@@ -90,7 +91,7 @@ void drawMapSpr(TString in="tdata/rt.root"){
   leg_p->SetFillStyle(0);
   leg_p->SetBorderSize(0);
   leg_p->SetFillStyle(0);
-  leg_p->AddEntry(gphi,"protons ","lp");
+  //leg_p->AddEntry(gphi,"protons ","lp");
   //leg_p->AddEntry(gphi_pi,"pions","lp");
   
   // TLegend *leg_pi = new TLegend(0.6,0.7,0.9,0.87);

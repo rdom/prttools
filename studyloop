@@ -126,7 +126,7 @@ processOneSim (){
 		./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S10M_cs_avr.root" -o "${datapath}/reco_${file[fk]}S.root" -f 0 -e 2000 -tr 1.7 -v 1 > "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "7" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S10M_cs_avr.root" -o "${datapath}/reco_${file[fk]}R.root" ${args[fk]} -f 0 -e 2000 -tr 1.7 -v 1   > "${datapath}/${file[fk]}RR.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/reco_${file[fk]}R.root" ${args[fk]} -f 0 -e 2000 -tr 1.7 -v 1   > "${datapath}/${file[fk]}RR.log" &
 	    fi
 	    waitForMe $threads
 	done
