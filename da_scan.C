@@ -53,17 +53,17 @@ void da_scan(TString inFile = "r_spr.root"){
   gSpr->SetMarkerSize(0.7);
   gNph->SetMarkerSize(0.7);
   gTrr->SetMarkerSize(0.7);
-  gNph->GetYaxis()->SetRangeUser(0,120);
-  gSpr->GetYaxis()->SetRangeUser(0,30);
+  gNph->GetYaxis()->SetRangeUser(0,100);
+  gSpr->GetYaxis()->SetRangeUser(0,20);
   gTrr->GetYaxis()->SetRangeUser(0,5);
 
-  gNph->GetXaxis()->SetLimits(10,165);
-  gSpr->GetXaxis()->SetLimits(10,165);
-  gTrr->GetXaxis()->SetLimits(10,165);
+  gNph->GetXaxis()->SetLimits(15,145);
+  gSpr->GetXaxis()->SetLimits(15,145);
+  gTrr->GetXaxis()->SetLimits(15,145);
   
-  gNph->GetXaxis()->SetRangeUser(10,165);
-  gSpr->GetXaxis()->SetRangeUser(10,165);
-  gTrr->GetXaxis()->SetRangeUser(10,165);
+  gNph->GetXaxis()->SetRangeUser(15,145);
+  gSpr->GetXaxis()->SetRangeUser(15,145);
+  gTrr->GetXaxis()->SetRangeUser(15,145);
 
   gSpr->GetYaxis()->SetTitle("SPR [mrad]");
   gNph->GetYaxis()->SetTitle("multiplicity [#]");
@@ -94,9 +94,9 @@ void da_scan(TString inFile = "r_spr.root"){
   gNph->GetYaxis()->SetTitleOffset(0.7);
 
 
-  gSpr->GetXaxis()->SetTitle("#theta_{track} [degree]");
-  gNph->GetXaxis()->SetTitle("#theta_{track} [degree]");
-  gTrr->GetXaxis()->SetTitle("#theta_{track} [degree]");
+  gSpr->GetXaxis()->SetTitle("#theta_{track} [deg]");
+  gNph->GetXaxis()->SetTitle("#theta_{track} [deg]");
+  gTrr->GetXaxis()->SetTitle("#theta_{track} [deg]");
 
   TFile *file = new TFile(outFile,"RECREATE");
   TCanvas* c1 = new TCanvas("spr","spr",800,400);c1->SetBottomMargin(0.12);
