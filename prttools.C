@@ -1107,6 +1107,8 @@ void prt_waitPrimitive(TString name, TString prim=""){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
   while((c = (TCanvas*) next())){
+    std::cout<<"c->GetName() "<<c->GetName()<<std::endl;
+    
     if(TString(c->GetName())==name){
       c->Modified(); 
       c->Update(); 

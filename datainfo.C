@@ -34,8 +34,11 @@ class DataInfo {
 
 public:
   DataInfo(){_studyId=-1;}; 	//the default constructor
-  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t m, Double_t beamDimension=10, Double_t simToffset=0, Double_t phi=0, Double_t test=0):
-    _studyId(studyId),_runId(r),_radiatorId(radiator),_lensId(l),_angle(a),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(m),_aliasId(""),_nchildren(0),_fileId(0),_beamDimension(beamDimension),_simToffset(simToffset),_phi(phi),_test(test){
+  DataInfo(Int_t studyId, TString r, Int_t radiator, Int_t l, Double_t a, Double_t z,Double_t x,Double_t xs,Double_t ys, Double_t mom, Double_t beamDimension=10, Double_t simToffset=0, Double_t phi=0, Double_t test=0):
+    _runId(r),_studyId(studyId),_radiatorId(radiator),_lensId(l),_angle(a)
+    ,_phi(phi),_test(test),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(mom)
+    ,_simToffset(simToffset),_beamDimension(beamDimension)
+    ,_fileId(0),_zId(0),_xId(0),_stepId(0),_nchildren(0),_aliasId(""){
   };
 
   ~DataInfo() {}
@@ -78,24 +81,24 @@ public:
   }
 
   TString info(){
-    TString info = Form("Study Id = %d;",_studyId);
-    info += "Alias Id = "+_aliasId+";";
+    TString sinfo = Form("Study Id = %d;",_studyId);
+    sinfo += "Alias Id = "+_aliasId+";";
     for(Int_t i=0; i<_nchildren;i++){
-      info += Form("Child[%d] Id = ",i)+_childRuns[i] +";";
+      sinfo += Form("Child[%d] Id = ",i)+_childRuns[i] +";";
     }
-    info += Form("Radiator Id = %d;",_radiatorId);
-    info += Form("Lens Id = %d;",_lensId);
-    info += Form("Angle = %f;",_angle);
-    info += Form("Phi = %f [mm];",_phi);
-    info += Form("X = %f [mm];",_x);
-    info += Form("Z = %f [mm];",_z);
-    info += Form("X Step = %f [mm];",_xstep);
-    info += Form("Y Step = %f [mm];",_ystep);
-    info += Form("Momentum = %f [mm];",_momentum);
-    info += Form("Test = %f [mm];",_test);
-    info += Form("Uniq file id for current study = %d;",_fileId);
-    info += Form("Folder path = %d/%d;",_studyId,_fileId);
-    return info;
+    sinfo += Form("Radiator Id = %d;",_radiatorId);
+    sinfo += Form("Lens Id = %d;",_lensId);
+    sinfo += Form("Angle = %f;",_angle);
+    sinfo += Form("Phi = %f [mm];",_phi);
+    sinfo += Form("X = %f [mm];",_x);
+    sinfo += Form("Z = %f [mm];",_z);
+    sinfo += Form("X Step = %f [mm];",_xstep);
+    sinfo += Form("Y Step = %f [mm];",_ystep);
+    sinfo += Form("Momentum = %f [mm];",_momentum);
+    sinfo += Form("Test = %f [mm];",_test);
+    sinfo += Form("Uniq file id for current study = %d;",_fileId);
+    sinfo += Form("Folder path = %d/%d;",_studyId,_fileId);
+    return sinfo;
   }
 
   
@@ -803,7 +806,6 @@ void datainfo_init(){
 
     study[408]="Theta scan at phi=15 deg. Bar, 3LS lens, grease everywere";
     {
-      Double_t o =  74.20;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
       dataArray.push_back(DataInfo(408,"beam_18217113055",1,3,20.0,442,85.0,70.00,16.45,7.0,10,o,15));
       dataArray.push_back(DataInfo(408,"beam_18217114922",1,3,30.0,442,85.0,70.00,16.45,7.0,10,o,15));
@@ -1427,34 +1429,34 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
 
   if(format==8){
     for(Int_t i=studyId; i<gg_nstudies; i++){
-      std::vector<DataInfo> newset= getStudy(i);
-      if(newset.size()>0){
-	p_print(newset, format);
+      std::vector<DataInfo> tset= getStudy(i);
+      if(tset.size()>0){
+	p_print(tset, format);
 	std::cout<<Form("desc[%d]=\"",i)<<study[i]<<"\";" <<std::endl;
       }
     }
     for(Int_t i=studyId; i<gg_nstudies; i++){
-      std::vector<DataInfo> newset= getStudy(i);
-      if(newset.size()>0){
+      std::vector<DataInfo> tset= getStudy(i);
+      if(tset.size()>0){
 	std::cout<<Form("<option value=%d> %d ",i,i)<<study[i]<<"</option>" <<std::endl;
       }
     }
   }else if(format==10){ //cp all
     for(Int_t i=0; i<gg_nstudies; i++){
       if(studyId==0 || i==studyId){
-	std::vector<DataInfo> newset= getStudy(i);
-	if(newset.size()>0){
+	std::vector<DataInfo> tset= getStudy(i);
+	if(tset.size()>0){
 	  std::cout<<"mkdir /d/proc/jul18/"<<i <<std::endl;
 	  std::cout<<"cp ";
-	  p_print(newset, format);
+	  p_print(tset, format);
 	  std::cout<<"/d/proc/jul18/"<<i<<std::endl;
 	}
       }
     }
   }else if(format==11){ //print all ID starting from studyId
     for(Int_t i=studyId; i<gg_nstudies; i++){
-      std::vector<DataInfo> newset= getStudy(i);
-      if(newset.size()>0){
+      std::vector<DataInfo> tset= getStudy(i);
+      if(tset.size()>0){
 	std::cout<<i<<std::endl;
       }
     }
