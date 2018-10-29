@@ -88,7 +88,6 @@ Int_t map_pix[prt_maxch];
 Int_t map_row[prt_maxch];
 Int_t map_col[prt_maxch];
 
-
 Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
 Double_t prt_mass[] = {0.000511,0.1056584,0.139570,0.49368,0.9382723};
 TString  prt_name[]={"e","muon","pion","kaon","proton"};
@@ -1107,8 +1106,6 @@ void prt_waitPrimitive(TString name, TString prim=""){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
   while((c = (TCanvas*) next())){
-    std::cout<<"c->GetName() "<<c->GetName()<<std::endl;
-    
     if(TString(c->GetName())==name){
       c->Modified(); 
       c->Update(); 
@@ -1174,13 +1171,24 @@ TGraph* prt_smooth(TGraph* g,Int_t smoothness=1){
   return gr;
 }
 
+int prt_get_pid(int pdg){
+  int pid=0;
+  if(pdg==11)   pid=0; //e
+  if(pdg==13)   pid=1; //mu
+  if(pdg==211)  pid=2; //pi
+  if(pdg==321)  pid=3; //K
+  if(pdg==2212) pid=4; //p
+  return pid;
+}
+
+
 double prt_get_momentum_from_tof(double dist,double dtof){
   double s = dtof*0.299792458/dist;
   double x = s*s;
   double a = prt_mass[2]*prt_mass[2]; //pi
   double b = prt_mass[4]*prt_mass[4]; //p
   double p = sqrt((a - 2*sqrt(a*a+a*b*x-2*a*b+b*b)/s + b)/(x - 4));
-  
+
   return p;
 }
 

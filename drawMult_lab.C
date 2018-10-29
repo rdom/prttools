@@ -18,7 +18,7 @@ void drawMult_lab(TString infile="hits.root",double inten=0){
   TH1F * hMult2  = new TH1F("mult2","mult2",50,0,50);
   TH1F * hMult3  = new TH1F("mult3","mult3",50,0,50);
   TH1F * hMult4  = new TH1F("mult4","mult4",50,0,50);
-  TH1F * hTime  = new TH1F("time ","time",1000,-200,200);
+  TH1F * hTime  = new TH1F("time ","time",1000,0,50);
 
   double count1(0),count2(0), count3(0),count4(0);
   double lpere(0);
@@ -66,6 +66,7 @@ void drawMult_lab(TString infile="hits.root",double inten=0){
   //prt_canvasAdd(prt_cdigi);
   
   prt_canvasAdd("Time",800,500);
+  double sigma = prt_fit(hTime,0.4).Y();
   hTime->Draw();
 
   prt_canvasAdd("Mult",800,500);
@@ -91,7 +92,8 @@ void drawMult_lab(TString infile="hits.root",double inten=0){
   tc->Branch("count2",&count2,"count2/D");
   tc->Branch("count3",&count3,"count3/D");
   tc->Branch("count4",&count4,"count4/D");
-  int res=75;
+  tc->Branch("sigma",&sigma,"sigma/D");
+  int res=0;
   tc->Branch("res",&res,"res/D");
   
   tc->Fill();
