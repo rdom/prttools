@@ -22,7 +22,7 @@ for study in 403 406; do
     aa=0    
     respath=/d/proc/jul18/${study}/beamscanC
     mkdir -p $respath
-    for f in $respath/beam_*C.root; do
+    for f in /d/proc/jul18/${study}/beam_*C.root; do
 	lut="${f/C.root/S_cs_avr.root}"
 	for theta in `LANG=en_us seq -0.02 0.001 0.02`; do
 	    for phi in `LANG=en_us seq -0.02 0.001 0.02`; do
