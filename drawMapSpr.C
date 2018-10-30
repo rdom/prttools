@@ -1,11 +1,12 @@
 #include "prttools.C"
 
 void drawMapSpr(TString in="tdata/rt.root"){
-  prt_savepath = "data/drawMapSpr_phi_pi_j18_4amb";
+  prt_savepath = "data/drawMapSep_403";
   prt_setRootPalette(1);
   TChain ch("dirc"); ch.Add(in);
-  double cangle,spr,trr,nph,par1,par2,par3,par4,par5,par6,test1,test2,theta,phi; 
-  
+  double cangle,spr,trr,nph,par1,par2,par3,par4,par5,par6,test1,test2,theta,phi,separation; 
+
+  ch.SetBranchAddress("separation",&separation);
   ch.SetBranchAddress("spr",&spr);
   ch.SetBranchAddress("trr",&trr);
   ch.SetBranchAddress("nph",&nph);
@@ -19,17 +20,22 @@ void drawMapSpr(TString in="tdata/rt.root"){
 
   gStyle->SetOptStat(0);
   // TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,40,-10,10);
-  TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,40,-20,20);
+  TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",20,-20,20,20,-20,20);
+  TH2F *hSep = new TH2F("hSep",";#Delta#theta [mrad];#Delta#varphi [mrad]",20,-20,20,20,-20,20);
 
   for (auto i = 0; i < ch.GetEntries(); i++) {
     ch.GetEvent(i);
     hSpr->Fill(test1*1000,test2*1000,spr);
+    hSep->Fill(test1*1000,test2*1000,separation);
   }
   std::cout<<"theta "<<theta<<std::endl;
  
   prt_canvasAdd(Form("hspr_%d",(int)(theta+0.6)),800,500);
-  hSpr->GetYaxis()->SetRangeUser(-20, 10);
+  //hSpr->GetYaxis()->SetRangeUser(-20, 10);
   hSpr->Draw("colz");
+
+  prt_canvasAdd(Form("hsep_%d",(int)(theta+0.6)),800,500);
+  hSep->Draw("colz");
   
   // int binx,biny,binz;  
   // hSpr->GetBinXYZ(hSpr->GetMinimumBin(),binx,biny,binz);
