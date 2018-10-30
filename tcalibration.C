@@ -476,6 +476,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       }
       
       if(gMode==5){
+	if(fabs(timeLe)>600) continue;
 	// if(ch==trigTof1) timeLe -= (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
 	// if(ch==trigTof2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 	
