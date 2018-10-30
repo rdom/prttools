@@ -261,6 +261,19 @@ Bool_t TTSelector::Process(Long64_t entry){
       fEvent->SetPrismStepY(prt_data_info.getYstep());
       fEvent->SetBeamX(prt_data_info.getX());
       fEvent->SetBeamZ(prt_data_info.getZ());
+
+      Double_t rad = TMath::Pi()/180.0,
+	zrot=146,
+	xrot=100,
+	prtangle=fEvent->GetAngle(),
+	z=fEvent->GetBeamZ(),
+	b = xrot*tan(0.5*(prtangle-90)*rad),
+	lenz = (z-zrot+b)/cos((prtangle-90)*rad)+b+zrot;
+
+      if(fEvent->GetLens()==6) lenz-=12;
+      if(fEvent->GetLens()==3) lenz-=15;
+      if(fEvent->GetLens()==2) lenz-=14.4;
+      fEvent->SetPosition(TVector3(0,0,lenz));
     }
   }
   
@@ -472,28 +485,13 @@ Bool_t TTSelector::Process(Long64_t entry){
         // if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
       }
 
-      if(gMode!=5 || tofpid!=0)
-      { 
-	Double_t rad = TMath::Pi()/180.0,
-	  zrot=146,
-	  xrot=100,
-	  prtangle=fEvent->GetAngle(),
-	  z=fEvent->GetBeamZ(),
-	  b = xrot*tan(0.5*(prtangle-90)*rad),
-	  lenz = (z-zrot+b)/cos((prtangle-90)*rad)+b+zrot;
-
-
-	if(fEvent->GetLens()==6) lenz-=12;
-	if(fEvent->GetLens()==3) lenz-=15;
-	if(fEvent->GetLens()==2) lenz-=14.4;
-	
+      if(gMode!=5 || tofpid!=0){      
 	hit.SetTdc(tdc);
 	hit.SetChannel(ch);
 	hit.SetMcpId(map_mcp[ch]);
 	hit.SetPixelId(map_pix[ch]+1);
 	hit.SetLeadTime(timeLe);
 	hit.SetTotTime(timeTot);
-	hit.SetPosition(TVector3(0,0,lenz));
 	fEvent->AddHit(hit);
 	nrhits++;
       }
