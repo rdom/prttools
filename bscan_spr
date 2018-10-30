@@ -30,6 +30,7 @@ for study in 406; do
 		waitForMe $threads
 	    done
 	done
+	waitForMe 1
 	hadd -f $respath/map_$((aa++)).root $respath/reco*.root
     done
 done
