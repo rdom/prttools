@@ -17,7 +17,7 @@ waitForMe (){
     done
 }
 
-for study in 406; do
+for study in 403 406; do
     aa=0    
     respath=/d/proc/jul18/${study}/beamscanC
     mkdir -p $respath
