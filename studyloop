@@ -178,22 +178,22 @@ if [ ${level} -lt "8" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
 		datapath="${datadir}${allstudies[k]}"
-		hadd -f ${datapath}/spr_${allstudies[k]}S.root ${datapath}/reco_beam_*S_spr.root 
+		hadd -f ${datapath}/spr_${allstudies[k]}S.root ${datapath}/reco_*S.root 
 	    done
 	else
 	    datapath="${datadir}${study}"
-	    hadd -f ${datapath}/spr_${study}S.root ${datapath}/reco_beam_*S_spr.root 
+	    hadd -f ${datapath}/spr_${study}S.root ${datapath}/reco_*S.root 
 	fi
     fi
     if [ ${level} -eq "7" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
 		datapath="${datadir}${allstudies[k]}"
-		hadd -f ${datapath}/spr_${allstudies[k]}R.root ${datapath}/reco_beam_*R_spr.root 
+		hadd -f ${datapath}/spr_${allstudies[k]}R.root ${datapath}/reco_*R.root 
 	    done
 	else
 	    datapath="${datadir}${study}"
-	    hadd -f ${datapath}/spr_${study}R.root ${datapath}/reco_beam_*R_spr.root 
+	    hadd -f ${datapath}/spr_${study}R.root ${datapath}/reco_*R.root 
 	fi
     fi
     
