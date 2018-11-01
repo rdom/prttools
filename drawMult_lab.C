@@ -65,11 +65,11 @@ void drawMult_lab(TString infile="hits.root",double inten=0){
   prt_drawDigi("m,p,v\n",2018,0,0);
   //prt_canvasAdd(prt_cdigi);
   
-  prt_canvasAdd("Time",800,500);
+  prt_canvasAdd("time_3110",800,500);
   double sigma = prt_fit(hTime,0.4).Y();
   hTime->Draw();
 
-  prt_canvasAdd("Mult",800,500);
+  prt_canvasAdd("mult_3110",800,500);
   count1 = hMult1->GetMean();// prt_fit(hMultR,5,20,3).X();
   count2 = hMult2->GetMean();
   count3 = hMult3->GetMean();
@@ -93,7 +93,7 @@ void drawMult_lab(TString infile="hits.root",double inten=0){
   tc->Branch("count3",&count3,"count3/D");
   tc->Branch("count4",&count4,"count4/D");
   tc->Branch("sigma",&sigma,"sigma/D");
-  int res=0;
+  int res=75;
   tc->Branch("res",&res,"res/D");
   
   tc->Fill();

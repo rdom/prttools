@@ -1022,7 +1022,7 @@ void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_
 
 	    gg->GetYaxis()->SetLabelSize(0.05);
 	    gg->GetYaxis()->SetTitleSize(0.06);
-	    gg->GetYaxis()->SetTitleOffset(0.7);
+	    gg->GetYaxis()->SetTitleOffset(0.8);
 	  }
 	  if(obj->InheritsFrom("TF1")){
 	    TF1 *f = (TF1*)obj;

@@ -87,7 +87,7 @@ void da_lab(TString infile = ""){
   gr[9]->Draw("same PL");
   leg1->Draw();
   
-  prt_savepath ="data/da_lab_2";
+  prt_savepath ="data/da_lab_3";
   prt_canvasSave(2);  
   
 }
