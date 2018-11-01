@@ -32,7 +32,7 @@ for study in 403 406; do
 	done
 	waitForMe 1
 	fileid=$(ls ${respath}/reco_*root | head -n 1 | cut -d'_' -f 2)
-	hadd -f ${respath}/map_${fileid}.root ${respath}/reco_*.root
+	hadd -f ${respath}/map_${fileid}.root ${respath}/reco_${fileid}_*.root
 	rm  ${respath}/reco_*.root
     done
 done
