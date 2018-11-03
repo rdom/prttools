@@ -1,0 +1,73 @@
+#!/bin/bash
+
+threads=30
+jpath="/d/proc/jul18/403"
+
+waitForMe (){
+    while : 
+    do 
+	activth=$(ps aux | grep "root.exe.*[p]rocData\|[p]rtdirc -[^m,^c]" | wc -l)
+	#printf "\r$statusline [$activth] ---- [$(($(date +%s) - start_time)) s] "
+	if [ "$activth" -lt "$1" ]; then 
+	    break  
+	fi
+	sleep .5
+    done
+}
+
+start_time=$(date +%s)
+
+rm b_*.root 
+
+if [ ${1} == "0" ]; then
+    cd ~/dirc/prtdirc/macro
+    statusline="X step scan "
+    for i in `seq 12 1 22` ; do
+	for j in `seq 60 1 75` ; do	
+	    ../build/prtdirc -o b_l${i}_${j}.root \
+			     -h 1 -l 3 -p 7.00 -a 19.71 -phi 0 -gz 442.00 -gx 85.00 -gsx ${j} -gsy ${i} -z 10.00 -g 2018 -c 2018 -study 403 \
+			     -s 1 -z 0 -a 180 -phi 0 -x "opticalphoton" -p "3.18 eV" -e 2000000 -b 1 && \
+		root -q -b loadlib.C lutmean_cs.C"(\"b_l${i}_${j}.root\")" && \
+		../build/prtdirc -s 2 -u b_l${i}_${j}_cs_avr.root -i ${jpath}/beam_18215212118C.root -o b_r_${i}_${j}.root -tr 1.5 -f 0 -e 1000 -v 0 -b 1 -t2 $i -t3 $j &
+	    waitForMe $threads
+	done
+    done
+    waitForMe "1"
+
+    hadd -f r_step_scan.root b_r_*.root
+    printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s]         \n"
+    cd -
+fi
+
+if [ ${1} == "1" ]; then
+    statusline="Y step scan "
+    for i in `seq 8 0.5 25` ; do
+	../build/prtdirc -o b_l$i.root \
+			 -p 7 -h 1 -l 3 -a 25 -gz 378 -gx 85 -gsx 67.5 -gsy ${i} -z 10 -g 2015 -c 2015 \
+			 -s 1 -z 0 -a 180 -x "opticalphoton" -p "3.18 eV" -g 0 -e 5000000 -b 1 \
+			 > l_b$i.log && \
+	    root -q -b loadlib.C lutmean_cs.C"(\"b_l$i.root\")" && \
+	    ../build/prtdirc -s 2 -u b_l${i}_cs_avr.root -i ${jpath}/beam_15177040631C.root -o b_r_${i}.root -tr 1.5 -f 0 -e 5000 -v 1 -b 1 -t3 $i > /dev/null 2> /dev/null &
+	waitForMe $threads
+    done
+    waitForMe "1"
+
+    hadd -f r_step_scan.root b_r_*.root
+    printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s]         \n"
+fi
+
+if [ ${1} == "2" ]; then
+    statusline="Divergence scan "
+    for i in `seq -0.025 0.0005 0.025` ; do
+	for j in `seq  -0.025 0.0005 0.025` ; do
+	    ../build/prtdirc -s 2 -u ${jpath}/lut_beam_15177135523S10M_cs_avr.root -i ${jpath}/beam_15177135523C.root -o b_r_${i}_${j}.root -t1 1.5 -f -1 -e 2000 -v 0 -t2 ${i} -t3 ${j} -b 1  > /dev/null 2> /dev/null &
+	    waitForMe $threads
+	done
+    done
+    waitForMe "1"
+    printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s]         \n"
+    sleep 2
+    hadd -f r_sscan.root b_r_*.root
+fi
+
+
