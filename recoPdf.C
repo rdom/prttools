@@ -452,11 +452,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
   std::cout<<"entries:  pi "<<hll[2]->GetEntries()<<" p "<<hll[4]->GetEntries() <<std::endl;
 
-  path.ReplaceAll("S.root","R.root");
-  if(path.Contains("X.root")) path.ReplaceAll("S.root","R.root");
-  else path=prt_savepath+"/reco_"+name;
-
-  if(nforpdf!=0) path=prt_savepath+Form("/reco_%d.root",nforpdf);
+  if(prt_ispath("/d/proc/jul18")) prt_savepath= Form("/d/proc/jul18/%d/ti",studyId);
+  path=prt_savepath+"/reco_"+name;
   
   TFile fc(path,"recreate");
   TTree *tc = new TTree("reco","reco");

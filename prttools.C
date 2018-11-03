@@ -1192,4 +1192,9 @@ double prt_get_momentum_from_tof(double dist,double dtof){
   return p;
 }
 
+bool prt_ispath(TString path){
+  Long_t *id(0),*size(0),*flags(0),*modtime(0);
+  return !gSystem->GetPathInfo(path,id,size,flags,modtime);
+}
+
 
