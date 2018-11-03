@@ -15,7 +15,6 @@ void drawRes(TString in="data/recopdf_151/reco*root",TString in2=""){
   int theta;
   ch.SetBranchAddress("theta",&theta);
   ch.SetBranchAddress("sep",&sep);
-  //ch.SetBranchAddress("esep",&esep);
   ch.SetBranchAddress("sigma",&sigma);
   ch.SetBranchAddress("mom",&mom);
   ch.SetBranchAddress("nph",&nph);
