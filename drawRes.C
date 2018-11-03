@@ -5,12 +5,11 @@
 
 
 void drawRes(TString in="data/recopdf_151/reco*root",TString in2=""){
-  int studyId;
-  sscanf(in.Data(),"%*[^0-9]%d{3}",&studyId);
+
+  TChain ch("reco"); ch.Add(in);
+  int studyId=prt_get3digit(in);
   std::cout<<"studyId "<<studyId <<std::endl;  
-  prt_savepath = "data/drawRes";
-  //TChain ch("reco"); ch.Add("r152_ad1.root");
-  TChain ch("reco"); ch.Add(in); ch.Add(in2);
+  prt_savepath = Form("data/drawRes_%d",studyId);
   
   Double_t sep,esep,sigma,mom,nph,enph;
   int theta;

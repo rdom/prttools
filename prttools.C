@@ -37,6 +37,8 @@
 #include <TRandom.h>
 #include <TCutG.h>
 #include <TKey.h>
+#include "TPRegexp.h"
+
 
 #include <iostream>
 #include <fstream>
@@ -1195,6 +1197,11 @@ double prt_get_momentum_from_tof(double dist,double dtof){
 bool prt_ispath(TString path){
   Long_t *id(0),*size(0),*flags(0),*modtime(0);
   return !gSystem->GetPathInfo(path,id,size,flags,modtime);
+}
+
+int prt_get3digit(TString str){
+  TPRegexp e("[0-9][0-9][0-9]");
+  return ((TString)str(e)).Atoi();
 }
 
 
