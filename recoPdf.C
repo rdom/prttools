@@ -446,8 +446,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   // gLine->SetY2(gPad->GetUymax());
   //gLine->Draw();
   
-  prt_canvasSave(0);
-  
   std::cout<<dm1<<" "<<dm2<<" "<<ds1 <<" "<<ds2<<std::endl; 
   std::cout<<path<<" separation "<< sep <<" +/- "<<esep <<std::endl;
   std::cout<<"entries:  pi "<<hll[2]->GetEntries()<<" p "<<hll[4]->GetEntries() <<std::endl;
@@ -475,4 +473,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   tc->Write();
   fc.Write();
   fc.Close();
+
+  prt_canvasSave(0);  
 }
