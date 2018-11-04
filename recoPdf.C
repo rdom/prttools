@@ -135,7 +135,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     if(prt_event->GetType()==0){
 
       if(fabs(prt_event->GetMomentum().Mag()-2)<0.1){
-      	noise = 5e-4;
+      	noise = 0.1e-4;
       }	    
       if(fabs(prt_event->GetMomentum().Mag()-3)<0.1){
       	noise = 1e-5;
