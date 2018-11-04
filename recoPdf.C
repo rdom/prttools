@@ -37,6 +37,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
     hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
+    if(studyId==415 || studyId==436) hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",300,-150,150); //120,-60,60 
     //hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",120,-5,5);
   }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
