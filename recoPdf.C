@@ -32,7 +32,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
-    if(studyId==415 || studyId==436) hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",300,-100,100); //120,-60,60 
+    if(studyId==415 || studyId==436) hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",300,-120,120); //120,-60,60 
     else hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
     //hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",120,-5,5); 
   }  
@@ -135,18 +135,14 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     if(prt_event->GetType()==0){
 
       if(fabs(prt_event->GetMomentum().Mag()-2)<0.1){
-      	noise = 1e-4;
+      	noise = 0.1e-4;
       }	    
       if(fabs(prt_event->GetMomentum().Mag()-3)<0.1){
-      	noise = 4e-4;
+      	noise = 1e-5;
       	// if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
       	// if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
       }
-      if(fabs(prt_event->GetMomentum().Mag()-4)<0.1){
-      	noise = 5e-4;
-      }	    
       if(fabs(prt_event->GetMomentum().Mag()-5)<0.1){
-      	noise = 6e-4;
       	// if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
       	// if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.78 ) continue;
       }      
@@ -247,7 +243,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<10 || time>35) continue;
+	if(time<0 || time>35) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
