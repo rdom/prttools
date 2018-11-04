@@ -348,11 +348,11 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   prt_canvasAdd(prt_cdigi);
 
   TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d_%2.1f_%2.1f.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz,prt_phi,r1);
-  if(path.Contains("C.root")) {
-    name =  "tid"+ name;
+  if(path.Contains("C.root")) name =  "tid"+ name;
+  else{
+    name = "tis"+ name;
     prt_mom*=0.001;
-  }else name = "tis"+ name;
-  
+  }
   prt_canvasAdd("ll_"+name,800,500);
   
   prt_normalize(hll[4],hll[2]);
