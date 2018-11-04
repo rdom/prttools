@@ -32,7 +32,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
-    if(studyId==415 || studyId==436) hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",300,-120,120); //120,-60,60 
+    if(studyId==415 || studyId==436) hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",200,-100,100); //120,-60,60 
     else hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
     //hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",120,-5,5); 
   }  
@@ -169,10 +169,10 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // }       
 
 
-      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<34.4 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>33.3 ) continue;
-      }
+      // if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<34.4 ) continue;
+      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>33.3 ) continue;
+      // }
       
       Bool_t t1(1),t2(0),t3h(0),t3v(0);
       Bool_t tof1(1), tof2(1);
@@ -338,7 +338,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
 
 
   gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(1);
+  gStyle->SetOptTitle(0);
   
   //prt_drawDigi("m,p,v\n",2017,1.3,0);
   prt_drawDigi("m,p,v\n",2018);
@@ -351,7 +351,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     name = "tis"+ name;
     prt_mom*=0.001;
   }
-  prt_canvasAdd("ll_"+name,800,500);
+  prt_canvasAdd("ll_"+name,800,400);
   
   prt_normalize(hll[4],hll[2]);
   hll[4]->GetYaxis()->SetNdivisions(9,5,0);
