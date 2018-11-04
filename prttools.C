@@ -1038,7 +1038,7 @@ void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_
       cc->SaveAs(path+"/"+name+".png");
       if(what==0) cc->Print(path+"/"+name+".eps");
       if(what==0) cc->Print(path+"/"+name+".pdf");
-      if(what==0 || what==2) cc->Print(path+"/"+name+".root");
+      if(what==0 || what==2) cc->Print(path+"/"+name+".C");
     }else{
       c->SetCanvasSize(w,h);
       c->Print(path+"/"+name+".png");
