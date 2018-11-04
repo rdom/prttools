@@ -1,11 +1,7 @@
 #define prt__beam
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
-#include "datainfo.C"
 #include "prttools.C"
-#include <TVirtualFitter.h>
-#include <TKey.h>
-#include <TRandom.h>
 
 TLine *gLine = new TLine(0,0,0,1000);
 
@@ -36,9 +32,9 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   for(Int_t i=0; i<5; i++){
     hl[i] = new TH1F(Form("hl_%d",i),"pdf;LE time [ns]; entries [#]", 1000,0,50);
     hnph[i] = new TH1F(Form("hnph_%d",i),";detected photons [#]; entries [#]", 160,0,160);
-    hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
-    if(studyId==415 || studyId==436) hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",300,-150,150); //120,-60,60 
-    //hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",120,-5,5);
+    if(studyId==415 || studyId==436) hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",300,-100,100); //120,-60,60 
+    else hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",160,-40,40); //120,-60,60
+    //hll[i] = new TH1F(Form("hll_%d",i),";ln L(p) - ln L(#pi); entries",120,-5,5); 
   }  
   TH1F *hl3 = new TH1F("hl3","pdf;LE time [ns]; entries [#]", 1000,0,50);
   TH1F *hnphf =  new TH1F("hnphf","hnphf",200,0,200);
@@ -105,7 +101,6 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t countall[prt_nmcp][64]={{0}},countgood[prt_nmcp][64]={{0}},countbad[prt_nmcp][64]={{0}};
   Int_t mcpf[prt_nmcp]={0}, mcps[prt_nmcp]={0};  
   Double_t theta(0);
-  TVirtualFitter *fitter;
   Double_t nph,enph,time,timeres(-1);
   PrtHit fHit;
   Int_t totalf(0),totals(0),mcp,pix,ch, entries = prt_entries; // [50000-rest] - is for pdf generation
@@ -139,16 +134,22 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();
     if(prt_event->GetType()==0){
 
-      // if(fabs(prt_event->GetMomentum().Mag()-3)<0.1){
-      // 	noise = 1e-4;
-      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
-      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
-      // }
-      // if(fabs(prt_event->GetMomentum().Mag()-5)<0.1){
-      // 	noise = 1e-4;
-      // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
-      // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.78 ) continue;
-      // }
+      if(fabs(prt_event->GetMomentum().Mag()-2)<0.1){
+      	noise = 1e-4;
+      }	    
+      if(fabs(prt_event->GetMomentum().Mag()-3)<0.1){
+      	noise = 4e-4;
+      	// if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
+      	// if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
+      }
+      if(fabs(prt_event->GetMomentum().Mag()-4)<0.1){
+      	noise = 5e-4;
+      }	    
+      if(fabs(prt_event->GetMomentum().Mag()-5)<0.1){
+      	noise = 6e-4;
+      	// if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<33.2 ) continue;
+      	// if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.78 ) continue;
+      }      
       // if(fabs(prt_event->GetMomentum().Mag()-6)<0.1){
       // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<32.75 ) continue;
       // 	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>31.8 ) continue;
@@ -214,8 +215,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
 
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
-    if(prt_pid==2 && hll[2]->GetEntries()>5000)continue;
-    if(prt_pid==4 && hll[4]->GetEntries()>5000) continue;  
+    if(prt_pid==2 && hll[2]->GetEntries()>2000)continue;
+    if(prt_pid==4 && hll[4]->GetEntries()>2000) continue;  
     
     hTof->Fill(prt_event->GetTest1());
     
@@ -246,7 +247,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       	// }else if(theta>94){
       	//   if(time<3 || time>40) continue; //40
       	// }
-	if(time<0 || time>35) continue;
+	if(time<10 || time>35) continue;
       }
       nGoodHits++;
       // aminf = hpdff[ch]->GetBinContent(hpdff[ch]->FindBin(time-0.0)); 
