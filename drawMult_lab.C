@@ -3,14 +3,16 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
-void drawMult_lab(TString infile="hits.root",double inten=0){
+void drawMult_lab(TString infile="hits.root",double inten=0, double thresh=0){
 
   TObjArray *sarr = infile.Tokenize("_");
   if(sarr->GetEntries()==3){
     TString soffset = ((TObjString *) sarr->At(1))->GetName();
     inten = soffset.Atof();
+    TString sthresh = ((TObjString *) sarr->At(2))->GetName();
+    thresh = sthresh.Atof();
   }
-  std::cout<<"inten "<<inten<<std::endl;
+  std::cout<<"inten="<<inten<<" thresh="<<thresh<<std::endl;
   
   if(!prt_init(infile,1,"data/drawMult_lab")) return;
 
@@ -88,6 +90,7 @@ void drawMult_lab(TString infile="hits.root",double inten=0){
   TFile fc(infile,"recreate");
   TTree *tc = new TTree("lab","lab");
   tc->Branch("inten",&inten,"inten/D");
+  tc->Branch("thresh",&thresh,"thresh/D");
   tc->Branch("count1",&count1,"count1/D");
   tc->Branch("count2",&count2,"count2/D");
   tc->Branch("count3",&count3,"count3/D");

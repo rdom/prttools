@@ -64,7 +64,7 @@ DataInfo prt_data_info;
 const Int_t prt_nmcp = 4*6;
 const Int_t prt_npix = 16*16;
 #else
-const Int_t prt_nmcp = 8;
+const Int_t prt_nmcp = 12;//8;
 const Int_t prt_npix = 64;
 #endif
 
@@ -1036,14 +1036,14 @@ void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_
       cc->Modified();
       cc->Update();
       cc->SaveAs(path+"/"+name+".png");
-      if(what==0) cc->Print(path+"/"+name+".eps");
-      if(what==0) cc->Print(path+"/"+name+".pdf");
-      if(what==0 || what==2) cc->Print(path+"/"+name+".C");
+      if(what>1) cc->Print(path+"/"+name+".eps");
+      if(what>1) cc->Print(path+"/"+name+".pdf");
+      if(what!=1) cc->Print(path+"/"+name+".C");
     }else{
       c->SetCanvasSize(w,h);
       c->Print(path+"/"+name+".png");
-      if(what==0) c->Print(path+"/"+name+".pdf");
-      if(what==0 || what==2) c->Print(path+"/"+name+".root");
+      if(what>1) c->Print(path+"/"+name+".pdf");
+      if(what!=1) c->Print(path+"/"+name+".C");
     }		    
     gROOT->SetBatch(0);
   }

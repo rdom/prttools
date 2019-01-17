@@ -119,7 +119,8 @@ void drawRes(TString in="data/recopdf_151/reco*root",TString in2=""){
 
   std::cout<<"size "<<size<<std::endl;
   
-  for(int i=0; i<2; i++){
+  for(int i=0; i<3; i++){
+    if(i==1)continue;
     g[i]->Draw((i==0)? "apl":"same pl");
 
     if(beamdata && i==0) leg->AddEntry(g[0],"beam data "+names[studyId],"lp");
