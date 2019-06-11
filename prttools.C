@@ -68,7 +68,7 @@ const Int_t prt_nmcp = 12;//8;
 const Int_t prt_npix = 64;
 #endif
 
-const Int_t prt_ntdc = 4;
+const Int_t prt_ntdc = 5;
 const Int_t prt_maxdircch(prt_nmcp*prt_npix);
 const Int_t prt_maxch = prt_ntdc*48;
 const Int_t prt_maxnametdc=10000;
@@ -129,7 +129,7 @@ TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006",
 };
 
 //2019
-TString prt_tdcsid[prt_ntdc] ={"2014","2015","2016","2017"};
+TString prt_tdcsid[prt_ntdc] ={"2014","2015","2016","2017","2010"};
 
 
 TF1 *prt_gaust;
