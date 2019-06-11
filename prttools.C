@@ -68,7 +68,7 @@ const Int_t prt_nmcp = 12;//8;
 const Int_t prt_npix = 64;
 #endif
 
-const Int_t prt_ntdc = 32;
+const Int_t prt_ntdc = 4;
 const Int_t prt_maxdircch(prt_nmcp*prt_npix);
 const Int_t prt_maxch = prt_ntdc*48;
 const Int_t prt_maxnametdc=10000;
@@ -127,6 +127,9 @@ TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006",
 			       "2014","2015","2016","2017","2018","2019","201a","201b",
 			       "201c","201d","201e","201f"
 };
+
+//2019
+TString prt_tdcsid[prt_ntdc] ={"2014","2015","2016","2017"};
 
 
 TF1 *prt_gaust;
@@ -349,6 +352,7 @@ Bool_t prt_isBadChannel(Int_t ch){
 // layoutId == 2017 - cern 2017
 // layoutId == 2018 - cern 2018
 // layoutId == 2021 - new 3.6 row's design for the PANDA Barrel DIRC
+// layoutId == 2023 - new 2x4 layout for the PANDA Barrel DIRC
 TPaletteAxis* prt_cdigi_palette;
 TH1 * prt_cdigi_th;
 TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
@@ -362,6 +366,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     if(layoutId==2016) prt_hpglobal = new TPad("P","T",0.2,0.02,0.75,0.98);
     if(layoutId==2017) prt_hpglobal = new TPad("P","T",0.15,0.02,0.80,0.98);
     if(layoutId==2018) prt_hpglobal = new TPad("P","T",0.05,0.07,0.9,0.93);
+    if(layoutId==2023) prt_hpglobal = new TPad("P","T",0.073,0.02,0.877,0.98);
     if(layoutId==2030) prt_hpglobal = new TPad("P","T",0.10,0.01,0.82,0.99);
     if(!prt_hpglobal)  prt_hpglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
     
@@ -371,11 +376,10 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 
   prt_hpglobal->cd();
 
-  
   Int_t nrow = 3, ncol = 5;
   if(layoutId ==2016) ncol=3;
   if(layoutId ==2017) ncol=4;
-  if(layoutId ==2018) {nrow=2; ncol=4;}
+  if(layoutId ==2018 || layoutId ==2023) {nrow=2; ncol=4;}
   if(layoutId ==2021) ncol=4;
   if(layoutId ==2030) {nrow=4; ncol=6;}
   
@@ -406,6 +410,10 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 	  if(layoutId == 2018) {
 	    margin= 0.1;
 	    shift = 0; shiftw=0.01; tbw=0.005; tbh=0.006;
+	  }
+	  if(layoutId == 2023) {
+	    margin= 0.1;
+	    shift = 0; shiftw=0.01; tbw=0.0015; tbh=0.042;
 	  }
 	  if(layoutId == 2030) {
 	    margin= 0.1;
@@ -510,16 +518,20 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
       }
     }
   }
+  gPad->Update();
+  // prt_cdigi_palette = (TPaletteAxis*)prt_hdigi[nnmax]->GetListOfFunctions()->FindObject("palette");
+  // prt_cdigi_palette->SetX1NDC(0.89);
+  // prt_cdigi_palette->SetY1NDC(0.1);
+  // prt_cdigi_palette->SetX2NDC(0.93);
+  // prt_cdigi_palette->SetY2NDC(0.90);
   
-
   prt_cdigi->cd();
   delete prt_cdigi_palette;
-  if(layoutId==2018)  prt_cdigi_palette = new TPaletteAxis(0.89,0.1,0.93,0.90,(TH1 *) prt_hdigi[nnmax]);
+  if(layoutId==2018 || layoutId==2023)  prt_cdigi_palette = new TPaletteAxis(0.89,0.1,0.93,0.90,(TH1 *) prt_hdigi[nnmax]);
   else prt_cdigi_palette = new TPaletteAxis(0.82,0.1,0.86,0.90,(TH1 *) prt_hdigi[nnmax]);
- 
+  prt_cdigi_palette->SetName("prt_palette");  
   prt_cdigi_palette->Draw();
-  prt_hpads[0]->cd();
-    
+
   prt_cdigi->Modified();
   prt_cdigi->Update();
   return digidata;
@@ -963,9 +975,21 @@ TString prt_createDir(TString inpath=""){
   return finalpath;
 }
 
-void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_t style=0){
+void prt_canvasPrint(TPad *c, TString name="", TString path="", Int_t what=0){
+  c->Modified();
+  c->Update();
+  c->Print(path+"/"+name+".png");
+  if(what>1) c->Print(path+"/"+name+".eps");
+  if(what>1) c->Print(path+"/"+name+".pdf");
+  if(what!=1) c->Print(path+"/"+name+".C");
+}
+
+void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
+  TString name=c->GetName();
+  Bool_t batch = gROOT->IsBatch();
+  gROOT->SetBatch(1);
+  
   if(c && path != "") {
-    gROOT->SetBatch(1);
     Int_t w = 800, h = 400;
     if(style != -1){
       if(style == 1) {w = 800; h = 500;}
@@ -973,80 +997,67 @@ void prt_save(TPad *c= NULL,TString path="", TString name="", Int_t what=0, Int_
       if(style == 3) {w = 800; h = 400;}
       if(style == 5) {w = 800; h = 900;} 
       if(style == 0){ 
-	w = ((TCanvas*)c)->GetWindowWidth();
-	h = ((TCanvas*)c)->GetWindowHeight();
+    	w = ((TCanvas*)c)->GetWindowWidth();
+    	h = ((TCanvas*)c)->GetWindowHeight();
       }
-
-      // TCanvas *cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
-      // cc = (TCanvas*) c->DrawClone();
-      // cc->SetCanvasSize(w,h);
-
+      
       TCanvas *cc;
-      cc = (TCanvas*) c;
-      if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) {
-	cc =  (TCanvas*)c;
-      }else{
+      if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) cc = (TCanvas*)c;
+      else{
       	cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
       	cc = (TCanvas*) c->DrawClone();      
       	cc->SetCanvasSize(w,h);
       }
       
-      if(style == 0) {
-	if(fabs(cc->GetBottomMargin()-0.1)<0.001) cc->SetBottomMargin(0.12);
-	TIter next(cc->GetListOfPrimitives());
-	TObject *obj;
+      if(style == 0){
+    	if(fabs(cc->GetBottomMargin()-0.1)<0.001) cc->SetBottomMargin(0.12);
+    	TIter next(cc->GetListOfPrimitives());
+    	TObject *obj;
 	
-	while((obj = next())){
-	  if(obj->InheritsFrom("TH1")){
-	    TH1F *hh = (TH1F*)obj;
-	    hh->GetXaxis()->SetTitleSize(0.06);
-	    hh->GetYaxis()->SetTitleSize(0.06);
+    	while((obj = next())){
+    	  if(obj->InheritsFrom("TH1")){
+    	    TH1F *hh = (TH1F*)obj;
+    	    hh->GetXaxis()->SetTitleSize(0.06);
+    	    hh->GetYaxis()->SetTitleSize(0.06);
 
-	    hh->GetXaxis()->SetLabelSize(0.05);
-	    hh->GetYaxis()->SetLabelSize(0.05);
+    	    hh->GetXaxis()->SetLabelSize(0.05);
+    	    hh->GetYaxis()->SetLabelSize(0.05);
 	    
-	    hh->GetXaxis()->SetTitleOffset(0.85);
-	    hh->GetYaxis()->SetTitleOffset(0.76);
+    	    hh->GetXaxis()->SetTitleOffset(0.85);
+    	    hh->GetYaxis()->SetTitleOffset(0.76);
 
-	    if(fabs(cc->GetBottomMargin()-0.12)<0.001){
-	      TPaletteAxis *palette = (TPaletteAxis*)hh->GetListOfFunctions()->FindObject("palette");
-	      if(palette) {
-		palette->SetY1NDC(0.12);
-		cc->Modified();
-	      }
-	    }
-	  }
-	  if(obj->InheritsFrom("TGraph")){
-	    TGraph *gg = (TGraph*)obj;
-	    gg->GetXaxis()->SetLabelSize(0.05);
-	    gg->GetXaxis()->SetTitleSize(0.06);
-	    gg->GetXaxis()->SetTitleOffset(0.84);
+    	    if(fabs(cc->GetBottomMargin()-0.12)<0.001){
+    	      TPaletteAxis *palette = (TPaletteAxis*)hh->GetListOfFunctions()->FindObject("palette");
+    	      if(palette) {
+    	      	palette->SetY1NDC(0.12);
+    	      	cc->Modified();
+    	      }
+    	    }
+    	  }
+    	  if(obj->InheritsFrom("TGraph")){
+    	    TGraph *gg = (TGraph*)obj;
+    	    gg->GetXaxis()->SetLabelSize(0.05);
+    	    gg->GetXaxis()->SetTitleSize(0.06);
+    	    gg->GetXaxis()->SetTitleOffset(0.84);
 
-	    gg->GetYaxis()->SetLabelSize(0.05);
-	    gg->GetYaxis()->SetTitleSize(0.06);
-	    gg->GetYaxis()->SetTitleOffset(0.8);
-	  }
-	  if(obj->InheritsFrom("TF1")){
-	    TF1 *f = (TF1*)obj;
-	    f->SetNpx(500);
-	  }
-	}
+    	    gg->GetYaxis()->SetLabelSize(0.05);
+    	    gg->GetYaxis()->SetTitleSize(0.06);
+    	    gg->GetYaxis()->SetTitleOffset(0.8);
+    	  }
+    	  if(obj->InheritsFrom("TF1")){
+    	    TF1 *f = (TF1*)obj;
+    	    f->SetNpx(500);
+    	  }
+    	}
       }
-      
-      cc->Modified();
-      cc->Update();
-      cc->SaveAs(path+"/"+name+".png");
-      if(what>1) cc->Print(path+"/"+name+".eps");
-      if(what>1) cc->Print(path+"/"+name+".pdf");
-      if(what!=1) cc->Print(path+"/"+name+".C");
+      prt_canvasPrint(cc,name,path,what);
     }else{
       c->SetCanvasSize(w,h);
-      c->Print(path+"/"+name+".png");
-      if(what>1) c->Print(path+"/"+name+".pdf");
-      if(what!=1) c->Print(path+"/"+name+".C");
-    }		    
-    gROOT->SetBatch(0);
+      prt_canvasPrint(c,name,path,what);
+    }
   }
+  
+  gROOT->SetBatch(batch);
 }
 
 TString prt_createSubDir(TString dir="dir"){
@@ -1055,7 +1066,7 @@ TString prt_createSubDir(TString dir="dir"){
 }
 
 TList *prt_canvaslist;
-void prt_canvasAdd(TString name="c",Int_t w=800, Int_t h=600){
+void prt_canvasAdd(TString name="c",Int_t w=800, Int_t h=400){
   if(!prt_canvaslist) prt_canvaslist = new TList();
   TCanvas *c = new TCanvas(name,name,0,0,w,h); 
   prt_canvaslist->Add(c);
@@ -1099,7 +1110,7 @@ void prt_canvasSave(Int_t what=1, Int_t style=0){
   TCanvas *c=0;
   TString path = prt_createDir();
   while((c = (TCanvas*) next())){
-    prt_save(c, path, c->GetName(), what,style);
+    prt_save(c, path, what,style);
     prt_canvaslist->Remove(c);
   }
 }

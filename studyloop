@@ -86,6 +86,7 @@ waitForMe (){
 	if [ "$activth" -lt "$1" ]; then 
 	    break  
 	fi
+	sleep 1
     done
 }
 

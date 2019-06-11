@@ -42,13 +42,13 @@ void drawMult_lab(TString infile="hits.root",double inten=0, double thresh=0){
       
       hTime->Fill(time);
 
-      if(mcp==0 && ch<31) ucounts++;
-      else mcounts++;
+      if(mcp==0 && pix%8>=5) ucounts++;
+      else if(mcp==0 && pix%8<3) mcounts++;
       
       if(time<25 || time > 35)  continue;      
 
-      if(mcp==0 && ch<31) ucounts_t++;
-      else mcounts_t++;
+      if(mcp==0 && pix%8>=5) ucounts_t++;
+      else if(mcp==0 && pix%8<3) mcounts_t++;
     }
     hMult1->Fill(ucounts);
     hMult2->Fill(mcounts);
