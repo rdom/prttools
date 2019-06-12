@@ -8,7 +8,7 @@
 
 DataInfo prt_data_info;
 TString ginFile(""), goutFile(""), gcFile("");
-Int_t gSetup=2015, gTrigger(0), gMode(0), gComboId(0),  gMaxIn[prt_maxch];
+Int_t gTrigger(0), gMode(0), gComboId(0),  gMaxIn[prt_maxch];
 Double_t tdcRefTime[prt_ntdc],gTotO[prt_maxch], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0);
 TGraph *gGrIn[prt_maxch], *gWalk[prt_maxch], *gGrDiff[prt_maxch];
 
@@ -417,7 +417,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   PrtHit hit;
   Int_t nrhits=0;
   
-  if((grTime0>0 && grTime1>0) || gTrigger==0){
+  if((grTime0>0 && grTime1>0) || gTrigger==0){    
     if(gTrigger!=0) {
       triggerLe = grTime1 - grTime0;
       if(gTrigger==1140) triggerLe = (tofstr1+tofstl1)/2.;
@@ -425,10 +425,10 @@ Bool_t TTSelector::Process(Long64_t entry){
       triggerTot= grTime2 - grTime1;
     }
     
-    for(Int_t i=0; i<Hits_ && i<10000; i++){
-      if(Hits_nTdcErrCode[i]!=0) continue;
+    for(Int_t i=0; i<Hits_ && i<10000; i++){      
+      //if(Hits_nTdcErrCode[i]!=0) continue;
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
-      if(Hits_nSignalEdge[i]==0) continue; // tailing edge
+      if(Hits_nSignalEdge[i]==0) continue; // tailing edge 
       
       tdc = map_tdc[Hits_nTrbAddress[i]];
       ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
@@ -486,7 +486,13 @@ Bool_t TTSelector::Process(Long64_t entry){
         // if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
       }
 
-      if(gMode!=5 || tofpid!=0){      
+      if(gMode!=5 || tofpid!=0){
+
+	if(prt_geometry==2023){
+	  if(timeTot<0 || timeTot>20) continue;
+	  if(timeLe<-100 || timeLe>100) continue;
+	}
+	
 	hit.SetTdc(tdc);
 	hit.SetChannel(ch);
 	hit.SetMcpId(map_mcp[ch]);

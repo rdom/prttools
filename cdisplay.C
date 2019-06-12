@@ -77,7 +77,6 @@ void init(){
   prt_createMap();
 }
 
-PrtLutNode *fLutNode[1000];
 void MSelector::SlaveBegin(TTree *){
   TString option = GetOption();
   std::istringstream source(option.Data());
@@ -203,17 +202,6 @@ void MSelector::SlaveBegin(TTree *){
   fOutput->Add(hTof);
   
   prt_createMap();
-
-
-  TFile* f = new TFile("ana/lut_ana.root");
-  TTree *t=(TTree *) f->Get("prtlut") ;
-  TClonesArray* fLut=new TClonesArray("PrtLutNode");
-  t->SetBranchAddress("LUT",&fLut); 
-  t->GetEntry(0);
-
-  for(int i=0; i<1000; i++){
-    fLutNode[i] = (PrtLutNode*) fLut->At(i);
-  }
 }
 
 Bool_t MSelector::Process(Long64_t entry){
@@ -522,31 +510,6 @@ void exec3event(Int_t event, Int_t gx, Int_t gy, TObject *selected){
 	prt_fit(hh[0],1,100); //beam
 	hh[0]->Draw();
 	if(hh[1]->GetEntries()>10) hh[1]->Draw("same");
-
-	//ana 
-	TVector3 dir;
-	double luttheta,lenz,evtime,radiatorL = 1200,posz,bartime;
-	int sid=m*64+p;
-	TH1F *hTimeAna = new TH1F("hTimeAna",";timeA [ns];entries [#]",200,0,50);
-	std::cout<<"sid "<<sid<<std::endl;
-	
-	if(prt_event->GetType()==1) posz = radiatorL/2.-prt_event->GetPosition().Z();
-	else posz = prt_event->GetPosition().Z()-15; // 15 mm - lens thickness  
-	posz=30;
-	for(int i=0; i<fLutNode[sid]->Entries(); i++){
-	  dir = fLutNode[sid]->GetEntry(i).Unit();
-	  evtime = fLutNode[sid]->GetTime(i);
-	  if(false) lenz = 2*radiatorL - posz;
-	  else lenz = posz;
-	  luttheta = dir.Theta();  
-	  if(luttheta > TMath::PiOver2()) luttheta = TMath::Pi()-luttheta;	
-	  bartime = fabs(lenz/cos(luttheta)/198.);
-	  std::cout<<i<<" bartime "<<bartime<<" "<<evtime<<" "<<posz<<std::endl;
-      
-	  hTimeAna->Fill(evtime+bartime);
-	}
-	hTimeAna->Draw("same");
-
       }
       if(gComboId==2) hPTot[m][p]->Draw();   
       if(gComboId==5) hPMult[m][p]->Draw();      
@@ -1394,6 +1357,12 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   if(ginFile.Contains("th_")) fEdit1->SetText("400 24 50");
   if(ginFile.Contains("pilas")) fEdit1->SetText("400 28 34");
   if(ginFile.Contains("hits.root")) fEdit1->SetText("400 0 50");
+
+
+  if(prt_geometry==2023){
+    if(ginFile.Contains("pilas")) fEdit1->SetText("400 20 40");
+    fEdit2->SetText("200 5 15");
+  }
   
   fEdit3->SetText("0 0");
   fEdit4->SetText("0 0");

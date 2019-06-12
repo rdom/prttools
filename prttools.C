@@ -68,34 +68,6 @@ const Int_t prt_nmcp = 12;//8;
 const Int_t prt_npix = 64;
 #endif
 
-const Int_t prt_ntdc = 5;
-const Int_t prt_maxdircch(prt_nmcp*prt_npix);
-const Int_t prt_maxch = prt_ntdc*48;
-const Int_t prt_maxnametdc=10000;
-
-TRandom  prt_rand;
-TChain*  prt_ch = 0;
-Int_t    prt_entries(0),prt_theta(0),prt_particle(0),prt_geometry(2018),prt_beamx(0),prt_beamz(0);
-Double_t prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
-TString  prt_savepath(""),prt_info("");
-TH2F*    prt_hdigi[prt_nmcp];
-TPad*    prt_hpads[prt_nmcp], *prt_hpglobal;
-TCanvas* prt_cdigi;
-TSpectrum *prt_spect = new TSpectrum(2);
-
-Int_t map_tdc[prt_maxnametdc];
-Int_t map_mpc[prt_maxch/64][prt_npix];
-Int_t map_mcp[prt_maxch];
-Int_t map_pix[prt_maxch];
-Int_t map_row[prt_maxch];
-Int_t map_col[prt_maxch];
-
-Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
-Double_t prt_mass[] = {0.000511,0.1056584,0.139570,0.49368,0.9382723};
-TString  prt_name[]={"e","muon","pion","kaon","proton"};
-Int_t    prt_color[]={1,1,4,7,2};
-Double_t prt_particleArray[3000];
-
 // const Int_t prt_ntdc=16;
 // TString prt_tdcsid[prt_ntdc] ={"10","11","12","13",
 // 			 "20","21","22","23",
@@ -122,15 +94,45 @@ Double_t prt_particleArray[3000];
 // 			       "2018","201b","201c","201f","202c","202d","202d"
 // };
 
-// //aug2017 jul2018
+//aug2017 jul2018
+//const Int_t prt_ntdc = 32;
 // TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
 // 			       "2014","2015","2016","2017","2018","2019","201a","201b",
 // 			       "201c","201d","201e","201f"
 // };
 
 //2019
-TString prt_tdcsid[prt_ntdc] ={"2014","2015","2016","2017","2010"};
+const Int_t prt_ntdc = 21;
+TString prt_tdcsid[prt_ntdc] ={"2014","2015","2016","2017","2000","2001","2002","2003","2004","2005",
+			       "2006","2007","2008","2009","200a","200b","200c","200d","200e","200f",
+			       "2010"};
 
+const Int_t prt_maxdircch(prt_nmcp*prt_npix);
+const Int_t prt_maxch = prt_ntdc*48;
+const Int_t prt_maxnametdc=10000;
+
+TRandom  prt_rand;
+TChain*  prt_ch = 0;
+Int_t    prt_entries(0),prt_theta(0),prt_particle(0),prt_geometry(2023),prt_beamx(0),prt_beamz(0);
+Double_t prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
+TString  prt_savepath(""),prt_info("");
+TH2F*    prt_hdigi[prt_nmcp];
+TPad*    prt_hpads[prt_nmcp], *prt_hpglobal;
+TCanvas* prt_cdigi;
+TSpectrum *prt_spect = new TSpectrum(2);
+
+Int_t map_tdc[prt_maxnametdc];
+Int_t map_mpc[prt_maxch/64][prt_npix];
+Int_t map_mcp[prt_maxch];
+Int_t map_pix[prt_maxch];
+Int_t map_row[prt_maxch];
+Int_t map_col[prt_maxch];
+
+Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
+Double_t prt_mass[]={0.000511,0.1056584,0.139570,0.49368,0.9382723};
+TString  prt_name[]={"e","muon","pion","kaon","proton"};
+Int_t    prt_color[]={1,1,4,7,2};
+Double_t prt_particleArray[3000];
 
 TF1 *prt_gaust;
 TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1){
@@ -241,11 +243,10 @@ TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_
 
 void prt_createMap(){
   TGaxis::SetMaxDigits(4);
-  Int_t seqid =-1;
   for(Int_t i=0; i<prt_maxnametdc; i++) map_tdc[i]=-1;
   for(Int_t i=0; i<prt_ntdc; i++){
     Int_t dec = TString::BaseConvert(prt_tdcsid[i],16,10).Atoi();
-    map_tdc[dec]=++seqid;
+    map_tdc[dec]=i;
   }
   
   //  for(Int_t ch=0; ch<prt_maxdircch; ch++){
@@ -271,15 +272,18 @@ void prt_createMap(){
 
 Int_t prt_getChannelNumber(Int_t tdc, Int_t tdcChannel){
   Int_t ch = -1;
-  if(tdc>=0) ch = 48*tdc+tdcChannel;
   if(prt_geometry==2018){
     ch=0;
-    for(auto i=0; i<=tdc; i++){
+    for(int i=0; i<=tdc; i++){
       if(i==tdc && (i==2 || i==6 || i==10 || i==14)) ch += tdcChannel-32;
       else if(i==tdc) ch += tdcChannel;
       else if(i==1 || i==2 || i==5 || i==6 || i==9 || i==10 || i==13 || i==14) ch += 16;
       else ch += 48;    
     }
+  }else if(prt_geometry==2023){
+    ch = 32*tdc+tdcChannel;
+  }else{
+    ch = 48*tdc+tdcChannel;
   }
   return ch;
 }
@@ -294,6 +298,8 @@ Int_t prt_getTdcId(Int_t ch){
       else tch += 48;
       if(tch>ch) break;
     }
+  }else if(prt_geometry==2023){
+    tdcid=ch/32;
   }else{
     tdcid=ch/48;
   }
@@ -315,6 +321,8 @@ Int_t prt_getTdcChannel(Int_t ch){
 	break;
       };
     }
+  }else if(prt_geometry==2023){
+    tdcc=ch%32+1;
   }else{
     tdcc=ch%48+1;
   }

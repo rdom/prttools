@@ -6,7 +6,6 @@
 #include "tdisplay.h"
 
 const Int_t maxfiles = 150;
-const Int_t geometry=2018;
 Int_t gSetup=2015, gTrigger,gEntries=0, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
 TString ginFile(""),gcFile(""), fileList[maxfiles];
 TH1F *hCh, *hRefDiff, *hFine[maxfiles][prt_maxch], *hTot[maxfiles][prt_maxch],
@@ -70,19 +69,24 @@ void TTSelector::SlaveBegin(TTree *){
   Int_t leb(400), le1(20), le2(40);
   if(fileList[0].Contains("trb")){
     gTrigger=0;
-    //totb=4000; totl=-1000; toth=1000;
+    // totb=4000; totl=-1000; toth=1000;
     // leb=4000, le1=-5, le2=100;
 
-    totb=4000; totl=50; toth=80;
-    leb=4000, le1=-5, le2=5;
+    totb=4000; totl=30; toth=70;
+    leb=4000, le1=-8, le2=8;
   }
   if(fileList[0].Contains("pilas") || fileList[0].Contains("th_") ){
     if(!gTrigger) gTrigger=820;
-    if(geometry==2018) gTrigger=520;
-    // leb = 2000; le1=40; le2=80;
-    leb = 2000; le1=55; le2=85;
-    //  leb = 2000; le1=75; le2=100;
+    if(prt_geometry==2018) gTrigger=520;
+    leb=2000; le1=-40; le2=0;
+    // leb = 2000; le1=55; le2=85;
+    // leb = 2000; le1=75; le2=100;    
     totb=240; totl=0; toth=12;
+    if(prt_geometry==2023){
+      gTrigger=648;
+      leb=2000; le1=-60; le2=0;
+      totb=240; totl=0; toth=20;
+    }
   }
   if(fileList[0].Contains("pico")){
    if(!gTrigger) gTrigger=820;
@@ -208,13 +212,14 @@ Bool_t TTSelector::Process(Long64_t entry){
   GetEntry(entry);
   memset(mult, 0, sizeof(mult));
   Int_t hh(0);
-  for(auto i=0; i<Hits_&& i<maxhits; i++){
+  for(int i=0; i<Hits_&& i<maxhits; i++){
     tdc = map_tdc[Hits_nTrbAddress[i]];
 
     if(tdc<0) continue;
     ch = prt_getChannelNumber(tdc,Hits_nTdcChannel[i])-1;
     //if(Hits_nTdcErrCode[i]!=0) continue;
     timeL[i] =  5*(Hits_nEpochCounter[i]*pow(2.0,11) + Hits_nCoarseTime[i]); //coarsetime
+    
     if(gcFile!="0"){
       //spline calib
       //timeL[i]-= gGrIn[prt_addRefChannels(ch+1,tdc)]->Eval(Hits_nFineTime[i]+1);
@@ -225,7 +230,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       // Double_t max = (Double_t) gMaxIn[prt_addRefChannels(ch+1,tdc)]-2;
       // timeL[i] -= 5*(Hits_nFineTime[i]-31)/(max-31);
     }
-
+    
     if(Hits_nSignalEdge[i]==1){
       if(ch>prt_maxdircch) hh++;
       mult[ch]++;
@@ -243,7 +248,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   //if(hh<20) return kTRUE;
   // if((grTime0>0 && grTime1>0) || gTrigger==0)
     {
-    for(auto i=0; i<Hits_ && i<maxhits; i++){
+    for(int i=0; i<Hits_ && i<maxhits; i++){
       
       //if(Hits_nTdcErrCode[i]!=0) continue;
 
@@ -272,7 +277,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	hCh->Fill(ch);
 	
 	if(ch<prt_maxch){
-	  timeLe = timeL[i]-tdcRefTime[tdc] - triggerLe;	  
+	  timeLe = timeL[i]-tdcRefTime[tdc] - triggerLe;
+	  
 	  //timeLe = tdcRefTime[tdc] - triggerLe;
 	  timeTe = timeT[i+1]-tdcRefTime[tdc]-triggerLe;
 	  Double_t tot = timeT[i+1]-timeL[i];
@@ -476,7 +482,7 @@ void MyMainFrame::DoExport(Int_t type){
     prt_savepath = filedir+"/plots";
   
     std::cout<<"Exporting into  "<<prt_savepath <<std::endl;
-    prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",geometry));
+    prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry));
     Float_t total = (prt_nmcp-1)*(prt_npix-1);
     if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
       for(Int_t m=0; m<prt_nmcp; m++){
@@ -847,7 +853,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   
   ch->Process(selector,option,entries);
 
-  prt_drawDigi("m,p,v\n",geometry,-2,0);
+  prt_drawDigi("m,p,v\n",prt_geometry,-2,0);
   updatePlot(0); //gComboId
 
   prt_cdigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
