@@ -1360,7 +1360,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
 
 
   if(prt_geometry==2023){
-    if(ginFile.Contains("pilas")) fEdit1->SetText("400 20 40");
+    if(ginFile.Contains("pilas")) fEdit1->SetText("400 20 60");
     fEdit2->SetText("200 5 15");
   }
   
