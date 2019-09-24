@@ -127,8 +127,8 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   Int_t trigStl2(1146);
   
   Double_t noise = 1e-5; //1e-7; // nHits //1e-5
-  for (Int_t ievent=0; ievent<entries; ievent++){
-    prt_nextEvent(ievent,1000);
+  for (Int_t ievent=0; ievent<entries; ievent++){    
+    prt_nextEvent(ievent,1);
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();
@@ -213,7 +213,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     if(debug) std::cout<<"===================== event === "<< ievent <<std::endl;
     if(prt_pid==2 && hll[2]->GetEntries()>2000)continue;
     if(prt_pid==4 && hll[4]->GetEntries()>2000) continue;  
-    
+
     hTof->Fill(prt_event->GetTest1());
     
     Int_t mult[prt_maxch];
@@ -223,13 +223,13 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       mcp = fHit.GetMcpId();
       pix=fHit.GetPixelId()-1;
       ch = map_mpc[mcp][pix];
-      time = fHit.GetLeadTime();
+      time = fHit.GetLeadTime();      
 
       // //cut-off from c2017
       // if(mcp%3==0 && pix<32) continue;
       // if(mcp%3==2 && pix>=32) continue; 
 
-      if(ch>prt_maxdircch-1) continue;
+      if(ch<0 || ch>prt_maxdircch-1) continue;
       
       if(prt_event->GetType()!=0) time += rand.Gaus(0,sigma*0.001);
       //      if(++mult[ch]>1 || ch ==0) continue;
@@ -320,7 +320,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       Double_t lhms = hnphs->GetBinContent(hnphs->FindBin(nGoodHits)); 
       sum = sumf+TMath::Log(lhmf)-(sums+TMath::Log(lhms));
     }else sum = sumf-sums;    
-
+    
     // if(fabs(sum)<0.04) continue;    
     // sumf += 10*TMath::Log(F2->Eval(nHits));
     // sums += 10*TMath::Log(F1->Eval(nHits));
@@ -434,8 +434,7 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   leg1->SetFillStyle(0);
   leg1->AddEntry(hnph[2],"pions ","lp");
   leg1->AddEntry(hnph[4],"protons","lp");
-  leg1->Draw();
-  
+  leg1->Draw();  
   
   prt_canvasAdd("hTof_"+name,800,400);
   hTof->Draw();

@@ -46,16 +46,13 @@
 
 #if defined(prt__sim) || defined(prt__beam) || defined(eic__sim)
 
-#if defined(prt__beam)
-#include "datainfo.C"
-#endif
-
 class PrtEvent;
 class PrtHit;
 PrtEvent* prt_event = 0;
 #endif 
 
 #if defined(prt__sim) || defined(prt__beam)
+#include "datainfo.C"
 DataInfo prt_data_info;
 #endif 
 
@@ -64,7 +61,7 @@ DataInfo prt_data_info;
 const Int_t prt_nmcp = 4*6;
 const Int_t prt_npix = 16*16;
 #else
-const Int_t prt_nmcp = 12;//8;
+const Int_t prt_nmcp = 8;//12;
 const Int_t prt_npix = 64;
 #endif
 
@@ -376,6 +373,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     if(layoutId==2018) prt_hpglobal = new TPad("P","T",0.05,0.07,0.9,0.93);
     if(layoutId==2023) prt_hpglobal = new TPad("P","T",0.073,0.02,0.877,0.98);
     if(layoutId==2030) prt_hpglobal = new TPad("P","T",0.10,0.01,0.82,0.99);
+    if(layoutId==2031) prt_hpglobal = new TPad("P","T",0.12,0.01,0.80,0.99);
     if(!prt_hpglobal)  prt_hpglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
     
     prt_hpglobal->SetFillStyle(0);
@@ -390,6 +388,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   if(layoutId ==2018 || layoutId ==2023) {nrow=2; ncol=4;}
   if(layoutId ==2021) ncol=4;
   if(layoutId ==2030) {nrow=4; ncol=6;}
+  if(layoutId ==2031) {nrow=3; ncol=4;}
   
   if(layoutId > 1){
     float tbw(0.02), tbh(0.01), shift(0),shiftw(0.02),shifth(0),margin(0.01);
@@ -427,6 +426,11 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 	    margin= 0.1;
 	    shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
 	    padi=j*ncol+i;
+	  }
+	  if(layoutId == 2031) {
+	    margin= 0.1;
+	    shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
+	    padi=i*nrow+j;
 	  }
 
 	  prt_hpads[padi] =  new TPad(Form("P%d",i*10+j),"T",
@@ -806,7 +810,7 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     }
     prt_info += prt_event->PrintInfo();
     prt_mom = prt_event->GetMomentum().Mag() +0.01;
-    prt_theta = prt_event->GetAngle() + 0.01;
+    prt_theta = prt_event->GetAngle() + 0.41;
     prt_phi = prt_event->GetPhi();
     prt_geometry= prt_event->GetGeometry();
     prt_beamx= prt_event->GetBeamX();
@@ -836,10 +840,10 @@ bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepa
   prt_ch->Add(inFile);
   prt_ch->SetBranchAddress("PrtEvent", &prt_event);
   
-  prt_ch->SetBranchStatus("fHitArray.fLocalPos", 0);
-  prt_ch->SetBranchStatus("fHitArray.fGlobalPos", 0);
-  prt_ch->SetBranchStatus("fHitArray.fDigiPos", 0);
-  prt_ch->SetBranchStatus("fHitArray.fMomentum", 0);
+  // prt_ch->SetBranchStatus("fHitArray.fLocalPos", 0);
+  // prt_ch->SetBranchStatus("fHitArray.fGlobalPos", 0);
+  // prt_ch->SetBranchStatus("fHitArray.fDigiPos", 0);
+  // prt_ch->SetBranchStatus("fHitArray.fMomentum", 0);
   // prt_ch->SetBranchStatus("fHitArray.fPosition", 0);
   
   prt_ch->SetBranchStatus("fHitArray.fParentParticleId", 0);
@@ -870,7 +874,7 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     }
     prt_info += prt_event->PrintInfo();
     prt_mom = prt_event->GetMomentum().Mag() +0.01;
-    prt_theta = prt_event->GetAngle() + 0.01;
+    prt_theta = prt_event->GetAngle() + 0.41;
     prt_phi = prt_event->GetPhi();
     prt_geometry= prt_event->GetGeometry();
     prt_beamx= prt_event->GetBeamX();
@@ -1113,13 +1117,14 @@ void prt_canvasDel(TString name="c"){
 // what = 0 - save in png, pdf, eps, root formats
 // what = 1 - save in png format
 // what = 2 - save in png and root format
-void prt_canvasSave(Int_t what=1, Int_t style=0){
+void prt_canvasSave(Int_t what=1, Int_t style=0, Bool_t rm=false){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
   TString path = prt_createDir();
   while((c = (TCanvas*) next())){
     prt_save(c, path, what,style);
     prt_canvaslist->Remove(c);
+    if(rm) c->Close();
   }
 }
 
@@ -1137,8 +1142,8 @@ void prt_waitPrimitive(TString name, TString prim=""){
 
 Double_t prt_integral(TH1F *h,Double_t xmin, Double_t xmax){
   TAxis *axis = h->GetXaxis();
-  Int_t bmin = axis->FindBin(xmin); //in your case xmin=-1.5
-  Int_t bmax = axis->FindBin(xmax); //in your case xmax=0.8
+  Int_t bmin = axis->FindBin(xmin);
+  Int_t bmax = axis->FindBin(xmax);
   Double_t integral = h->Integral(bmin,bmax);
   integral -= h->GetBinContent(bmin)*(xmin-axis->GetBinLowEdge(bmin))/axis->GetBinWidth(bmin);
   integral -= h->GetBinContent(bmax)*(axis->GetBinUpEdge(bmax)-xmax)/axis->GetBinWidth(bmax);
@@ -1161,6 +1166,13 @@ void prt_normalize(TH1F* hists[],Int_t size){
   max += 0.05*max;
   for(Int_t i=0; i<size; i++){
     hists[i]->GetYaxis()->SetRangeUser(min,max);
+  }
+}
+
+void prt_normalizeto(TH1F* hists[],Int_t size, Double_t max=1){
+  for(Int_t i=0; i<size; i++){
+    Double_t tmax =  hists[i]->GetBinContent(hists[i]->GetMaximumBin());
+    hists[i]->Scale(max/tmax);
   }
 }
 
@@ -1211,6 +1223,19 @@ double prt_get_momentum_from_tof(double dist,double dtof){
   double p = sqrt((a - 2*sqrt(a*a+a*b*x-2*a*b+b*b)/s + b)/(x - 4));
 
   return p;
+}
+
+// return TOF difference [ns] for mominum p [GeV] and flight path l [m]
+double prt_get_tof_diff(int pid1=211, int pid2=321, double p=1, double l=2){
+  double c = 299792458;
+  double m1 = prt_mass[prt_get_pid(pid1)];
+  double m2 = prt_mass[prt_get_pid(pid2)];
+  double td = l*(sqrt(p*p+m1*m1)-sqrt(p*p+m2*m2))/(p*c)*1E9;
+
+  // relativistic
+  // td = l*(m1*m1-m2*m2)/(2*p*p*c)*1E9;
+  
+  return td;
 }
 
 bool prt_ispath(TString path){
