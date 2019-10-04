@@ -110,8 +110,8 @@ const Int_t prt_maxnametdc=10000;
 
 TRandom  prt_rand;
 TChain*  prt_ch = 0;
-Int_t    prt_entries(0),prt_theta(0),prt_particle(0),prt_geometry(2023),prt_beamx(0),prt_beamz(0);
-Double_t prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
+Int_t    prt_entries(0),prt_particle(0),prt_geometry(2023),prt_beamx(0),prt_beamz(0);
+Double_t prt_theta(0), prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
 TString  prt_savepath(""),prt_info("");
 TH2F*    prt_hdigi[prt_nmcp];
 TPad*    prt_hpads[prt_nmcp], *prt_hpglobal;
@@ -996,6 +996,48 @@ void prt_canvasPrint(TPad *c, TString name="", TString path="", Int_t what=0){
   if(what!=1) c->Print(path+"/"+name+".C");
 }
 
+void prt_set_style(TCanvas *c){
+  if(fabs(c->GetBottomMargin()-0.1)<0.001) c->SetBottomMargin(0.12);
+  TIter next(c->GetListOfPrimitives());
+  TObject *obj;
+	
+  while((obj = next())){
+    if(obj->InheritsFrom("TH1")){
+      TH1F *hh = (TH1F*)obj;
+      hh->GetXaxis()->SetTitleSize(0.06);
+      hh->GetYaxis()->SetTitleSize(0.06);
+
+      hh->GetXaxis()->SetLabelSize(0.05);
+      hh->GetYaxis()->SetLabelSize(0.05);
+	    
+      hh->GetXaxis()->SetTitleOffset(0.85);
+      hh->GetYaxis()->SetTitleOffset(0.76);
+
+      if(fabs(c->GetBottomMargin()-0.12)<0.001){
+	TPaletteAxis *palette = (TPaletteAxis*)hh->GetListOfFunctions()->FindObject("palette");
+	if(palette) {
+	  palette->SetY1NDC(0.12);
+	  c->Modified();
+	}
+      }
+    }
+    if(obj->InheritsFrom("TGraph")){
+      TGraph *gg = (TGraph*)obj;
+      gg->GetXaxis()->SetLabelSize(0.05);
+      gg->GetXaxis()->SetTitleSize(0.06);
+      gg->GetXaxis()->SetTitleOffset(0.84);
+
+      gg->GetYaxis()->SetLabelSize(0.05);
+      gg->GetYaxis()->SetTitleSize(0.06);
+      gg->GetYaxis()->SetTitleOffset(0.8);
+    }
+    if(obj->InheritsFrom("TF1")){
+      TF1 *f = (TF1*)obj;
+      f->SetNpx(500);
+    }
+  }
+}
+
 void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
   TString name=c->GetName();
   Bool_t batch = gROOT->IsBatch();
@@ -1021,47 +1063,8 @@ void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
       	cc->SetCanvasSize(w,h);
       }
       
-      if(style == 0){
-    	if(fabs(cc->GetBottomMargin()-0.1)<0.001) cc->SetBottomMargin(0.12);
-    	TIter next(cc->GetListOfPrimitives());
-    	TObject *obj;
-	
-    	while((obj = next())){
-    	  if(obj->InheritsFrom("TH1")){
-    	    TH1F *hh = (TH1F*)obj;
-    	    hh->GetXaxis()->SetTitleSize(0.06);
-    	    hh->GetYaxis()->SetTitleSize(0.06);
-
-    	    hh->GetXaxis()->SetLabelSize(0.05);
-    	    hh->GetYaxis()->SetLabelSize(0.05);
-	    
-    	    hh->GetXaxis()->SetTitleOffset(0.85);
-    	    hh->GetYaxis()->SetTitleOffset(0.76);
-
-    	    if(fabs(cc->GetBottomMargin()-0.12)<0.001){
-    	      TPaletteAxis *palette = (TPaletteAxis*)hh->GetListOfFunctions()->FindObject("palette");
-    	      if(palette) {
-    	      	palette->SetY1NDC(0.12);
-    	      	cc->Modified();
-    	      }
-    	    }
-    	  }
-    	  if(obj->InheritsFrom("TGraph")){
-    	    TGraph *gg = (TGraph*)obj;
-    	    gg->GetXaxis()->SetLabelSize(0.05);
-    	    gg->GetXaxis()->SetTitleSize(0.06);
-    	    gg->GetXaxis()->SetTitleOffset(0.84);
-
-    	    gg->GetYaxis()->SetLabelSize(0.05);
-    	    gg->GetYaxis()->SetTitleSize(0.06);
-    	    gg->GetYaxis()->SetTitleOffset(0.8);
-    	  }
-    	  if(obj->InheritsFrom("TF1")){
-    	    TF1 *f = (TF1*)obj;
-    	    f->SetNpx(500);
-    	  }
-    	}
-      }
+      if(style == 0) prt_set_style(cc);
+      
       prt_canvasPrint(cc,name,path,what);
     }else{
       c->SetCanvasSize(w,h);
@@ -1122,9 +1125,19 @@ void prt_canvasSave(Int_t what=1, Int_t style=0, Bool_t rm=false){
   TCanvas *c=0;
   TString path = prt_createDir();
   while((c = (TCanvas*) next())){
+    prt_set_style(c);
     prt_save(c, path, what,style);
     prt_canvaslist->Remove(c);
     if(rm) c->Close();
+  }
+}
+
+void prt_set_style(){
+  TIter next(prt_canvaslist);
+  TCanvas *c=0;
+  TString path = prt_createDir();
+  while((c = (TCanvas*) next())){
+    prt_set_style(c);
   }
 }
 
