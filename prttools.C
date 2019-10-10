@@ -132,10 +132,11 @@ Int_t    prt_color[]={1,1,4,7,2};
 Double_t prt_particleArray[3000];
 
 TF1 *prt_gaust;
-TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1){
+TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1,Int_t bkg = 0){
   Int_t binmax = h->GetMaximumBin();
   Double_t xmax = h->GetXaxis()->GetBinCenter(binmax);
-  prt_gaust = new TF1("prt_gaust","[0]*exp(-0.5*((x-[1])/[2])^2)",xmax-range,xmax+range);
+  if(bkg==0) prt_gaust = new TF1("prt_gaust","[0]*exp(-0.5*((x-[1])/[2])^2)",xmax-range,xmax+range);
+  else if(bkg==1) prt_gaust = new TF1("prt_gaust","[0]*exp(-0.5*((x-[1])/[2])^2)+[3]+x*[4]",xmax-range,xmax+range);
   prt_gaust->SetNpx(500);
   prt_gaust->SetParNames("const","mean","sigma");
   prt_gaust->SetLineColor(2);
