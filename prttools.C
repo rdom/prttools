@@ -210,12 +210,12 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
   return TVector3(mean1,sigma1,mean2);
 }
 
-TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_t fitrange=1,Int_t rebin=1){
+TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_t fitrange=1,Int_t rebin=1,Int_t ret=0){
   TH2F *h =(TH2F*) hh->Clone("h");
   h->RebinY(rebin);
   Int_t point(0);
   TGraph *gres = new TGraph();
-  for (int i=0;i<h->GetNbinsY();i++){
+  for (int i=1;i<h->GetNbinsY();i++){
     Double_t x = h->GetYaxis()->GetBinCenter(i);
     TH1D* hp;
     if(minrange!=maxrange){
@@ -228,13 +228,22 @@ TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_
       cut->SetPoint(3,maxrange,-1E6);
       cut->SetPoint(4,minrange,-1E6);
     
-      hp = h->ProjectionX(Form("bin%d",i+1),i+1,i+2,"[prt_onepeakcut]");
+      hp = h->ProjectionX(Form("bin%d",i),i,i,"[prt_onepeakcut]");
     }else{
-      hp = h->ProjectionX(Form("bin%d",i+1),i+1,i+2);
+      hp = h->ProjectionX(Form("bin%d",i),i,i);
     }
+
+    TVector3 res = prt_fit((TH1F*)hp,fitrange,100);
+    Double_t y;
+    if(ret==0) y = res.X();
+    if(ret==1) y = res.Y();
+    if(ret==2) y = res.X() + 0.5*res.Y();
+    if(ret==3) y = res.X() - 0.5*res.Y();
     
-    Double_t y = prt_fit((TH1F*)hp,fitrange,100).X();
-    gres->SetPoint(point++,y,x);
+    gres->SetPoint(point,y,x);
+    gres->SetLineWidth(2);
+    gres->SetLineColor(kRed);
+    point++;
   }
   return gres;
 }
