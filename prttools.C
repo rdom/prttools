@@ -132,7 +132,7 @@ Int_t    prt_color[]={1,1,4,7,2};
 Double_t prt_particleArray[3000];
 
 TF1 *prt_gaust;
-TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1,Int_t bkg = 0){
+TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1,Int_t bkg = 0, TString opt="MQN"){
   Int_t binmax = h->GetMaximumBin();
   Double_t xmax = h->GetXaxis()->GetBinCenter(binmax);
   if(bkg==0) prt_gaust = new TF1("prt_gaust","[0]*exp(-0.5*((x-[1])/[2])^2)",xmax-range,xmax+range);
@@ -151,7 +151,7 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
       prt_gaust->SetParameter(1,xmax);
       prt_gaust->SetParameter(2,0.2);
       prt_gaust->SetParLimits(2,0.005,limit);
-      h->Fit("prt_gaust","","MQN",xxmin-range, xxmax+range);
+      h->Fit("prt_gaust",opt,"",xxmin-range, xxmax+range);
     }
     
     if(peakSearch>1){
@@ -186,7 +186,7 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
 	  prt_gaust->FixParameter(4,xxmax);
 	  prt_gaust->SetParameter(2,0.1);
 	  prt_gaust->SetParameter(5,0.1);
-	  h->Fit("prt_gaust","","MQN",xxmin-range, xxmax+range);
+	  h->Fit("prt_gaust",opt,"",xxmin-range, xxmax+range);
 	  prt_gaust->ReleaseParameter(1);
 	  prt_gaust->ReleaseParameter(4);
 	}
@@ -196,7 +196,7 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
       prt_gaust->SetParameter(5,0.2);
     }
 
-    h->Fit("prt_gaust","","MQN",xxmin-range, xxmax+range);
+    h->Fit("prt_gaust",opt,"",xxmin-range, xxmax+range);
     mean1 = prt_gaust->GetParameter(1);
     sigma1 = prt_gaust->GetParameter(2);
     if(sigma1>10) sigma1=10;
@@ -998,6 +998,7 @@ void prt_canvasPrint(TPad *c, TString name="", TString path="", Int_t what=0){
 }
 
 void prt_set_style(TCanvas *c){
+  prt_setRootPalette(1);
   if(fabs(c->GetBottomMargin()-0.1)<0.001) c->SetBottomMargin(0.12);
   TIter next(c->GetListOfPrimitives());
   TObject *obj;
