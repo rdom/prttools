@@ -104,6 +104,8 @@ void TTSelector::Begin(TTree *){
   gTrigger = ((TObjString*)strobj->At(0))->GetString().Atoi();
   gMode = ((TObjString*)strobj->At(1))->GetString().Atoi();
   gSetup = ((TObjString*)strobj->At(2))->GetString().Atoi();
+  std::cout<<"gSetup "<<gSetup<<std::endl;
+  
   prt_createMap(gSetup);
   TString filedir=ginFile;
   filedir.Remove(filedir.Last('.')-4);
@@ -529,7 +531,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   goutFile = outFile;
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
-  gMode = mode;
+  gMode = mode;  
   gSetup = setupid;
   if(gMode == 5) gTrigger=1136; //1136
   
@@ -537,7 +539,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   ch->Add(ginFile);
   
   Int_t entries = ch->GetEntries();
-  TTSelector *selector = new TTSelector();
+  TTSelector *selector = new TTSelector();  
   TString option = Form("%d %d %d",gTrigger,gMode,gSetup);
   
   if(eEvent==0){

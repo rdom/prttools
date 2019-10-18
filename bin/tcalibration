@@ -147,7 +147,7 @@ else
     if [ -d $HOME/dirc/prttools ]; then
 	cd $HOME/dirc/prttools
     fi
-
+    
     if [ "$threads" -gt 0 ]; then
 	str=$(root -l -q -b loadprtlibs.C nentries.C"(\"$inFile\")")
 	echo $str
@@ -171,7 +171,7 @@ else
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$outDir${fileId}${suf}${i}j.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode,$setupid)" > /dev/null  2>/dev/null &
+	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$outDir${fileId}${suf}${i}j.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode,0,$setupid)" > /dev/null  2>/dev/null &
 	done
 	
 	waitForMe
@@ -184,7 +184,7 @@ else
 	finish_time=$(date +%s)
 	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
     else
-	root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"${outDir}${fileId}${suf}.root\",\"$cFile\", \"$tFile\", $refChannel,0,$events,$mode,$setupid)"
+	root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"${outDir}${fileId}${suf}.root\",\"$cFile\", \"$tFile\", $refChannel,0,$events,$mode,0,$setupid)"
     fi
     cd -> /dev/null
 fi
