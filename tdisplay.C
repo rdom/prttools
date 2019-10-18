@@ -6,15 +6,15 @@
 #include "tdisplay.h"
 
 const Int_t maxfiles = 150;
-Int_t gSetup=2015, gTrigger,gEntries=0, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
+Int_t gSetup=2019, gTrigger,gEntries=0, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
 TString ginFile(""),gcFile(""), fileList[maxfiles];
-TH1F *hCh, *hRefDiff, *hFine[maxfiles][prt_maxch], *hTot[maxfiles][prt_maxch],
-  *hTimeL[prt_nmcp][prt_npix], *hTimeT[prt_nmcp][prt_npix], *hSigma[prt_ntdc];
-TH2F *hLeTot[prt_maxch], *hShape[prt_nmcp][prt_npix];
+TH1F *hCh, *hRefDiff, *hFine[maxfiles][prt_maxchm], *hTot[maxfiles][prt_maxchm],
+  *hTimeL[prt_nmcp][prt_npix], *hTimeT[prt_nmcp][prt_npix], *hSigma[prt_ntdcm];
+TH2F *hLeTot[prt_maxchm], *hShape[prt_nmcp][prt_npix];
 TGraph *gMaxFine, *gLeOff, *gTotOff, *gTotPeaks;
-Int_t gMaxIn[prt_maxch];
-Double_t  tdcRefTime[prt_ntdc], gTotO[prt_maxch], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0);
-TGraph *gGrIn[prt_maxch], *gLeO[prt_maxch], *gGr[maxfiles][prt_maxch], *gGrDiff[prt_maxch];
+Int_t gMaxIn[prt_maxchm];
+Double_t  tdcRefTime[prt_ntdcm], gTotO[prt_maxchm], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0);
+TGraph *gGrIn[prt_maxchm], *gLeO[prt_maxchm], *gGr[maxfiles][prt_maxchm], *gGrDiff[prt_maxchm];
 TCanvas *cTime;
 
 Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){ 
@@ -64,7 +64,10 @@ void TTSelector::SlaveBegin(TTree *){
     fileList[i-5]=((TObjString*)strobj->At(i))->GetString();
     std::cout<<" fileList[i]  "<<fileList[i-5] <<std::endl;
   }
-
+  
+  prt_createMap(gSetup);
+  prt_initDigi();
+  
   Int_t totb(200), totl(0), toth(100); //12
   Int_t leb(400), le1(20), le2(40);
   if(fileList[0].Contains("trb")){
@@ -109,7 +112,6 @@ void TTSelector::SlaveBegin(TTree *){
     fOutput->Add(hLeTot[c]);
   }
 
-  prt_initDigi();
   for(Int_t m=0; m<prt_nmcp; m++){
     for(Int_t p=0; p<prt_npix; p++){
 
@@ -132,7 +134,6 @@ void TTSelector::SlaveBegin(TTree *){
     fOutput->Add(hSigma[i]);
   }
   fOutput->Add(hRefDiff);
-  prt_createMap();
   
   if(gcFile!="0"){
     TFile f(gcFile);
@@ -184,7 +185,7 @@ void TTSelector::SlaveBegin(TTree *){
   std::cout<<"init done " <<std::endl;
 }
 
-Int_t mult[prt_maxch]={0};
+Int_t mult[prt_maxchm]={0};
 Bool_t TTSelector::Process(Long64_t entry){
   if(entry%1000==0) std::cout<<"event # "<< entry <<std::endl;
   Int_t tdc,ch,mcp,pix,col,row;
@@ -847,10 +848,9 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   }
   
   TTSelector *selector = new TTSelector();
-  prt_createMap();
+  prt_createMap(gSetup);
   ch->SetCacheSize(10000000);
-  ch->AddBranchToCache("*");
-  
+  ch->AddBranchToCache("*");  
   ch->Process(selector,option,entries);
 
   prt_drawDigi("m,p,v\n",prt_geometry,-2,0);
@@ -866,14 +866,14 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4, TString cFile= "calib.root",Int_t entries=0){
+void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4, TString cFile= "calib.root",Int_t entries=0,Int_t setupid=2019){
   //inFile= "data/dirc/scan1/th_1*.hld.root";
   ginFile = inFile;
   gTrigger = trigger;
   gEntries=entries;
   gcFile = (cFile!="")? cFile: "0"; // fine time calibration
   gMode=mode;
-  gSetup = 2015;
+  gSetup = setupid;
   gWorkers = workers;
 
   new MyMainFrame(gClient->GetRoot(), 800, 800);

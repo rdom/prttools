@@ -14,12 +14,12 @@ class PrtEvent;
 MyMainFrame *gMain;
 TGHProgressBar *pbar;
 MSelector *fSelector;
-TGraph *gGrDiff[prt_maxch];
-TGraph *gWalk[prt_maxch];
+TGraph *gGrDiff[prt_maxchm];
+TGraph *gWalk[prt_maxchm];
 TCanvas *cTime;
 
 const Int_t maxMult = 30;
-Int_t mult[prt_maxch]={0},gComboId(0), gTrigger(0), gMode(0), gWorkers(4), gEntries(0); //3for2015
+Int_t mult[prt_maxchm]={0},gComboId(0), gTrigger(0), gSetup(2019) ,gMode(0), gWorkers(4), gEntries(0); //3for2015
 Double_t gTimeCutMin(-10000),gTimeCutMax(10000),gTofMin(0),gTofMax(0);
 Double_t gMultCutMin(0),gMultCutMax(0),gTimeCuts[prt_nmcp][prt_npix][2], gTotMean[prt_nmcp][prt_npix];
 TString ginFile(""), gPath(""), gInfo(""),gsTimeCuts("0"), gsTotMean("0");
@@ -39,7 +39,7 @@ void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
 }
 
 void init(){
-  if(!prt_init(ginFile,1,"")) return;
+  if(!prt_init(ginFile,1,"",gSetup)) return;
   
   TString insim =  ginFile;
   insim.ReplaceAll("C.root","S.root");
@@ -72,9 +72,6 @@ void init(){
   fSelector = new MSelector();
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit(1111);
-
-  // create channel - mcp/pixel map
-  prt_createMap();
 }
 
 void MSelector::SlaveBegin(TTree *){
@@ -82,8 +79,9 @@ void MSelector::SlaveBegin(TTree *){
   std::istringstream source(option.Data());
   Int_t bins1 =100, bins2 = 100;
   Double_t min1=-5, max1=5, min2=-5, max2=5;
-  source>>gMode>>gTrigger>>bins1>>min1>>max1>>bins2>>min2>>max2>>gTimeCutMin>>gTimeCutMax>>gMultCutMin>>gMultCutMax>>gsTimeCuts>>gsTotMean>>gTofMin>>gTofMax;
+  source>>gSetup>>gMode>>gTrigger>>bins1>>min1>>max1>>bins2>>min2>>max2>>gTimeCutMin>>gTimeCutMax>>gMultCutMin>>gMultCutMax>>gsTimeCuts>>gsTotMean>>gTofMin>>gTofMax;
 
+  prt_createMap(gSetup);
   TObjArray *sarr = gsTimeCuts.Tokenize(";");
   if(sarr->GetEntries()>1){
     for (Int_t m=0; m <prt_nmcp; m++) {
@@ -200,8 +198,6 @@ void MSelector::SlaveBegin(TTree *){
   fOutput->Add(hEMult[prt_nmcp]);
   fOutput->Add(hCh);
   fOutput->Add(hTof);
-  
-  prt_createMap();
 }
 
 Bool_t MSelector::Process(Long64_t entry){
@@ -691,7 +687,7 @@ void MyMainFrame::DoDraw(){
   fHProg3->Reset();
   //prt_entries = 10000;
 
-  TString option = Form("%d %d %s %s %s %s %s %s %s",gMode,gTrigger,fEdit1->GetText(),fEdit2->GetText(),fEdit3->GetText(),fEdit4->GetText(),gsTimeCuts.Data(), gsTotMean.Data(),fEdit5->GetText());
+  TString option = Form("%d %d %d %s %s %s %s %s %s %s",gSetup,gMode,gTrigger,fEdit1->GetText(),fEdit2->GetText(),fEdit3->GetText(),fEdit4->GetText(),gsTimeCuts.Data(), gsTotMean.Data(),fEdit5->GetText());
 
   gROOT->SetBatch(1);
   prt_ch->Process(fSelector,option,prt_entries);
@@ -1390,13 +1386,14 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TString path="", TString info="0",Int_t entries=0, Int_t workers = 4){
+void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TString path="", TString info="0",Int_t entries=0, Int_t workers = 4, int setupid=2019){
   ginFile = inFile;
   gEntries=entries;
   gTrigger= trigger;
   gMode=mode;
   gPath=path;
   gInfo=info;
+  gSetup=setupid;
   prt_addInfo("Program = cdisplay");
   prt_addInfo("In file = " + ginFile);
   prt_addInfo("In path = " + gPath);

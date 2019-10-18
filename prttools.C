@@ -72,40 +72,42 @@ const Int_t prt_npix = 64;
 // 			 "840","841","842","843"
 // };
 
-// const Int_t prt_ntdc=41; //may2015
-// TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-// 			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
-// 			 "2014","2015","2016","2018","2019","201a","201c","2020","2023","2024",
-// 			 "2025","2026","2027","2028","2029","202a","202b","202c","202d","202e","202f"
-// };
+//may2015
+const Int_t prt_ntdc_may2015=41;
+TString prt_tdcsid_may2015[] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
+			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
+			 "2014","2015","2016","2018","2019","201a","201c","2020","2023","2024",
+			 "2025","2026","2027","2028","2029","202a","202b","202c","202d","202e","202f"
+};
 
-// const Int_t prt_ntdc=30;  //jun2015
-// TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-// 			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
-// 			 "2014","2015","2016","2018","2019","201a","201c","201d","202c","202d"
-// };
+//jun2015
+const Int_t prt_ntdc_jun2015=30; 
+TString prt_tdcsid_jun2015[] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
+			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
+			 "2014","2015","2016","2018","2019","201a","201c","201d","202c","202d"
+};
 
-// const Int_t prt_ntdc=20;  //oct2016
-// TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-// 			       "200a","200b","200c",
-// 			       "2018","201b","201c","201f","202c","202d","202d"
-// };
+//oct2016
+const Int_t prt_ntdc_oct2016=20;  
+TString prt_tdcsid_oct2016[] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
+			       "200a","200b","200c",
+			       "2018","201b","201c","201f","202c","202d","202d"
+};
 
 //aug2017 jul2018
-//const Int_t prt_ntdc = 32;
-// TString prt_tdcsid[prt_ntdc] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
-// 			       "2014","2015","2016","2017","2018","2019","201a","201b",
-// 			       "201c","201d","201e","201f"
-// };
+const Int_t prt_ntdc_jul2018 = 32;
+TString prt_tdcsid_jul2018 [] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
+			       "2014","2015","2016","2017","2018","2019","201a","201b",
+			       "201c","201d","201e","201f"
+};
 
-//2019
-const Int_t prt_ntdc = 21;
-TString prt_tdcsid[prt_ntdc] ={"2014","2015","2016","2017","2000","2001","2002","2003","2004","2005",
+//jul2019
+const Int_t prt_ntdc_jul2019 = 21;
+TString prt_tdcsid_jul2019[] ={"2014","2015","2016","2017","2000","2001","2002","2003","2004","2005",
 			       "2006","2007","2008","2009","200a","200b","200c","200d","200e","200f",
 			       "2010"};
 
 const Int_t prt_maxdircch(prt_nmcp*prt_npix);
-const Int_t prt_maxch = prt_ntdc*48;
 const Int_t prt_maxnametdc=10000;
 
 TRandom  prt_rand;
@@ -118,12 +120,17 @@ TPad*    prt_hpads[prt_nmcp], *prt_hpglobal;
 TCanvas* prt_cdigi;
 TSpectrum *prt_spect = new TSpectrum(2);
 
+const int prt_ntdcm = 41;
+int prt_ntdc = prt_ntdcm;
+int prt_maxch = prt_ntdc*48;
+TString prt_tdcsid[prt_ntdcm];
+const int prt_maxchm = prt_ntdcm*48;
 Int_t map_tdc[prt_maxnametdc];
-Int_t map_mpc[prt_maxch/64][prt_npix];
-Int_t map_mcp[prt_maxch];
-Int_t map_pix[prt_maxch];
-Int_t map_row[prt_maxch];
-Int_t map_col[prt_maxch];
+Int_t map_mpc[prt_maxchm/64][prt_npix];
+Int_t map_mcp[prt_maxchm];
+Int_t map_pix[prt_maxchm];
+Int_t map_row[prt_maxchm];
+Int_t map_col[prt_maxchm];
 
 Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
 Double_t prt_mass[]={0.000511,0.1056584,0.139570,0.49368,0.9382723};
@@ -233,12 +240,13 @@ TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_
       hp = h->ProjectionX(Form("bin%d",i),i,i);
     }
 
-    TVector3 res = prt_fit((TH1F*)hp,fitrange,100);
+    TVector3 res = prt_fit((TH1F*)hp,fitrange,100,2,1,1);
     Double_t y;
     if(ret==0) y = res.X();
     if(ret==1) y = res.Y();
     if(ret==2) y = res.X() + 0.5*res.Y();
     if(ret==3) y = res.X() - 0.5*res.Y();
+    if(y==0 || y<minrange || y>maxrange) continue;
     
     gres->SetPoint(point,y,x);
     gres->SetLineWidth(2);
@@ -248,7 +256,22 @@ TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_
   return gres;
 }
 
-void prt_createMap(){
+void prt_createMap(int setupid = 2019){
+  prt_geometry = setupid;
+  if(prt_geometry==2015) prt_ntdc = prt_ntdc_jun2015;
+  if(prt_geometry==2016) prt_ntdc = prt_ntdc_oct2016;
+  if(prt_geometry==2017) prt_ntdc = prt_ntdc_jul2018;
+  if(prt_geometry==2018) prt_ntdc = prt_ntdc_jul2018;
+  if(prt_geometry==2019) prt_ntdc = prt_ntdc_jul2019;
+	
+  for(int i=0; i<prt_ntdc; i++){
+    if(prt_geometry==2015) prt_tdcsid[i] = prt_tdcsid_jun2015[i];
+    if(prt_geometry==2016) prt_tdcsid[i] = prt_tdcsid_oct2016[i];
+    if(prt_geometry==2017) prt_tdcsid[i] = prt_tdcsid_jul2018[i];
+    if(prt_geometry==2018) prt_tdcsid[i] = prt_tdcsid_jul2018[i];
+    if(prt_geometry==2019) prt_tdcsid[i] = prt_tdcsid_jul2019[i];    
+  }  
+  
   TGaxis::SetMaxDigits(4);
   for(Int_t i=0; i<prt_maxnametdc; i++) map_tdc[i]=-1;
   for(Int_t i=0; i<prt_ntdc; i++){
@@ -372,6 +395,7 @@ TPaletteAxis* prt_cdigi_palette;
 TH1 * prt_cdigi_th;
 TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
   if(prt_geometry==2021) layoutId=2021;
+  if(prt_geometry==2019) layoutId=2018;
   if(!prt_cdigi) prt_cdigi = new TCanvas("prt_cdigi","prt_cdigi",800,400);
   prt_cdigi->cd();
   
@@ -596,7 +620,6 @@ void prt_initDigi(Int_t type=1){
       }
     }
   }
-
 }
 
 void prt_resetDigi(){
@@ -787,12 +810,12 @@ void prt_setRootPalette(Int_t pal = 0){
 }
 
 #if defined(prt__sim) || defined(eic__sim)
-bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepath=""){
+bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepath="", int setupid = 2019){
 
   if(inFile=="") return false;
   if(savepath!="") prt_savepath=savepath;
   prt_setRootPalette(1);
-  prt_createMap();
+  prt_createMap(setupid);
   delete prt_ch;
 
   prt_ch = new TChain("data");
@@ -836,12 +859,12 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
 #endif
 
 #ifdef prt__beam
-bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepath=""){
+bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepath="", int setupid=2019){
 
   if(inFile=="") return false;
   if(savepath!="") prt_savepath=savepath;
   
-  prt_createMap();
+  prt_createMap(setupid);
   prt_setRootPalette(1);
   delete prt_ch;
 

@@ -21,13 +21,16 @@ show_help(){
      -a 
         mode, use \"-a 3\" for combining files
         mode, use \"-a 5\" to plot FINE bin goodness
+     -y 
+        prototype geometry (e.g. 2017, 2018, 2019)
+
      -j
         number of proof threads (default 4) if <2 - no proof will be used"
     echo "$help" 
 }
 
 OPTIND=1 
-while getopts "h?r:le:c:a:j:" opt; do
+while getopts "h?r:le:c:a:y:j:" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -43,12 +46,15 @@ while getopts "h?r:le:c:a:j:" opt; do
 	    ;;
 	a)  mode=$OPTARG
 	    ;;
+	y)  setupid=$OPTARG
+	    ;;
 	j)  threads=$OPTARG
             ;;
     esac
 done
 refChannel=${refChannel:-0}
 mode=${mode:-0}
+setupid=${setupid:-2019}
 events=${events:-0}
 threads=${threads:-4}
 shift $((OPTIND-1))
@@ -88,6 +94,6 @@ else
 	cd $HOME/dirc/prttools
     fi
 
-    root -l tdisplay.C+"(\"$inFile\",$refChannel,$mode,$threads,\"$cFile\", $events)"
+    root -l tdisplay.C+"(\"$inFile\",$refChannel,$mode,$threads,\"$cFile\", $events, $setupid)"
     cd -
 fi

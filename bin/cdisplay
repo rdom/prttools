@@ -28,12 +28,14 @@ show_help(){
         quite mode
      -j
         number of proof threads (default 4) if <2 - no proof will be used
+    -y 
+        prototype geometry (e.g. 2017, 2018, 2019)
 "
   echo "$help" 
 }
 
 OPTIND=1 
-while getopts "h?r:le:a:p:i:qj:" opt; do
+while getopts "h?r:le:a:p:i:qj:y:" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -55,6 +57,8 @@ while getopts "h?r:le:a:p:i:qj:" opt; do
 	    ;;
 	j)  threads=$OPTARG
 	    ;;
+	y)  setupid=$OPTARG
+	    ;;
     esac
 done
 refChannel=${refChannel:-0}
@@ -63,6 +67,7 @@ events=${events:-0}
 path=${path:-0}
 info=${info:-0}
 threads=${threads:-4}
+setupid=${setupid:-2019}
 shift $((OPTIND-1))
 
 fileName=$1
@@ -93,6 +98,6 @@ else
     if [ $quite ]; then
 	flags="-l -q"
     fi
-    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\", $events, $threads)"
+    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\", $events, $threads, $setupid)"
     cd -
 fi
