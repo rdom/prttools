@@ -24,6 +24,8 @@ show_help(){
         number of threads 
      -e 
         number of events for processing (0 - all events)
+     -y 
+        prototype geometry (e.g. 2017, 2018, 2019)
      -m
         mode: 0 - do not subtract tdc ref channel, 1 - do subtraction  (default), 5 - final, 6 - offsets"
 
@@ -31,7 +33,7 @@ show_help(){
 }
 
 OPTIND=1 
-while getopts "h?r:lm:c:t:o:j:e:" opt; do
+while getopts "h?r:lm:c:t:o:j:e:y:" opt; do
     case "$opt" in
 	h|\?)
             show_help
@@ -53,6 +55,8 @@ while getopts "h?r:lm:c:t:o:j:e:" opt; do
             ;;
 	e)  events=$OPTARG
 	    ;;
+	y)  setupid=$OPTARG
+	    ;;
     esac
 done
 refChannel=${refChannel:-0}
@@ -61,6 +65,7 @@ threads=${threads:-0}
 tFile=${tFile:-""}
 outDir=${outDir:-""}
 events=${events:-0}
+setupid=${setupid:-2019}
 
 shift $((OPTIND-1))
 
@@ -166,7 +171,7 @@ else
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$outDir${fileId}${suf}${i}j.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode)" > /dev/null  2>/dev/null &
+	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$outDir${fileId}${suf}${i}j.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode,$setupid)" > /dev/null  2>/dev/null &
 	done
 	
 	waitForMe
@@ -179,7 +184,7 @@ else
 	finish_time=$(date +%s)
 	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
     else
-	root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"${outDir}${fileId}${suf}.root\",\"$cFile\", \"$tFile\", $refChannel,0,$events,$mode)"
+	root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"${outDir}${fileId}${suf}.root\",\"$cFile\", \"$tFile\", $refChannel,0,$events,$mode,$setupid)"
     fi
     cd -> /dev/null
 fi

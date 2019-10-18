@@ -8,9 +8,9 @@
 
 DataInfo prt_data_info;
 TString ginFile(""), goutFile(""), gcFile("");
-Int_t gTrigger(0), gMode(0), gComboId(0),  gMaxIn[prt_maxch];
-Double_t tdcRefTime[prt_ntdc],gTotO[prt_maxch], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0);
-TGraph *gGrIn[prt_maxch], *gWalk[prt_maxch], *gGrDiff[prt_maxch];
+Int_t gTrigger(0), gSetup(2019), gMode(0), gComboId(0),  gMaxIn[prt_maxchm];
+Double_t tdcRefTime[prt_ntdcm],gTotO[prt_maxchm], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0);
+TGraph *gGrIn[prt_maxchm], *gWalk[prt_maxchm], *gGrDiff[prt_maxchm];
 
 Double_t walktheta(-5*TMath::Pi()/180.);
 
@@ -103,7 +103,8 @@ void TTSelector::Begin(TTree *){
   TObjArray *strobj = option.Tokenize(" ");
   gTrigger = ((TObjString*)strobj->At(0))->GetString().Atoi();
   gMode = ((TObjString*)strobj->At(1))->GetString().Atoi();
-  prt_createMap();
+  gSetup = ((TObjString*)strobj->At(2))->GetString().Atoi();
+  prt_createMap(gSetup);
   TString filedir=ginFile;
   filedir.Remove(filedir.Last('.')-4);
   fFile = new TFile(goutFile,"RECREATE");
@@ -522,13 +523,14 @@ void TTSelector::Terminate(){
   fFile->Close();
 }
 
-void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "outFileC.root", TString cFile= "calib.root", TString tFile= "calibOffsets.root", Int_t trigger=0,  Int_t sEvent =0, Int_t eEvent=0, Int_t mode=1, Int_t build=0){
+void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "outFileC.root", TString cFile= "calib.root", TString tFile= "calibOffsets.root", Int_t trigger=0,  Int_t sEvent =0, Int_t eEvent=0, Int_t mode=1, Int_t build=0, Int_t setupid=2019){
   if(build==1) return;
   ginFile = inFile;
   goutFile = outFile;
   gcFile = (cFile!="")? cFile: "0"; // calibration
   gTrigger = trigger;
   gMode = mode;
+  gSetup = setupid;
   if(gMode == 5) gTrigger=1136; //1136
   
   TChain* ch = new TChain("T");
@@ -536,7 +538,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   
   Int_t entries = ch->GetEntries();
   TTSelector *selector = new TTSelector();
-  TString option = Form("%d %d",gTrigger,gMode);
+  TString option = Form("%d %d %d",gTrigger,gMode,gSetup);
   
   if(eEvent==0){
     std::cout<<"Entries in chain:  "<< entries<<std::endl;
