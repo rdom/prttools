@@ -139,7 +139,7 @@ Int_t    prt_color[]={1,1,4,7,2};
 Double_t prt_particleArray[3000];
 
 TF1 *prt_gaust;
-TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1,Int_t bkg = 0, TString opt="MQN"){
+TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1,Int_t bkg = 0, TString opt="MQ"){
   Int_t binmax = h->GetMaximumBin();
   Double_t xmax = h->GetXaxis()->GetBinCenter(binmax);
   if(bkg==0) prt_gaust = new TF1("prt_gaust","[0]*exp(-0.5*((x-[1])/[2])^2)",xmax-range,xmax+range);
@@ -319,7 +319,7 @@ Int_t prt_getChannelNumber(Int_t tdc, Int_t tdcChannel){
 }
 
 Int_t prt_getTdcId(Int_t ch){
-  Int_t tch=0, tdcid;
+  Int_t tch=0, tdcid=0;
   if(prt_geometry==2018){
     for(int i=0; i<=prt_ntdc; i++){
       tdcid=i;
