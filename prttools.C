@@ -1,6 +1,9 @@
 // prttools - useful functions for hld*, prt*
 // original author: Roman Dzhygadlo - GSI Darmstadt 
 
+#ifndef prttools_h
+#define prttools_h 1
+
 #include "TROOT.h"
 #include "TSystem.h"
 #include "TStyle.h"
@@ -1090,11 +1093,12 @@ void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
       }
       
       TCanvas *cc;
-      if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) cc = (TCanvas*)c;
-      else{
+      if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) {
+	cc = (TCanvas*)c;
+      }else{
       	cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
       	cc = (TCanvas*) c->DrawClone();      
-      	cc->SetCanvasSize(w,h);
+	cc->SetCanvasSize(w,h);
       }
       
       if(style == 0) prt_set_style(cc);
@@ -1160,7 +1164,7 @@ void prt_canvasSave(Int_t what=1, Int_t style=0, Bool_t rm=false){
   TString path = prt_createDir();
   while((c = (TCanvas*) next())){
     prt_set_style(c);
-    prt_save(c, path, what,style);
+    prt_save(c, path, what,style);    
     prt_canvaslist->Remove(c);
     if(rm) c->Close();
   }
@@ -1295,4 +1299,4 @@ int prt_get3digit(TString str){
   return ((TString)str(e)).Atoi();
 }
 
-
+#endif
