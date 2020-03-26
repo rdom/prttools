@@ -371,7 +371,7 @@ Int_t prt_addRefChannels(Int_t ch,Int_t tdcSeqId){
 }
 
 Bool_t prt_isBadChannel(Int_t ch){
-  if(ch<0 || ch>prt_maxdircch) return true;
+  if(ch<0 || ch>=prt_maxdircch) return true;
   
   // // bad pixels july15
 
@@ -1264,7 +1264,6 @@ int prt_get_pid(int pdg){
   if(pdg==2212) pid=4; //p
   return pid;
 }
-
 
 double prt_get_momentum_from_tof(double dist,double dtof){
   double s = dtof*0.299792458/dist;
