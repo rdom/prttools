@@ -12,58 +12,10 @@ void setGStyle(TGraph *g, int id){
   g->SetTitle("shape a");
 }
 
-void da_js(){
-  prt_savepath = "data/joinScan";
-  TGraph *gret;
-
-  TString gpath="~/sim4/d/proc/jul18";
-
-  const int max(2);
-  TString wid[max][3]{
-    {gpath+"/403/reco*R_spr.root","(fR1==1)&&(fR2==0.00)","beam data"},
-    {gpath+"/403_00/reco*S_spr.root","(fR1==1)&&(fR2==0.00)","geant4 sim"}       
-  };
-  
-  TLegend *leg = new TLegend(0.65,0.61,0.85,0.89);
-  leg->SetFillColor(0);
-  leg->SetFillStyle(0);
-  leg->SetBorderSize(0);
-  leg->SetFillStyle(0);
-  
-  TString nid = "403_";
-
-  prt_canvasAdd(nid+"nph",800,500);
-  for(int j=0; j<max; j++){
-    gret = da_scan(wid[j][0],1,wid[j][1]);
-    setGStyle(gret,j);
-    gret->Draw((j==0)?"APL":"PL same");
-    leg->AddEntry(gret,wid[j][2],"lp");
-  }
-  leg->Draw();
-
-  prt_canvasAdd(nid+"spr",800,500);
-  for(int j=0; j<max; j++){
-    gret = da_scan(wid[j][0],2,wid[j][1]);
-    setGStyle(gret,j);
-    gret->Draw((j==0)?"APL":"PL same");
-    leg->AddEntry(gret,wid[j][2],"lp");
-  }
-  leg->Draw();
-
-  prt_canvasAdd(nid+"trr",800,500);
-  for(int j=0; j<max; j++){
-    gret = da_scan(wid[j][0],3,wid[j][1]);
-    setGStyle(gret,j);
-    gret->Draw((j==0)?"APL":"PL same");
-    leg->AddEntry(gret,wid[j][2],"lp");
-  }
-  leg->Draw();
-  prt_canvasSave(2,0);
-}
-
 TGraph* da_scan(TString inFile = "r_spr.root", const Int_t func=0, TString scut=""){
+  std::cout<<"inFile "<<inFile<<std::endl;
   
-  TString outdir=inFile;outdir.Remove(outdir.Last('/'));
+  TString outdir=inFile; outdir.Remove(outdir.Last('/'));
   TString sfile=inFile; sfile.Remove(0,sfile.Last('/')+1);
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));
   prt_savepath = outdir+sstudy+"r";
@@ -189,4 +141,53 @@ TGraph* da_scan(TString inFile = "r_spr.root", const Int_t func=0, TString scut=
     file->Close();
   }
   return 0;
+}
+
+void da_js(){
+  prt_savepath = "data/joinScan_18";
+  TGraph *gret;
+
+  TString gpath="~/sim4/d/proc/jul18";
+
+  const int max(2);
+  TString wid[max][3]{
+    {gpath+"/403/reco*R_spr.root","(fR1==1)&&(fR2==0.00)","beam data"},
+    {gpath+"/403_00/reco*S_spr.root","(fR1==1)&&(fR2==0.00)","geant4 sim"}       
+  };
+  
+  TLegend *leg = new TLegend(0.65,0.61,0.85,0.89);
+  leg->SetFillColor(0);
+  leg->SetFillStyle(0);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  
+  TString nid = "403_";
+
+  prt_canvasAdd(nid+"nph",800,500);
+  for(int j=0; j<max; j++){
+    gret = da_scan(wid[j][0],1,wid[j][1]);
+    setGStyle(gret,j);
+    gret->Draw((j==0)?"APL":"PL same");
+    leg->AddEntry(gret,wid[j][2],"lp");
+  }
+  leg->Draw();
+
+  prt_canvasAdd(nid+"spr",800,500);
+  for(int j=0; j<max; j++){
+    gret = da_scan(wid[j][0],2,wid[j][1]);
+    setGStyle(gret,j);
+    gret->Draw((j==0)?"APL":"PL same");
+    leg->AddEntry(gret,wid[j][2],"lp");
+  }
+  leg->Draw();
+
+  prt_canvasAdd(nid+"trr",800,500);
+  for(int j=0; j<max; j++){
+    gret = da_scan(wid[j][0],3,wid[j][1]);
+    setGStyle(gret,j);
+    gret->Draw((j==0)?"APL":"PL same");
+    leg->AddEntry(gret,wid[j][2],"lp");
+  }
+  leg->Draw();
+  prt_canvasSave(2,0);
 }

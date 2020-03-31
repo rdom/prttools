@@ -453,15 +453,16 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   path=prt_savepath+"/reco_"+name;
   
   TFile fc(path,"recreate");
-  TTree *tc = new TTree("reco","reco");
+  TTree *tc = new TTree("reco","recoPdf");
+  tc->Branch("mom",&prt_mom,"prt_mom/D");
   tc->Branch("theta",&prt_theta,"prt_theta/I");
   tc->Branch("phi",&prt_phi,"prt_phi/D");
-  tc->Branch("sep",&sep,"sep/D");
-  tc->Branch("esep",&esep,"esep/D");
-  tc->Branch("sigma",&sigma,"sigma/D");
-  tc->Branch("mom",&prt_mom,"prt_mom/D");
   tc->Branch("nph",&nph,"nph/D");
-  tc->Branch("enph",&enph,"enph/D");
+  tc->Branch("nph_err",&enph,"enph/D");
+  tc->Branch("sep",&sep,"sep/D");
+  tc->Branch("sep_err",&esep,"esep/D");
+  tc->Branch("time_res",&sigma,"sigma/D");
+  
   tc->Branch("r1",&r1,"r1/D");
   tc->Branch("r2",&r2,"r2/D");
   tc->Branch("beamz",&prt_beamz,"prt_beamz/I");
