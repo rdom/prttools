@@ -108,16 +108,15 @@ processOneSim (){
 	for ((fk=1;fk<${#file[@]};fk++)); do
 	    if [ ${level} -eq "3" ]; then
 		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x mix -e 45000 -b 1  > "${datapath}/${file[fk]}S.log" && \
-		    ./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -phi 0 -x "opticalphoton" -p "3.18 eV"  -e 10000000  -b 1 >> "${datapath}/${file[fk]}L.log" && \
+		    ./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -a 180 -phi 0 -x "opticalphoton" -p "3.18 eV"  -e 10000000  -b 1 >> "${datapath}/${file[fk]}L.log" && \
 		     cd ~/dirc/prtdirc/macro > /dev/null && root -q -b loadlib.C lutmean_cs.C"(\"${datapath}/lut_${file[fk]}S.root\")" >> "${datapath}/${file[fk]}L.log" && cd - && \
 		    ./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 0 -tr 1   >> "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "4" ]; then		
 		if [ $1 -eq "250" ] || [ $1 -eq "201" ] || [ $1 -eq "202" ]; then	
-		    ./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x proton -tr 0.0 -z 10 -e 1000 -r 0 -b 1  > "${datapath}/${file[fk]}S.log" &
+		    ./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x proton -tr 0.0 -e 1000 -r 0 -b 1  > "${datapath}/${file[fk]}S.log" &
 		else		
-		    ./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x mix -tr 0.0 -z 10 -e 45000 -r 2704161 -b 1  > "${datapath}/${file[fk]}S.log" &
-		    #   ./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x proton -tr 0.25 -z 10 -e 1000 -r 2704162 -b 1  > "${datapath}/${file[fk]}S.log" &
+		    ./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x mix -tr 0.0 -e 45000 -r 2704161 -b 1  > "${datapath}/${file[fk]}S.log" &
 		fi
 	    fi
 	    if [ ${level} -eq "5" ]; then
@@ -125,10 +124,12 @@ processOneSim (){
 		    cd ~/dirc/prtdirc/macro > /dev/null &&  root -q -b loadlib.C lutmean_cs.C"(\"${datapath}/lut_${file[fk]}S.root\")" >> "${datapath}/${file[fk]}L.log" && cd -  &
 	    fi
 	    if [ ${level} -eq "6" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/reco_${file[fk]}S.root" -f 0 -e 5000 -tr 1.5 -v 1 > "${datapath}/${file[fk]}SR.log" &
+	       	./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/reco_${file[fk]}S.root" -f 0 -e 4000 -tr 0.8 -v 1 > "${datapath}/${file[fk]}SR.log" &
+		#./prtdirc -s 3 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/res_tr_${file[fk]}S.root" -f -1 -e 0 -tr 0.8 -v 1 > "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "7" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/reco_${file[fk]}R.root" ${args[fk]} -f 0 -e 1000 -tr 1.5 -v 1   > "${datapath}/${file[fk]}RR.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/reco_${file[fk]}R.root" ${args[fk]} -f 0 -e 4000 -tr 0.8 -v 1   > "${datapath}/${file[fk]}RR.log" &
+		#./prtdirc -s 3 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/res_tr_${file[fk]}R.root" ${args[fk]} -f -1 -e 0 -tr 0.8 -v 1   > "${datapath}/${file[fk]}RR.log" &
 	    fi
 	    waitForMe $threads
 	done
