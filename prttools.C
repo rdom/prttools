@@ -61,7 +61,7 @@ DataInfo prt_data_info;
 
 
 #if defined(eic__sim) 
-const Int_t prt_nmcp = 4*6;
+const Int_t prt_nmcp = 4*7;
 const Int_t prt_npix = 16*16;
 #else
 const Int_t prt_nmcp = 8;//12;
@@ -151,7 +151,7 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
   prt_gaust->SetParNames("const","mean","sigma");
   prt_gaust->SetLineColor(2);
   Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-range),h->GetXaxis()->FindBin(xmax+range));
-  Double_t xxmin, xxmax, sigma1(0), mean1(0), sigma2(0), mean2(0);
+  Double_t xxmin, xxmax, sigma1(0), mean1(0), mean2(0);
   xxmax = xmax;
   xxmin = xxmax;
   Int_t nfound(1);
@@ -213,7 +213,7 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
     
     if(peakSearch == 2){
       mean2 = (nfound==1) ? prt_gaust->GetParameter(1) : prt_gaust->GetParameter(4);
-      sigma2 = (nfound==1) ? prt_gaust->GetParameter(2) : prt_gaust->GetParameter(5);
+      // sigma2 = (nfound==1) ? prt_gaust->GetParameter(2) : prt_gaust->GetParameter(5);
     }
   }
   delete prt_gaust;
@@ -244,7 +244,7 @@ TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_
     }
 
     TVector3 res = prt_fit((TH1F*)hp,fitrange,100,2,1,1);
-    Double_t y;
+    Double_t y=0;
     if(ret==0) y = res.X();
     if(ret==1) y = res.Y();
     if(ret==2) y = res.X() + 0.5*res.Y();
@@ -410,6 +410,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     if(layoutId==2018) prt_hpglobal = new TPad("P","T",0.05,0.07,0.9,0.93);
     if(layoutId==2023) prt_hpglobal = new TPad("P","T",0.073,0.02,0.877,0.98);
     if(layoutId==2030) prt_hpglobal = new TPad("P","T",0.10,0.01,0.82,0.99);
+    if(layoutId==2032) prt_hpglobal = new TPad("P","T",0.04,0.01,0.91,0.99);
     if(layoutId==2031) prt_hpglobal = new TPad("P","T",0.12,0.01,0.80,0.99);
     if(!prt_hpglobal)  prt_hpglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
     
@@ -425,6 +426,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   if(layoutId ==2018 || layoutId ==2023) {nrow=2; ncol=4;}
   if(layoutId ==2021) ncol=4;
   if(layoutId ==2030) {nrow=4; ncol=6;}
+  if(layoutId ==2032) {nrow=4; ncol=7;}
   if(layoutId ==2031) {nrow=3; ncol=4;}
   
   if(layoutId > 1){
@@ -460,6 +462,11 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
 	    shift = 0; shiftw=0.01; tbw=0.0015; tbh=0.042;
 	  }
 	  if(layoutId == 2030) {
+	    margin= 0.1;
+	    shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
+	    padi=j*ncol+i;
+	  }
+	  if(layoutId == 2032) {
 	    margin= 0.1;
 	    shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
 	    padi=j*ncol+i;
@@ -577,6 +584,7 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   prt_cdigi->cd();
   delete prt_cdigi_palette;
   if(layoutId==2018 || layoutId==2023)  prt_cdigi_palette = new TPaletteAxis(0.89,0.1,0.93,0.90,(TH1 *) prt_hdigi[nnmax]);
+  else if(layoutId==2032) prt_cdigi_palette = new TPaletteAxis(0.91,0.1,0.94,0.90,(TH1 *) prt_hdigi[nnmax]);
   else prt_cdigi_palette = new TPaletteAxis(0.82,0.1,0.86,0.90,(TH1 *) prt_hdigi[nnmax]);
   prt_cdigi_palette->SetName("prt_palette");  
   prt_cdigi_palette->Draw();
@@ -606,7 +614,7 @@ void prt_initDigi(Int_t type=1){
     }
   }
   if(type == 2){ //eic
-    for(Int_t m=0; m<6*4;m++){
+    for(Int_t m=0; m<prt_nmcp;m++){
       if(prt_hdigi[m]) prt_hdigi[m]->Reset("M");
       else{
 	prt_hdigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),16,0,16,16,0,16);
@@ -1131,7 +1139,7 @@ void prt_canvasAdd(TCanvas *c){
   prt_canvaslist->Add(c);
 }
 
-void prt_canvasCd(TString name="c"){
+void prt_canvasCd(){
   
 }
 
