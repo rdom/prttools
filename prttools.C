@@ -116,11 +116,10 @@ const Int_t prt_maxnametdc=10000;
 TRandom  prt_rand;
 TChain*  prt_ch = 0;
 Int_t    prt_entries(0),prt_particle(0),prt_geometry(2023),prt_beamx(0),prt_beamz(0);
+Int_t    prt_last_layoutId,prt_last_maxz,prt_last_minz;
 Double_t prt_theta(0), prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
 TString  prt_savepath(""),prt_info("");
 TH2F*    prt_hdigi[prt_nmcp];
-TPad*    prt_hpads[prt_nmcp], *prt_hpglobal;
-TCanvas* prt_cdigi;
 TSpectrum *prt_spect = new TSpectrum(2);
 
 const int prt_ntdcm = 41;
@@ -387,6 +386,19 @@ Bool_t prt_isBadChannel(Int_t ch){
   return false;
 }
 
+TString prt_randstr(Int_t len = 10){
+  TString str = ""; 
+  static const char alphanum[] =
+    "0123456789"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz";
+
+  for (int i = 0; i < len; ++i) {
+    str += alphanum[rand() % (sizeof(alphanum) - 1)];
+  }
+  return str;
+}
+
 // layoutId == 5    - 5 row's design for the PANDA Barrel DIRC
 // layoutId == 2015 - cern 2015
 // layoutId == 2016 - cern 2016
@@ -394,32 +406,38 @@ Bool_t prt_isBadChannel(Int_t ch){
 // layoutId == 2018 - cern 2018
 // layoutId == 2021 - new 3.6 row's design for the PANDA Barrel DIRC
 // layoutId == 2023 - new 2x4 layout for the PANDA Barrel DIRC
-TPaletteAxis* prt_cdigi_palette;
 TH1 * prt_cdigi_th;
-TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
+TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
+
+  prt_last_layoutId=layoutId;
+  prt_last_maxz=maxz;
+  prt_last_minz=minz;
+
   if(prt_geometry==2021) layoutId=2021;
   if(prt_geometry==2019) layoutId=2018;
-  if(!prt_cdigi) prt_cdigi = new TCanvas("prt_cdigi","prt_cdigi",800,400);
-  prt_cdigi->cd();
+
+  TString sid = prt_randstr(3);
+  auto cdigi = new TCanvas("hp="+sid,"hp_"+sid,800,400);
+  cdigi->cd();
+
+  TPad* prt_hpads[prt_nmcp];
+  TPad* prt_hpglobal;
   
-  if(!prt_hpglobal){
-    if(layoutId==2015 ||  layoutId==5) prt_hpglobal = new TPad("P","T",0.04,0.04,0.88,0.96);
-    if(layoutId==2021) prt_hpglobal = new TPad("P","T",0.12,0.02,0.78,0.98);
-    if(layoutId==2016) prt_hpglobal = new TPad("P","T",0.2,0.02,0.75,0.98);
-    if(layoutId==2017) prt_hpglobal = new TPad("P","T",0.15,0.02,0.80,0.98);
-    if(layoutId==2018) prt_hpglobal = new TPad("P","T",0.05,0.07,0.9,0.93);
-    if(layoutId==2023) prt_hpglobal = new TPad("P","T",0.073,0.02,0.877,0.98);
-    if(layoutId==2030) prt_hpglobal = new TPad("P","T",0.10,0.01,0.82,0.99);
-    if(layoutId==2032) prt_hpglobal = new TPad("P","T",0.04,0.01,0.91,0.99);
-    if(layoutId==2031) prt_hpglobal = new TPad("P","T",0.12,0.01,0.80,0.99);
-    if(!prt_hpglobal)  prt_hpglobal = new TPad("P","T",0.04,0.04,0.96,0.96);
-    
-    prt_hpglobal->SetFillStyle(0);
-    prt_hpglobal->Draw();
-  }
+  if(layoutId==2015 ||  layoutId==5) prt_hpglobal = new TPad(sid,"T",0.04,0.04,0.88,0.96);
+  else if(layoutId==2021) prt_hpglobal = new TPad(sid,"T",0.12,0.02,0.78,0.98);
+  else if(layoutId==2016) prt_hpglobal = new TPad(sid,"T",0.2,0.02,0.75,0.98);
+  else if(layoutId==2017) prt_hpglobal = new TPad(sid,"T",0.15,0.02,0.80,0.98);
+  else if(layoutId==2018) prt_hpglobal = new TPad(sid,"T",0.05,0.07,0.9,0.93);
+  else if(layoutId==2023) prt_hpglobal = new TPad(sid,"T",0.073,0.02,0.877,0.98);
+  else if(layoutId==2030) prt_hpglobal = new TPad(sid,"T",0.10,0.01,0.82,0.99);
+  else if(layoutId==2032) prt_hpglobal = new TPad(sid,"T",0.04,0.025,0.91,0.975);
+  else if(layoutId==2031) prt_hpglobal = new TPad(sid,"T",0.12,0.01,0.80,0.99);
+  else  prt_hpglobal = new TPad(sid,"T",0.04,0.04,0.96,0.96);
 
+  prt_hpglobal->SetFillStyle(0);
+  prt_hpglobal->Draw();  
   prt_hpglobal->cd();
-
+  
   Int_t nrow = 3, ncol = 5;
   if(layoutId ==2016) ncol=3;
   if(layoutId ==2017) ncol=4;
@@ -432,126 +450,127 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
   if(layoutId > 1){
     float tbw(0.02), tbh(0.01), shift(0),shiftw(0.02),shifth(0),margin(0.01);
     Int_t padi(0);
-    if(!prt_hpads[0]){
-      for(int i=0; i<ncol; i++){
-	for(int j=0; j<nrow; j++){
-	  if(j==1) shift = -0.028;
-	  else shift = 0;
-	  shifth=0;
-	  if(layoutId == 5) {shift =0; shiftw=0.001; tbw=0.001; tbh=0.001;}
-	  if(layoutId == 2021) {
-	    if(i==0 && j == nrow-1) continue;
-	    shift =0; shiftw=0.001; tbw=0.001; tbh=0.001;
-	    if(i==0) shifth=0.167;
-	  }
-	  if(layoutId == 2016) {
-	    shift = -0.01; shiftw=0.01; tbw=0.03; tbh=0.006;
-	    if(j==1) shift += 0.015;
-	  }
-	  if(layoutId == 2017) {
-	    margin= 0.1;
-	    shift = 0; shiftw=0.01; tbw=0.005; tbh=0.006;
-	    //if(j==1) shift += 0.015;
-	  }
-	  if(layoutId == 2018) {
-	    margin= 0.1;
-	    shift = 0; shiftw=0.01; tbw=0.005; tbh=0.006;
-	  }
-	  if(layoutId == 2023) {
-	    margin= 0.1;
-	    shift = 0; shiftw=0.01; tbw=0.0015; tbh=0.042;
-	  }
-	  if(layoutId == 2030) {
-	    margin= 0.1;
-	    shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
-	    padi=j*ncol+i;
-	  }
-	  if(layoutId == 2032) {
-	    margin= 0.1;
-	    shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
-	    padi=j*ncol+i;
-	  }
-	  if(layoutId == 2031) {
-	    margin= 0.1;
-	    shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
-	    padi=i*nrow+j;
-	  }
-
-	  prt_hpads[padi] =  new TPad(Form("P%d",i*10+j),"T",
-				      i/(ncol+2*margin)+tbw+shift+shiftw,
-				      j/(Double_t)nrow+tbh+shifth,
-				      (i+1)/(ncol+2*margin)-tbw+shift+shiftw,
-				      (1+j)/(Double_t)nrow-tbh+shifth, 21);
-	  prt_hpads[padi]->SetFillColor(kCyan-8);
-	  prt_hpads[padi]->SetMargin(0.055,0.055,0.055,0.055);
-	  prt_hpads[padi]->Draw();
-	  padi++;
+      
+    for(int i=0; i<ncol; i++){
+      for(int j=0; j<nrow; j++){
+	if(j==1) shift = -0.028;
+	else shift = 0;
+	shifth=0;
+	if(layoutId == 5) {shift =0; shiftw=0.001; tbw=0.001; tbh=0.001;}
+	if(layoutId == 2021) {
+	  if(i==0 && j == nrow-1) continue;
+	  shift =0; shiftw=0.001; tbw=0.001; tbh=0.001;
+	  if(i==0) shifth=0.167;
 	}
+	if(layoutId == 2016) {
+	  shift = -0.01; shiftw=0.01; tbw=0.03; tbh=0.006;
+	  if(j==1) shift += 0.015;
+	}
+	if(layoutId == 2017) {
+	  margin= 0.1;
+	  shift = 0; shiftw=0.01; tbw=0.005; tbh=0.006;
+	  //if(j==1) shift += 0.015;
+	}
+	if(layoutId == 2018) {
+	  margin= 0.1;
+	  shift = 0; shiftw=0.01; tbw=0.005; tbh=0.006;
+	}
+	if(layoutId == 2023) {
+	  margin= 0.1;
+	  shift = 0; shiftw=0.01; tbw=0.0015; tbh=0.042;
+	}
+	if(layoutId == 2030) {
+	  margin= 0.1;
+	  shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
+	  padi=j*ncol+i;
+	}
+	if(layoutId == 2032) {
+	  margin= 0.1;
+	  shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
+	  padi=j*ncol+i;
+	}
+	if(layoutId == 2031) {
+	  margin= 0.1;
+	  shift = 0; shiftw=0.01; tbw=0.001; tbh=0.001;
+	  padi=i*nrow+j;
+	}
+
+	prt_hpads[padi] =  new TPad(sid+Form("P%d",i*10+j),"T",
+				    i/(ncol+2*margin)+tbw+shift+shiftw,
+				    j/(Double_t)nrow+tbh+shifth,
+				    (i+1)/(ncol+2*margin)-tbw+shift+shiftw,
+				    (1+j)/(Double_t)nrow-tbh+shifth, 21);
+	prt_hpads[padi]->SetFillColor(kCyan-8);
+	prt_hpads[padi]->SetMargin(0.055,0.055,0.055,0.055);
+	prt_hpads[padi]->Draw();
+	padi++;
       }
     }
   }else{
     float tbw(0.02), tbh(0.01), shift(0),shiftw(-0.02);
     Int_t padi(0);
-    if(!prt_hpads[0]){
-      for(int ii=0; ii<ncol; ii++){
-	for(int j=0; j<nrow; j++){
-	  if(j==1) shift = 0.04;
-	  else shift = 0;
-	  prt_hpads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
-	  prt_hpads[padi]->SetFillColor(kCyan-8);
-	  prt_hpads[padi]->SetMargin(0.04,0.04,0.04,0.04);
-	  prt_hpads[padi]->Draw(); 
-	  padi++;
-	}
+    for(int ii=0; ii<ncol; ii++){
+      for(int j=0; j<nrow; j++){
+	if(j==1) shift = 0.04;
+	else shift = 0;
+	prt_hpads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
+	prt_hpads[padi]->SetFillColor(kCyan-8);
+	prt_hpads[padi]->SetMargin(0.04,0.04,0.04,0.04);
+	prt_hpads[padi]->Draw(); 
+	padi++;
       }
     }
-
   }
 
   Int_t np;
-  Double_t tmax,max=0;
-  if(maxz==0){
-    for(Int_t p=0; p<nrow*ncol;p++){
-      tmax = prt_hdigi[p]->GetBinContent(prt_hdigi[p]->GetMaximumBin());
-      if(max<tmax) max = tmax;
-    }
-  }else{
-    max = maxz;
-  }
-  
-  if(maxz==-2 || minz==-2){ // optimize range
-    for(Int_t p=0; p<nrow*ncol;p++){
-      tmax = prt_hdigi[p]->GetMaximum();
-      if(max<tmax) max = tmax;
-    }
-    Int_t tbins = 2000;
-    TH1F *h = new TH1F("","",tbins,0,max);
-    for(Int_t p=0; p<nrow*ncol;p++){
-      for(Int_t i=0; i<8; i++){
-	for(Int_t j=0; j<8; j++){
-	  Double_t val = prt_hdigi[p]->GetBinContent(i+1,j+1);
-	  if(val!=0) h->Fill(val);
+  Double_t max=0;
 
+  {
+    Double_t tmax;
+    if(maxz==0){
+      for(Int_t p=0; p<nrow*ncol;p++){
+	tmax = prt_hdigi[p]->GetBinContent(prt_hdigi[p]->GetMaximumBin());
+	if(max<tmax) max = tmax;
+      }
+    }else{
+      max = maxz;
+    }
+  
+    if(maxz==-2 || minz==-2){ // optimize range
+      for(Int_t p=0; p<nrow*ncol;p++){
+	tmax = prt_hdigi[p]->GetMaximum();
+	if(max<tmax) max = tmax;
+      }
+      Int_t tbins = 2000;
+      TH1F *h = new TH1F("","",tbins,0,max);
+      for(Int_t p=0; p<nrow*ncol;p++){
+	for(Int_t i=0; i<8; i++){
+	  for(Int_t j=0; j<8; j++){
+	    Double_t val = prt_hdigi[p]->GetBinContent(i+1,j+1);
+	    if(val!=0) h->Fill(val);
+
+	  }
 	}
       }
-    }
-    Double_t integral;
-    for(Int_t i=0; i<tbins; i++){
-      integral = h->Integral(0,i);
-      if(integral>0) {
-	if(minz==-2) minz = h->GetBinCenter(i);
-	break;
-      } 
-    }
+      Double_t integral;
+      for(Int_t i=0; i<tbins; i++){
+	integral = h->Integral(0,i);
+	if(integral>0) {
+	  if(minz==-2) minz = h->GetBinCenter(i);
+	  break;
+	} 
+      }
 
-    for(Int_t i=tbins; i>0; i--){
-      integral = h->Integral(i,tbins);
-      if(integral>10) {
-	if(maxz==-2) max = h->GetBinCenter(i);
-	break;
-      } 
+      for(Int_t i=tbins; i>0; i--){
+	integral = h->Integral(i,tbins);
+	if(integral>10) {
+	  if(maxz==-2) max = h->GetBinCenter(i);
+	  break;
+	} 
+      }
     }
   }
+  
   Int_t nnmax(0);
   for(Int_t p=0; p<nrow*ncol;p++){
     if(layoutId == 1 || layoutId == 4)  np =p%nrow*ncol + p/3;
@@ -560,38 +579,63 @@ TString prt_drawDigi(TString digidata="", Int_t layoutId = 0, Double_t maxz = 0,
     if(layoutId == 6 && p>10) continue;
     
     prt_hpads[p]->cd();
-    //prt_hdigi[np]->Draw("col+text");
-    prt_hdigi[np]->Draw("col");
+    prt_hdigi[np]->Draw("col");//"col+text"
     if(maxz==-1)  max = prt_hdigi[np]->GetBinContent(prt_hdigi[np]->GetMaximumBin());
     if(nnmax<prt_hdigi[np]->GetEntries()) nnmax=np;
     prt_hdigi[np]->SetMaximum(max);
     prt_hdigi[np]->SetMinimum(minz);
-    for(Int_t i=1; i<=8; i++){
-      for(Int_t j=1; j<=8; j++){
-  	Double_t weight = (double)(prt_hdigi[np]->GetBinContent(i,j))/(double)max *255;
-	if(weight>255) weight=255;
-  	if(weight > 0) digidata += Form("%d,%d,%d\n", np, (j-1)*8+i-1, (Int_t)weight);
-      }
-    }
   }
-  gPad->Update();
+  
   // prt_cdigi_palette = (TPaletteAxis*)prt_hdigi[nnmax]->GetListOfFunctions()->FindObject("palette");
   // prt_cdigi_palette->SetX1NDC(0.89);
   // prt_cdigi_palette->SetY1NDC(0.1);
   // prt_cdigi_palette->SetX2NDC(0.93);
   // prt_cdigi_palette->SetY2NDC(0.90);
   
-  prt_cdigi->cd();
-  delete prt_cdigi_palette;
+  cdigi->cd();
+  TPaletteAxis* prt_cdigi_palette;  
   if(layoutId==2018 || layoutId==2023)  prt_cdigi_palette = new TPaletteAxis(0.89,0.1,0.93,0.90,(TH1 *) prt_hdigi[nnmax]);
   else if(layoutId==2032) prt_cdigi_palette = new TPaletteAxis(0.91,0.1,0.94,0.90,(TH1 *) prt_hdigi[nnmax]);
   else prt_cdigi_palette = new TPaletteAxis(0.82,0.1,0.86,0.90,(TH1 *) prt_hdigi[nnmax]);
   prt_cdigi_palette->SetName("prt_palette");  
   prt_cdigi_palette->Draw();
 
-  prt_cdigi->Modified();
-  prt_cdigi->Update();
-  return digidata;
+  cdigi->Modified();
+  cdigi->Update();
+  
+  return cdigi;
+}
+
+TString prt_getPixData(TString s="", int layoutId=1){
+  // Int_t nrow = 3, ncol = 5, np, nmax=0;
+  // if(layoutId ==2016) ncol=3;
+  // if(layoutId ==2017) ncol=4;
+  // if(layoutId ==2018 || layoutId ==2023) {nrow=2; ncol=4;}
+  // if(layoutId ==2021) ncol=4;
+  // if(layoutId ==2030) {nrow=4; ncol=6;}
+  // if(layoutId ==2032) {nrow=4; ncol=7;}
+  // if(layoutId ==2031) {nrow=3; ncol=4;}
+  
+  // Int_t nnmax(0);  
+  // for(Int_t p=0; p<nrow*ncol;p++){
+  //   if(layoutId == 1 || layoutId == 4)  np =p%nrow*ncol + p/3;
+  //   else np = p;
+
+  //   if(layoutId == 6 && p>10) continue;
+    
+  //   if(maxz==-1)  max = prt_hdigi[np]->GetBinContent(prt_hdigi[np]->GetMaximumBin());
+  //   if(nnmax<prt_hdigi[np]->GetEntries()) nnmax=np;
+  //   prt_hdigi[np]->SetMaximum(max);
+  //   prt_hdigi[np]->SetMinimum(minz);
+  //   for(Int_t i=1; i<=8; i++){
+  //     for(Int_t j=1; j<=8; j++){
+  // 	Double_t weight = (double)(prt_hdigi[np]->GetBinContent(i,j))/(double)max *255;
+  // 	if(weight>255) weight=255;
+  // 	if(weight > 0) s += Form("%d,%d,%d\n", np, (j-1)*8+i-1, (Int_t)weight);
+  //     }
+  //   }
+  // }
+  return s;
 }
 
 void prt_initDigi(Int_t type=1){  
@@ -933,21 +977,6 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
 }
 #endif
 
-TString prt_randstr(Int_t len = 10){
-  gSystem->Sleep(1500);
-  srand (time(NULL));
-  TString str = ""; 
-  static const char alphanum[] =
-    "0123456789"
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz";
-
-  for (int i = 0; i < len; ++i) {
-    str += alphanum[rand() % (sizeof(alphanum) - 1)];
-  }
-  return str;
-}
-
 Int_t prt_getColorId(Int_t ind, Int_t style =0){
   Int_t cid = 1;
   if(style==0) {
@@ -1102,7 +1131,11 @@ void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
       
       TCanvas *cc;
       if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) {
-	cc = (TCanvas*)c;
+	cc = prt_drawDigi(prt_last_layoutId,prt_last_maxz,prt_last_minz);
+	cc->SetCanvasSize(w,h);
+	if(name.Contains("=")) name =  name.Tokenize('=')->First()->GetName();
+	std::cout<<"name "<<name<<std::endl;
+	
       }else{
       	cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
       	cc = (TCanvas*) c->DrawClone();      
@@ -1231,7 +1264,7 @@ void prt_normalize(TH1F* hists[],Int_t size){
 void prt_normalizeto(TH1F* hists[],Int_t size, Double_t max=1){
   for(Int_t i=0; i<size; i++){
     Double_t tmax =  hists[i]->GetBinContent(hists[i]->GetMaximumBin());
-    hists[i]->Scale(max/tmax);
+    if(tmax>0)hists[i]->Scale(max/tmax);
   }
 }
 
