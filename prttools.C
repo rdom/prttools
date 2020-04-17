@@ -1064,9 +1064,9 @@ void prt_canvasPrint(TPad *c, TString name="", TString path="", Int_t what=0){
   c->Modified();
   c->Update();
   c->Print(path+"/"+name+".png");
-  if(what>1) c->Print(path+"/"+name+".eps");
+  if(what>0) c->Print(path+"/"+name+".C");
   if(what>1) c->Print(path+"/"+name+".pdf");
-  if(what!=1) c->Print(path+"/"+name+".C");
+  if(what>2) c->Print(path+"/"+name+".eps");    
 }
 
 void prt_set_style(TCanvas *c){
@@ -1132,7 +1132,7 @@ void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
       TCanvas *cc;
       if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) {
 	cc = prt_drawDigi(prt_last_layoutId,prt_last_maxz,prt_last_minz);
-	cc->SetCanvasSize(w,h);
+	cc->SetCanvasSize(800,400);
 	if(name.Contains("=")) name =  name.Tokenize('=')->First()->GetName();
 	std::cout<<"name "<<name<<std::endl;
 	
@@ -1196,9 +1196,10 @@ void prt_canvasDel(TString name="c"){
 
 // style = 0 - for web blog
 // style = 1 - for talk 
-// what = 0 - save in png, pdf, eps, root formats
-// what = 1 - save in png format
-// what = 2 - save in png and root format
+// what = 0 - save in png
+// what = 1 - save in png, C
+// what = 2 - save in png, C, pdf
+// what = 3 - save in png, C, pdf, eps 
 void prt_canvasSave(Int_t what=1, Int_t style=0, Bool_t rm=false){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
@@ -1211,7 +1212,13 @@ void prt_canvasSave(Int_t what=1, Int_t style=0, Bool_t rm=false){
   }
 }
 
-void prt_set_style(){
+// path - folder for saving
+void prt_canvasSave(TString path, Int_t what=1, Int_t style=0, Bool_t rm=false){
+  prt_savepath = path;
+  prt_canvasSave(what,style,rm);
+}
+
+  void prt_set_style(){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
   TString path = prt_createDir();
