@@ -12,6 +12,7 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "TGraph.h"
+#include "TMultiGraph.h"
 #include "TSpline.h"
 #include "TF1.h"
 #include "TFile.h"
@@ -1083,9 +1084,21 @@ void prt_set_style(TCanvas *c){
 
       hh->GetXaxis()->SetLabelSize(0.05);
       hh->GetYaxis()->SetLabelSize(0.05);
-	    
+
       hh->GetXaxis()->SetTitleOffset(0.85);
       hh->GetYaxis()->SetTitleOffset(0.76);
+
+      if(c->GetWindowHeight()>700){
+	hh->GetXaxis()->SetTitleSize(0.05);
+	hh->GetYaxis()->SetTitleSize(0.05);
+
+	hh->GetXaxis()->SetLabelSize(0.04);
+	hh->GetYaxis()->SetLabelSize(0.04);
+
+	hh->GetXaxis()->SetTitleOffset(0.85);
+	hh->GetYaxis()->SetTitleOffset(0.98);
+	c->SetRightMargin(0.12);
+      }
 
       if(fabs(c->GetBottomMargin()-0.12)<0.001){
 	TPaletteAxis *palette = (TPaletteAxis*)hh->GetListOfFunctions()->FindObject("palette");
@@ -1095,6 +1108,7 @@ void prt_set_style(TCanvas *c){
 	}
       }
     }
+    
     if(obj->InheritsFrom("TGraph")){
       TGraph *gg = (TGraph*)obj;
       gg->GetXaxis()->SetLabelSize(0.05);
@@ -1105,6 +1119,18 @@ void prt_set_style(TCanvas *c){
       gg->GetYaxis()->SetTitleSize(0.06);
       gg->GetYaxis()->SetTitleOffset(0.8);
     }
+ 
+    if(obj->InheritsFrom("TMultiGraph")){
+      TMultiGraph *gg = (TMultiGraph*)obj;
+      gg->GetXaxis()->SetLabelSize(0.05);
+      gg->GetXaxis()->SetTitleSize(0.06);
+      gg->GetXaxis()->SetTitleOffset(0.84);
+
+      gg->GetYaxis()->SetLabelSize(0.05);
+      gg->GetYaxis()->SetTitleSize(0.06);
+      gg->GetYaxis()->SetTitleOffset(0.8);
+    }
+    
     if(obj->InheritsFrom("TF1")){
       TF1 *f = (TF1*)obj;
       f->SetNpx(500);
@@ -1218,7 +1244,7 @@ void prt_canvasSave(TString path, Int_t what=1, Int_t style=0, Bool_t rm=false){
   prt_canvasSave(what,style,rm);
 }
 
-  void prt_set_style(){
+void prt_set_style(){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
   TString path = prt_createDir();
