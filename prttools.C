@@ -138,7 +138,7 @@ Int_t map_col[prt_maxchm];
 Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
 Double_t prt_mass[]={0.000511,0.1056584,0.139570,0.49368,0.9382723};
 TString  prt_name[]={"e","muon","pion","kaon","proton"};
-Int_t    prt_color[]={1,1,4,7,2};
+Int_t    prt_color[]={1,1,kBlue,kRed,kBlack};
 Double_t prt_particleArray[3000];
 
 TF1 *prt_gaust;
@@ -159,8 +159,8 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
     
     if(peakSearch == 1){
       prt_gaust->SetParameter(1,xmax);
-      prt_gaust->SetParameter(2,0.2);
-      prt_gaust->SetParLimits(2,0.005,limit);
+      prt_gaust->SetParameter(2,0.005);
+      prt_gaust->SetParLimits(2,0.003,limit);
       h->Fit("prt_gaust",opt,"",xxmin-range, xxmax+range);
     }
     
