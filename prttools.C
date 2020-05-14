@@ -138,7 +138,8 @@ Int_t map_col[prt_maxchm];
 Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
 Double_t prt_mass[]={0.000511,0.1056584,0.139570,0.49368,0.9382723};
 TString  prt_name[]={"e","muon","pion","kaon","proton"};
-Int_t    prt_color[]={1,1,kBlue,kRed,kBlack};
+TString  prt_lname[]={"e","#mu","#pi","K","p"};
+Int_t    prt_color[]={kCyan+1,kOrange+6,kBlue,kRed,kBlack};
 Double_t prt_particleArray[3000];
 
 TF1 *prt_gaust;
@@ -407,6 +408,8 @@ TString prt_randstr(Int_t len = 10){
 // layoutId == 2018 - cern 2018
 // layoutId == 2021 - new 3.6 row's design for the PANDA Barrel DIRC
 // layoutId == 2023 - new 2x4 layout for the PANDA Barrel DIRC
+// layoutId == 2030 - EIC DIRC prism
+// layoutId == 2032 - EIC DIRC focusing prism 
 TH1 * prt_cdigi_th;
 TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
 
@@ -430,7 +433,7 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
   else if(layoutId==2017) prt_hpglobal = new TPad(sid,"T",0.15,0.02,0.80,0.98);
   else if(layoutId==2018) prt_hpglobal = new TPad(sid,"T",0.05,0.07,0.9,0.93);
   else if(layoutId==2023) prt_hpglobal = new TPad(sid,"T",0.073,0.02,0.877,0.98);
-  else if(layoutId==2030) prt_hpglobal = new TPad(sid,"T",0.10,0.01,0.82,0.99);
+  else if(layoutId==2030) prt_hpglobal = new TPad(sid,"T",0.10,0.025,0.82,0.975);
   else if(layoutId==2032) prt_hpglobal = new TPad(sid,"T",0.04,0.025,0.91,0.975);
   else if(layoutId==2031) prt_hpglobal = new TPad(sid,"T",0.12,0.01,0.80,0.99);
   else  prt_hpglobal = new TPad(sid,"T",0.04,0.04,0.96,0.96);
@@ -607,7 +610,7 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
   return cdigi;
 }
 
-TString prt_getPixData(TString s="", int layoutId=1){
+//TString prt_getPixData(TString s="", int layoutId=1){
   // Int_t nrow = 3, ncol = 5, np, nmax=0;
   // if(layoutId ==2016) ncol=3;
   // if(layoutId ==2017) ncol=4;
@@ -636,8 +639,8 @@ TString prt_getPixData(TString s="", int layoutId=1){
   //     }
   //   }
   // }
-  return s;
-}
+//   return s;
+// }
 
 void prt_initDigi(Int_t type=1){  
   if(type == 1){
