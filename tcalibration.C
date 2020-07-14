@@ -46,6 +46,7 @@ Double_t tofpi2[]={0,0,36.60,36.60,36.20, 36.30,36.20, 36.00,35.80, 35.80 ,35.6}
 Double_t tofp1[] ={0,0,44.20,39.50,37.80, 37.00,36.60, 36.45,36.30, 36.25, 36.2};
 Double_t tofp2[] ={0,0,47.50,41.50,39.20, 38.20,37.60, 37.20,37.00, 37.00, 36.7};
 
+
 Int_t gg_nevents(0);
 
 Bool_t IsPion(Double_t tof, Int_t mom){
@@ -374,8 +375,8 @@ Bool_t TTSelector::Process(Long64_t entry){
       // time += (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
       // time += (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 
-      // time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
-      // time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
+      time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
+      time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
 
       toftime = time;
       Int_t m = (Double_t) (mom+0.1);

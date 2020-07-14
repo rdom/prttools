@@ -53,10 +53,10 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
   if(!prt_init(infile,1,Form("data/drawTof/%d/%2.1f",studyId,prt_data_info.getMomentum()))) return;
 
   // MCP-TOF
-  // double le1(32), le2(36), l1(30), l2(35);
-  // double t11(45), t12(50), t21(47), t22(52);
-  double le1(34), le2(40), l1(34), l2(40);
-  double t11(36), t12(45), t21(36), t22(45);
+  double le1(32), le2(36), l1(30), l2(35);
+  double t11(45), t12(50), t21(47), t22(52);
+  // double le1(34), le2(40), l1(34), l2(40);
+  // double t11(36), t12(45), t21(36), t22(45);
 
   
   // // SiTil

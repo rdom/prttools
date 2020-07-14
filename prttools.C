@@ -65,7 +65,7 @@ DataInfo prt_data_info;
 const Int_t prt_nmcp = 4*7;
 const Int_t prt_npix = 16*16;
 #else
-const Int_t prt_nmcp = 8;//12;
+const Int_t prt_nmcp = 12;//12;
 const Int_t prt_npix = 64;
 #endif
 
@@ -139,7 +139,7 @@ Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
 Double_t prt_mass[]={0.000511,0.1056584,0.139570,0.49368,0.9382723};
 TString  prt_name[]={"e","muon","pion","kaon","proton"};
 TString  prt_lname[]={"e","#mu","#pi","K","p"};
-Int_t    prt_color[]={kCyan+1,kOrange+6,kBlue,kRed,kBlack};
+Int_t    prt_color[]={kOrange+6,kCyan+1,kBlue,kRed,kBlack};
 Double_t prt_particleArray[3000];
 
 TF1 *prt_gaust;
@@ -408,6 +408,7 @@ TString prt_randstr(Int_t len = 10){
 // layoutId == 2018 - cern 2018
 // layoutId == 2021 - new 3.6 row's design for the PANDA Barrel DIRC
 // layoutId == 2023 - new 2x4 layout for the PANDA Barrel DIRC
+// layoutId == 2031 - EIC DIRC beam test
 // layoutId == 2030 - EIC DIRC prism
 // layoutId == 2032 - EIC DIRC focusing prism 
 TH1 * prt_cdigi_th;
@@ -902,7 +903,7 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     }
     prt_info += prt_event->PrintInfo();
     prt_mom = prt_event->GetMomentum().Mag() +0.01;
-    prt_theta = prt_event->GetAngle() + 0.41;
+    prt_theta = prt_event->GetAngle();
     prt_phi = prt_event->GetPhi();
     prt_geometry= prt_event->GetGeometry();
     prt_beamx= prt_event->GetBeamX();
@@ -966,7 +967,7 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
     }
     prt_info += prt_event->PrintInfo();
     prt_mom = prt_event->GetMomentum().Mag() +0.01;
-    prt_theta = prt_event->GetAngle() + 0.41;
+    prt_theta = prt_event->GetAngle();
     prt_phi = prt_event->GetPhi();
     prt_geometry= prt_event->GetGeometry();
     prt_beamx= prt_event->GetBeamX();
@@ -1235,9 +1236,11 @@ void prt_canvasSave(Int_t what=1, Int_t style=0, Bool_t rm=false){
   TString path = prt_createDir();
   while((c = (TCanvas*) next())){
     prt_set_style(c);
-    prt_save(c, path, what,style);    
-    prt_canvaslist->Remove(c);
-    if(rm) c->Close();
+    prt_save(c, path, what,style);
+    if(rm){
+      prt_canvaslist->Remove(c);
+      c->Close();
+    }
   }
 }
 
