@@ -1163,9 +1163,7 @@ void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
       if(TString(c->GetName()).Contains("hp") || TString(c->GetName()).Contains("cdigi")) {
 	cc = prt_drawDigi(prt_last_layoutId,prt_last_maxz,prt_last_minz);
 	cc->SetCanvasSize(800,400);
-	if(name.Contains("=")) name =  name.Tokenize('=')->First()->GetName();
-	std::cout<<"name "<<name<<std::endl;
-	
+	if(name.Contains("=")) name =  name.Tokenize('=')->First()->GetName();	
       }else{
       	cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
       	cc = (TCanvas*) c->DrawClone();      
