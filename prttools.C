@@ -65,7 +65,7 @@ DataInfo prt_data_info;
 const Int_t prt_nmcp = 4*7;
 const Int_t prt_npix = 16*16;
 #else
-const Int_t prt_nmcp = 12;//12;
+const Int_t prt_nmcp = 8;//12;
 const Int_t prt_npix = 64;
 #endif
 
@@ -1188,10 +1188,22 @@ TString prt_createSubDir(TString dir="dir"){
 }
 
 TList *prt_canvaslist;
+
+TCanvas *prt_canvasGet(TString name="c"){
+  TIter next(prt_canvaslist);
+  TCanvas *c = 0;
+  while((c = (TCanvas*) next())){
+    if(c->GetName()==name || name=="*") break;
+  }
+  return c;
+}
+
 void prt_canvasAdd(TString name="c",Int_t w=800, Int_t h=400){
-  if(!prt_canvaslist) prt_canvaslist = new TList();
-  TCanvas *c = new TCanvas(name,name,0,0,w,h); 
-  prt_canvaslist->Add(c);
+  if(!prt_canvasGet(name)){
+    if(!prt_canvaslist) prt_canvaslist = new TList();
+    TCanvas *c = new TCanvas(name,name,0,0,w,h); 
+    prt_canvaslist->Add(c);
+  }
 }
 
 void prt_canvasAdd(TCanvas *c){
@@ -1202,15 +1214,6 @@ void prt_canvasAdd(TCanvas *c){
 
 void prt_canvasCd(){
   
-}
-
-TCanvas *prt_canvasGet(TString name="c"){
-  TIter next(prt_canvaslist);
-  TCanvas *c=0;
-  while((c = (TCanvas*) next())){
-    if(c->GetName()==name || name=="*") break;
-  }
-  return c;
 }
 
 void prt_canvasDel(TString name="c"){
