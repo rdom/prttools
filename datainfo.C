@@ -1416,7 +1416,7 @@ DataInfo getDataInfo(TString name){
   
   for(UInt_t i = 0; i < aliasArray.size(); i++) {
     TString sname = aliasArray[i].getRunId();
-    if(sname == name) return aliasArray[i];
+    if(name.Contains(sname)) return aliasArray[i];
   }
   return DataInfo();
 }
