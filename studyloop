@@ -23,7 +23,7 @@ show_help(){
      -j
         number of threads 
      -s 
-        study
+        study 
         0 - all 
         # - study id
      -n 
