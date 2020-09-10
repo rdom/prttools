@@ -17,7 +17,7 @@ show_help(){
         4 - run sim only
         5 - run lut simulation only
         6 - run sim reco only
-        7 - run data reco only 
+        7 - run data reco only
         8 - run proc data
         9 - run proc sim
      -j
