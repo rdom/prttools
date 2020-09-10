@@ -14,12 +14,11 @@ void setGStyle(TGraph *g, int id){
 }
 
 void join_scan(){
-  prt_savepath = "data/join_scan";
 
   const int max(2);
   TString wid[max][3]{
     {"~/sim4/d/proc/jul18/403/reco*R.root","",   "beam data"},
-    {"~/sim4/d/proc/jul18/403/reco*S.root","",   "geant4 simulation"}   
+    {"~/sim4/d/proc/jul18/403/reco*S.root","",   "simulation"}   
   };
   
   TLegend *leg = new TLegend(0.4,0.65,0.9,0.8);
@@ -28,10 +27,10 @@ void join_scan(){
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
   
-  TString nid[] = {"nph","sep"};
+  TString nid[] = {"nph","sep","spr","cang"};
 
   TGraph *gret;
-  for(int i=0; i<2; i++){
+  for(int i=0; i<4; i++){
     prt_canvasAdd(nid[i],800,500);
     for(int j=0; j<max; j++){
       gret = draw_scan(wid[j][0],i,0,wid[j][1]);
@@ -42,6 +41,6 @@ void join_scan(){
     leg->Draw();
   }
   
-  prt_canvasSave(1);
+  prt_canvasSave("data/join_scan",1);
 }
 
