@@ -1103,6 +1103,19 @@ void prt_set_style(TCanvas *c){
 	hh->GetYaxis()->SetTitleOffset(0.98);
 	c->SetRightMargin(0.12);
       }
+					   
+      if(c->GetWindowWidth()<=600){
+      	hh->GetXaxis()->SetTitleSize(0.05);
+      	hh->GetYaxis()->SetTitleSize(0.05);
+
+      	hh->GetXaxis()->SetLabelSize(0.04);
+      	hh->GetYaxis()->SetLabelSize(0.04);
+
+      	hh->GetXaxis()->SetTitleOffset(0.85);
+      	hh->GetYaxis()->SetTitleOffset(0.92);
+      	c->SetRightMargin(0.12);
+      }
+
 
       if(fabs(c->GetBottomMargin()-0.12)<0.001){
 	TPaletteAxis *palette = (TPaletteAxis*)hh->GetListOfFunctions()->FindObject("palette");

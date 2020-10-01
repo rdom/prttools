@@ -6,7 +6,7 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   double var[nvar], evar[nvar],xx[10];     
   double mom,theta,phi,cangle,spr,trr;
 
-  TString nid[] = {"nph","sep","cang","spr","trr"};  
+  TString nid[] = {"nph","sep","spr","cang","trr"};  
 
   TString ynid[] = {"detected photons [#]",
 		    "separation [s.d.]",
@@ -36,7 +36,7 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   ch.SetBranchAddress("sep_err",&evar[1]);
 
   ch.SetBranchAddress("cangle",&var[2]);
-  ch.SetBranchAddress("spr",&var[3]);
+  ch.SetBranchAddress("spr_pi",&var[3]);
   ch.SetBranchAddress("trr",&var[4]);
 
   auto gg = new TGraphAsymmErrors();
@@ -70,8 +70,8 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   if(ix==5) gg->GetXaxis()->SetLimits(61.5,75.5);
   if(iy==0) gg->GetYaxis()->SetRangeUser(0,90);
   if(iy==1) gg->GetYaxis()->SetRangeUser(0,5);
+  if(iy==2) gg->GetYaxis()->SetRangeUser(0.810,0.820);
   if(iy==3) gg->GetYaxis()->SetRangeUser(0,15);
-  if(iy==4) gg->GetYaxis()->SetRangeUser(0.810,0.830);
 
   if(draw){
     prt_canvasAdd(nid[iy],800,500);

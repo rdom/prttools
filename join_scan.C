@@ -21,13 +21,13 @@ void join_scan(){
     {"~/sim4/d/proc/jul18/403/reco*S.root","",   "simulation"}   
   };
   
-  TLegend *leg = new TLegend(0.4,0.65,0.9,0.8);
+  TLegend *leg = new TLegend(0.57,0.68,0.92,0.85);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
   
-  TString nid[] = {"nph","sep","spr","cang"};
+  TString nid[] = {"nph","sep","cang","spr"};
 
   TGraph *gret;
   for(int i=0; i<4; i++){
