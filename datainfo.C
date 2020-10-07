@@ -857,12 +857,12 @@ void datainfo_init(){
     study[420]= "Z scan at theta=90 deg and phi=0 deg @ 7 GeV/c. Bar, 3LS lens, grease everywere";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(420,"beam_18219154515",1,3,90.0-0.15,250,85.0,70.00,16.45,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219142232",1,3,90.0-0.15,424,85.0,70.00,16.45,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219161250",1,3,90.0-0.15,550,85.0,70.00,16.45,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219163624",1,3,90.0-0.15,650,85.0,70.00,16.45,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219165621",1,3,90.0-0.15,750,85.0,70.00,16.45,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219171427",1,3,90.0-0.15,850,85.0,70.00,16.45,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219154515",1,3,90.0-0.15,250,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219142232",1,3,90.0-0.15,424,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219161250",1,3,90.0-0.15,550,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219163624",1,3,90.0-0.15,650,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219165621",1,3,90.0-0.15,750,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219171427",1,3,90.0-0.15,850,85.0,65.00,18.5,7.0,10,o,0));
     }
     study[421]= "With w/o EDD at theta=25 deg and phi=0 deg @ 7 GeV/c. Bar, 3LS lens, grease everywere";
     {

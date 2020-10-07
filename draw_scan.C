@@ -66,10 +66,10 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   gg->GetXaxis()->SetTitle(xnid[ix]);
   gg->GetYaxis()->SetTitle(ynid[iy]);
   if(ix==0) gg->GetXaxis()->SetLimits(15,145);
-  if(ix==4) gg->GetXaxis()->SetLimits(13.5,21);
+  if(ix==4) gg->GetXaxis()->SetLimits(13.5,22);
   if(ix==5) gg->GetXaxis()->SetLimits(61.5,75.5);
   if(iy==0) gg->GetYaxis()->SetRangeUser(0,90);
-  if(iy==1) gg->GetYaxis()->SetRangeUser(0,5);
+  if(iy==1) gg->GetYaxis()->SetRangeUser(0,2);
   if(iy==2) gg->GetYaxis()->SetRangeUser(0.810,0.820);
   if(iy==3) gg->GetYaxis()->SetRangeUser(0,15);
 
