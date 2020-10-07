@@ -1124,6 +1124,8 @@ void prt_set_style(TCanvas *c){
 	  c->Modified();
 	}
       }
+      c->Modified();
+      c->Update();
     }
     
     if(obj->InheritsFrom("TGraph")){

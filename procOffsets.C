@@ -34,7 +34,6 @@ void procOffsets(TString path="",Int_t corrected=1){
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
 
-  PrtHit hit;
   Int_t maxent(0);
   for (auto ievent=0; ievent< prt_ch->GetEntries(); ievent++){
     if(maxent>2000) continue;
@@ -66,9 +65,7 @@ void procOffsets(TString path="",Int_t corrected=1){
     else maxent++;
     
     Double_t time(0);
-    for(auto i=0; i<prt_event->GetHitSize(); i++){
-      hit = prt_event->GetHit(i);
-
+    for(auto hit : prt_event->GetHits()){      
       if(hit.GetChannel()<960 ){
 	if(!bsim) hLeD->Fill(hit.GetLeadTime());
 	else hLeS->Fill(hit.GetLeadTime());
