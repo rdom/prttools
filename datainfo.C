@@ -65,6 +65,7 @@ public:
     if(_studyId==314 && _phi<d._phi) return true; //angle
     if(_studyId==404 && _test<d._test) return true; //test value
     if(_studyId==415 && _momentum < d._momentum) return true; //momentum
+    if(_studyId==420 && _z < d._z) return true; //z
     return false; 
   }
 
