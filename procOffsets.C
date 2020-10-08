@@ -67,8 +67,13 @@ void procOffsets(TString path="",Int_t corrected=1){
     Double_t time(0);
     for(auto hit : prt_event->GetHits()){      
       if(hit.GetChannel()<960 ){
-	if(!bsim) hLeD->Fill(hit.GetLeadTime());
-	else hLeS->Fill(hit.GetLeadTime());
+	double time = hit.GetLeadTime();
+	if(bsim){
+	  time+=prt_rand.Gaus(0,0.2);
+	  hLeS->Fill(time);
+	}else{
+	  hLeD->Fill(time+0.7);
+	}
       }
     }
   }
@@ -76,9 +81,10 @@ void procOffsets(TString path="",Int_t corrected=1){
   prt_canvasAdd("offset",800,400);
   
   hLeS->SetLineColor(kRed);
-  prt_normalize(hLeS,hLeD);
-  hLeS->Draw();
-  hLeD->Draw("same");
+  TH1F *hh[] = {hLeS,hLeD};
+  prt_normalizeto(hh,2,1);
+  hLeS->Draw("hist");
+  hLeD->Draw("hist same");
   TLegend *leg = new TLegend(0.62,0.7,0.92,0.9);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);

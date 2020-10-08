@@ -19,7 +19,8 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
 		    "momentum [GeV/c]",
 		    "time presision [ns]",
 		    "y step [mm]",
-		    "x step [mm]"};
+		    "x step [mm]",
+		    "z [mm]"};
   
   TChain ch("reco"); ch.Add(in);
   
@@ -29,6 +30,7 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   ch.SetBranchAddress("time_res",&xx[3]);
   ch.SetBranchAddress("test1",&xx[4]);
   ch.SetBranchAddress("test2",&xx[5]);
+  ch.SetBranchAddress("beamz",&xx[6]);
   
   ch.SetBranchAddress("nph",&var[0]);
   ch.SetBranchAddress("nph_err",&evar[0]);
@@ -36,7 +38,7 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   ch.SetBranchAddress("sep_err",&evar[1]);
 
   ch.SetBranchAddress("cangle",&var[2]);
-  ch.SetBranchAddress("spr_pi",&var[3]);
+  ch.SetBranchAddress("spr",&var[3]);
   ch.SetBranchAddress("trr",&var[4]);
 
   auto gg = new TGraphAsymmErrors();
@@ -68,8 +70,9 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   if(ix==0) gg->GetXaxis()->SetLimits(15,145);
   if(ix==4) gg->GetXaxis()->SetLimits(13.5,22);
   if(ix==5) gg->GetXaxis()->SetLimits(61.5,75.5);
-  if(iy==0) gg->GetYaxis()->SetRangeUser(0,90);
-  if(iy==1) gg->GetYaxis()->SetRangeUser(0,2);
+  if(ix==6) gg->GetXaxis()->SetLimits(150,950);
+  if(iy==0) gg->GetYaxis()->SetRangeUser(0,30);
+  if(iy==1) gg->GetYaxis()->SetRangeUser(0,3);
   if(iy==2) gg->GetYaxis()->SetRangeUser(0.810,0.820);
   if(iy==3) gg->GetYaxis()->SetRangeUser(0,15);
 
