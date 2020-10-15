@@ -17,9 +17,11 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   TString xnid[] = {"polar angle [deg]",
 		    "azimuthal angle [deg]",
 		    "momentum [GeV/c]",
-		    "time presision [ns]",
+		    // "time presision [ns]",
+		    "#Delta time cut constant [ns]",
 		    "y step [mm]",
-		    "x step [mm]",
+		    //		    "x step [mm]",
+		    "#varphi [deg]",
 		    "z [mm]"};
   
   TChain ch("reco"); ch.Add(in);
@@ -37,9 +39,9 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   ch.SetBranchAddress("sep",&var[1]);
   ch.SetBranchAddress("sep_err",&evar[1]);
 
-  ch.SetBranchAddress("cangle",&var[2]);
-  ch.SetBranchAddress("spr",&var[3]);
-  ch.SetBranchAddress("trr",&var[4]);
+  ch.SetBranchAddress("cangle_pi",&var[2]);
+  ch.SetBranchAddress("spr_pi",&var[3]);
+  ch.SetBranchAddress("trr_pi",&var[4]);
 
   auto gg = new TGraphAsymmErrors();
     
@@ -55,6 +57,8 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
     evar[4]=prt_rand.Uniform(0.8,1.2);
     evar[0]=fabs(theta-90)/30+0.5*sqrt(var[0]);
 
+    std::cout<<"var[2] "<<var[2]<<std::endl;
+    
     gg->SetPoint(is,xx[ix],var[iy]);
     gg->SetPointEYhigh(is,evar[iy]);
     gg->SetPointEYlow(is,evar[iy]);
@@ -68,12 +72,15 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   gg->GetXaxis()->SetTitle(xnid[ix]);
   gg->GetYaxis()->SetTitle(ynid[iy]);
   if(ix==0) gg->GetXaxis()->SetLimits(15,145);
+  if(ix==3) gg->GetXaxis()->SetLimits(-0.1,2.1);
   if(ix==4) gg->GetXaxis()->SetLimits(13.5,22);
-  if(ix==5) gg->GetXaxis()->SetLimits(61.5,75.5);
+  //if(ix==5) gg->GetXaxis()->SetLimits(61.5,75.5);
+  if(ix==5) gg->GetXaxis()->SetLimits(-0.1,2.1);
+  
   if(ix==6) gg->GetXaxis()->SetLimits(150,950);
   if(iy==0) gg->GetYaxis()->SetRangeUser(0,30);
   if(iy==1) gg->GetYaxis()->SetRangeUser(0,3);
-  if(iy==2) gg->GetYaxis()->SetRangeUser(0.810,0.820);
+  if(iy==2) gg->GetYaxis()->SetRangeUser(0.822,0.828);
   if(iy==3) gg->GetYaxis()->SetRangeUser(0,15);
 
   if(draw){
