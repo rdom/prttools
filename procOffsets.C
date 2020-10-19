@@ -36,7 +36,7 @@ void procOffsets(TString path="",Int_t corrected=1){
 
   Int_t maxent(0);
   for (auto ievent=0; ievent< prt_ch->GetEntries(); ievent++){
-    if(maxent>2000) continue;
+    if(maxent>20000) continue;
     prt_nextEvent(ievent,10000);
 
     if(prt_event->GetType()==0){
@@ -58,21 +58,22 @@ void procOffsets(TString path="",Int_t corrected=1){
       // if(!(t3h && t3v && hodo1 && hodo2)) continue;
     }
     
-    if(prt_event->GetParticle()!=2212) continue;
+    if(prt_event->GetParticle()==2212) continue;
     bool bsim(false);
     TString current_file_name  = prt_ch->GetCurrentFile()->GetName();
     if(current_file_name.Contains("S.root")) bsim = true;
     else maxent++;
     
     Double_t time(0);
-    for(auto hit : prt_event->GetHits()){      
-      if(hit.GetChannel()<960 ){
+    for(auto hit : prt_event->GetHits()){
+      int ch = hit.GetChannel();
+      if(ch<512 ){
 	double time = hit.GetLeadTime();
 	if(bsim){
-	  time+=prt_rand.Gaus(0,0.2);
+	  time+=prt_rand.Gaus(0,0.25);
 	  hLeS->Fill(time);
 	}else{
-	  hLeD->Fill(time+0.7);
+	  hLeD->Fill(time+0.6);
 	}
       }
     }

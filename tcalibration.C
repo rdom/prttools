@@ -275,9 +275,9 @@ Bool_t TTSelector::Process(Long64_t entry){
 	b = xrot*tan(0.5*(prtangle-90)*rad),
 	lenz = (z-zrot+b)/cos((prtangle-90)*rad)+b+zrot;
 
-      if(fEvent->GetLens()==6) lenz-=12;
-      if(fEvent->GetLens()==3) lenz-=15;
-      if(fEvent->GetLens()==2) lenz-=14.4;
+      //if(fEvent->GetLens()==6) lenz-=12;
+      //if(fEvent->GetLens()==3) lenz-=15;
+      //if(fEvent->GetLens()==2) lenz-=14.4;
       fEvent->SetPosition(TVector3(0,0,lenz));
     }
   }

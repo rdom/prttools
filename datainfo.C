@@ -690,31 +690,31 @@ void datainfo_init(){
     study[403]="Theta scan @ phi=0 deg. Bar, 3LS lens, grease everywere";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
-      dataArray.push_back(DataInfo(403,"beam_18215163732",1,3,20.0  -0.286479 ,442,85.0,65.10,16.3,7.0,10,o, 0.0  ));
-      dataArray.push_back(DataInfo(403,"beam_18215164946",1,3,25.0  -0.515662 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215170338",1,3,30.0  -0.40107  ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215172752",1,3,35.0  -0.229183 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215174559",1,3,40.0  -0.286479 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215180516",1,3,45.0  -0.171887 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215182758",1,3,50.0  -0.229183 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215184548",1,3,55.0  -0.229183 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215190401",1,3,60.0  +0.229183 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215192247",1,3,65.0  +0.40107  ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215194145",1,3,70.0  +0.229183 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215200044",1,3,75.0  +0.114592 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215201936",1,3,80.0  +0.286479 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215203823",1,3,85.0  +0.343775 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215210112",1,3,90.0  -0.286479 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215212118",1,3,95.0  -0.286479 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215213958",1,3,100.0 -0.687549 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215220217",1,3,105.0 -0.916732 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215222213",1,3,110.0 -0.40107  ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215224129",1,3,115.0 -0.572958 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215230158",1,3,120.0 -0.572958 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215231920",1,3,125.0 -0.286479 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215233358",1,3,130.0 -0.000000 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18215234920",1,3,135.0 -0.229183 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
-      dataArray.push_back(DataInfo(403,"beam_18216000538",1,3,140.0 -0.458366 ,442,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215163732",1,3,20.0  -0.286479 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0  ));
+      dataArray.push_back(DataInfo(403,"beam_18215164946",1,3,25.0  -0.515662 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215170338",1,3,30.0  -0.40107  ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215172752",1,3,35.0  -0.229183 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215174559",1,3,40.0  -0.286479 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215180516",1,3,45.0  -0.171887 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215182758",1,3,50.0  -0.229183 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215184548",1,3,55.0  -0.229183 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215190401",1,3,60.0  +0.229183 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215192247",1,3,65.0  +0.40107  ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215194145",1,3,70.0  +0.229183 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215200044",1,3,75.0  +0.114592 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215201936",1,3,80.0  +0.286479 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215203823",1,3,85.0  +0.343775 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215210112",1,3,90.0  -0.286479 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215212118",1,3,95.0  -0.286479 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215213958",1,3,100.0 -0.687549 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215220217",1,3,105.0 -0.916732 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215222213",1,3,110.0 -0.40107  ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215224129",1,3,115.0 -0.572958 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215230158",1,3,120.0 -0.572958 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215231920",1,3,125.0 -0.286479 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215233358",1,3,130.0 -0.000000 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18215234920",1,3,135.0 -0.229183 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
+      dataArray.push_back(DataInfo(403,"beam_18216000538",1,3,140.0 -0.458366 ,442-15,85.0,65.10,16.3,7.0,10,o, 0.0 ));
     }
 
     // study[403]="Theta scan @ phi=0 deg. Bar, 3LS lens, grease everywere";
@@ -858,12 +858,12 @@ void datainfo_init(){
     study[420]= "Z scan at theta=90 deg and phi=0 deg @ 7 GeV/c. Bar, 3LS lens, grease everywere";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(420,"beam_18219154515",1,3,90.0-0.15,250,85.0,65.00,18.5,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219142232",1,3,90.0-0.15,424,85.0,65.00,18.5,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219161250",1,3,90.0-0.15,550,85.0,65.00,18.5,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219163624",1,3,90.0-0.15,650,85.0,65.00,18.5,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219165621",1,3,90.0-0.15,750,85.0,65.00,18.5,7.0,10,o,0));
-      dataArray.push_back(DataInfo(420,"beam_18219171427",1,3,90.0-0.15,850,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219154515",1,3,90.0-0.15,250-15-7,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219142232",1,3,90.0-0.15,424-15-7,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219161250",1,3,90.0-0.15,550-15-7,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219163624",1,3,90.0-0.15,650-15-7,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219165621",1,3,90.0-0.15,750-15-7,85.0,65.00,18.5,7.0,10,o,0));
+      dataArray.push_back(DataInfo(420,"beam_18219171427",1,3,90.0-0.15,850-15-7,85.0,65.00,18.5,7.0,10,o,0));
     }
     study[421]= "With w/o EDD at theta=25 deg and phi=0 deg @ 7 GeV/c. Bar, 3LS lens, grease everywere";
     {

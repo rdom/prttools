@@ -81,7 +81,7 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   if(iy==0) gg->GetYaxis()->SetRangeUser(0,30);
   if(iy==1) gg->GetYaxis()->SetRangeUser(0,3);
   if(iy==2) gg->GetYaxis()->SetRangeUser(0.822,0.828);
-  if(iy==3) gg->GetYaxis()->SetRangeUser(0,15);
+  if(iy==3) gg->GetYaxis()->SetRangeUser(6,10);
 
   if(draw){
     prt_canvasAdd(nid[iy],800,500);
