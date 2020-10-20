@@ -124,7 +124,7 @@ processOneSim (){
 		    cd ~/dirc/prtdirc/macro > /dev/null &&  root -q -b loadlib.C lutmean_cs.C"(\"${datapath}/lut_${file[fk]}S.root\")" >> "${datapath}/${file[fk]}L.log" && cd -  &
 	    fi
 	    if [ ${level} -eq "6" ]; then
-	       	./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/reco_${file[fk]}S.root" -f 0 -e 45000 -tr 0.5 -v 1 > "${datapath}/${file[fk]}SR.log" &
+	       	./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/reco_${file[fk]}S.root" -f 0 -e 4000 -tr 0.5 -v 1 > "${datapath}/${file[fk]}SR.log" &
 		#./prtdirc -s 3 -i "${datapath}/${file[fk]}z0w1S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/res_tr_${file[fk]}S2.root" -f -1 -e 0 -tr 0.8 -v 1 > "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "7" ]; then

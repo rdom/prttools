@@ -70,7 +70,7 @@ void procOffsets(TString path="",Int_t corrected=1){
       if(ch<512 ){
 	double time = hit.GetLeadTime();
 	if(bsim){
-	  time+=prt_rand.Gaus(0,0.25);
+	  time+=prt_rand.Gaus(0,0.3);
 	  hLeS->Fill(time);
 	}else{
 	  hLeD->Fill(time+0.6);
