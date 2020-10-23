@@ -11,6 +11,7 @@ void procOffsets(TString path="",Int_t corrected=1){
   fileid.Remove(fileid.Last('.')-1);
   
   prt_data_info = getDataInfo(fileid);
+  int studyid = prt_data_info.getStudyId();
  
   Int_t h1a(0),h1b(50),h2a(0),h2b(50),hbin(1000);//h1a(200),h1b(400)
 
@@ -26,7 +27,7 @@ void procOffsets(TString path="",Int_t corrected=1){
   TString sstudy=outdir; sstudy.Remove(0,sstudy.Last('/'));  
   TString insim = path; insim.ReplaceAll("C.root","S.root");
   
-  if(!prt_init(insim,1,outdir+Form("/%da/%d",prt_data_info.getStudyId(),prt_data_info.getFileId()))) return;
+  if(!prt_init(insim,1,outdir+Form("/%da/%d",studyid,prt_data_info.getFileId()))) return;
   prt_ch->Add(path);
 
   TH1F * hLeD  = new TH1F("leD","LE beam data ; LE [ns]; entries [#]",hbin,h1a,h1b);
@@ -73,7 +74,7 @@ void procOffsets(TString path="",Int_t corrected=1){
 	  time+=prt_rand.Gaus(0,0.3);
 	  hLeS->Fill(time);
 	}else{
-	  hLeD->Fill(time+0.6);
+	  if(studyid == 420) hLeD->Fill(time+0.6);
 	}
       }
     }
