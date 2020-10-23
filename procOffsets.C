@@ -74,7 +74,8 @@ void procOffsets(TString path="",Int_t corrected=1){
 	  time+=prt_rand.Gaus(0,0.3);
 	  hLeS->Fill(time);
 	}else{
-	  if(studyid == 420) hLeD->Fill(time+0.6);
+	  if(studyid == 420) time += 0.6;
+	  hLeD->Fill(time);
 	}
       }
     }
