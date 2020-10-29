@@ -34,8 +34,8 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   ch.SetBranchAddress("test2",&xx[5]);
   ch.SetBranchAddress("beamz",&xx[6]);
   
-  ch.SetBranchAddress("nph",&var[0]);
-  ch.SetBranchAddress("nph_err",&evar[0]);
+  ch.SetBranchAddress("nph_pi",&var[0]);
+  ch.SetBranchAddress("nph_pi_err",&evar[0]);
   ch.SetBranchAddress("sep",&var[1]);
   ch.SetBranchAddress("sep_err",&evar[1]);
 
@@ -55,7 +55,8 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
 
     evar[1]=sqrt(evar[1]*evar[1]+0.1*0.1);
     evar[4]=prt_rand.Uniform(0.8,1.2);
-    evar[0]=fabs(theta-90)/30+0.5*sqrt(var[0]);
+    //evar[0]=fabs(theta-90)/30+0.5*sqrt(var[0]);
+    evar[0]=sqrt(evar[0]*evar[0]+0.8*0.8);
 
     std::cout<<"var[2] "<<var[2]<<std::endl;
     
