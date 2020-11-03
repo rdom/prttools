@@ -187,7 +187,7 @@ if [ ${level} -lt "9" ]; then
 	    done
 	else
 	    datapath="${datadir}${study}"
-	    hadd -f ${datapath}/rec_${study}S.root ${datapath}/reco_*S.root 
+	    hadd -f ${datapath}/rec_${study}S.root ${datapath}/*S.root_R.root 
 	fi
     fi
     if [ ${level} -eq "7" ]; then
