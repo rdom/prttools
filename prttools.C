@@ -1158,7 +1158,7 @@ void prt_set_style(TCanvas *c){
 }
 
 void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
-  TString name=c->GetName();
+  TString name = c->GetName();
   Bool_t batch = gROOT->IsBatch();
   gROOT->SetBatch(1);
   
@@ -1181,7 +1181,7 @@ void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
 	if(name.Contains("=")) name =  name.Tokenize('=')->First()->GetName();	
       }else{
       	cc = new TCanvas(TString(c->GetName())+"exp","cExport",0,0,w,h);
-      	cc = (TCanvas*) c->DrawClone();      
+      	cc = (TCanvas*) c->DrawClone();
 	cc->SetCanvasSize(w,h);
       }
       

@@ -128,12 +128,13 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
   
   Double_t noise = 1e-5; //1e-7; // nHits //1e-5
   for (Int_t ievent=0; ievent<entries; ievent++){    
-    prt_nextEvent(ievent,1);
+    prt_nextEvent(ievent,1000);
     timeres = prt_event->GetTimeRes();
     Double_t aminf,amins, sum(0),sumf(0),sums(0);
     Int_t nGoodHits(0), nHits =prt_event->GetHitSize();
     if(prt_event->GetType()==0){
-
+      int pid = prt_event->GetParticle();
+      double tof =  prt_event->GetTest1();
       if(fabs(prt_event->GetMomentum().Mag()-2)<0.1){
       	noise = 0.1e-4;
       }	    
@@ -168,10 +169,15 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
       // 	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<36.6 ) continue;
       // }       
 
-
-      if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
-      	if( prt_event->GetParticle()==2212 && prt_event->GetTest1()<34.4 ) continue;
-      	if( prt_event->GetParticle()==211  && prt_event->GetTest1()>33.3 ) continue;
+      if(studyId == 403){
+	if(fabs(prt_event->GetMomentum().Mag()-7)<0.1){
+	  if( pid == 2212 && tof < 34.4 ) continue;
+	  if( pid == 211  && tof > 33.3 ) continue;
+	}
+      }
+      if(studyId == 420){
+	if( pid == 2212 && tof < 36.9 ) continue;
+	if( pid == 211 && tof > 35.7 ) continue;
       }
       
       Bool_t t1(1),t2(0),t3h(0),t3v(0);
@@ -336,16 +342,15 @@ void recoPdf(TString path="", TString pdfEnding=".pdf1.root", Double_t sigma=200
     }
   }
 
-
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   
-  //prt_drawDigi("m,p,v\n",2017,1.3,0);
-  prt_drawDigi("m,p,v\n",2018);
-  prt_cdigi->SetName(Form("hp_cdigi_%d",prt_theta));
-  prt_canvasAdd(prt_cdigi);
+  auto cdigi = prt_drawDigi(2018,0,0);
+  prt_canvasAdd(cdigi);
+  cdigi->SetName(Form("hp_cdigi_%1.2f",prt_theta));
+  prt_canvasAdd(cdigi);
 
-  TString name = Form("_%d_%d_%1.1f_m%1.1f_x%d_z%d_%2.1f_%2.1f.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz,prt_phi,r1);
+  TString name = Form("_%d_%1.2f_%1.1f_m%1.1f_x%d_z%d_%2.1f_%2.1f.root",studyId,prt_theta,sigma,prt_mom,prt_beamx,prt_beamz,prt_phi,r1);
   if(path.Contains("C.root")) name =  "tid"+ name;
   else{
     name = "tis"+ name;
