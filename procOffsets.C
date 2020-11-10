@@ -71,11 +71,11 @@ void procOffsets(TString path="",Int_t corrected=1){
       if(ch<512 ){
 	double time = hit.GetLeadTime();
 	if(bsim){
-	  time+=prt_rand.Gaus(0,0.3);
+	  time+=prt_rand.Gaus(0,0.35);
 	  hLeS->Fill(time);
 	}else{
 	  if(studyid == 420) time += 0.6;
-	  if(studyid == 403) time -= 0.45;
+	  if(studyid == 403) time -= 0.47;
 	  hLeD->Fill(time);
 	}
       }

@@ -1093,11 +1093,11 @@ void prt_set_style(TCanvas *c){
       hh->GetYaxis()->SetTitleOffset(0.76);
 
       if(c->GetWindowHeight()>700){
-	hh->GetXaxis()->SetTitleSize(0.05);
-	hh->GetYaxis()->SetTitleSize(0.05);
+	hh->GetXaxis()->SetTitleSize(0.045);
+	hh->GetYaxis()->SetTitleSize(0.045);
 
-	hh->GetXaxis()->SetLabelSize(0.04);
-	hh->GetYaxis()->SetLabelSize(0.04);
+	hh->GetXaxis()->SetLabelSize(0.035);
+	hh->GetYaxis()->SetLabelSize(0.035);
 
 	hh->GetXaxis()->SetTitleOffset(0.85);
 	hh->GetYaxis()->SetTitleOffset(0.98);

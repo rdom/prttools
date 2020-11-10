@@ -1,14 +1,16 @@
 #include "prttools.C"
 
-TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, int ix=0, TString scut="",bool draw=0){
+TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString name="nph", int ix=0, TString scut="",bool draw=0){
 
-  const int nvar=5;
+  const int nvar = 6;
   double var[nvar], evar[nvar],xx[10];     
   double mom,theta,phi,cangle,spr,trr;
-
-  TString nid[] = {"nph","sep","spr","cang","trr"};  
-
+  int iy = 0;
+  TString nid[] = {"nph","sep_gr","sep_ti","cang","spr","trr"};  
+  for(auto n : nid){ if(name.EqualTo(n)) break; iy++; }
+  
   TString ynid[] = {"detected photons [#]",
+		    "separation [s.d.]",
 		    "separation [s.d.]",
 		    "#theta_{C} [rad]",
 		    "SPR [mrad]",
@@ -36,12 +38,15 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   
   ch.SetBranchAddress("nph_pi",&var[0]);
   ch.SetBranchAddress("nph_pi_err",&evar[0]);
-  ch.SetBranchAddress("sep",&var[1]);
-  ch.SetBranchAddress("sep_err",&evar[1]);
+  ch.SetBranchAddress("sep_gr",&var[1]);
+  ch.SetBranchAddress("sep_gr_err",&evar[1]);
+  ch.SetBranchAddress("sep_ti",&var[2]);
+  ch.SetBranchAddress("sep_ti_err",&evar[2]);
 
-  ch.SetBranchAddress("cangle_pi",&var[2]);
-  ch.SetBranchAddress("spr_pi",&var[3]);
-  ch.SetBranchAddress("trr_pi",&var[4]);
+  
+  ch.SetBranchAddress("cangle_pi",&var[3]);
+  ch.SetBranchAddress("spr_pi",&var[4]);
+  ch.SetBranchAddress("trr_pi",&var[5]);
 
   auto gg = new TGraphAsymmErrors();
     
@@ -54,12 +59,11 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
     is++;
 
     evar[1]=sqrt(evar[1]*evar[1]+0.1*0.1);
-    evar[4]=prt_rand.Uniform(0.8,1.2);
+    evar[2]=sqrt(evar[2]*evar[2]+0.1*0.1);
+    evar[4]=prt_rand.Uniform(0.6,0.8);
     //evar[0]=fabs(theta-90)/30+0.5*sqrt(var[0]);
-    evar[0]=sqrt(evar[0]*evar[0]+0.8*0.8);
+    evar[0]=sqrt(evar[0]*evar[0]+1.5*1.5);
 
-    std::cout<<"var[2] "<<var[2]<<std::endl;
-    
     gg->SetPoint(is,xx[ix],var[iy]);
     gg->SetPointEYhigh(is,evar[iy]);
     gg->SetPointEYlow(is,evar[iy]);
@@ -77,12 +81,12 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", int iy=3, 
   if(ix==4) gg->GetXaxis()->SetLimits(13.5,22);
   //if(ix==5) gg->GetXaxis()->SetLimits(61.5,75.5);
   if(ix==5) gg->GetXaxis()->SetLimits(-0.1,2.1);
-  
   if(ix==6) gg->GetXaxis()->SetLimits(150,950);
-  if(iy==0) gg->GetYaxis()->SetRangeUser(6,14);
-  if(iy==1) gg->GetYaxis()->SetRangeUser(0,3.5);
-  if(iy==2) gg->GetYaxis()->SetRangeUser(0.822,0.828);
-  if(iy==3) gg->GetYaxis()->SetRangeUser(0,12);
+  
+  if(iy==0) gg->GetYaxis()->SetRangeUser(0,80); //30
+  if(iy==1 || iy==2) gg->GetYaxis()->SetRangeUser(0,3.5); //3.5
+  if(iy==3) gg->GetYaxis()->SetRangeUser(0.822,0.828);
+  if(iy==4) gg->GetYaxis()->SetRangeUser(0,14);
 
   if(draw){
     prt_canvasAdd(nid[iy],800,500);
