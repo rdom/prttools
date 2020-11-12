@@ -83,8 +83,8 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   if(ix==5) gg->GetXaxis()->SetLimits(-0.1,2.1);
   if(ix==6) gg->GetXaxis()->SetLimits(150,950);
   
-  if(iy==0) gg->GetYaxis()->SetRangeUser(0,80); //30
-  if(iy==1 || iy==2) gg->GetYaxis()->SetRangeUser(0,3.5); //3.5
+  if(iy==0) gg->GetYaxis()->SetRangeUser(0,75); //30
+  if(iy==1 || iy==2) gg->GetYaxis()->SetRangeUser(0,5.5); //3.5
   if(iy==3) gg->GetYaxis()->SetRangeUser(0.822,0.828);
   if(iy==4) gg->GetYaxis()->SetRangeUser(0,14);
 

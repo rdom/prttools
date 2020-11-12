@@ -1,40 +1,60 @@
 #include "prttools.C"
 
 void drawMapSpr(TString in="tdata/rt.root"){
-  prt_savepath = "data/drawMapSep_403";
   prt_setRootPalette(1);
-  TChain ch("dirc"); ch.Add(in);
-  double cangle,spr,trr,nph,par1,par2,par3,par4,par5,par6,test1,test2,theta,phi,separation; 
+  TChain ch("reco"); ch.Add(in);
+  double spr_pi,nph,test1,test2,theta,phi,sep_gr,sep_ti; 
 
-  ch.SetBranchAddress("separation",&separation);
-  ch.SetBranchAddress("spr",&spr);
-  ch.SetBranchAddress("trr",&trr);
-  ch.SetBranchAddress("nph",&nph);
-  ch.SetBranchAddress("cangle",&cangle);
-  ch.SetBranchAddress("par5",&par5);
-  ch.SetBranchAddress("par6",&par6);
+  ch.SetBranchAddress("sep_gr",&sep_gr);
+  ch.SetBranchAddress("sep_ti",&sep_ti);
+  ch.SetBranchAddress("spr_pi",&spr_pi);
   ch.SetBranchAddress("test1",&test1);
   ch.SetBranchAddress("test2",&test2);
   ch.SetBranchAddress("theta",&theta);
   ch.SetBranchAddress("phi",&phi);
 
   gStyle->SetOptStat(0);
-  // TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,40,-10,10);
-  TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,40,-20,20);
-  TH2F *hSep = new TH2F("hSep",";#Delta#theta [mrad];#Delta#varphi [mrad]",40,-20,20,40,-20,20);
+  TH2F *hSpr = new TH2F("hSpr",";#Delta#theta [mrad];#Delta#varphi [mrad]",21,-21,21,21,-21,21);
+  TH2F *hSep_gr = new TH2F("hSep_gr",";#Delta#theta [mrad];#Delta#varphi [mrad]",21,-21,21,21,-21,21);
+  TH2F *hSep_ti = new TH2F("hSep_ti",";#Delta#theta [mrad];#Delta#varphi [mrad]",21,-21,21,21,-21,21);
 
   for (auto i = 0; i < ch.GetEntries(); i++) {
     ch.GetEvent(i);
-    hSpr->Fill(test1*1000,test2*1000,spr);
-    hSep->Fill(test1*1000,test2*1000,separation);
+    hSpr->Fill(test1*1000,test2*1000,spr_pi);
+    hSep_gr->Fill(test1*1000,test2*1000,sep_gr);
+    hSep_ti->Fill(test1*1000,test2*1000,sep_ti);
   }
-  std::cout<<"theta "<<theta<<std::endl;
- 
+
+  TString nid = Form("#theta = %1.2f deg",theta);
+  hSpr->SetTitle(nid);
+  hSep_gr->SetTitle(nid);
+  hSep_ti->SetTitle(nid);
+  
   prt_canvasAdd(Form("hspr_%d",(int)(theta+0.6)),800,500);
   hSpr->Draw("colz");
 
-  prt_canvasAdd(Form("hsep_%d",(int)(theta+0.6)),800,500);
-  hSep->Draw("colz");
+  
+  prt_canvasAdd(Form("hsep_ti_%d",(int)(theta+0.6)),800,500);
+  hSep_ti->Draw("colz");
+
+
+  prt_canvasAdd(Form("hsep_gr_%d",(int)(theta+0.6)),800,500);
+  hSep_gr->Draw("colz");
+  
+  hSep_gr->Smooth();
+  int maxbin = hSep_gr->GetMaximumBin();
+  int binx,biny,binz;
+  hSep_gr->GetBinXYZ(maxbin, binx, biny, binz);
+    
+  double maxx = hSep_gr->GetXaxis()->GetBinCenter(binx);
+  double maxy = hSep_gr->GetYaxis()->GetBinCenter(biny);
+
+  
+  TEllipse *el3 = new TEllipse(maxx,maxy,0.6,1);
+  el3->SetFillColor(1);
+  el3->Draw();
+  std::cout<<"theta "<<theta<<"  "<<Form("%1.2f",0.001*maxx*TMath::RadToDeg()) <<"  "<<Form("%1.2f",0.001*maxy*TMath::RadToDeg())<<std::endl;
+  
   
   // int binx,biny,binz;  
   // hSpr->GetBinXYZ(hSpr->GetMinimumBin(),binx,biny,binz);
@@ -116,6 +136,6 @@ void drawMapSpr(TString in="tdata/rt.root"){
   // // gphi_pi->Draw("same PL");
   // // leg_pi->Draw();
   
-  prt_canvasSave();
+  // prt_canvasSave("data/drawMapSep_nocorr",0);
   
 }
