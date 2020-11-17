@@ -42,6 +42,7 @@
 #include <TCutG.h>
 #include <TKey.h>
 #include "TPRegexp.h"
+#include "TFitResult.h"
 
 
 #include <iostream>
