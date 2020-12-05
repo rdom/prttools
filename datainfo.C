@@ -30,6 +30,7 @@ class DataInfo {
   Int_t _stepId;
   Int_t _nchildren;
   TString _aliasId;
+  TString _dataPath;
   std::vector<TString> _childRuns;
 
 public:
@@ -38,7 +39,7 @@ public:
     _runId(r),_studyId(studyId),_radiatorId(radiator),_lensId(l),_angle(a)
     ,_phi(phi),_test(test),_z(z),_x(x),_xstep(xs),_ystep(ys),_momentum(mom)
     ,_simToffset(simToffset),_beamDimension(beamDimension)
-    ,_fileId(0),_zId(0),_xId(0),_stepId(0),_nchildren(0),_aliasId(""){
+    ,_fileId(0),_zId(0),_xId(0),_stepId(0),_nchildren(0),_aliasId(""),_dataPath("~/data/jul18/"){
   };
 
   ~DataInfo() {}
@@ -142,6 +143,7 @@ public:
   TString getChildRunId(Int_t ind){return _childRuns[ind];}
   Int_t getNChildren(){return _nchildren;}
   Double_t getSimTO() const { return _simToffset; }
+  TString getDataPath() const { return _dataPath; }
   
   /* Mutators */
   void setRunId(TString var) { _runId = var; }
@@ -672,13 +674,14 @@ void datainfo_init(){
       
     study[401]="High stat scan. Bar, 3LS lens, grease everywere";
     {
+      double z = 442-15;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
-      dataArray.push_back(DataInfo(401,"beam_401_20",1,3, 20.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(401,"beam_401_25",1,3, 25.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(401,"beam_401_30",1,3, 30.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(401,"beam_401_60",1,3, 60.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(401,"beam_401_90",1,3, 90.0,442,85.0,70.00,16.45,7.0,10,o));
-      dataArray.push_back(DataInfo(401,"beam_401_140",1,3, 140.0,442,85.0,70.00,16.45,7.0,10,o));
+      dataArray.push_back(DataInfo(401,"beam_401_20",1,3,  20.0-0.34,z,85.0,65.00,16.3,7.0,10,o,-0.05));
+      dataArray.push_back(DataInfo(401,"beam_401_25",1,3,  25.0-0.34,z,85.0,65.00,16.3,7.0,10,o,-0.05));
+      dataArray.push_back(DataInfo(401,"beam_401_30",1,3,  30.0-0.23,z,85.0,65.00,16.3,7.0,10,o,-0.05));
+      dataArray.push_back(DataInfo(401,"beam_401_60",1,3,  60.0-0.00,z,85.0,65.00,16.3,7.0,10,o,-0.05));
+      dataArray.push_back(DataInfo(401,"beam_401_90",1,3,  90.0-0.11,z,85.0,65.00,16.3,7.0,10,o,-0.05));
+      dataArray.push_back(DataInfo(401,"beam_401_140",1,3,140.0-0.00,z,85.0,65.00,16.3,7.0,10,o,-0.05));
     }
 
     study[402]="Offset study. Bar, 3LS lens, grease everywere, 20 deg, 2 mV";
@@ -1276,7 +1279,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   
   if(format==6){ // reco
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"\"/d/proc/jul18/"<<newset[i].getStudyId()<<"/"<<newset[i].getChildRunId(0)<<"C.root\","
+      std::cout<<"\""<<newset[i].getDataPath()<<newset[i].getStudyId()<<"/"<<newset[i].getChildRunId(0)<<"C.root\","
 	       << newset[i].getStudyId() <<","<<i<<","<<newset[i].getMomentum() << ","<<newset[i].getRadiatorId()
 	       <<","<<newset[i].getLensId()
 	       <<","<<newset[i].getAngle()<<","<<newset[i].getZ()
@@ -1287,7 +1290,7 @@ void p_print(std::vector<DataInfo> newset, Int_t format){
   
   if(format==7){ // reco sim
     for(UInt_t i = 0; i != newset.size(); i++) {
-      std::cout<<"\"/d/proc/jul18/"<<newset[i].getStudyId()<<"/"<<newset[i].getChildRunId(0)<<"S.root\","
+      std::cout<<"\""<<newset[i].getDataPath()<<newset[i].getStudyId()<<"/"<<newset[i].getChildRunId(0)<<"S.root\","
 	       << newset[i].getStudyId() <<","<<i<<","<<newset[i].getMomentum() << ","<<newset[i].getRadiatorId()
 	       <<","<<newset[i].getLensId()
 	       <<","<<newset[i].getAngle()<<","<<newset[i].getZ()
@@ -1449,10 +1452,10 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
       if(studyId==0 || i==studyId){
 	std::vector<DataInfo> tset= getStudy(i);
 	if(tset.size()>0){
-	  std::cout<<"mkdir /d/proc/jul18/"<<i <<std::endl;
+	  std::cout<<"mkdir "<<tset[0].getDataPath()<<i <<std::endl;
 	  std::cout<<"cp ";
 	  p_print(tset, format);
-	  std::cout<<"/d/proc/jul18/"<<i<<std::endl;
+	  std::cout<<tset[0].getDataPath()<<i<<std::endl;
 	}
       }
     }

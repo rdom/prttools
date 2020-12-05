@@ -59,24 +59,55 @@ void procOffsets(TString path="",Int_t corrected=1){
       // if(!(t3h && t3v && hodo1 && hodo2)) continue;
     }
     
-    if(prt_event->GetParticle()==2212) continue;
+    if(prt_event->GetParticle()==211) continue;
     bool bsim(false);
     TString current_file_name  = prt_ch->GetCurrentFile()->GetName();
     if(current_file_name.Contains("S.root")) bsim = true;
     else maxent++;
     
-    Double_t time(0);
     for(auto hit : prt_event->GetHits()){
       int ch = hit.GetChannel();
       if(ch<512 ){
 	double time = hit.GetLeadTime();
 	if(bsim){
-	  time+=prt_rand.Gaus(0,0.35);
+	  time += prt_rand.Gaus(0,0.35);
 	  hLeS->Fill(time);
 	}else{
-	  if(studyid == 420) time += 0.6;
-	  if(studyid == 403) time -= 0.47;
-	  hLeD->Fill(time);
+	  if(studyid == 401){
+	    double o = 0.1;
+	    if(fabs(prt_theta-90)<1) o = 0.5;
+	    time += o;
+	  }
+	  if(studyid == 403){
+	    double o = 0.1;
+	    if(fabs(prt_theta-20)<1) o = -0.2;
+	    if(fabs(prt_theta-25)<1) o = -0.05;
+	    if(fabs(prt_theta-30)<1) o =  0.08;
+	    if(fabs(prt_theta-35)<1) o =  0.2;
+	    if(fabs(prt_theta-40)<1) o =  0.2;
+	    if(fabs(prt_theta-45)<1) o =  0.2;
+	    if(fabs(prt_theta-50)<1) o =  0.1;
+	    if(fabs(prt_theta-55)<1) o =  0.1;
+	    if(fabs(prt_theta-60)<1) o =  -0.1;
+	    if(fabs(prt_theta-65)<1) o =  -0.2;
+	    if(fabs(prt_theta-70)<1) o = -0.2;
+	    if(fabs(prt_theta-75)<1) o = -0.4;
+	    if(fabs(prt_theta-80)<1) o = -0.4;
+	    if(fabs(prt_theta-85)<1) o = -0.4;
+	    if(fabs(prt_theta-90)<1) o = -0.4;
+	    if(fabs(prt_theta-95)<1) o = -0.4;
+	    if(fabs(prt_theta-100)<1) o = -0.4;
+	    if(fabs(prt_theta-105)<1) o = -0.35;
+	    if(fabs(prt_theta-110)<1) o = -0.2;
+	    if(fabs(prt_theta-115)<1) o = -0.1;
+	    if(fabs(prt_theta-120)<1) o = 0.1;
+	    if(fabs(prt_theta-125)<1) o =  0.1;
+	    if(fabs(prt_theta-130)<1) o = +0.1;
+	    if(fabs(prt_theta-135)<1) o = +0.3;
+	    if(fabs(prt_theta-140)<1) o = +0.58;
+	    time += o;
+	  }
+	  hLeD->Fill(time);	  
 	}
       }
     }

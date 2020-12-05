@@ -6,7 +6,7 @@
 #include "tdisplay.h"
 
 const Int_t maxfiles = 150;
-Int_t gSetup=2019, gTrigger,gEntries=0, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
+Int_t gSetup=2018, gTrigger,gEntries=0, gMode=0, gComboId=0, gWorkers=4, nfiles = 10;
 TString ginFile(""),gcFile(""), fileList[maxfiles];
 TH1F *hCh, *hRefDiff, *hFine[maxfiles][prt_maxchm], *hTot[maxfiles][prt_maxchm],
   *hTimeL[prt_nmcp][prt_npix], *hTimeT[prt_nmcp][prt_npix], *hSigma[prt_ntdcm];
@@ -22,7 +22,7 @@ Double_t getTotWalk(Double_t tot,Int_t ch, Int_t type=0){
 
   if(type==0){
     if(ch<prt_maxdircch){
-      for(Int_t i=0; i<9; i++){
+      for(Int_t i=0; i<prt_nmcp; i++){
 	if(gTotP[ch][i]<0.00000001) continue;
 	d = gTotP[ch][i]-tot;
 	if(fabs(d)<fabs(min)){
@@ -483,7 +483,6 @@ void MyMainFrame::DoExport(Int_t type){
     prt_savepath = filedir+"/plots";
   
     std::cout<<"Exporting into  "<<prt_savepath <<std::endl;
-    prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry));
     Float_t total = (prt_nmcp-1)*(prt_npix-1);
     if(gComboId==0 || gComboId==1 || gComboId==2 || gComboId==3){
       for(Int_t m=0; m<prt_nmcp; m++){
@@ -507,13 +506,11 @@ void MyMainFrame::DoExport(Int_t type){
       prt_canvasDel(cExport->GetName());
     }
 
-    cExport = (TCanvas *) prt_cdigi->DrawClone();
-    cExport->SetCanvasSize(800,400);
-
-    cExport->SetName("digi");
-    prt_canvasAdd(cExport);
+    auto cdigi = prt_drawDigi(prt_geometry,0,0);
+    // prt_writeString(prt_savepath+"/digi.csv",);
+    prt_canvasAdd(cdigi);
     prt_canvasSave(1,1);
-    prt_canvasDel(cExport->GetName());
+    prt_canvasDel(cdigi->GetName());
   
     gROOT->SetBatch(0);
     std::cout<<"Exporting .. Done"<<std::endl;
@@ -597,7 +594,7 @@ void Calibrate(){
   gLeOff = new TGraph();
   gTotPeaks = new TGraph();
 
-  if(gMode==5) for(Int_t i=0; i<9; i++) prt_hdigi[i]->Reset();	
+  if(gMode==5) for(Int_t i=0; i<prt_nmcp; i++) prt_hdigi[i]->Reset();	
   
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<prt_maxch; c++){
@@ -752,9 +749,9 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   // Create the embedded canvas
   fEcan = new TRootEmbeddedCanvas(0,this,800,350);
   Int_t wid0 = fEcan->GetCanvasWindowId();
-  prt_cdigi = new TCanvas("prt_cdigi",10,10,wid0);
-  prt_cdigi->SetMargin(0,0,0,0);
-  fEcan->AdoptCanvas(prt_cdigi);
+  auto cdigi = new TCanvas("cdigi",10,10,wid0);
+  fEcan->AdoptCanvas(cdigi);
+  prt_canvasAdd(cdigi);
 
   fTime = new TRootEmbeddedCanvas(0,this,800,350);
   Int_t wid1 = fTime->GetCanvasWindowId();
@@ -853,10 +850,11 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   ch->AddBranchToCache("*");  
   ch->Process(selector,option,entries);
 
-  prt_drawDigi("m,p,v\n",prt_geometry,-2,0);
   updatePlot(0); //gComboId
-
-  prt_cdigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
+  std::cout<<"prt_geometry "<<prt_geometry<<std::endl;
+ 
+  prt_drawDigi(prt_geometry,-2,0,cdigi);
+  cdigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
 		 "exec3event(Int_t,Int_t,Int_t,TObject*)");
   MapWindow();
 }
@@ -866,7 +864,7 @@ MyMainFrame::~MyMainFrame(){
   delete fTime;
 }
 
-void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4, TString cFile= "calib.root",Int_t entries=0,Int_t setupid=2019){
+void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, Int_t workers = 4, TString cFile= "calib.root",Int_t entries=0,Int_t setupid=2018){
   //inFile= "data/dirc/scan1/th_1*.hld.root";
   ginFile = inFile;
   gTrigger = trigger;
@@ -874,7 +872,8 @@ void tdisplay(TString inFile= "file.hld.root", Int_t trigger=0, Int_t mode=0, In
   gcFile = (cFile!="")? cFile: "0"; // fine time calibration
   gMode=mode;
   gSetup = setupid;
+  if(gSetup==2018) gTrigger = 1136;
   gWorkers = workers;
-
+ 
   new MyMainFrame(gClient->GetRoot(), 800, 800);
 }

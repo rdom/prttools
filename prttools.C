@@ -413,7 +413,7 @@ TString prt_randstr(Int_t len = 10){
 // layoutId == 2030 - EIC DIRC prism
 // layoutId == 2032 - EIC DIRC focusing prism 
 TH1 * prt_cdigi_th;
-TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
+TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, TCanvas *cdigi = NULL){
 
   prt_last_layoutId=layoutId;
   prt_last_maxz=maxz;
@@ -423,8 +423,8 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0){
   if(prt_geometry==2019) layoutId=2018;
 
   TString sid = prt_randstr(3);
-  auto cdigi = new TCanvas("hp="+sid,"hp_"+sid,800,400);
-  cdigi->cd();
+  if(cdigi) cdigi->cd();
+  else cdigi = new TCanvas("hp="+sid,"hp_"+sid,800,400);
 
   TPad* prt_hpads[prt_nmcp];
   TPad* prt_hpglobal;

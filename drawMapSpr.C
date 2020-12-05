@@ -136,6 +136,6 @@ void drawMapSpr(TString in="tdata/rt.root"){
   // // gphi_pi->Draw("same PL");
   // // leg_pi->Draw();
   
-  // prt_canvasSave("data/drawMapSep_nocorr",0);
+  prt_canvasSave("data/drawMapSep_401_nocorr",0);
   
 }

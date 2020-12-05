@@ -17,6 +17,7 @@ MSelector *fSelector;
 TGraph *gGrDiff[prt_maxchm];
 TGraph *gWalk[prt_maxchm];
 TCanvas *cTime;
+TCanvas *cDigi;
 
 const Int_t maxMult = 30;
 Int_t mult[prt_maxchm]={0},gComboId(0), gTrigger(0), gSetup(2019) ,gMode(0), gWorkers(4), gEntries(0); //3for2015
@@ -706,7 +707,7 @@ void MyMainFrame::DoDraw(){
 
   fCheckBtn1->SetState(kButtonUp);
 
-  prt_drawDigi("m,p,v\n",prt_geometry);
+  prt_drawDigi(prt_geometry,0,0,cDigi);
 
   updatePlot(gComboId);
 
@@ -763,7 +764,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
     for(Int_t m=0; m<prt_nmcp; m++){
       prt_hdigi[m] = prt_hdigi_temp_updateplot[m];
     }
-    prt_drawDigi("m,p,v\n",prt_geometry);
+    prt_drawDigi(prt_geometry,0,0,cDigi);
     fBackToHp=false;
   }
 
@@ -875,7 +876,7 @@ TString MyMainFrame::updatePlot(Int_t id, TCanvas *cT){
 	prt_hdigi[m]->Fill(row,col,sigma);
       }
     }
-    prt_drawDigi("m,p,v\n",prt_geometry,-2,-2);
+    prt_drawDigi(prt_geometry,-2,-2,cDigi);
     
     fBackToHp=true;
 
@@ -934,13 +935,12 @@ void MyMainFrame::DoExport(){
   filedir.Remove(filedir.Last('/'));
   if(prt_savepath == "") prt_createDir(filedir+"/auto");
 
-  //prt_canvasAdd("hp",800,400);
-  prt_canvasAdd(prt_cdigi); 
-  //prt_cdigi->DrawClonePad();
+  auto cdigi = prt_drawDigi(prt_geometry,0,0);
+  prt_canvasAdd(cdigi); 
   prt_canvasSave(1,0);
   
   std::cout<<"Exporting into  "<<prt_savepath <<std::endl;
-  prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry));
+  //prt_writeString(prt_savepath+"/digi.csv", prt_drawDigi("m,p,v\n",prt_geometry));
   
   pbar->Reset();
   Float_t total = (prt_nmcp-1)*(prt_npix-1);
@@ -1014,7 +1014,7 @@ void MyMainFrame::DoExport(){
 TLine *gLine = new TLine(0,0,3000,0);
 void MyMainFrame::DoSlider(Int_t pos){
   if(fCheckBtn1->GetState() != kButtonDown)
-    prt_drawDigi("m,p,v\n",prt_geometry,pos);
+    prt_drawDigi(prt_geometry,pos,0,cDigi);
 
   if(gComboId==7){
     cTime->cd();  
@@ -1035,7 +1035,7 @@ void MyMainFrame::DoCheckBtnClecked1(){
   }else{
     gMain->fHslider1->SetEnabled(kFALSE);
   }
-  prt_drawDigi("m,p,v\n",prt_geometry,state);
+  prt_drawDigi(prt_geometry,state,0,cDigi);
 }
 
 void MyMainFrame::DoCheckBtnClecked2(){
@@ -1096,13 +1096,13 @@ void MyMainFrame::DoCheckBtnClecked4(){
 	prt_hdigi[m]->Fill(row,col,mean);
       }
     }
-    prt_drawDigi("m,p,v\n",prt_geometry,-2,-2);
+    prt_drawDigi(prt_geometry,-2,-2,cDigi);
   }
   if(fCheckBtn4->GetState() == kButtonUp){
     for(Int_t m=0; m<prt_nmcp; m++){
       prt_hdigi[m] = prt_hdigi_temp[m];
     }
-    prt_drawDigi("m,p,v\n",prt_geometry);
+    prt_drawDigi(prt_geometry,0,0,cDigi);
   }
 }
 
@@ -1115,7 +1115,7 @@ void MyMainFrame::DoHistory(){
       }
       prt_hdigi_history[m] = (TH2F*)prt_hdigi_temp[m]->Clone();
     }
-    prt_drawDigi("m,p,v\n",prt_geometry);
+    prt_drawDigi(prt_geometry,0,0,cDigi);
 }
 
 void MyMainFrame::DoExit(){
@@ -1147,9 +1147,8 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   // Create the embedded canvas
   fEcan = new TRootEmbeddedCanvas(0,this,800,350);
   Int_t wid0 = fEcan->GetCanvasWindowId();
-  prt_cdigi = new TCanvas("prt_cdigi",10,10,wid0);
-  prt_cdigi->SetMargin(0,0,0,0);
-  fEcan->AdoptCanvas(prt_cdigi);
+  cDigi = new TCanvas("cdigi",10,10,wid0);
+  fEcan->AdoptCanvas(cDigi);
 
   fTime = new TRootEmbeddedCanvas(0,this,800,350);
   Int_t wid1 = fTime->GetCanvasWindowId();
@@ -1369,8 +1368,9 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
   init();
   DoDraw();
   fComboMode->Select(7);
-
-  prt_cdigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
+  
+  prt_drawDigi(prt_geometry,-2,0,cDigi);
+  cDigi->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)", 0, 0,
 		 "exec3event(Int_t,Int_t,Int_t,TObject*)");
 
 

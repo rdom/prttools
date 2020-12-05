@@ -50,13 +50,14 @@ double tofp2[] ={0,0,47.50,41.50,39.20, 38.20,37.60, 37.20,37.00, 37.00, 36.7};
 int gg_nevents(0);
 
 Bool_t IsPion(double tof, int mom){
-  
-  if(prt_data_info.getStudyId()<415) return tofpi1a[mom]<tof && tof<tofpi2a[mom];
+  //if(prt_data_info.getStudyId()<415) return tofpi1a[mom]<tof && tof<tofpi2a[mom];
+  if(prt_data_info.getStudyId()<415) return (tof1le-2<tof && tof<tof1le+0.1);
   else return tofpi1[mom]<tof && tof<tofpi2[mom];
 }
 
 Bool_t IsProton(double tof, int mom){
-  if(prt_data_info.getStudyId()<415) return tofp1a[mom]<tof && tof<tofp2a[mom];
+  //if(prt_data_info.getStudyId()<415) return tofp1a[mom]<tof && tof<tofp2a[mom];
+  if(prt_data_info.getStudyId()<415) return (tof2le-0.1<tof && tof<tof2le+2);
   else return tofp1[mom]<tof && tof<tofp2[mom];
 }
 
@@ -126,10 +127,10 @@ void TTSelector::Begin(TTree *){
       double x,y;
       if(name.Contains("tof")){
 	name.Remove(0,4);
-	//	if(ginFile.Contains(name)){
+	if(ginFile.Contains(name)){
 	  gr->GetPoint(0,tof1le,tof2le);
 	  gr->GetPoint(1,tof1tot,tof2tot);	  
-	  //	}
+	}
 	continue;
       }
       if(name.Contains("off")){ // read event offsets
@@ -373,11 +374,11 @@ Bool_t TTSelector::Process(Long64_t entry){
       // time += (tot1-tof1tot)*tan(walktheta);
       // time += (tot2-tof2tot)*tan(-walktheta);
 
-      // time += (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
-      // time += (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
+      if(tof1tot<55 && tof1tot>10) time += (tot1-tof1tot)*tan(-3*TMath::DegToRad());
+      if(tof2tot<55 && tof2tot>10) time += (tot2-tof2tot)*tan(2*TMath::DegToRad());
 
-      time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
-      time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
+      // time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
+      // time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
 
       toftime = time;
       int m = (double) (mom+0.1);
@@ -430,7 +431,7 @@ Bool_t TTSelector::Process(Long64_t entry){
       triggerTot= grTime2 - grTime1;
     }
     
-    for(int i=0; i<Hits_ && i<10000; i++){      
+    for(int i=0; i<Hits_ && i<10000; i++){
       //if(Hits_nTdcErrCode[i]!=0) continue;
       if(Hits_nTdcChannel[i]==0) continue; // ref channel
       if(Hits_nSignalEdge[i]==0) continue; // tailing edge 
@@ -455,9 +456,8 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//timeLe += getTotWalk(timeTot,ch);
 	//if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
-	if(fabs(tot2-tof2tot)<1.2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.); //7.1;
-	
-        if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);	
+	//if(fabs(tot2-tof2tot)<1.2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.); //7.1;	
+	// if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);	
 	timeLe -= gLeOffArr[ch];
 
 	if(!laser && gMode==5){

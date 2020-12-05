@@ -53,8 +53,8 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
   if(!prt_init(infile,1,Form("data/drawTof/%d/%2.1f",studyId,prt_data_info.getMomentum()))) return;
 
   // MCP-TOF
-  double le1(32), le2(36), l1(30), l2(35);
-  double t11(45), t12(50), t21(47), t22(52);
+  double le1(31), le2(36), l1(30), l2(35);
+  double t11(42), t12(70), t21(45), t22(52);
   // double le1(34), le2(40), l1(34), l2(40);
   // double t11(36), t12(45), t21(36), t22(45);
 
@@ -92,17 +92,16 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
   TH1F * hTofC  = new TH1F("tofC ","tofC;TOF2-TOF1 [ns]; entries [#]",600,le1,le2);
   TH1F * hTot  = new TH1F("tot ","tot;TOT1,TOT2 [ns]; entries [#]",   600,0,100);
   
-  TH2F * hLeTot1  = new TH2F("letot1 ","letot1;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,t11,t12);
+  TH2F * hLeTot1  = new TH2F("letot1 ","letot1;TOF2-TOF1 [ns]; TOT1 [ns]",   900,l1,l2,125,t11,t12);
   TH2F * hLeTot2  = new TH2F("letot2 ","letot2;TOF2-TOF1 [ns]; TOT2 [ns]",   500,l1,l2,125,t21,t22);
-  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   500,l1,l2,125,t11,t12);
+  TH2F * hLeTotC  = new TH2F("letotC ","letotC;TOF2-TOF1 [ns]; TOT1 [ns]",   900,l1,l2,125,t11,t12);
   TH2F * hLeTotC2  = new TH2F("letotC2 ","letotC2;TOF2-TOF1 [ns]; TOT2 [ns]",500,l1,l2,125,t21,t22);
-
 
   gStyle->SetOptStat(1001111);
   gStyle->SetOptFit();
   
   PrtHit hit;
-  for (Int_t ievent=0; ievent<prt_entries; ievent++){ //prt_entries
+  for (Int_t ievent = 0; ievent < prt_entries && ievent < 1000000; ievent++){ //prt_entries
     prt_nextEvent(ievent,10000);
     
     Bool_t btrig(false),bmcpout(false),btof1(false),btof2(false),
@@ -210,9 +209,14 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
       // MCP-TOF
       // time += (tot1-47.28)*tan(-2*TMath::Pi()/180.);
       // time += (tot2-49.59)*tan(-1*TMath::Pi()/180.);
-      time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
-      time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
-      
+
+      // time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
+      // time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
+
+      if(gcFile!="0"){
+	if(tof1tot<55) time += (tot1-tof1tot)*tan(-3*TMath::DegToRad());
+	if(tof2tot<55) time += (tot2-tof2tot)*tan(2*TMath::DegToRad());
+      }
       
       hTofC->Fill(time);
      

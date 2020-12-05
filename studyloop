@@ -91,7 +91,8 @@ waitForMe (){
     done
 }
 
-datadir="/d/proc/jul18/"
+#datadir="/d/proc/jul18/"
+datadir="$HOME/data/jul18/"
 
 processOneSim (){
 	OIFS="$IFS"
@@ -198,7 +199,7 @@ if [ ${level} -lt "9" ]; then
 	    done
 	else
 	    datapath="${datadir}${study}"
-	    hadd -f ${datapath}/rec_${study}C.root ${datapath}/*C.root_R.root 
+	    hadd -f ${datapath}/rec_${study}C.root ${datapath}/*C.root_R.root
 	fi
     fi
     
