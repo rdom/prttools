@@ -468,7 +468,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	timeLe -= (gLeOffArr[ch]-gPilasOffset[ch]);
 	
 	if(!laser && gMode==5){
-	  double rad = TMath::Pi()/180.0,
+	  double rad = TMath::Pi()/180.,
 	    zrot=155,
 	    xrot=98,
 	    prtangle= fEvent->GetAngle(),
