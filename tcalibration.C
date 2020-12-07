@@ -9,7 +9,7 @@
 DataInfo prt_data_info;
 TString ginFile(""), goutFile(""), gcFile("");
 int gTrigger(0), gSetup(2019), gMode(0), gComboId(0),  gMaxIn[prt_maxchm];
-double tdcRefTime[prt_ntdcm],gTotO[prt_maxchm], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0);
+double tdcRefTime[prt_ntdcm],gTotO[prt_maxchm], gTotP[prt_maxdircch][10],gLeOffArr[prt_maxdircch],gEvtOffset(0),gPilasOffset[prt_maxdircch];
 TGraph *gGrIn[prt_maxchm], *gWalk[prt_maxchm], *gGrDiff[prt_maxchm];
 
 double walktheta(-5*TMath::Pi()/180.);
@@ -143,6 +143,13 @@ void TTSelector::Begin(TTree *){
 	name.Remove(0,5);
 	int ch = name.Atoi();
 	gWalk[ch]= new TGraph(*gr);
+	continue;
+      }
+
+      if(name.Contains("evl")){
+	for(int i=0; i<prt_maxdircch; i++){	  
+	  gr->GetPoint(i,x,gPilasOffset[i]);
+	}
 	continue;
       }
       
@@ -423,7 +430,7 @@ Bool_t TTSelector::Process(Long64_t entry){
   PrtHit hit;
   int nrhits=0;
   
-  if((grTime0>0 && grTime1>0) || gTrigger==0){    
+  if((grTime0>0 && grTime1>0) || gTrigger==0){
     if(gTrigger!=0) {
       triggerLe = grTime1 - grTime0;
       if(gTrigger==1140) triggerLe = (tofstr1+tofstl1)/2.;
@@ -456,10 +463,10 @@ Bool_t TTSelector::Process(Long64_t entry){
 	//timeLe += getTotWalk(timeTot,ch);
 	//if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
-	//if(fabs(tot2-tof2tot)<1.2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.); //7.1;	
-	// if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);	
-	timeLe -= gLeOffArr[ch];
-
+	if(gTrigger==trigTof2 && fabs(tot2-tof2tot)<1.2) timeLe += (tot2-tof2tot)*tan(2*TMath::Pi()/180.); //7.1;	
+	if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);	
+	timeLe -= (gLeOffArr[ch]-gPilasOffset[ch]);
+	
 	if(!laser && gMode==5){
 	  double rad = TMath::Pi()/180.,
 	    zrot=155,
@@ -485,7 +492,6 @@ Bool_t TTSelector::Process(Long64_t entry){
 	// if(ch==trigTof1) timeLe -= (tot1-tof1tot)*tan(-3*TMath::Pi()/180.);
 	// if(ch==trigTof2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 	
-	////timeLe-=gEvtOffset;
 	timeLe-=gEvtOffset;
 
 	// if(ch>820 && ch<1340) continue;
@@ -536,7 +542,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gTrigger = trigger;
   gMode = mode;  
   gSetup = setupid;
-  if(gMode == 5) gTrigger=1136; //1136
+  if(gMode == 5) gTrigger=1138; //1136
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

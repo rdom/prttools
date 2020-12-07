@@ -75,14 +75,14 @@ void TTSelector::SlaveBegin(TTree *){
     // totb=4000; totl=-1000; toth=1000;
     // leb=4000, le1=-5, le2=100;
 
-    totb=4000; totl=30; toth=70;
+    totb=4000; totl=30; toth=80;
     leb=4000, le1=-8, le2=8;
   }
   if(fileList[0].Contains("pilas") || fileList[0].Contains("th_") ){
     if(!gTrigger) gTrigger=820;
     if(prt_geometry==2018) gTrigger=520;
     leb=2000; le1=-40; le2=0;
-    // leb = 2000; le1=55; le2=85;
+    leb = 2000; le1=55; le2=85;
     // leb = 2000; le1=75; le2=100;    
     totb=240; totl=0; toth=12;
     if(prt_geometry==2023){

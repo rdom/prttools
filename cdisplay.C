@@ -150,7 +150,7 @@ void MSelector::SlaveBegin(TTree *){
       
       if(gMode==1){
 	hShape[m][p] = new TH2F(Form("hShape_mcp%dpix%d",m,p), Form("hShape_%d_%d;LE [ns];offset [mV]",m,p) , bins1,min1,max1,100,-5.1,15);
-	hLeTot[m][p] = new TH2F(Form("hLeTot_mcp%dpix%d" ,m,p), Form("mcp %d, pixel %d;LE [ns];TOT [ns]",m, p), 400,min1,max1, bins2,min2,max2);
+	hLeTot[m][p] = new TH2F(Form("hLeTot_mcp%dpix%d" ,m,p), Form("mcp %d, pixel %d;LE [ns];TOT [ns]",m, p), bins1,min1,max1, bins2,min2,max2);
 	prt_axisTime800x500(hShape[m][p],"time [ns]");
 	hShape[m][p]->GetYaxis()->SetRangeUser(-4,10);
 	hShape[m][p]->GetYaxis()->SetTitle("offset to the threshold [mV]");
@@ -1359,6 +1359,11 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
     fEdit2->SetText("200 5 15");
   }
   
+  if(prt_geometry==2018){
+    if(ginFile.Contains("pilas")) fEdit1->SetText("200 28 33");
+    fEdit2->SetText("100 0 8");
+  }
+  
   fEdit3->SetText("0 0");
   fEdit4->SetText("0 0");
   fEdit5->SetText("0 0");
@@ -1394,6 +1399,7 @@ void cdisplay(TString inFile= "pilasM.root", Int_t trigger=0, Int_t mode=0, TStr
   gPath=path;
   gInfo=info;
   gSetup=setupid;
+  prt_geometry=gSetup;
   prt_addInfo("Program = cdisplay");
   prt_addInfo("In file = " + ginFile);
   prt_addInfo("In path = " + gPath);
