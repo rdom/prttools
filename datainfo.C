@@ -674,7 +674,7 @@ void datainfo_init(){
       
     study[401]="High stat scan. Bar, 3LS lens, grease everywere";
     {
-      double z = 442-15;
+      double z = 424-15; //442-15;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
       dataArray.push_back(DataInfo(401,"beam_401_20",1,3,  20.0-0.34,z,85.0,65.00,16.3,7.0,10,o,-0.05));
       dataArray.push_back(DataInfo(401,"beam_401_25",1,3,  25.0-0.34,z,85.0,65.00,16.3,7.0,10,o,-0.05));
@@ -723,7 +723,7 @@ void datainfo_init(){
 
     study[403]="Theta scan @ phi=0 deg. Bar, 3LS lens, grease everywere";
     {
-      double z = 442-15;
+      double z = 424-15; //442-15;
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset
       dataArray.push_back(DataInfo(403,"beam_18215163732",1,3,20.0  -0.46 ,z,85.0,65.10,16.3,7.0,10,o, -0.05)); //-0.23
       dataArray.push_back(DataInfo(403,"beam_18215164946",1,3,25.0  -0.46 ,z,85.0,65.10,16.3,7.0,10,o, -0.05)); //-0.23

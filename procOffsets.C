@@ -3,7 +3,7 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "prttools.C"
 
-void procOffsets(TString path="",Int_t corrected=1){
+void procOffsets(TString path="",int corrected=1){
   
   if(path=="") return;
   TString fileid(path);
@@ -13,7 +13,7 @@ void procOffsets(TString path="",Int_t corrected=1){
   prt_data_info = getDataInfo(fileid);
   int studyid = prt_data_info.getStudyId();
  
-  Int_t h1a(0),h1b(50),h2a(0),h2b(50),hbin(1000);//h1a(200),h1b(400)
+  int h1a(0),h1b(50),h2a(0),h2b(50),hbin(1000);//h1a(200),h1b(400)
 
   if(corrected==1){
     h1a=0;
@@ -35,15 +35,15 @@ void procOffsets(TString path="",Int_t corrected=1){
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
 
-  Int_t maxent(0);
-  for (auto ievent=0; ievent< prt_ch->GetEntries(); ievent++){
+  int maxent(0);
+  for (int ievent=0; ievent< prt_ch->GetEntries(); ievent++){
     if(maxent>20000) continue;
     prt_nextEvent(ievent,10000);
 
     if(prt_event->GetType()==0){
       
-      Int_t gch, ndirc(0), t2(0), t3h(0), t3v(0);
-      Int_t hodo1(0), hodo2(0);
+      int gch, ndirc(0), t2(0), t3h(0), t3v(0);
+      int hodo1(0), hodo2(0);
       for(auto h=0; h<prt_event->GetHitSize(); h++){
 	gch = prt_event->GetHit(h).GetChannel();
       
@@ -59,7 +59,7 @@ void procOffsets(TString path="",Int_t corrected=1){
       // if(!(t3h && t3v && hodo1 && hodo2)) continue;
     }
     
-    if(prt_event->GetParticle()==211) continue;
+    if(prt_event->GetParticle()!=211) continue;
     bool bsim(false);
     TString current_file_name  = prt_ch->GetCurrentFile()->GetName();
     if(current_file_name.Contains("S.root")) bsim = true;
@@ -70,41 +70,19 @@ void procOffsets(TString path="",Int_t corrected=1){
       if(ch<512 ){
 	double time = hit.GetLeadTime();
 	if(bsim){
-	  time += prt_rand.Gaus(0,0.35);
+	  time += prt_rand.Gaus(0,0.38);
 	  hLeS->Fill(time);
 	}else{
 	  if(studyid == 401){
-	    double o = 0.1;
-	    if(fabs(prt_theta-90)<1) o = 0.5;
-	    time += o;
-	  }
-	  if(studyid == 403){
-	    double o = 0.1;
-	    if(fabs(prt_theta-20)<1) o = -0.2;
-	    if(fabs(prt_theta-25)<1) o = -0.05;
-	    if(fabs(prt_theta-30)<1) o =  0.08;
-	    if(fabs(prt_theta-35)<1) o =  0.2;
-	    if(fabs(prt_theta-40)<1) o =  0.2;
-	    if(fabs(prt_theta-45)<1) o =  0.2;
-	    if(fabs(prt_theta-50)<1) o =  0.1;
-	    if(fabs(prt_theta-55)<1) o =  0.1;
-	    if(fabs(prt_theta-60)<1) o =  -0.1;
-	    if(fabs(prt_theta-65)<1) o =  -0.2;
-	    if(fabs(prt_theta-70)<1) o = -0.2;
-	    if(fabs(prt_theta-75)<1) o = -0.4;
-	    if(fabs(prt_theta-80)<1) o = -0.4;
-	    if(fabs(prt_theta-85)<1) o = -0.4;
-	    if(fabs(prt_theta-90)<1) o = -0.4;
-	    if(fabs(prt_theta-95)<1) o = -0.4;
-	    if(fabs(prt_theta-100)<1) o = -0.4;
-	    if(fabs(prt_theta-105)<1) o = -0.35;
-	    if(fabs(prt_theta-110)<1) o = -0.2;
-	    if(fabs(prt_theta-115)<1) o = -0.1;
-	    if(fabs(prt_theta-120)<1) o = 0.1;
-	    if(fabs(prt_theta-125)<1) o =  0.1;
-	    if(fabs(prt_theta-130)<1) o = +0.1;
-	    if(fabs(prt_theta-135)<1) o = +0.3;
-	    if(fabs(prt_theta-140)<1) o = +0.58;
+	    double o, prtangle = prt_theta;
+	    if(fabs(prtangle-20)<1) o = -5.65;
+	    if(fabs(prtangle-25)<1) o = -5.65;
+	    if(fabs(prtangle-30)<1) o = -5.65;
+	    if(fabs(prtangle-60)<1) o = -4.3;
+	    if(fabs(prtangle-90)<1) o = -5.4;
+	    if(fabs(prtangle-140)<1) o = -4.1;
+
+	    
 	    time += o;
 	  }
 	  hLeD->Fill(time);	  
@@ -127,16 +105,38 @@ void procOffsets(TString path="",Int_t corrected=1){
   leg->SetFillStyle(0);
   leg->AddEntry(hLeD,"beam data ","lp");
   leg->AddEntry(hLeS,"simulation","lp");
-  leg->Draw();
-    
-  prt_canvasSave(1,0);
+  leg->Draw();    
 
   if(corrected==0){
     // double xmax1 = hLeD->GetXaxis()->GetBinCenter(hLeD->GetMaximumBin());
     // double xmax2 = hLeS->GetXaxis()->GetBinCenter(hLeS->GetMaximumBin());
-    double xmax1 = prt_fit(hLeD,0.5,50,1).X();
-    double xmax2 = prt_fit(hLeS,0.5,50,1).X();
-    
+    // double xmax1 = prt_fit(hLeD,0.5,50,1).X();
+    // double xmax2 = prt_fit(hLeS,0.5,50,1).X();
+
+    double threshold =  hLeD->GetMaximum()*0.3;      
+    int firstbin = hLeD->FindFirstBinAbove(threshold);
+    double xmax1 = hLeD->GetXaxis()->GetBinCenter(firstbin);
+    threshold =  hLeS->GetMaximum()*0.3;      
+    firstbin = hLeS->FindFirstBinAbove(threshold);
+    double xmax2 = hLeS->GetXaxis()->GetBinCenter(firstbin);
+
+    gPad->Update();
+    TLine *gLine1 = new TLine(0,0,0,1000);
+    gLine1->SetX1(xmax1);
+    gLine1->SetX2(xmax1);
+    gLine1->SetY1(gPad->GetUymin());
+    gLine1->SetY2(gPad->GetUymax());
+    gLine1->SetLineColor(kBlue);
+    gLine1->Draw();
+
+    TLine *gLine2 = new TLine(0,0,0,1000);
+    gLine2->SetX1(xmax2);
+    gLine2->SetX2(xmax2);
+    gLine2->SetY1(gPad->GetUymin());
+    gLine2->SetY2(gPad->GetUymax());
+    gLine2->SetLineColor(kRed);
+    gLine2->Draw();
+        
     TFile efile(path+ ".off.root","RECREATE");
     TGraph *gr = new TGraph();
     gr->SetPoint(0,xmax1-xmax2,  xmax1-xmax2);
@@ -167,4 +167,6 @@ void procOffsets(TString path="",Int_t corrected=1){
     std::cout<<"new offset "<< xmax1-xmax2 <<std::endl;    
     
   }
+
+  prt_canvasSave(1,0);
 }

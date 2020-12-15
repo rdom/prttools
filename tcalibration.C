@@ -50,14 +50,14 @@ double tofp2[] ={0,0,47.50,41.50,39.20, 38.20,37.60, 37.20,37.00, 37.00, 36.7};
 int gg_nevents(0);
 
 Bool_t IsPion(double tof, int mom){
-  //if(prt_data_info.getStudyId()<415) return tofpi1a[mom]<tof && tof<tofpi2a[mom];
-  if(prt_data_info.getStudyId()<415) return (tof1le-2<tof && tof<tof1le+0.1);
+  if(prt_data_info.getStudyId() == 403) return tofpi1a[mom]<tof && tof<tofpi2a[mom];
+  else if(prt_data_info.getStudyId() < 415) return (tof1le-2<tof && tof<tof1le+0.1);
   else return tofpi1[mom]<tof && tof<tofpi2[mom];
 }
 
 Bool_t IsProton(double tof, int mom){
-  //if(prt_data_info.getStudyId()<415) return tofp1a[mom]<tof && tof<tofp2a[mom];
-  if(prt_data_info.getStudyId()<415) return (tof2le-0.1<tof && tof<tof2le+2);
+  if(prt_data_info.getStudyId() == 403) return tofp1a[mom]<tof && tof<tofp2a[mom];
+  else if(prt_data_info.getStudyId() < 415) return (tof2le-0.1<tof && tof<tof2le+2);
   else return tofp1[mom]<tof && tof<tofp2[mom];
 }
 
@@ -125,7 +125,7 @@ void TTSelector::Begin(TTree *){
       TGraph *gr = (TGraph*)key->ReadObj();
       TString name = gr->GetName();
       double x,y;
-      if(name.Contains("tof")){
+      if(name.Contains("tof_")){
 	name.Remove(0,4);
 	if(ginFile.Contains(name)){
 	  gr->GetPoint(0,tof1le,tof2le);
@@ -133,13 +133,13 @@ void TTSelector::Begin(TTree *){
 	}
 	continue;
       }
-      if(name.Contains("off")){ // read event offsets
+      if(name.Contains("off_")){ // read event offsets
 	name.Remove(0,4);
 	if(ginFile.Contains(name)) gr->GetPoint(0,x,gEvtOffset);
 	continue;
       }
 
-      if(name.Contains("walk")){ // read walk corrections
+      if(name.Contains("walk_")){ // read walk corrections
 	name.Remove(0,5);
 	int ch = name.Atoi();
 	gWalk[ch]= new TGraph(*gr);
@@ -260,6 +260,8 @@ Bool_t TTSelector::Process(Long64_t entry){
   fEvent = new PrtEvent();
   if(gMode==5){
     int studyId=prt_data_info.getStudyId();
+    if(studyId == 401) gTrigger = 1138;
+    if(studyId == 403) gTrigger = 1136;
     int offset = 0;
     if(studyId>0) {
       mom = prt_data_info.getMomentum();
@@ -275,17 +277,19 @@ Bool_t TTSelector::Process(Long64_t entry){
       fEvent->SetBeamX(prt_data_info.getX());
       fEvent->SetBeamZ(prt_data_info.getZ());
 
+      
+      // if(fEvent->GetLens()==6) lenw = 12;
+      // if(fEvent->GetLens()==3) lenw = 15;
+      // if(fEvent->GetLens()==2) lenw = 14.4;
       double rad = TMath::Pi()/180.0,
-	zrot=146,
-	xrot=100,
-	prtangle=fEvent->GetAngle(),
-	z=fEvent->GetBeamZ(),
+	zrot = 155,
+	xrot = 98,
+ 	prtangle = fEvent->GetAngle(),
+	z = fEvent->GetBeamZ(),
 	b = xrot*tan(0.5*(prtangle-90)*rad),
 	lenz = (z-zrot+b)/cos((prtangle-90)*rad)+b+zrot;
 
-      //if(fEvent->GetLens()==6) lenz-=12;
-      //if(fEvent->GetLens()==3) lenz-=15;
-      //if(fEvent->GetLens()==2) lenz-=14.4;
+     
       fEvent->SetPosition(TVector3(0,0,lenz));
     }
   }
@@ -460,8 +464,8 @@ Bool_t TTSelector::Process(Long64_t entry){
       if(ch<prt_maxdircch){
 	timeTot += 30-gTotO[ch];
 
-	//timeLe += getTotWalk(timeTot,ch);
-	//if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
+	// timeLe += getTotWalk(timeTot,ch);
+	// if(gTrigger==trigT1 && fabs(triggerTot-tof1tot)<1) timeLe -= (triggerTot-tof1tot)*tan(5*TMath::Pi()/180.);
 
 	if(gTrigger==trigTof2 && fabs(tot2-tof2tot)<1.2) timeLe += (tot2-tof2tot)*tan(2*TMath::Pi()/180.); //7.1;	
 	if(timeTot>0.5 && timeTot<9 && gWalk[ch]) timeLe -=  gWalk[ch]->Eval(timeTot);	
@@ -493,7 +497,7 @@ Bool_t TTSelector::Process(Long64_t entry){
 	// if(ch==trigTof2) timeLe -= (tot2-tof2tot)*tan(2*TMath::Pi()/180.);
 	
 	timeLe-=gEvtOffset;
-
+ 
 	// if(ch>820 && ch<1340) continue;
         // if(ch<prt_maxdircch && (timeLe<0 || timeLe>100)) continue;
       }
@@ -542,7 +546,7 @@ void tcalibration(TString inFile= "../../data/cj.hld.root", TString outFile= "ou
   gTrigger = trigger;
   gMode = mode;  
   gSetup = setupid;
-  if(gMode == 5) gTrigger=1138; //1136
+  if(gMode == 5) gTrigger = 1136;
   
   TChain* ch = new TChain("T");
   ch->Add(ginFile);

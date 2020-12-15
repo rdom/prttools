@@ -873,7 +873,7 @@ void prt_setRootPalette(Int_t pal = 0){
 #if defined(prt__sim) || defined(eic__sim)
 bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepath="", int setupid = 2019){
 
-  if(inFile=="") return false;
+  if(inFile=="" || gSystem->AccessPathName(inFile)) return false;
   if(savepath!="") prt_savepath=savepath;
   prt_setRootPalette(1);
   prt_createMap(setupid);
@@ -1076,7 +1076,7 @@ void prt_canvasPrint(TPad *c, TString name="", TString path="", Int_t what=0){
 }
 
 void prt_set_style(TCanvas *c){
-  prt_setRootPalette(1);
+  // prt_setRootPalette(1);
   if(fabs(c->GetBottomMargin()-0.1)<0.001) c->SetBottomMargin(0.12);
   TIter next(c->GetListOfPrimitives());
   TObject *obj;
