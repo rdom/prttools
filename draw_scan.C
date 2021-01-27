@@ -58,12 +58,12 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
     ch.GetEvent(elist->GetEntry(i));
     is++;
 
-    evar[1]=sqrt(evar[1]*evar[1]+0.1*0.1);
-    evar[2]=sqrt(evar[2]*evar[2]+0.1*0.1);
+    evar[1]=sqrt(evar[1]*evar[1]+0.2*0.2);
+    evar[2]=sqrt(evar[2]*evar[2]+0.2*0.2);
     evar[4]=prt_rand.Uniform(0.6,0.8);
     //evar[0]=fabs(theta-90)/30+0.5*sqrt(var[0]);
     evar[0]=sqrt(evar[0]*evar[0]+1.5*1.5);
-
+ 
     gg->SetPoint(is,xx[ix],var[iy]);
     gg->SetPointEYhigh(is,evar[iy]);
     gg->SetPointEYlow(is,evar[iy]);

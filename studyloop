@@ -19,8 +19,9 @@ show_help(){
         6 - run sim reco only
         7 - run data reco only
         8 - run data-pdf creation
-        9 - run proc data
-        10 - run proc sim
+        9 - run reco for sim and data
+        20 - run proc data
+        30 - run proc sim
      -j
         number of threads 
      -s 
@@ -116,24 +117,25 @@ processOneSim (){
 		    ./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 0 -tr 1   >> "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "4" ]; then		
-		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x mix_pip -tr 0.0 -e 45000 -r 2704161 -b 1  > "${datapath}/${file[fk]}S.log" &
+		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x mix_pip -tr 0.0 -e 85000 -r 2704161 -b 1  > "${datapath}/${file[fk]}S.log" &
 
 	    fi
 	    if [ ${level} -eq "5" ]; then
 		./prtdirc -o "${datapath}/lut_${file[fk]}S.root" ${args[fk]} -s 1 -z 0 -a 180 -phi 0 -x "opticalphoton" -p "3.18 eV" -e 10000000  -b 1 > "${datapath}/${file[fk]}L.log" && \
 		    cd ~/dirc/prtdirc/macro > /dev/null &&  root -q -b loadlib.C lutmean_cs.C"(\"${datapath}/lut_${file[fk]}S.root\")" >> "${datapath}/${file[fk]}L.log" && cd -  &
 	    fi
-	    if [ ${level} -eq "6" ]; then
-	       	./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}S.root_R.root" -f 0 -e 2000 -tr 0.5 -v 1 > "${datapath}/${file[fk]}SR.log" &
-	    fi
-	    if [ ${level} -eq "7" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}C.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}RR.log" &
-	    fi
 	    if [ ${level} -eq "8" ]; then
 		./prtdirc -s 4 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}C.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}CR.log" &
 		./prtdirc -s 4 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}S.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}SR.log" &
 	    fi
-	    
+	    if [ ${level} -eq "6" ] || [ ${level} -eq "9" ]; then
+	       	./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}S.root_R.root" -f 0 -e 2000 -tr 0.5 -v 1 > "${datapath}/${file[fk]}SR.log" &
+	    fi
+	    if [ ${level} -eq "7" ] || [ ${level} -eq "9" ]; then
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}C.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}RR.log" &
+	    fi
+
+
 	    waitForMe $threads
 	done
 }
@@ -144,7 +146,7 @@ processOneReco (){
 	IFS=$'\n'
 	
 	file=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($1,0)" 2>/dev/null))
-	if [ ${level} -eq "9" ]; then
+	if [ ${level} -eq "20" ]; then
 	    reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($1,6)" 2>/dev/null))  
 	else 
 	    reco=($(root -l -q -b $HOME/dirc/prttools/datainfo.C+"($1,7)" | sed "s/S.root/SP.root/" 2>/dev/null))  
@@ -163,7 +165,7 @@ processOneReco (){
 }  
 
 start_time=$(date +%s)
-if [ ${level} -lt "9" ]; then
+if [ ${level} -lt "20" ]; then
     cd ~/dirc/prtdirc/build > /dev/null 
     if (( $study == 0 )); then
 	OIFS="$IFS"
@@ -177,7 +179,7 @@ if [ ${level} -lt "9" ]; then
 	processOneSim $study 
     fi
     waitForMe "1"
-    if [ ${level} -eq "6" ]; then
+    if [ ${level} -eq "6" ] || [ ${level} -eq "9" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
 		datapath="${datadir}${allstudies[k]}"
@@ -188,7 +190,7 @@ if [ ${level} -lt "9" ]; then
 	    hadd -f ${datapath}/rec_${study}S.root ${datapath}/*S.root_R.root 
 	fi
     fi
-    if [ ${level} -eq "7" ]; then
+    if [ ${level} -eq "7" ] || [ ${level} -eq "9" ]; then
 	if (( $study == 0 )); then
 	    for ((k=1;k<${#allstudies[@]};k++)); do
 		datapath="${datadir}${allstudies[k]}"
