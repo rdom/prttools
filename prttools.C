@@ -51,6 +51,7 @@
 
 #if defined(prt__sim) || defined(prt__beam) || defined(eic__sim)
 
+class PrtRun;
 class PrtEvent;
 class PrtHit;
 PrtEvent* prt_event = 0;
@@ -140,7 +141,7 @@ Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
 Double_t prt_mass[]={0.000511,0.1056584,0.139570,0.49368,0.9382723};
 TString  prt_name[]={"e","muon","pion","kaon","proton"};
 TString  prt_lname[]={"e","#mu","#pi","K","p"};
-Int_t    prt_color[]={kOrange+6,kCyan+1,kBlue,kRed,kBlack};
+Int_t    prt_color[]={kOrange+6,kCyan+1,kBlue+1,kRed+1,kBlack};
 Double_t prt_particleArray[3000];
 
 TF1 *prt_gaust;

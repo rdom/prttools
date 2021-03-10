@@ -117,7 +117,7 @@ processOneSim (){
 		    ./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.root" -o "${datapath}/reco_${file[fk]}S.root" -e 0 -tr 1   >> "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "4" ]; then		
-		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x mix_pip -tr 0.0 -e 85000 -r 2704161 -b 1  > "${datapath}/${file[fk]}S.log" &
+		./prtdirc -o "${datapath}/${file[fk]}S.root" ${args[fk]} -x mix_pip -tr 0.0 -e 45000 -r 2704161 -b 1  > "${datapath}/${file[fk]}S.log" &
 
 	    fi
 	    if [ ${level} -eq "5" ]; then
@@ -125,14 +125,14 @@ processOneSim (){
 		    cd ~/dirc/prtdirc/macro > /dev/null &&  root -q -b loadlib.C lutmean_cs.C"(\"${datapath}/lut_${file[fk]}S.root\")" >> "${datapath}/${file[fk]}L.log" && cd -  &
 	    fi
 	    if [ ${level} -eq "8" ]; then
-		./prtdirc -s 4 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}C.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}CR.log" &
-		./prtdirc -s 4 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}S.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}SR.log" &
+	        ./prtdirc -s 4 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S.cs_avr.root" -o "${datapath}/${file[fk]}C.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}CR.log" &
+		./prtdirc -s 4 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.cs_avr.root" -o "${datapath}/${file[fk]}S.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "6" ] || [ ${level} -eq "9" ]; then
-	       	./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}S.root_R.root" -f 0 -e 2000 -tr 0.5 -v 1 > "${datapath}/${file[fk]}SR.log" &
+	       	./prtdirc -s 2 -i "${datapath}/${file[fk]}S.root" -u "${datapath}/lut_${file[fk]}S.cs_avr.root" -o "${datapath}/${file[fk]}S.root_R.root" -f 0 -e 2000 -tr 0.5 -v 1 > "${datapath}/${file[fk]}SR.log" &
 	    fi
 	    if [ ${level} -eq "7" ] || [ ${level} -eq "9" ]; then
-		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S_cs_avr.root" -o "${datapath}/${file[fk]}C.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}RR.log" &
+		./prtdirc -s 2 -i "${datapath}/${file[fk]}C.root" -u "${datapath}/lut_${file[fk]}S.cs_avr.root" -o "${datapath}/${file[fk]}C.root_R.root" ${args[fk]} -f 0 -e 2000 -tr 0.5 -v 1   > "${datapath}/${file[fk]}RR.log" &
 	    fi
 
 

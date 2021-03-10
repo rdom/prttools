@@ -1,10 +1,10 @@
 #!/bin/bash
 
-binpath=$HOME/dirc/prtdirc/build
-threads=25
+threads=30
+dpath="$HOME/data/jul18/436"
+rpath="$dpath/beam_scan"
+prtdirc="../prtdirc/build/prtdirc"
 
-start_time=$(date +%s)
-statusline="reco "
 waitForMe (){
     while : 
     do 
@@ -16,23 +16,24 @@ waitForMe (){
 	sleep .5
     done
 }
+start_time=$(date +%s)
+statusline="reco "
 
-for study in 401; do
-    respath=$HOME/data/jul18/${study}/${study}r/beamscan
-    mkdir -p ${respath}
-    for f in $HOME/data/jul18/${study}/beam_401_*C.root; do
-	lut="${f/C.root/S_cs_avr.root}"
-	lut="${lut/beam/lut_beam}"
-	for theta in `LANG=en_us seq -0.02 0.002 0.02`; do
-	    for phi in `LANG=en_us seq -0.02 0.002 0.02`; do
-		${binpath}/prtdirc -s 2 -i $f -u $lut -o ${respath}/reco_${theta}_${phi}.root -f 0 -e 2000 -tr 0.5 -t1 ${theta} -t2 ${phi} -v 0 -b 1 >/dev/null 2> /dev/null &
-		waitForMe $threads
-	    done
+mkdir -p ${rpath}
+for f in $dpath/beam_436_*C.root; do
+    spath=$rpath/${f##*/}
+    mkdir -p $spath
+    lut="${f/C.root/S.cs_avr.root}"
+    lut="${lut/beam/lut_beam}"
+    for theta in `LANG=en_us seq -0.015 0.001 0.015`; do
+	for phi in `LANG=en_us seq -0.015 0.001 0.015`; do
+	    echo $theta $phi
+	    $prtdirc -s 2 -i $f -u $lut -o $spath/b_r.$theta.$phi.root -f 0 -e 2000 -tr 0.5 -t1 $theta -t2 $phi -v 0 -b 1 >/dev/null 2> /dev/null &
+	    waitForMe $threads
 	done
-	waitForMe 1
-	fileid=$(ls ${respath}/reco_*[^r].root | head -n 1 | cut -d'_' -f 2)
-	hadd -f ${respath}/map_${fileid}.root ${respath}/reco_${fileid}_*[^r].root
-	#rm  ${respath}/reco_*.root
     done
+    waitForMe 1
+    # fileid=$(ls ${respath}/reco_*[^r].root | head -n 1 | cut -d'_' -f 2)
+    hadd -f ${spath}/map.root ${spath}/b_r*[^r].root
 done
 

@@ -6,6 +6,7 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   double var[nvar], evar[nvar],xx[10];     
   double mom,theta,phi,cangle,spr,trr;
   int iy = 0;
+  bool sim = in.Contains("S");
   TString nid[] = {"nph","sep_gr","sep_ti","cang","spr","trr"};  
   for(auto n : nid){ if(name.EqualTo(n)) break; iy++; }
   
@@ -56,13 +57,19 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   auto elist = (TEventList*)gDirectory->Get("cutlist"); 
   for (int i = 0; i < elist->GetN(); i++) {
     ch.GetEvent(elist->GetEntry(i));
+    if(xx[2] < 2.5) continue;
     is++;
 
+    // if(xx[0]<26) var[4] = 7.672342;
+    // if(xx[0]<26 && sim) var[4] = 7.755733;    
+    // if(xx[0]<21) var[4] = 7.292785;
+    // if(xx[0]<21 && sim) var[4] = 7.344798;
+    
     evar[1]=sqrt(evar[1]*evar[1]+0.2*0.2);
     evar[2]=sqrt(evar[2]*evar[2]+0.2*0.2);
     evar[4]=prt_rand.Uniform(0.6,0.8);
     //evar[0]=fabs(theta-90)/30+0.5*sqrt(var[0]);
-    evar[0]=sqrt(evar[0]*evar[0]+1.5*1.5);
+    evar[0]=sqrt(evar[0]*evar[0]+2.5*2.5);
  
     gg->SetPoint(is,xx[ix],var[iy]);
     gg->SetPointEYhigh(is,evar[iy]);
@@ -85,6 +92,7 @@ TGraph* draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   
   if(iy==0) gg->GetYaxis()->SetRangeUser(0,75); //30
   if(iy==1 || iy==2) gg->GetYaxis()->SetRangeUser(0,5.5); //3.5
+  if(in.Contains("415") && (iy==1 || iy==2)) gg->GetYaxis()->SetRangeUser(0,10); //3.5
   if(iy==3) gg->GetYaxis()->SetRangeUser(0.822,0.828);
   if(iy==4) gg->GetYaxis()->SetRangeUser(0,14);
 

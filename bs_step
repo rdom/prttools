@@ -1,7 +1,9 @@
 #!/bin/bash
 
 threads=30
-jpath="/d/proc/jul18/403"
+dpath="$HOME/data/jul18/436"
+rpath="$dpath/step_scan"
+prtdirc="../prtdirc/build/prtdirc"
 
 waitForMe (){
     while : 
@@ -17,24 +19,33 @@ waitForMe (){
 
 start_time=$(date +%s)
 
-rm b_*.root 
-
 if [ ${1} == "0" ]; then
-    cd ~/dirc/prtdirc/macro
-    statusline="X step scan "
-    for i in `seq 12 1 22` ; do
-	for j in `seq 60 1 75` ; do	
-	    ../build/prtdirc -o b_l${i}_${j}.root \
-			     -h 1 -l 3 -p 7.00 -a 19.71 -phi 0 -gz 442.00 -gx 85.00 -gsx ${j} -gsy ${i} -z 10.00 -g 2018 -c 2018 -study 403 \
-			     -s 1 -z 0 -a 180 -phi 0 -x "opticalphoton" -p "3.18 eV" -e 2000000 -b 1 && \
-		root -q -b loadlib.C lutmean_cs.C"(\"b_l${i}_${j}.root\")" && \
-		../build/prtdirc -s 2 -u b_l${i}_${j}_cs_avr.root -i ${jpath}/beam_18215212118C.root -o b_r_${i}_${j}.root -tr 1.5 -f 0 -e 1000 -v 0 -b 1 -t2 $i -t3 $j &
-	    waitForMe $threads
+    
+    mkdir -p $rpath/luts
+
+    statusline="XY step scan "
+    for i in `seq 14 0.2 18` ; do
+	# for j in `seq 64 0.2 68` ; do
+	for j in `seq 122 0.2 126` ; do
+	    # lout=$rpath/luts/b_s.$i.$j.root
+	    # # $prtdirc -o $lout \
+	    # # 	     -h 1 -l 3 -p 7.00 -a 25.00 -phi 0.00 -gz 424.00 -gx 145.00 -gsx $j -gsy $i -z 10.00 -g 2018 -c 2018 -study 436 \
+	    # # 	     -s 1 -z 0 -a 180 -phi 0 -x "opticalphoton" -p "3.18 eV" -e 2000000 -b 1 &
+	    # cd $HOME/dirc/prtdirc/macro && root -q -b loadlib.C lutmean_cs.C"(\"$lout\")" &
+	    # waitForMe $threads
+	    
+	    for file in $dpath/beam_436_*C.root ; do
+	    	spath=$rpath/${file##*/}
+	    	mkdir -p $spath
+	    	echo $spath
+	    	$prtdirc -s 2 -u $rpath/luts/b_s.$i.$j.cs_avr.root -i $file -o $spath/b_r.$i.$j.root -tr 0.5 -f 0 -e 2000 -v 0 -b 1 -t2 $i -t3 $j &
+	    	waitForMe $threads
+	    done	    
+	    
 	done
     done
     waitForMe "1"
 
-    hadd -f r_step_scan.root b_r_*.root
     printf "\r$statusline [-] done [$(($(date +%s) - start_time)) s]         \n"
     cd -
 fi

@@ -49,16 +49,17 @@ double tofp2[] ={0,0,47.50,41.50,39.20, 38.20,37.60, 37.20,37.00, 37.00, 36.7};
 
 int gg_nevents(0);
 
+
 Bool_t IsPion(double tof, int mom){
   if(prt_data_info.getStudyId() == 403) return tofpi1a[mom]<tof && tof<tofpi2a[mom];
-  else if(prt_data_info.getStudyId() < 415) return (tof1le-2<tof && tof<tof1le+0.1);
-  else return tofpi1[mom]<tof && tof<tofpi2[mom];
+  else if(prt_data_info.getStudyId() < 415) return tof1le-5*0.2 < tof && tof < 0.5*(tof1le+tof2le);
+  else return tof1le-5*0.2 < tof && tof < 0.5*(tof1le+tof2le);
 }
 
 Bool_t IsProton(double tof, int mom){
   if(prt_data_info.getStudyId() == 403) return tofp1a[mom]<tof && tof<tofp2a[mom];
   else if(prt_data_info.getStudyId() < 415) return (tof2le-0.1<tof && tof<tof2le+2);
-  else return tofp1[mom]<tof && tof<tofp2[mom];
+  else return 0.5*(tof1le+tof2le) < tof && tof < tof2le+5*0.2;
 }
 
 Bool_t insideOfEllipce(double x, double y, double x0, double y0,  double r1, double r2, double w=0){
@@ -524,7 +525,9 @@ Bool_t TTSelector::Process(Long64_t entry){
   if(nrhits!=0) {
     gg_nevents++;
     fEvent->SetParticle(tofpid);
-    fEvent->SetTest1(toftime);
+    fEvent->SetTof(toftime);
+    fEvent->SetTofPi(tof1le);
+    fEvent->SetTofP(tof2le);
     fTree->Fill();
   }
   fEvent->Clear();

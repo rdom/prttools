@@ -53,10 +53,10 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
   if(!prt_init(infile,1,Form("data/drawTof/%d/%2.1f",studyId,prt_data_info.getMomentum()))) return;
 
   // MCP-TOF
-  double le1(31), le2(36), l1(30), l2(35);
-  double t11(42), t12(70), t21(45), t22(52);
-  // double le1(34), le2(40), l1(34), l2(40);
-  // double t11(36), t12(45), t21(36), t22(45);
+  // double le1(31), le2(36), l1(30), l2(35);
+  // double t11(42), t12(70), t21(45), t22(52);
+  double le1(34), le2(40), l1(34), l2(40);
+  double t11(36), t12(45), t21(36), t22(45);
 
   
   // // SiTil
@@ -192,8 +192,8 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
 
     
     
-    if(tof1!=0 && tof2!=0)
-      {
+    if(tof1!=0 && tof2!=0){
+
       Double_t time = tof2-tof1;
       hTof->Fill(time);	
 
@@ -245,12 +245,12 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
   el1->SetLineColor(2);
   el1->SetLineWidth(2);
   el1->SetFillStyle(0);
-  el1->Draw();
+  // el1->Draw();
   TEllipse *el2 = new TEllipse(tof2le,tof1tot,c2y,c2x);
   el2->SetLineColor(2);
   el2->SetLineWidth(2);
   el2->SetFillStyle(0);
-  el2->Draw();
+  // el2->Draw();
   
   prt_canvasAdd("LeTotC2",800,400);
   hLeTotC2->Draw("colz");
@@ -258,12 +258,12 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
   el3->SetLineColor(2);
   el3->SetLineWidth(2);
   el3->SetFillStyle(0);
-  el3->Draw();
+  // el3->Draw();
   TEllipse *el4 = new TEllipse(tof2le,tof2tot,c2y,c2x);
   el4->SetLineColor(2);
   el4->SetLineWidth(2);
   el4->SetFillStyle(0);
-  el4->Draw();
+  // el4->Draw();
  
   
   prt_canvasAdd("tof",800,400);
@@ -279,7 +279,7 @@ void drawTof(TString infile="hits.root",TString gcFile="0"){
 
   
   fileid=infile;
-  fileid.Remove(0,fileid.Last('_')+1);
+  fileid.Remove(0,fileid.First('_')+1);
   fileid.Remove(fileid.Last('C'));
   TFile efile(infile+".tof.root","RECREATE");
   TGraph *gr = new TGraph();

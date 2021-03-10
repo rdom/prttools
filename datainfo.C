@@ -849,15 +849,15 @@ void datainfo_init(){
     study[415]= "Momentum scan at theta=25 deg and phi=0 deg. Bar, 3LS lens, grease everywere";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi
-      dataArray.push_back(DataInfo(415,"beam_415_10",1,3,25.0,424,85.0,70.00,16.45,10.0,10,o,0));
-      dataArray.push_back(DataInfo(415,"beam_415_9", 1,3,25.0,424,85.0,70.00,16.45, 9.0,10,o,0));
-      dataArray.push_back(DataInfo(415,"beam_415_8", 1,3,25.0,424,85.0,70.00,16.45, 8.0,10,o,0));
-      dataArray.push_back(DataInfo(415,"beam_415_7", 1,3,25.0,424,85.0,70.00,16.45, 7.0,10,o,0));
-      dataArray.push_back(DataInfo(415,"beam_415_6", 1,3,25.0,424,85.0,70.00,16.45, 6.0,10,o,0));
-      dataArray.push_back(DataInfo(415,"beam_415_5", 1,3,25.0,424,85.0,70.00,16.45, 5.0,10,o,0));
-      dataArray.push_back(DataInfo(415,"beam_415_4", 1,3,25.0,424,85.0,70.00,16.45, 4.0,10,o,0));
-      dataArray.push_back(DataInfo(415,"beam_415_3", 1,3,25.0,424,85.0,70.00,16.45, 3.0,10,o,0));
-      dataArray.push_back(DataInfo(415,"beam_415_2", 1,3,25.0,424,85.0,70.00,16.45, 2.0,10,o,0));
+      dataArray.push_back(DataInfo(415,"beam_415_10",1,3,25.0-0.34,424,85.0,65.4,15.8,10.0,10,o,-0.15));
+      dataArray.push_back(DataInfo(415,"beam_415_9", 1,3,25.0-0.34,424,85.0,65.4,15.8, 9.0,10,o,-0.15));
+      dataArray.push_back(DataInfo(415,"beam_415_8", 1,3,25.0-0.34,424,85.0,65.4,15.8, 8.0,10,o,-0.15));
+      dataArray.push_back(DataInfo(415,"beam_415_7", 1,3,25.0-0.34,424,85.0,65.4,15.8, 7.0,10,o,-0.15));
+      dataArray.push_back(DataInfo(415,"beam_415_6", 1,3,25.0-0.34,424,85.0,65.4,15.8, 6.0,10,o,-0.15));
+      dataArray.push_back(DataInfo(415,"beam_415_5", 1,3,25.0-0.34,424,85.0,65.4,15.8, 5.0,10,o,-0.15));
+      dataArray.push_back(DataInfo(415,"beam_415_4", 1,3,25.0-0.34,424,85.0,65.4,15.8, 4.0,10,o,-0.15));
+      dataArray.push_back(DataInfo(415,"beam_415_3", 1,3,25.0-0.34,424,85.0,65.4,15.8, 3.0,10,o,-0.15));
+      dataArray.push_back(DataInfo(415,"beam_415_2", 1,3,25.0-0.34,424,85.0,65.4,15.8, 2.0,10,o,-0.15));
     }
 
     study[420]= "Z scan at theta=90 deg and phi=0 deg @ 7 GeV/c. Bar, 3LS lens, grease everywere";
@@ -1013,14 +1013,14 @@ void datainfo_init(){
     study[436]= "X step; Momentum scan; theta=25 deg, phi=0 deg. Bar, 3LS lens, all grease";
     {
       // study id | run name | radiator | lens | angle | z pos | x pos | x step | y step | momentum | beam dim | sim offset | phi 
-      dataArray.push_back(DataInfo(436,"beam_436_9",1,3,25.0,424,145.0,125.00,16.45,9.0,10,o,0));
-      dataArray.push_back(DataInfo(436,"beam_436_8",1,3,25.0,424,145.0,125.00,16.45,8.0,10,o,0));
-      dataArray.push_back(DataInfo(436,"beam_436_7",1,3,25.0,424,145.0,125.00,16.45,7.0,10,o,0));
-      dataArray.push_back(DataInfo(436,"beam_436_7_0",1,3,25.0,424,145.0,125.00,16.45,7.01,10,o,0));
-      dataArray.push_back(DataInfo(436,"beam_436_6",1,3,25.0,424,145.0,125.00,16.45,6.0,10,o,0));
-      dataArray.push_back(DataInfo(436,"beam_436_5",1,3,25.0,424,145.0,125.00,16.45,5.0,10,o,0));
-      dataArray.push_back(DataInfo(436,"beam_436_4",1,3,25.0,424,145.0,125.00,16.45,4.0,10,o,0));
-      dataArray.push_back(DataInfo(436,"beam_436_3",1,3,25.0,424,145.0,125.00,16.45,3.0,10,o,0));				    
+      dataArray.push_back(DataInfo(436,"beam_436_9",1,3,25.0-0.4,424,145.0,124.80,14.8,9.0,10,o,0));
+      dataArray.push_back(DataInfo(436,"beam_436_8",1,3,25.0-0.4,424,145.0,124.80,14.8,8.0,10,o,0));
+      dataArray.push_back(DataInfo(436,"beam_436_7",1,3,25.0-0.4,424,145.0,124.80,14.8,7.0,10,o,0));
+      // dataArray.push_back(DataInfo(436,"beam_436_7_0",1,3,25.0-0.4,424,145.0,124.80,14.8,7.01,10,o,0));
+      dataArray.push_back(DataInfo(436,"beam_436_6",1,3,25.0-0.4,424,145.0,124.80,14.8,6.0,10,o,0));
+      dataArray.push_back(DataInfo(436,"beam_436_5",1,3,25.0-0.4,424,145.0,124.80,14.8,5.0,10,o,0));
+      dataArray.push_back(DataInfo(436,"beam_436_4",1,3,25.0-0.4,424,145.0,124.80,14.8,4.0,10,o,0));
+      dataArray.push_back(DataInfo(436,"beam_436_3",1,3,25.0-0.4,424,145.0,124.80,14.8,3.0,10,o,0));				    
     }
       
     study[437]= "X step; Pdf study at theta=25 deg; phi=0 deg @ 7 GeV/c. Bar, 3LS lens, all grease";
