@@ -60,18 +60,17 @@ PrtEvent* prt_event = 0;
 #if defined(prt__sim) || defined(prt__beam)
 #include "datainfo.C"
 DataInfo prt_data_info;
-#endif 
-
-
-#if defined(eic__sim) 
-const Int_t prt_nmcp = 4*7;
-const Int_t prt_npix = 16*16;
-#else
-const Int_t prt_nmcp = 8;//12;
-const Int_t prt_npix = 64;
 #endif
 
-// const Int_t prt_ntdc=16;
+#if defined(eic__sim)
+const int prt_nmcp = 4 * 7;
+const int prt_npix = 16 * 16;
+#else
+const int prt_nmcp = 12;      // 12;
+const int prt_npix = 16 * 16; // 64
+#endif
+
+// const int prt_ntdc=16;
 // TString prt_tdcsid[prt_ntdc] ={"10","11","12","13",
 // 			 "20","21","22","23",
 // 			 "780","781","782","783",
@@ -79,7 +78,7 @@ const Int_t prt_npix = 64;
 // };
 
 //may2015
-const Int_t prt_ntdc_may2015=41;
+const int prt_ntdc_may2015=41;
 TString prt_tdcsid_may2015[] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
 			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
 			 "2014","2015","2016","2018","2019","201a","201c","2020","2023","2024",
@@ -87,77 +86,77 @@ TString prt_tdcsid_may2015[] ={"2000","2001","2002","2003","2004","2005","2006",
 };
 
 //jun2015
-const Int_t prt_ntdc_jun2015=30; 
+const int prt_ntdc_jun2015=30; 
 TString prt_tdcsid_jun2015[] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
 			 "200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
 			 "2014","2015","2016","2018","2019","201a","201c","201d","202c","202d"
 };
 
 //oct2016
-const Int_t prt_ntdc_oct2016=20;  
+const int prt_ntdc_oct2016=20;  
 TString prt_tdcsid_oct2016[] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
 			       "200a","200b","200c",
 			       "2018","201b","201c","201f","202c","202d","202d"
 };
 
 //aug2017 jul2018
-const Int_t prt_ntdc_jul2018 = 32;
+const int prt_ntdc_jul2018 = 32;
 TString prt_tdcsid_jul2018 [] ={"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","200a","200b","200c","200d","200e","200f","2010","2011","2012","2013",
 			       "2014","2015","2016","2017","2018","2019","201a","201b",
 			       "201c","201d","201e","201f"
 };
 
 //jul2019
-const Int_t prt_ntdc_jul2019 = 21;
+const int prt_ntdc_jul2019 = 21;
 TString prt_tdcsid_jul2019[] ={"2014","2015","2016","2017","2000","2001","2002","2003","2004","2005",
 			       "2006","2007","2008","2009","200a","200b","200c","200d","200e","200f",
 			       "2010"};
 
-const Int_t prt_maxdircch(prt_nmcp*prt_npix);
-const Int_t prt_maxnametdc=10000;
+const int prt_maxdircch(prt_nmcp*prt_npix);
+const int prt_maxnametdc=10000;
 
 TRandom  prt_rand;
 TChain*  prt_ch = 0;
-Int_t    prt_entries(0),prt_particle(0),prt_geometry(2023),prt_beamx(0),prt_beamz(0);
-Int_t    prt_last_layoutId,prt_last_maxz,prt_last_minz;
-Double_t prt_theta(0), prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
+int    prt_entries(0),prt_particle(0),prt_geometry(2023),prt_beamx(0),prt_beamz(0);
+int    prt_last_layoutId,prt_last_max,prt_last_maxz,prt_last_minz;
+double prt_theta(0), prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
 TString  prt_savepath(""),prt_info("");
 TH2F*    prt_hdigi[prt_nmcp];
 TSpectrum *prt_spect = new TSpectrum(2);
 
-const int prt_ntdcm = 41;
+const int prt_ntdcm = 80; //41
 int prt_ntdc = prt_ntdcm;
 int prt_maxch = prt_ntdc*48;
 TString prt_tdcsid[prt_ntdcm];
 const int prt_maxchm = prt_ntdcm*48;
-Int_t map_tdc[prt_maxnametdc];
-Int_t map_mpc[prt_maxchm/64][prt_npix];
-Int_t map_mcp[prt_maxchm];
-Int_t map_pix[prt_maxchm];
-Int_t map_row[prt_maxchm];
-Int_t map_col[prt_maxchm];
+int map_tdc[prt_maxnametdc];
+int map_mpc[prt_maxchm/prt_npix][prt_npix];
+int map_mcp[prt_maxchm];
+int map_pix[prt_maxchm];
+int map_row[prt_maxchm];
+int map_col[prt_maxchm];
 
-Int_t prt_pid(0), prt_pdg[]={11,13,211,321,2212};
-Double_t prt_mass[]={0.000511,0.1056584,0.139570,0.49368,0.9382723};
+int prt_pid(0), prt_pdg[]={11,13,211,321,2212};
+double prt_mass[]={0.000511,0.1056584,0.139570,0.49368,0.9382723};
 TString  prt_name[]={"e","muon","pion","kaon","proton"};
 TString  prt_lname[]={"e","#mu","#pi","K","p"};
-Int_t    prt_color[]={kOrange+6,kCyan+1,kBlue+1,kRed+1,kBlack};
-Double_t prt_particleArray[3000];
+int    prt_color[]={kOrange+6,kCyan+1,kBlue+1,kRed+1,kRed+1};
+double prt_particleArray[3000];
 
 TF1 *prt_gaust;
-TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t limit=2, Int_t peakSearch=1,Int_t bkg = 0, TString opt="MQ"){
-  Int_t binmax = h->GetMaximumBin();
-  Double_t xmax = h->GetXaxis()->GetBinCenter(binmax);
+TVector3 prt_fit(TH1 *h, double range = 3, double threshold=20, double limit=2, int peakSearch=1,int bkg = 0, TString opt="MQ"){
+  int binmax = h->GetMaximumBin();
+  double xmax = h->GetXaxis()->GetBinCenter(binmax);
   if(bkg==0) prt_gaust = new TF1("prt_gaust","[0]*exp(-0.5*((x-[1])/[2])^2)",xmax-range,xmax+range);
   else if(bkg==1) prt_gaust = new TF1("prt_gaust","[0]*exp(-0.5*((x-[1])/[2])^2)+[3]+x*[4]",xmax-range,xmax+range);
   prt_gaust->SetNpx(500);
   prt_gaust->SetParNames("const","mean","sigma");
   prt_gaust->SetLineColor(2);
-  Double_t integral = h->Integral(h->GetXaxis()->FindBin(xmax-range),h->GetXaxis()->FindBin(xmax+range));
-  Double_t xxmin, xxmax, sigma1(0), mean1(0), mean2(0);
+  double integral = h->Integral(h->GetXaxis()->FindBin(xmax-range),h->GetXaxis()->FindBin(xmax+range));
+  double xxmin, xxmax, sigma1(0), mean1(0), mean2(0);
   xxmax = xmax;
   xxmin = xxmax;
-  Int_t nfound(1);
+  int nfound(1);
   if(integral>threshold){
     
     if(peakSearch == 1){
@@ -175,8 +174,8 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
 	prt_gaust->SetNpx(500);
 	prt_gaust->SetParameter(1,prt_spect->GetPositionX()[0]);
       }else if(nfound>=2){
-	Double_t p1 = prt_spect->GetPositionX()[0];
-	Double_t p2 = prt_spect->GetPositionX()[1];
+	double p1 = prt_spect->GetPositionX()[0];
+	double p2 = prt_spect->GetPositionX()[1];
 	if(p1>p2) {
 	  xxmax = p1;
 	  xxmin = p2;
@@ -223,13 +222,13 @@ TVector3 prt_fit(TH1 *h, Double_t range = 3, Double_t threshold=20, Double_t lim
   return TVector3(mean1,sigma1,mean2);
 }
 
-TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_t fitrange=1,Int_t rebin=1,Int_t ret=0){
+TGraph *prt_fitslices(TH2F *hh,double minrange=0, double maxrange=0, double fitrange=1,int rebin=1,int ret=0){
   TH2F *h =(TH2F*) hh->Clone("h");
   h->RebinY(rebin);
-  Int_t point(0);
+  int point(0);
   TGraph *gres = new TGraph();
   for (int i=1;i<h->GetNbinsY();i++){
-    Double_t x = h->GetYaxis()->GetBinCenter(i);
+    double x = h->GetYaxis()->GetBinCenter(i);
     TH1D* hp;
     if(minrange!=maxrange){
       TCutG *cut = new TCutG("prt_onepeakcut",5);
@@ -247,7 +246,7 @@ TGraph *prt_fitslices(TH2F *hh,Double_t minrange=0, Double_t maxrange=0, Double_
     }
 
     TVector3 res = prt_fit((TH1F*)hp,fitrange,100,2,1,1);
-    Double_t y=0;
+    double y=0;
     if(ret==0) y = res.X();
     if(ret==1) y = res.Y();
     if(ret==2) y = res.X() + 0.5*res.Y();
@@ -279,19 +278,19 @@ void prt_createMap(int setupid = 2019){
   }  
   
   TGaxis::SetMaxDigits(4);
-  for(Int_t i=0; i<prt_maxnametdc; i++) map_tdc[i]=-1;
-  for(Int_t i=0; i<prt_ntdc; i++){
-    Int_t dec = TString::BaseConvert(prt_tdcsid[i],16,10).Atoi();
+  for(int i=0; i<prt_maxnametdc; i++) map_tdc[i]=-1;
+  for(int i=0; i<prt_ntdc; i++){
+    int dec = TString::BaseConvert(prt_tdcsid[i],16,10).Atoi();
     map_tdc[dec]=i;
   }
   
-  //  for(Int_t ch=0; ch<prt_maxdircch; ch++){
-  for(Int_t ch=0; ch<prt_maxch; ch++){
-    Int_t mcp = ch/64;
-    Int_t pix = ch%64;	
-    Int_t col = pix/2 - 8*(pix/16);
-    Int_t row = pix%2 + 2*(pix/16);
-    pix = col+8*row;
+  //  for(int ch=0; ch<prt_maxdircch; ch++){
+  for(int ch=0; ch<prt_maxch; ch++){
+    int mcp = ch/prt_npix;
+    int pix = ch%prt_npix;
+    int col = pix/2 - 8*(pix/16);
+    int row = pix%2 + 2*(pix/16);
+    pix = col+sqrt(prt_npix)*row;
 
     map_mpc[mcp][pix]=ch;
     map_mcp[ch] = mcp;
@@ -300,14 +299,14 @@ void prt_createMap(int setupid = 2019){
     map_col[ch] = col;
   } 
 
-  for(Int_t i=0; i<5; i++){
+  for(int i=0; i<5; i++){
     prt_particleArray[prt_pdg[i]]=i;
   }
   prt_particleArray[212]=2;
 }
 
-Int_t prt_getChannelNumber(Int_t tdc, Int_t tdcChannel){
-  Int_t ch = -1;
+int prt_getChannelNumber(int tdc, int tdcChannel){
+  int ch = -1;
   if(prt_geometry==2018){
     ch=0;
     for(int i=0; i<=tdc; i++){
@@ -324,8 +323,8 @@ Int_t prt_getChannelNumber(Int_t tdc, Int_t tdcChannel){
   return ch;
 }
 
-Int_t prt_getTdcId(Int_t ch){
-  Int_t tch=0, tdcid=0;
+int prt_getTdcId(int ch){
+  int tch=0, tdcid=0;
   if(prt_geometry==2018){
     for(int i=0; i<=prt_ntdc; i++){
       tdcid=i;
@@ -342,12 +341,12 @@ Int_t prt_getTdcId(Int_t ch){
   return tdcid;
 }
 
-TString prt_getTdcName(Int_t ch){
+TString prt_getTdcName(int ch){
   return prt_tdcsid[prt_getTdcId(ch)];
 }
 
-Int_t prt_getTdcChannel(Int_t ch){
-  Int_t tch=0,tdcc=0;
+int prt_getTdcChannel(int ch){
+  int tch=0,tdcc=0;
   if(prt_geometry==2018){
     for(int i=0; i<=prt_ntdc; i++){
       tdcc=ch-tch+1;
@@ -365,15 +364,15 @@ Int_t prt_getTdcChannel(Int_t ch){
   return tdcc;
 }
 
-Int_t prt_removeRefChannels(Int_t ch, Int_t tdcSeqId){
+int prt_removeRefChannels(int ch, int tdcSeqId){
   return ch - tdcSeqId;
 }
 
-Int_t prt_addRefChannels(Int_t ch,Int_t tdcSeqId){
+int prt_addRefChannels(int ch,int tdcSeqId){
   return ch + tdcSeqId;
 }
 
-Bool_t prt_isBadChannel(Int_t ch){
+Bool_t prt_isBadChannel(int ch){
   if(ch<0 || ch>=prt_maxdircch) return true;
   
   // // bad pixels july15
@@ -390,7 +389,7 @@ Bool_t prt_isBadChannel(Int_t ch){
   return false;
 }
 
-TString prt_randstr(Int_t len = 10){
+TString prt_randstr(int len = 10){
   TString str = ""; 
   static const char alphanum[] =
     "0123456789"
@@ -414,14 +413,14 @@ TString prt_randstr(Int_t len = 10){
 // layoutId == 2030 - EIC DIRC prism
 // layoutId == 2032 - EIC DIRC focusing prism 
 TH1 * prt_cdigi_th;
-TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, TCanvas *cdigi = NULL){
+TCanvas *prt_drawDigi(int layoutId = 0, double maxz = 0, double minz = 0, TCanvas *cdigi = NULL){
 
   prt_last_layoutId=layoutId;
   prt_last_maxz=maxz;
   prt_last_minz=minz;
 
   if(prt_geometry==2021) layoutId=2021;
-  if(prt_geometry==2019) layoutId=2018;
+  // if(prt_geometry==2019) layoutId=2018;
 
   TString sid = prt_randstr(3);
   if(cdigi) cdigi->cd();
@@ -445,7 +444,7 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, 
   prt_hpglobal->Draw();  
   prt_hpglobal->cd();
   
-  Int_t nrow = 3, ncol = 5;
+  int nrow = 3, ncol = 5;
   if(layoutId ==2016) ncol=3;
   if(layoutId ==2017) ncol=4;
   if(layoutId ==2018 || layoutId ==2023) {nrow=2; ncol=4;}
@@ -456,7 +455,7 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, 
   
   if(layoutId > 1){
     float tbw(0.02), tbh(0.01), shift(0),shiftw(0.02),shifth(0),margin(0.01);
-    Int_t padi(0);
+    int padi(0);
       
     for(int i=0; i<ncol; i++){
       for(int j=0; j<nrow; j++){
@@ -504,9 +503,9 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, 
 
 	prt_hpads[padi] =  new TPad(sid+Form("P%d",i*10+j),"T",
 				    i/(ncol+2*margin)+tbw+shift+shiftw,
-				    j/(Double_t)nrow+tbh+shifth,
+				    j/(double)nrow+tbh+shifth,
 				    (i+1)/(ncol+2*margin)-tbw+shift+shiftw,
-				    (1+j)/(Double_t)nrow-tbh+shifth, 21);
+				    (1+j)/(double)nrow-tbh+shifth, 21);
 	prt_hpads[padi]->SetFillColor(kCyan-8);
 	prt_hpads[padi]->SetMargin(0.055,0.055,0.055,0.055);
 	prt_hpads[padi]->Draw();
@@ -515,12 +514,12 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, 
     }
   }else{
     float tbw(0.02), tbh(0.01), shift(0),shiftw(-0.02);
-    Int_t padi(0);
+    int padi(0);
     for(int ii=0; ii<ncol; ii++){
       for(int j=0; j<nrow; j++){
 	if(j==1) shift = 0.04;
 	else shift = 0;
-	prt_hpads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(Double_t)ncol+tbw+shift+shiftw , j/(Double_t)nrow+tbh, (ii+1)/(Double_t)ncol-tbw+shift+shiftw, (1+j)/(Double_t)nrow-tbh, 21);
+	prt_hpads[padi] =  new TPad(Form("P%d",ii*10+j),"T", ii/(double)ncol+tbw+shift+shiftw , j/(double)nrow+tbh, (ii+1)/(double)ncol-tbw+shift+shiftw, (1+j)/(double)nrow-tbh, 21);
 	prt_hpads[padi]->SetFillColor(kCyan-8);
 	prt_hpads[padi]->SetMargin(0.04,0.04,0.04,0.04);
 	prt_hpads[padi]->Draw(); 
@@ -529,13 +528,13 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, 
     }
   }
 
-  Int_t np;
-  Double_t max=0;
+  int np;
+  double max=0;
 
   {
-    Double_t tmax;
+    double tmax;
     if(maxz==0){
-      for(Int_t p=0; p<nrow*ncol;p++){
+      for(int p=0; p<nrow*ncol;p++){
 	tmax = prt_hdigi[p]->GetBinContent(prt_hdigi[p]->GetMaximumBin());
 	if(max<tmax) max = tmax;
       }
@@ -544,23 +543,23 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, 
     }
   
     if(maxz==-2 || minz==-2){ // optimize range
-      for(Int_t p=0; p<nrow*ncol;p++){
+      for(int p=0; p<nrow*ncol;p++){
 	tmax = prt_hdigi[p]->GetMaximum();
 	if(max<tmax) max = tmax;
       }
-      Int_t tbins = 2000;
+      int tbins = 2000;
       TH1F *h = new TH1F("","",tbins,0,max);
-      for(Int_t p=0; p<nrow*ncol;p++){
-	for(Int_t i=0; i<8; i++){
-	  for(Int_t j=0; j<8; j++){
-	    Double_t val = prt_hdigi[p]->GetBinContent(i+1,j+1);
+      for(int p=0; p<nrow*ncol;p++){
+	for(int i=0; i<8; i++){
+	  for(int j=0; j<8; j++){
+	    double val = prt_hdigi[p]->GetBinContent(i+1,j+1);
 	    if(val!=0) h->Fill(val);
 
 	  }
 	}
       }
-      Double_t integral;
-      for(Int_t i=0; i<tbins; i++){
+      double integral;
+      for(int i=0; i<tbins; i++){
 	integral = h->Integral(0,i);
 	if(integral>0) {
 	  if(minz==-2) minz = h->GetBinCenter(i);
@@ -568,7 +567,7 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, 
 	} 
       }
 
-      for(Int_t i=tbins; i>0; i--){
+      for(int i=tbins; i>0; i--){
 	integral = h->Integral(i,tbins);
 	if(integral>10) {
 	  if(maxz==-2) max = h->GetBinCenter(i);
@@ -577,9 +576,10 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, 
       }
     }
   }
-  
-  Int_t nnmax(0);
-  for(Int_t p=0; p<nrow*ncol;p++){
+
+  prt_last_max = max;
+  int nnmax(0);
+  for(int p=0; p<nrow*ncol;p++){
     if(layoutId == 1 || layoutId == 4)  np =p%nrow*ncol + p/3;
     else np = p;
 
@@ -613,41 +613,40 @@ TCanvas *prt_drawDigi(Int_t layoutId = 0, Double_t maxz = 0, Double_t minz = 0, 
   return cdigi;
 }
 
-//TString prt_getPixData(TString s="", int layoutId=1){
-  // Int_t nrow = 3, ncol = 5, np, nmax=0;
-  // if(layoutId ==2016) ncol=3;
-  // if(layoutId ==2017) ncol=4;
-  // if(layoutId ==2018 || layoutId ==2023) {nrow=2; ncol=4;}
-  // if(layoutId ==2021) ncol=4;
-  // if(layoutId ==2030) {nrow=4; ncol=6;}
-  // if(layoutId ==2032) {nrow=4; ncol=7;}
-  // if(layoutId ==2031) {nrow=3; ncol=4;}
+TString prt_getPixData(TString s="m,p,v\n", int layoutId=1){
+  int nrow = 3, ncol = 5, np, nmax=0, npix=8;
+  if(layoutId ==2016) ncol=3;
+  if(layoutId ==2017) ncol=4;
+  if(layoutId ==2018 || layoutId ==2023) {nrow=2; ncol=4;}
+  if(layoutId ==2021) ncol=4;
+  if(layoutId ==2030) {nrow=4; ncol=6; npix=16;}
+  if(layoutId ==2032) {nrow=4; ncol=7; npix=16;}
+  if(layoutId ==2031) {nrow=3; ncol=4; npix=16;}
   
-  // Int_t nnmax(0);  
-  // for(Int_t p=0; p<nrow*ncol;p++){
-  //   if(layoutId == 1 || layoutId == 4)  np =p%nrow*ncol + p/3;
-  //   else np = p;
+  int nnmax(0);  
+  for(int p=0; p<nrow*ncol;p++){
+    if(layoutId == 1 || layoutId == 4)  np =p%nrow*ncol + p/3;
+    else if(layoutId == 2030)  np =p%ncol*nrow + p/ncol;
+    else np = p;
 
-  //   if(layoutId == 6 && p>10) continue;
-    
-  //   if(maxz==-1)  max = prt_hdigi[np]->GetBinContent(prt_hdigi[np]->GetMaximumBin());
-  //   if(nnmax<prt_hdigi[np]->GetEntries()) nnmax=np;
-  //   prt_hdigi[np]->SetMaximum(max);
-  //   prt_hdigi[np]->SetMinimum(minz);
-  //   for(Int_t i=1; i<=8; i++){
-  //     for(Int_t j=1; j<=8; j++){
-  // 	Double_t weight = (double)(prt_hdigi[np]->GetBinContent(i,j))/(double)max *255;
-  // 	if(weight>255) weight=255;
-  // 	if(weight > 0) s += Form("%d,%d,%d\n", np, (j-1)*8+i-1, (Int_t)weight);
-  //     }
-  //   }
-  // }
-//   return s;
-// }
+    if(prt_last_maxz==-1) prt_last_max = prt_hdigi[p]->GetBinContent(prt_hdigi[p]->GetMaximumBin());
+    if(nnmax<prt_hdigi[p]->GetEntries()) nnmax=p;
+    prt_hdigi[p]->SetMaximum(prt_last_max);
+    prt_hdigi[p]->SetMinimum(prt_last_minz);
+    for(int i=1; i<=npix; i++){
+      for(int j=1; j<=npix; j++){
+  	double weight = (double)(prt_hdigi[p]->GetBinContent(i,j))/(double)prt_last_max*255;
+  	if(weight>255) weight=255;
+  	if(weight > 0) s += Form("%d,%d,%d\n", np, (i-1)*npix+j-1, (int)weight);
+      }
+    }
+  }
+  return s;
+}
 
-void prt_initDigi(Int_t type=1){  
+void prt_initDigi(int type=1){  
   if(type == 1){
-    for(Int_t m=0; m<prt_nmcp;m++){
+    for(int m=0; m<prt_nmcp;m++){
       if(prt_hdigi[m]) prt_hdigi[m]->Reset("M");
       else{
 	prt_hdigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),8,0.,8.,8,0.,8.);
@@ -665,7 +664,7 @@ void prt_initDigi(Int_t type=1){
     }
   }
   if(type == 2){ //eic
-    for(Int_t m=0; m<prt_nmcp;m++){
+    for(int m=0; m<prt_nmcp;m++){
       if(prt_hdigi[m]) prt_hdigi[m]->Reset("M");
       else{
 	prt_hdigi[m] = new TH2F( Form("mcp%d", m),Form("mcp%d", m),16,0,16,16,0,16);
@@ -685,14 +684,14 @@ void prt_initDigi(Int_t type=1){
 }
 
 void prt_resetDigi(){
-  for(Int_t m=0; m<prt_nmcp;m++){	
+  for(int m=0; m<prt_nmcp;m++){	
     prt_hdigi[m]->Reset("M");
   }
 }
 
 void prt_axisHits800x500(TH2 * hist){
   hist->SetStats(0);
-  hist->SetTitle(Form("%d hits",(Int_t)hist->GetEntries()));
+  hist->SetTitle(Form("%d hits",(int)hist->GetEntries()));
   hist->GetXaxis()->SetTitle("z, [cm]");
   hist->GetXaxis()->SetTitleSize(0.05);
   hist->GetXaxis()->SetTitleOffset(0.8);
@@ -703,7 +702,7 @@ void prt_axisHits800x500(TH2 * hist){
 
 void prt_axisAngle800x500(TH2 * hist){
   hist->SetStats(0);
-  hist->SetTitle(Form("%d hits",(Int_t)hist->GetEntries()));
+  hist->SetTitle(Form("%d hits",(int)hist->GetEntries()));
   hist->GetXaxis()->SetTitle("#theta, [degree]");
   hist->GetXaxis()->SetTitleSize(0.05);
   hist->GetXaxis()->SetTitleOffset(0.8);
@@ -714,7 +713,7 @@ void prt_axisAngle800x500(TH2 * hist){
 
 void prt_axisAngle800x500(TH1 * hist){
   hist->SetStats(0);
-  hist->SetTitle(Form("%d hits",(Int_t)hist->GetEntries()));
+  hist->SetTitle(Form("%d hits",(int)hist->GetEntries()));
   hist->GetXaxis()->SetTitle("#theta, [degree]");
   hist->GetXaxis()->SetTitleSize(0.05);
   hist->GetXaxis()->SetTitleOffset(0.8);
@@ -792,7 +791,7 @@ void prt_setGStyle(TGraph *g, int id){
   g->SetName(Form("gr_%d",id));
 }
 
-void prt_setRootPalette(Int_t pal = 0){
+void prt_setRootPalette(int pal = 0){
 
   // pal =  1: rainbow\n"
   // pal =  2: reverse-rainbow\n"
@@ -809,15 +808,15 @@ void prt_setRootPalette(Int_t pal = 0){
   // pal = 13: white/black\n"
   // pal = 14: black/white\n"
 
-  const Int_t NRGBs = 5;
-  const Int_t NCont = 255;
+  const int NRGBs = 5;
+  const int NCont = 255;
   gStyle->SetNumberContours(NCont);
 
   if (pal < 1 && pal> 15) return;
   else pal--;
 
-  Double_t stops[NRGBs] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
-  Double_t red[15][NRGBs]   = {{ 0.00, 0.00, 0.87, 1.00, 0.51 },
+  double stops[NRGBs] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
+  double red[15][NRGBs]   = {{ 0.00, 0.00, 0.87, 1.00, 0.51 },
 			       { 0.51, 1.00, 0.87, 0.00, 0.00 },
 			       { 0.17, 0.39, 0.62, 0.79, 1.00 },
 			       { 1.00, 0.79, 0.62, 0.39, 0.17 },
@@ -833,7 +832,7 @@ void prt_setRootPalette(Int_t pal = 0){
 			       { 1.00, 0.84, 0.61, 0.34, 0.00 },
 			       { 0.00, 0.00, 0.80, 1.00, 0.80 }
   };
-  Double_t green[15][NRGBs] = {{ 0.00, 0.81, 1.00, 0.20, 0.00 },		    
+  double green[15][NRGBs] = {{ 0.00, 0.81, 1.00, 0.20, 0.00 },		    
 			       { 0.00, 0.20, 1.00, 0.81, 0.00 },
 			       { 0.01, 0.02, 0.39, 0.68, 1.00 },
 			       { 1.00, 0.68, 0.39, 0.02, 0.01 },
@@ -849,7 +848,7 @@ void prt_setRootPalette(Int_t pal = 0){
 			       { 1.00, 0.84, 0.61, 0.34, 0.00 },
 			       { 0.00, 0.85, 1.00, 0.30, 0.00 }		
   };
-  Double_t blue[15][NRGBs]  = {{ 0.51, 1.00, 0.12, 0.00, 0.00 },
+  double blue[15][NRGBs]  = {{ 0.51, 1.00, 0.12, 0.00, 0.00 },
 			       { 0.00, 0.00, 0.12, 1.00, 0.51 },
 			       { 0.00, 0.09, 0.18, 0.09, 0.00 },
 			       { 0.00, 0.09, 0.18, 0.09, 0.00 },
@@ -872,7 +871,7 @@ void prt_setRootPalette(Int_t pal = 0){
 }
 
 #if defined(prt__sim) || defined(eic__sim)
-bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepath="", int setupid = 2019){
+bool prt_init(TString inFile="../build/hits.root", int bdigi=0, TString savepath="", int setupid = 2019){
 
   if(inFile=="" || gSystem->AccessPathName(inFile)) return false;
   if(savepath!="") prt_savepath=savepath;
@@ -891,7 +890,7 @@ bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepa
   return true;
 }
 
-void prt_nextEvent(Int_t ievent, Int_t printstep){
+void prt_nextEvent(int ievent, int printstep){
   prt_ch->GetEntry(ievent);
   if(ievent%printstep==0 && ievent!=0) std::cout<<"Event # "<<ievent<< " # hits "<<prt_event->GetHitSize()<<std::endl;
   if(ievent == 0){
@@ -921,7 +920,7 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
 #endif
 
 #ifdef prt__beam
-bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepath="", int setupid=2019){
+bool prt_init(TString inFile="../build/hits.root", int bdigi=0, TString savepath="", int setupid=2019){
 
   if(inFile=="") return false;
   if(savepath!="") prt_savepath=savepath;
@@ -954,7 +953,7 @@ bool prt_init(TString inFile="../build/hits.root", Int_t bdigi=0, TString savepa
   return true;
 }
 
-void prt_nextEvent(Int_t ievent, Int_t printstep){
+void prt_nextEvent(int ievent, int printstep){
   prt_ch->GetEntry(ievent);
   if(ievent%printstep==0 && ievent!=0) cout<<"Event # "<<ievent<< " # hits "<<prt_event->GetHitSize()<<endl;
   if(ievent == 0){
@@ -984,8 +983,8 @@ void prt_nextEvent(Int_t ievent, Int_t printstep){
 }
 #endif
 
-Int_t prt_getColorId(Int_t ind, Int_t style =0){
-  Int_t cid = 1;
+int prt_getColorId(int ind, int style =0){
+  int cid = 1;
   if(style==0) {
     cid=ind+1;
     if(cid==5) cid =8;
@@ -995,24 +994,24 @@ Int_t prt_getColorId(Int_t ind, Int_t style =0){
   return cid;
 }
 
-Int_t prt_shiftHist(TH1 *hist, Double_t double_shift){
-  Int_t bins=hist->GetXaxis()->GetNbins();
-  Double_t xmin=hist->GetXaxis()->GetBinLowEdge(1);
-  Double_t xmax=hist->GetXaxis()->GetBinUpEdge(bins);
+int prt_shiftHist(TH1 *hist, double double_shift){
+  int bins=hist->GetXaxis()->GetNbins();
+  double xmin=hist->GetXaxis()->GetBinLowEdge(1);
+  double xmax=hist->GetXaxis()->GetBinUpEdge(bins);
   double_shift=double_shift*(bins/(xmax-xmin));
-  Int_t shift=0;
+  int shift=0;
   if(double_shift<0) shift=TMath::FloorNint(double_shift);
   if(double_shift>0) shift=TMath::CeilNint(double_shift);
   if(shift==0) return 0;
   if(shift>0){
-    for(Int_t i=1; i<=bins; i++){
+    for(int i=1; i<=bins; i++){
       if(i+shift<=bins) hist->SetBinContent(i,hist->GetBinContent(i+shift));
       if(i+shift>bins) hist->SetBinContent(i,0);
     }
     return 0;
   }
   if(shift<0){
-    for(Int_t i=bins; i>0; i--){
+    for(int i=bins; i>0; i--){
       if(i+shift>0) hist->SetBinContent(i,hist->GetBinContent(i+shift));
       if(i+shift<=0) hist->SetBinContent(i,0);
     }    
@@ -1037,6 +1036,7 @@ void prt_writeString(TString filename, TString str){
   myfile.open (filename);
   myfile << str+"\n";
   myfile.close();
+  std::cout<<"output: "<<filename<<std::endl;  
 }
 
 TString prt_createDir(TString inpath=""){
@@ -1051,7 +1051,7 @@ TString prt_createDir(TString inpath=""){
     TDatime *time = new TDatime();
     TString path(""), stime = Form("%d.%d.%d", time->GetDay(),time->GetMonth(),time->GetYear()); 
     gSystem->mkdir(dir+"/"+stime);
-    for(Int_t i=0; i<1000; i++){
+    for(int i=0; i<1000; i++){
       path = stime+"/"+Form("arid-%d",i);
       if(gSystem->mkdir(dir+"/"+path)==0) break;
     }
@@ -1067,7 +1067,7 @@ TString prt_createDir(TString inpath=""){
   return finalpath;
 }
 
-void prt_canvasPrint(TPad *c, TString name="", TString path="", Int_t what=0){
+void prt_canvasPrint(TPad *c, TString name="", TString path="", int what=0){
   c->Modified();
   c->Update();
   c->Print(path+"/"+name+".png");
@@ -1159,13 +1159,13 @@ void prt_set_style(TCanvas *c){
   }
 }
 
-void prt_save(TPad *c= NULL,TString path="", Int_t what=0, Int_t style=0){
+void prt_save(TPad *c= NULL,TString path="", int what=0, int style=0){
   TString name = c->GetName();
   Bool_t batch = gROOT->IsBatch();
   gROOT->SetBatch(1);
   
   if(c && path != "") {
-    Int_t w = 800, h = 400;
+    int w = 800, h = 400;
     if(style != -1){
       if(style == 1) {w = 800; h = 500;}
       if(style == 2) {w = 800; h = 600;}
@@ -1215,7 +1215,7 @@ TCanvas *prt_canvasGet(TString name="c"){
   return c;
 }
 
-void prt_canvasAdd(TString name="c",Int_t w=800, Int_t h=400){
+void prt_canvasAdd(TString name="c",int w=800, int h=400){
   if(!prt_canvasGet(name)){
     if(!prt_canvaslist) prt_canvaslist = new TList();
     TCanvas *c = new TCanvas(name,name,0,0,w,h); 
@@ -1248,7 +1248,7 @@ void prt_canvasDel(TString name="c"){
 // what = 1 - save in png, C
 // what = 2 - save in png, C, pdf
 // what = 3 - save in png, C, pdf, eps 
-void prt_canvasSave(Int_t what=1, Int_t style=0, Bool_t rm=false){
+void prt_canvasSave(int what=1, int style=0, Bool_t rm=false){
   TIter next(prt_canvaslist);
   TCanvas *c=0;
   TString path = prt_createDir();
@@ -1263,7 +1263,7 @@ void prt_canvasSave(Int_t what=1, Int_t style=0, Bool_t rm=false){
 }
 
 // path - folder for saving
-void prt_canvasSave(TString path, Int_t what=1, Int_t style=0, Bool_t rm=false){
+void prt_canvasSave(TString path, int what=1, int style=0, Bool_t rm=false){
   prt_savepath = path;
   prt_canvasSave(what,style,rm);
 }
@@ -1289,53 +1289,53 @@ void prt_waitPrimitive(TString name, TString prim=""){
   }
 }
 
-Double_t prt_integral(TH1F *h,Double_t xmin, Double_t xmax){
+double prt_integral(TH1F *h,double xmin, double xmax){
   TAxis *axis = h->GetXaxis();
-  Int_t bmin = axis->FindBin(xmin);
-  Int_t bmax = axis->FindBin(xmax);
-  Double_t integral = h->Integral(bmin,bmax);
+  int bmin = axis->FindBin(xmin);
+  int bmax = axis->FindBin(xmax);
+  double integral = h->Integral(bmin,bmax);
   integral -= h->GetBinContent(bmin)*(xmin-axis->GetBinLowEdge(bmin))/axis->GetBinWidth(bmin);
   integral -= h->GetBinContent(bmax)*(axis->GetBinUpEdge(bmax)-xmax)/axis->GetBinWidth(bmax);
   return integral;
 }
 
-void prt_normalize(TH1F* hists[],Int_t size){
-  // for(Int_t i=0; i<size; i++){
+void prt_normalize(TH1F* hists[],int size){
+  // for(int i=0; i<size; i++){
   //   hists[i]->Scale(1/hists[i]->Integral(), "width"); 
   // }
   
-  Double_t max = 0;
-  Double_t min = 0;
-  for(Int_t i=0; i<size; i++){
-    Double_t tmax =  hists[i]->GetBinContent(hists[i]->GetMaximumBin());
-    Double_t tmin = hists[i]->GetMinimum();
+  double max = 0;
+  double min = 0;
+  for(int i=0; i<size; i++){
+    double tmax =  hists[i]->GetBinContent(hists[i]->GetMaximumBin());
+    double tmin = hists[i]->GetMinimum();
     if(tmax>max) max = tmax;
     if(tmin<min) min = tmin;
   }
   max += 0.05*max;
-  for(Int_t i=0; i<size; i++){
+  for(int i=0; i<size; i++){
     hists[i]->GetYaxis()->SetRangeUser(min,max);
   }
 }
 
-void prt_normalizeto(TH1F* hists[],Int_t size, Double_t max=1){
-  for(Int_t i=0; i<size; i++){
-    Double_t tmax =  hists[i]->GetBinContent(hists[i]->GetMaximumBin());
+void prt_normalizeto(TH1F* hists[],int size, double max=1){
+  for(int i=0; i<size; i++){
+    double tmax =  hists[i]->GetBinContent(hists[i]->GetMaximumBin());
     if(tmax>0)hists[i]->Scale(max/tmax);
   }
 }
 
 void prt_normalize(TH1F* h1,TH1F* h2){
-  Double_t max = (h1->GetMaximum()>h2->GetMaximum())? h1->GetMaximum() : h2->GetMaximum();
+  double max = (h1->GetMaximum()>h2->GetMaximum())? h1->GetMaximum() : h2->GetMaximum();
   max += max*0.1;
   h1->GetYaxis()->SetRangeUser(0,max);
   h2->GetYaxis()->SetRangeUser(0,max);
 }
 
 // just x for now
-TGraph* prt_smooth(TGraph* g,Int_t smoothness=1){
-  Double_t x, y;
-  Int_t n = g->GetN();
+TGraph* prt_smooth(TGraph* g,int smoothness=1){
+  double x, y;
+  int n = g->GetN();
   TH1F *h = new TH1F("h","h",g->GetN(),0,n);
   TGraph *gr = new TGraph();
   gr->SetName(g->GetName());
