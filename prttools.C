@@ -290,7 +290,7 @@ void prt_createMap(int setupid = 2019){
     int pix = ch%prt_npix;
     int col = pix/2 - 8*(pix/16);
     int row = pix%2 + 2*(pix/16);
-    pix = col+sqrt(prt_npix)*row;
+    // pix = col+sqrt(prt_npix)*row;
 
     map_mpc[mcp][pix]=ch;
     map_mcp[ch] = mcp;

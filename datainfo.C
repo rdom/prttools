@@ -1387,22 +1387,32 @@ void p_exportinfo(TString name="alias.html"){
 void p_export(TString name="data.info"){
   std::ofstream out;
   out.open(name);
-
-  for(UInt_t k = 0; k != dataArray.size(); k++) {  
-
-    out<<dataArray[k].getRunId()<<"  "
-       <<dataArray[k].getAliasId()<<"  "
-       <<dataArray[k].getStudyId()<<"  "
-       <<dataArray[k].getRadiatorId()<<"  "
-       <<dataArray[k].getLensId()<<"  "
-       <<dataArray[k].getAngle()<<"  "
-       <<dataArray[k].getZ()<<"  "
-       <<dataArray[k].getX()<<"  "
-       <<dataArray[k].getXstep()<<"  "
-       <<dataArray[k].getYstep()<<"  "
-       <<dataArray[k].getFileId()<<"  "
-       <<dataArray[k].getSimTO()<<"\n";
+  for(Int_t i=0; i<gg_nstudies; i++){
+    std::vector<DataInfo> newset= getStudy(i);
+    
+    if(newset.size()>0) out<< Form("S%d %s",newset[0].getStudyId(),study[i].Data())<<std::endl ;
+    for(UInt_t k = 0; k < newset.size(); k++) {  
+      
+      TString s = Form("%-20s",newset[k].getRunId().Data());
+      s += Form("%-3d",k);
+      s += Form("%-3d",newset[k].getRadiatorId());
+      s += Form("%-3d",newset[k].getLensId());
+      s += Form("%-8.2f",newset[k].getAngle());
+      s += Form("%-8.2f",newset[k].getPhi());
+      s += Form("%-8.2f",newset[k].getZ());
+      s += Form("%-8.2f",newset[k].getX());
+      s += Form("%-8.2f",newset[k].getXstep());      
+      s += Form("%-8.2f",newset[k].getYstep());
+      s += Form("%-8.2f",newset[k].getMomentum());
+      s += Form("%-8.2f",newset[k].getBeamDimension());
+      s += Form("%-8.2f",newset[k].getSimTO());
+      
+      out<<s<<std::endl;
+      if(k==newset.size()-1)  out<<std::endl;
+    }
   }
+
+  
   out.close();
 }
 
@@ -1469,8 +1479,8 @@ void datainfo(Int_t studyId=0, Int_t format = 0){
   }else if(format==12) p_exportinfo(); // html
   else p_print(newset, format);
 
-  //p_export();
-
+  p_export();
+  // p_exportinfo();
   // std::cout<<"ST"<<studyId<<std::endl;
   // for(UInt_t i = 0; i != newset.size(); i++) {
   //   std::cout<< newset[i].getX()<<" ";
