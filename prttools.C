@@ -66,7 +66,7 @@ DataInfo prt_data_info;
 const int prt_nmcp = 4 * 7;
 const int prt_npix = 16 * 16;
 #else
-const int prt_nmcp = 12;      // 12;
+const int prt_nmcp = 24;// 12;      // 12;
 const int prt_npix = 16 * 16; // 64
 #endif
 
@@ -112,7 +112,7 @@ TString prt_tdcsid_jul2019[] ={"2014","2015","2016","2017","2000","2001","2002",
 			       "2006","2007","2008","2009","200a","200b","200c","200d","200e","200f",
 			       "2010"};
 
-const int prt_maxdircch(prt_nmcp*prt_npix);
+const int prt_maxdircch = prt_nmcp*prt_npix;
 const int prt_maxnametdc=10000;
 
 TRandom  prt_rand;

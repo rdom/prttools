@@ -19,8 +19,9 @@ void PrtTools::init() {
   _npmt = 8;
   _maxdircch = _npmt * _npix;
   _pmtlayout = 2018;
-  map_pid = {0};
-
+  
+  _canvaslist = new TList();
+  _event = new PrtEvent();
   _spectrum = new TSpectrum(2);
   _info = "";
 
@@ -40,12 +41,11 @@ bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
     std::cout << "file not found " << in << std::endl;
     return false;
   }
-
+ 
   if (savepath != "") _savepath = savepath;
   TGaxis::SetMaxDigits(4);
   set_palette(1);
   create_maps(setupid);
-  delete _chain;
 
   _chain = new TChain("data");
   _chain->Add(in);
@@ -59,10 +59,11 @@ bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
 
 void PrtTools::init_digi() {
   int nrow = sqrt(_npix);
+
   for (int m = 0; m < _npmt; m++) {
-    if (_hdigi[m])
+    if (_hdigi[m]) {
       _hdigi[m]->Reset("M");
-    else {
+    } else {
       _hdigi[m] = new TH2F(Form("pmt%d", m), Form("pmt%d", m), nrow, 0, nrow, nrow, 0, nrow);
       _hdigi[m]->SetStats(0);
       _hdigi[m]->SetTitle(0);
@@ -99,9 +100,9 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
   else
     cdigi = new TCanvas("hp=" + sid, "hp_" + sid, 800, 400);
 
-  TPad *pads[_nmaxpmt];
+  TPad *pads[28];// _nmaxpmt
   TPad *toppad;
-
+  
   if (_pmtlayout == 2015 || _pmtlayout == 5)
     toppad = new TPad(sid, "T", 0.04, 0.04, 0.88, 0.96);
   else if (_pmtlayout == 2021)
@@ -392,17 +393,13 @@ TString PrtTools::pix_digi(TString s) {
 }
 
 bool PrtTools::next(int i, int printstep) {
-
+  
   _chain->GetEntry(i);
 
   if (i % printstep == 0 && i != 0)
     std::cout << "Event # " << i << " # hits " << _event->getHits().size() << std::endl;
 
-  int pid = _event->getPid();
-  if (pid < 5000 && pid > 0) {
-    _pid = map_pid[pid];
-  }
-
+  _pid = _event->getPid();
   return true;
 }
 
@@ -427,7 +424,7 @@ bool PrtTools::read_db(TString in) {
 
     if (line.rfind("S", 0) == 0) { // parse header
       line.erase(0, 1);
-      std::istringstream iss(line);
+      // std::istringstream iss(line);
       if (iss >> s1) {
         s2 = iss.str();
         study = atoi(s1.c_str());
@@ -477,6 +474,37 @@ bool PrtTools::read_db(TString in) {
   std::cout << "Parsed " << _runs.size() << " runs ================" << std::endl;
 
   return 1;
+}
+
+PrtRun *PrtTools::set_run() {
+
+  PrtRun *r = new PrtRun();
+
+  r->setNpmt(_npmt);
+  r->setNpix(_npix);
+
+  return r;
+}
+
+PrtRun *PrtTools::get_run(TString in) {
+
+  PrtRun *r = new PrtRun();
+
+  TChain *ch = new TChain("header");
+  ch->Add(in);
+  ch->SetBranchAddress("PrtRun", &r);
+  if (ch->GetEntries() > 0)
+    ch->GetEntry(0);
+  else {
+    std::cout << "No header found in " << in << std::endl;
+  }
+  return r;
+}
+
+PrtRun *PrtTools::find_run(int id) {
+  PrtRun *r = set_run();
+  if (id > 0) r = set_run();
+  return r;
 }
 
 void PrtTools::set_palette(int pal) {
@@ -529,11 +557,14 @@ void PrtTools::set_palette(int pal) {
 }
 
 void PrtTools::create_maps(int pmtlayout) {
-
+  
+  std::cout<<"pmtlayout "<<pmtlayout<<std::endl;
+  
   if (pmtlayout == 2019) {
     for (size_t i = 0; i < _tdcsid_jul2019.size(); i++) {
-      int dec = TString::BaseConvert(_tdcsid_jul2019[i], 16, 10).Atoi();
-      map_tdc[dec] = i;
+      size_t dec = TString::BaseConvert(_tdcsid_jul2019[i], 16, 10).Atoi();
+      if(dec < map_tdc.size()) map_tdc[dec] = i;
+      else std::cout<<"tdc id is outside of range: "<<dec<<std::endl;      
     }
   } else {
     for (size_t i = 0; i < _tdcsid_jul2018.size(); i++) {
@@ -543,6 +574,7 @@ void PrtTools::create_maps(int pmtlayout) {
   }
 
   for (int ch = 0; ch < _maxch; ch++) {
+   
     int pmt = ch / _npix;
     int pix = ch % _npix;
     int col = pix / 2 - 8 * (pix / 8);
@@ -553,10 +585,6 @@ void PrtTools::create_maps(int pmtlayout) {
     map_pix[ch] = pix;
     map_row[ch] = row;
     map_col[ch] = col;
-  }
-
-  for (int i = 0; i < 5; i++) {
-    map_pid[_pdg[i]] = i;
   }
 }
 
@@ -820,17 +848,14 @@ void PrtTools::save_canvas(TString path, int what, int style, bool rm) {
   save_canvas(what, style, rm);
 }
 
-void PrtTools::add_canvas(TString name,int w, int h){
-  if(!get_canvas(name)){
-    if(!_canvaslist) _canvaslist = new TList();
-    TCanvas *c = new TCanvas(name,name,0,0,w,h);
+void PrtTools::add_canvas(TString name, int w, int h) {
+  if (!get_canvas(name)) {
+    TCanvas *c = new TCanvas(name, name, 0, 0, w, h);
     _canvaslist->Add(c);
   }
 }
 
-void PrtTools::add_canvas(TCanvas *c){
-  if(!_canvaslist) _canvaslist = new TList();
-  c->cd();
+void PrtTools::add_canvas(TCanvas *c) {
   _canvaslist->Add(c);
 }
 

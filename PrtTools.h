@@ -52,10 +52,6 @@
 #include "../prtdirc/src/PrtEvent.h"
 #include "../prtdirc/src/PrtRun.h"
 
-// class PrtRun;
-// class PrtEvent;
-// class PrtHit;
-
 using std::array;
 
 class PrtTools {
@@ -73,6 +69,10 @@ class PrtTools {
   bool is_bad_channel(int ch);
   int get_pid(int pdg);
   bool read_db(TString in = "data_db.dat");
+  PrtRun *set_run();
+  PrtRun *get_run(TString in);  
+  PrtRun *find_run(int id);
+  
   void set_palette(int p = 1);
   void create_maps(int setupid = 2019);
   TString rand_str(int len = 10);
@@ -117,7 +117,8 @@ class PrtTools {
   // accessors
   PrtEvent *event() const { return _event; }
   int pdg(int v) { return _pdg[v]; }
-  int pid(int v) { return _pid; }
+  int pid() { return _pid; }
+  int entries(){ return _entries;}
   double mass(int v) { return _mass[v]; }
   int color(int v) { return _color[v]; }
   TString name(int v) { return _name[v]; }
@@ -128,8 +129,7 @@ class PrtTools {
   // mutators
   void set_path(TString v) { _savepath = v; }
 
-  int npmt, npix;
-  array<int, 5000> map_pmt, map_pix, map_row, map_col, map_tdc, map_pid;
+  array<int, 10000> map_pmt{}, map_pix{}, map_row{}, map_col{}, map_tdc{};
 
  private:
   TChain *_chain;
@@ -152,7 +152,7 @@ class PrtTools {
                                         "200a", "200b", "200c", "200d", "200e", "200f", "2010"};
 
   std::vector<PrtRun *> _runs;
-  array<TH2F *, 21> _hdigi;
+  array<TH2F *, 21> _hdigi{};
   int _entries;
   int _pid;
   int _maxch, _maxdircch;
@@ -163,7 +163,6 @@ class PrtTools {
   TF1 *_fgaus;
   TSpectrum *_spectrum;
   TList *_canvaslist;
-
 };
 
 #endif
