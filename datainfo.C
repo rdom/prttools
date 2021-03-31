@@ -1395,6 +1395,8 @@ void p_export(TString name="data.info"){
       
       TString s = Form("%-20s",newset[k].getRunId().Data());
       s += Form("%-3d",k);
+      if(i<300)  s += "  2017   2017 ";
+      else s += "  2018   2018 ";
       s += Form("%-3d",newset[k].getRadiatorId());
       s += Form("%-3d",newset[k].getLensId());
       s += Form("%-8.2f",newset[k].getAngle());
@@ -1404,8 +1406,8 @@ void p_export(TString name="data.info"){
       s += Form("%-8.2f",newset[k].getXstep());      
       s += Form("%-8.2f",newset[k].getYstep());
       s += Form("%-8.2f",newset[k].getMomentum());
-      s += Form("%-8.2f",newset[k].getBeamDimension());
-      s += Form("%-8.2f",newset[k].getSimTO());
+      s += Form("%-8.2f", newset[k].getBeamDimension());
+      s += Form("%-8.2f", newset[k].getSimTO());
       
       out<<s<<std::endl;
       if(k==newset.size()-1)  out<<std::endl;

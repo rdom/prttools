@@ -71,7 +71,7 @@ class PrtTools {
   bool read_db(TString in = "data_db.dat");
   PrtRun *set_run();
   PrtRun *get_run(TString in);  
-  PrtRun *find_run(int id);
+  PrtRun *find_run(int sid, int fid = 0);
   
   void set_palette(int p = 1);
   void create_maps(int setupid = 2019);

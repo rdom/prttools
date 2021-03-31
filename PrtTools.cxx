@@ -33,6 +33,8 @@ void PrtTools::init() {
     }
     _info += "\n";
   }
+  
+  read_db("../../prttools/data_db.dat");
 }
 
 bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
@@ -415,8 +417,8 @@ bool PrtTools::read_db(TString in) {
   std::ifstream ins(in);
   double dx = 0, vx = 0, dy = 0, vy = 0;
   TString info, name;
-  std::string line, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13;
-  int study = 0, fileid = 0, radiatorid = 0, lensid = 0;
+  std::string line, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15;
+  int study = 0, fileid = 0, radiatorid = 0, lensid = 0, geometry = 0, pmtlayout = 0;
   double theta = 0, phi = 0, z = 0, x = 0, sx = 0, sy = 0, mom = 0, beamsize = 0, simo = 0;
 
   while (std::getline(ins, line)) {
@@ -424,29 +426,31 @@ bool PrtTools::read_db(TString in) {
 
     if (line.rfind("S", 0) == 0) { // parse header
       line.erase(0, 1);
-      // std::istringstream iss(line);
-      if (iss >> s1) {
-        s2 = iss.str();
+      std::istringstream issh(line);
+      if (issh >> s1) {
+        s2 = issh.str();
         study = atoi(s1.c_str());
         info = s2.c_str();
       } else {
         std::cout << "Error parsing data_db: " << line << std::endl;
       }
     } else {
-      if (iss >> s1 >> s2 >> s3 >> s4 >> s5 >> s6 >> s7 >> s8 >> s9 >> s10 >> s11 >> s12 >> s13) {
+      if (iss >> s1 >> s2 >> s3 >> s4 >> s5 >> s6 >> s7 >> s8 >> s9 >> s10 >> s11 >> s12 >> s13 >> s14 >> s15) {
         name = s1.c_str();
         fileid = atoi(s2.c_str());
-        radiatorid = atoi(s3.c_str());
-        lensid = atoi(s4.c_str());
-        theta = atof(s5.c_str());
-        phi = atof(s6.c_str());
-        z = atof(s7.c_str());
-        x = atof(s8.c_str());
-        sx = atof(s9.c_str());
-        sy = atof(s10.c_str());
-        mom = atof(s11.c_str());
-        beamsize = atof(s12.c_str());
-        simo = atof(s13.c_str());
+	geometry = atoi(s3.c_str());
+        pmtlayout = atoi(s4.c_str());
+        radiatorid = atoi(s5.c_str());
+        lensid = atoi(s6.c_str());
+        theta = atof(s7.c_str());
+        phi = atof(s8.c_str());
+        z = atof(s9.c_str());
+        x = atof(s10.c_str());
+        sx = atof(s11.c_str());
+        sy = atof(s12.c_str());
+        mom = atof(s13.c_str());
+        beamsize = atof(s14.c_str());
+        simo = atof(s15.c_str());
       } else {
         // std::cout<<"Error parsing data_db: "<<line<<std::endl;
       }
@@ -454,9 +458,12 @@ bool PrtTools::read_db(TString in) {
 
     PrtRun *r = new PrtRun();
     r->setInfo(info);
+    r->setStudy(study);
     r->setName(name);
     r->setInfo(info);
     r->setId(fileid);
+    r->setGeometry(geometry);
+    r->setPmtLayout(pmtlayout);
     r->setRadiator(radiatorid);
     r->setLens(lensid);
     r->setTheta(theta);
@@ -482,6 +489,7 @@ PrtRun *PrtTools::set_run() {
 
   r->setNpmt(_npmt);
   r->setNpix(_npix);
+  r->setPhysList(0);
 
   return r;
 }
@@ -501,9 +509,15 @@ PrtRun *PrtTools::get_run(TString in) {
   return r;
 }
 
-PrtRun *PrtTools::find_run(int id) {
+PrtRun *PrtTools::find_run(int sid, int fid) {
   PrtRun *r = set_run();
-  if (id > 0) r = set_run();
+  if (sid > 0) r = set_run();
+
+  for (auto run : _runs) {
+    
+    if (run->getStudy() == sid && run->getId() == fid) r = run;
+  }
+
   return r;
 }
 
@@ -557,8 +571,6 @@ void PrtTools::set_palette(int pal) {
 }
 
 void PrtTools::create_maps(int pmtlayout) {
-  
-  std::cout<<"pmtlayout "<<pmtlayout<<std::endl;
   
   if (pmtlayout == 2019) {
     for (size_t i = 0; i < _tdcsid_jul2019.size(); i++) {
