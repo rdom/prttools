@@ -39,11 +39,19 @@ void PrtTools::init() {
 
 bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
 
+  
   if (in == "" || gSystem->AccessPathName(in)) {
     std::cout << "file not found " << in << std::endl;
     return false;
   }
- 
+
+  _run = get_run(in);
+  _npmt = _run->getNpmt();
+  _npix = _run->getNpix();
+  _maxdircch = _npmt * _npix;
+  _pmtlayout = _run->getPmtLayout();
+  _info += _run->getInfo();
+
   if (savepath != "") _savepath = savepath;
   TGaxis::SetMaxDigits(4);
   set_palette(1);
@@ -81,6 +89,11 @@ void PrtTools::init_digi() {
   }
 }
 
+void PrtTools::fill_digi(int mcp, int pix){
+  int n = sqrt(_npix);
+  _hdigi[mcp]->Fill(pix % n, pix / n);
+}
+
 // _pmtlayout == 5    - 5 row's design for the PANDA Barrel DIRC
 // _pmtlayout == 2015 - cern 2015
 // _pmtlayout == 2016 - cern 2016
@@ -88,25 +101,24 @@ void PrtTools::init_digi() {
 // _pmtlayout == 2018 - cern 2018
 // _pmtlayout == 2021 - new 3.6 row's design for the PANDA Barrel DIRC
 // _pmtlayout == 2023 - new 2x4 layout for the PANDA Barrel DIRC
-// _pmtlayout == 2031 - EIC DIRC beam test
-// _pmtlayout == 2030 - EIC DIRC prism
+// _pmtlayout == 2030 - EIC DIRC beam test
+// _pmtlayout == 2031 - EIC DIRC prism
 // _pmtlayout == 2032 - EIC DIRC focusing prism
 TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
 
+  
   _last_maxz = maxz;
   _last_minz = minz;
 
   TString sid = rand_str(3);
-  if (cdigi)
-    cdigi->cd();
+  if (cdigi) cdigi->cd();
   else
     cdigi = new TCanvas("hp=" + sid, "hp_" + sid, 800, 400);
 
   TPad *pads[28];// _nmaxpmt
   TPad *toppad;
   
-  if (_pmtlayout == 2015 || _pmtlayout == 5)
-    toppad = new TPad(sid, "T", 0.04, 0.04, 0.88, 0.96);
+  if (_pmtlayout == 2015 || _pmtlayout == 5) toppad = new TPad(sid, "T", 0.04, 0.04, 0.88, 0.96);
   else if (_pmtlayout == 2021)
     toppad = new TPad(sid, "T", 0.12, 0.02, 0.78, 0.98);
   else if (_pmtlayout == 2016)
@@ -117,11 +129,11 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
     toppad = new TPad(sid, "T", 0.05, 0.07, 0.9, 0.93);
   else if (_pmtlayout == 2023)
     toppad = new TPad(sid, "T", 0.073, 0.02, 0.877, 0.98);
-  else if (_pmtlayout == 2030)
+  else if (_pmtlayout == 2031)
     toppad = new TPad(sid, "T", 0.10, 0.025, 0.82, 0.975);
   else if (_pmtlayout == 2032)
     toppad = new TPad(sid, "T", 0.04, 0.025, 0.91, 0.975);
-  else if (_pmtlayout == 2031)
+  else if (_pmtlayout == 2030)
     toppad = new TPad(sid, "T", 0.12, 0.01, 0.80, 0.99);
   else
     toppad = new TPad(sid, "T", 0.04, 0.04, 0.96, 0.96);
@@ -139,16 +151,16 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
   }
   if (_pmtlayout == 2021) ncol = 4;
   if (_pmtlayout == 2030) {
-    nrow = 4;
-    ncol = 6;
+    nrow = 3;
+    ncol = 4;
   }
   if (_pmtlayout == 2032) {
     nrow = 4;
     ncol = 7;
   }
   if (_pmtlayout == 2031) {
-    nrow = 3;
-    ncol = 4;
+    nrow = 4;
+    ncol = 6;
   }
 
   if (_pmtlayout > 1) {
@@ -204,7 +216,7 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
           tbw = 0.0015;
           tbh = 0.042;
         }
-        if (_pmtlayout == 2030) {
+        if (_pmtlayout == 2031) {
           margin = 0.1;
           shift = 0;
           shiftw = 0.01;
@@ -220,7 +232,7 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
           tbh = 0.001;
           padi = j * ncol + i;
         }
-        if (_pmtlayout == 2031) {
+        if (_pmtlayout == 2030) {
           margin = 0.1;
           shift = 0;
           shiftw = 0.01;
@@ -353,7 +365,7 @@ TString PrtTools::pix_digi(TString s) {
     ncol = 4;
   }
   if (_pmtlayout == 2021) ncol = 4;
-  if (_pmtlayout == 2030) {
+  if (_pmtlayout == 2031) {
     nrow = 4;
     ncol = 6;
     npix = 16;
@@ -363,7 +375,7 @@ TString PrtTools::pix_digi(TString s) {
     ncol = 7;
     npix = 16;
   }
-  if (_pmtlayout == 2031) {
+  if (_pmtlayout == 2030) {
     nrow = 3;
     ncol = 4;
     npix = 16;
@@ -373,7 +385,7 @@ TString PrtTools::pix_digi(TString s) {
   for (int p = 0; p < nrow * ncol; p++) {
     if (_pmtlayout == 1 || _pmtlayout == 4)
       np = p % nrow * ncol + p / 3;
-    else if (_pmtlayout == 2030)
+    else if (_pmtlayout == 2031)
       np = p % ncol * nrow + p / ncol;
     else
       np = p;
@@ -456,7 +468,7 @@ bool PrtTools::read_db(TString in) {
       }
     }
 
-    PrtRun *r = new PrtRun();
+    PrtRun *r = set_run();
     r->setInfo(info);
     r->setStudy(study);
     r->setName(name);
@@ -486,7 +498,7 @@ bool PrtTools::read_db(TString in) {
 PrtRun *PrtTools::set_run() {
 
   PrtRun *r = new PrtRun();
-
+ 
   r->setNpmt(_npmt);
   r->setNpix(_npix);
   r->setPhysList(0);
@@ -511,10 +523,8 @@ PrtRun *PrtTools::get_run(TString in) {
 
 PrtRun *PrtTools::find_run(int sid, int fid) {
   PrtRun *r = set_run();
-  if (sid > 0) r = set_run();
 
   for (auto run : _runs) {
-    
     if (run->getStudy() == sid && run->getId() == fid) r = run;
   }
 
@@ -584,15 +594,15 @@ void PrtTools::create_maps(int pmtlayout) {
       map_tdc[dec] = i;
     }
   }
-
+  
   for (int ch = 0; ch < _maxch; ch++) {
    
     int pmt = ch / _npix;
     int pix = ch % _npix;
     int col = pix / 2 - 8 * (pix / 8);
     int row = pix % 2 + 2 * (pix / 8);
-    pix = col + sqrt(_npix) * row;
-
+    // pix = col + sqrt(_npix) * row;
+    
     map_pmt[ch] = pmt;
     map_pix[ch] = pix;
     map_row[ch] = row;

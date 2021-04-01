@@ -72,6 +72,7 @@ class PrtTools {
   PrtRun *set_run();
   PrtRun *get_run(TString in);  
   PrtRun *find_run(int sid, int fid = 0);
+  void fill_digi(int mcp, int pix);
   
   void set_palette(int p = 1);
   void create_maps(int setupid = 2019);
@@ -116,6 +117,7 @@ class PrtTools {
   
   // accessors
   PrtEvent *event() const { return _event; }
+  PrtRun *run() { return _run; }
   int pdg(int v) { return _pdg[v]; }
   int pid() { return _pid; }
   int entries(){ return _entries;}
@@ -124,7 +126,7 @@ class PrtTools {
   TString name(int v) { return _name[v]; }
   TString lname(int v) { return _lname[v]; }
   int maxdircch(){ return _maxdircch;}
-  TH2F *getdigi(int v){ return _hdigi[v];}
+  TH2F *get_digi(int v){ return _hdigi[v];}
 
   // mutators
   void set_path(TString v) { _savepath = v; }
@@ -152,6 +154,7 @@ class PrtTools {
                                         "200a", "200b", "200c", "200d", "200e", "200f", "2010"};
 
   std::vector<PrtRun *> _runs;
+  PrtRun* _run;
   array<TH2F *, 21> _hdigi{};
   int _entries;
   int _pid;
