@@ -13,6 +13,12 @@ PrtTools::PrtTools(PrtRun *run) {
   _info += run->getInfo();
 }
 
+PrtTools::PrtTools(TString in) {
+  init();
+  init_run(in,1);
+}
+
+
 void PrtTools::init() {
   _maxch = 5000;
   _npix = 64;
@@ -415,6 +421,18 @@ bool PrtTools::next(int i, int printstep) {
 
   _pid = _event->getPid();
   return true;
+}
+
+bool PrtTools::next() {
+
+  _iter++;
+  _chain->GetEntry(_iter);
+  
+  if (_iter % _printstep == 0 && _iter != 0)
+    std::cout << "Event # " << _iter << " # hits " << _event->getHits().size() << std::endl;
+  
+  _pid = _event->getPid();
+  return _iter < _entries;
 }
 
 bool PrtTools::is_bad_channel(int ch) {

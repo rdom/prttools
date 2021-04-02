@@ -58,14 +58,17 @@ class PrtTools {
 
  public:
   PrtTools();
+  PrtTools(TString in);
   PrtTools(PrtRun *run);
   ~PrtTools() {}
   void init();
+
   bool init_run(TString in = "", int bdigi = 0, TString savepath = "", int setupid = 2019);
   void init_digi();
   TCanvas *draw_digi(double maxz = 0, double minz = 0, TCanvas *cdigi = NULL);
   TString pix_digi(TString header = "m,p,v\n");
-  bool next(int i, int printstep);
+  bool next(int i, int printstep = 1000);
+  bool next();
   bool is_bad_channel(int ch);
   int get_pid(int pdg);
   bool read_db(TString in = "data_db.dat");
@@ -120,6 +123,7 @@ class PrtTools {
   PrtRun *run() { return _run; }
   int pdg(int v) { return _pdg[v]; }
   int pid() { return _pid; }
+  int i() { return _iter; }
   int entries(){ return _entries;}
   double mass(int v) { return _mass[v]; }
   int color(int v) { return _color[v]; }
@@ -157,6 +161,8 @@ class PrtTools {
   PrtRun* _run;
   array<TH2F *, 21> _hdigi{};
   int _entries;
+  int _iter = -1;
+  int _printstep = 1000;
   int _pid;
   int _maxch, _maxdircch;
   int _npmt, _npix;
@@ -167,6 +173,7 @@ class PrtTools {
   TSpectrum *_spectrum;
   TList *_canvaslist;
 };
+
 
 #endif
 
