@@ -123,7 +123,7 @@ class PrtTools {
   PrtRun *run() { return _run; }
   int pdg(int v) { return _pdg[v]; }
   int pid() { return _pid; }
-  int i() { return _iter; }
+  int i( ) { return _iter; }
   int entries(){ return _entries;}
   double mass(int v) { return _mass[v]; }
   int color(int v) { return _color[v]; }
