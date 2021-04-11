@@ -1,4 +1,4 @@
-void loadprtlibs(TString path=""){
+void loadlib(TString path=""){
   gROOT->ProcessLine(".L "+path+"../prtdirc/src/PrtHit.cxx+");
   gROOT->ProcessLine(".L "+path+"../prtdirc/src/PrtEvent.cxx+");
   gROOT->ProcessLine(".L "+path+"../prtdirc/src/PrtRun.cxx+");

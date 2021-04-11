@@ -39,8 +39,12 @@ void PrtTools::init() {
     }
     _info += "\n";
   }
-  
-  read_db("../../prttools/data_db.dat");
+
+  if (!gSystem->AccessPathName("data_db.dat")) {
+    read_db("data_db.dat");
+  } else {
+    read_db("../../prttools/data_db.dat");
+  }
 }
 
 bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
@@ -95,9 +99,10 @@ void PrtTools::init_digi() {
   }
 }
 
-void PrtTools::fill_digi(int mcp, int pix){
-  int n = sqrt(_npix);
-  _hdigi[mcp]->Fill(pix % n, pix / n);
+void PrtTools::fill_digi(int pmt, int pix){  
+
+  int n = sqrt(_npix);  
+  if (pmt < _npmt) _hdigi[pmt]->Fill(pix % n, pix / n);
 }
 
 // _pmtlayout == 5    - 5 row's design for the PANDA Barrel DIRC
@@ -111,7 +116,6 @@ void PrtTools::fill_digi(int mcp, int pix){
 // _pmtlayout == 2031 - EIC DIRC prism
 // _pmtlayout == 2032 - EIC DIRC focusing prism
 TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
-
   
   _last_maxz = maxz;
   _last_minz = minz;
@@ -442,7 +446,12 @@ bool PrtTools::is_bad_channel(int ch) {
 
 bool PrtTools::read_db(TString in) {
 
-  std::cout << "Parsing " << in << "=============" << std::endl;
+  if (gSystem->AccessPathName(in)) {
+    std::cout << "=== DB not found: " << in << std::endl;
+    return 0;
+  }
+
+  std::cout << "=== Parsing DB: " << in << std::endl;
 
   std::ifstream ins(in);
   double dx = 0, vx = 0, dy = 0, vy = 0;
@@ -465,10 +474,11 @@ bool PrtTools::read_db(TString in) {
         std::cout << "Error parsing data_db: " << line << std::endl;
       }
     } else {
-      if (iss >> s1 >> s2 >> s3 >> s4 >> s5 >> s6 >> s7 >> s8 >> s9 >> s10 >> s11 >> s12 >> s13 >> s14 >> s15) {
+      if (iss >> s1 >> s2 >> s3 >> s4 >> s5 >> s6 >> s7 >> s8 >> s9 >> s10 >> s11 >> s12 >> s13 >>
+          s14 >> s15) {
         name = s1.c_str();
         fileid = atoi(s2.c_str());
-	geometry = atoi(s3.c_str());
+        geometry = atoi(s3.c_str());
         pmtlayout = atoi(s4.c_str());
         radiatorid = atoi(s5.c_str());
         lensid = atoi(s6.c_str());
@@ -481,34 +491,34 @@ bool PrtTools::read_db(TString in) {
         mom = atof(s13.c_str());
         beamsize = atof(s14.c_str());
         simo = atof(s15.c_str());
+
+        PrtRun *r = set_run();
+        r->setInfo(info);
+        r->setStudy(study);
+        r->setName(name);
+        r->setInfo(info);
+        r->setId(fileid);
+        r->setGeometry(geometry);
+        r->setPmtLayout(pmtlayout);
+        r->setRadiator(radiatorid);
+        r->setLens(lensid);
+        r->setTheta(theta);
+        r->setPhi(phi);
+        r->setBeamX(x);
+        r->setBeamZ(z);
+        r->setPrismStepX(sx);
+        r->setPrismStepY(sy);
+        r->setMomentum(mom);
+        r->setBeamSize(beamsize);
+	
+        _runs.push_back(r);
       } else {
         // std::cout<<"Error parsing data_db: "<<line<<std::endl;
       }
     }
-
-    PrtRun *r = set_run();
-    r->setInfo(info);
-    r->setStudy(study);
-    r->setName(name);
-    r->setInfo(info);
-    r->setId(fileid);
-    r->setGeometry(geometry);
-    r->setPmtLayout(pmtlayout);
-    r->setRadiator(radiatorid);
-    r->setLens(lensid);
-    r->setTheta(theta);
-    r->setPhi(phi);
-    r->setBeamX(x);
-    r->setBeamZ(z);
-    r->setPrismStepX(sx);
-    r->setPrismStepY(sy);
-    r->setMomentum(mom);
-    r->setBeamSize(beamsize);
-
-    _runs.push_back(r);
   }
 
-  std::cout << "Parsed " << _runs.size() << " runs ================" << std::endl;
+  std::cout << "=== Parsed " << _runs.size() << " runs" << std::endl;
 
   return 1;
 }
@@ -539,13 +549,46 @@ PrtRun *PrtTools::get_run(TString in) {
   return r;
 }
 
+std::vector<PrtRun *> PrtTools::get_runs(int study) {
+
+  std::vector<PrtRun *> runs;
+  for (auto run : _runs) {
+    if (run->getStudy() == study) {
+      runs.push_back(run);
+    }
+  }
+  return runs;
+}
+
 PrtRun *PrtTools::find_run(int sid, int fid) {
   PrtRun *r = set_run();
 
   for (auto run : _runs) {
-    if (run->getStudy() == sid && run->getId() == fid) r = run;
+    if (run->getStudy() == sid && run->getId() == fid) {
+      r = run;
+      break;
+    }
   }
+  if (r->getStudy() == 0) {
+    std::cout << "Run not found " << sid << " " << fid << std::endl;
+  }
+  _run = r;
+  return r;
+}
 
+PrtRun *PrtTools::find_run(TString path) {
+  PrtRun *r = set_run();
+
+  for (auto run : _runs) {
+    if (path.Contains(run->getName())) {
+      r = run;
+      break;
+    }
+  }
+  if (r->getStudy() == 0) {
+    std::cout << "Run not found " << path << std::endl;
+  }  
+  _run = r;
   return r;
 }
 
@@ -617,15 +660,57 @@ void PrtTools::create_maps(int pmtlayout) {
    
     int pmt = ch / _npix;
     int pix = ch % _npix;
-    int col = pix / 2 - 8 * (pix / 8);
-    int row = pix % 2 + 2 * (pix / 8);
-    // pix = col + sqrt(_npix) * row;
-    
+    int col = pix / 2 - 8 * (pix / 16);
+    int row = pix % 2 + 2 * (pix / 16);
+    map_pmtpix[pmt][pix] = ch;
+    pix = col + sqrt(_npix) * row;
+      
     map_pmt[ch] = pmt;
     map_pix[ch] = pix;
     map_row[ch] = row;
     map_col[ch] = col;
   }
+}
+
+int PrtTools::get_channel(int tdc, int tdcch) {
+  int ch = -1;
+  if (_run->getGeometry() == 2018) {
+    ch = 0;
+    for (int i = 0; i <= tdc; i++) {
+      if (i == tdc && (i == 2 || i == 6 || i == 10 || i == 14)) ch += tdcch - 32;
+      else if (i == tdc)
+        ch += tdcch;
+      else if (i == 1 || i == 2 || i == 5 || i == 6 || i == 9 || i == 10 || i == 13 || i == 14)
+        ch += 16;
+      else
+        ch += 48;
+    }
+  } else if (_run->getGeometry() == 2023) {
+    ch = 32 * tdc + tdcch;
+  } else {
+    ch = 48 * tdc + tdcch;
+  }
+  return ch;
+}
+
+int PrtTools::get_tdcid(int ch) {
+  int tch = 0, tdcid = 0;
+  if (_run->getGeometry() == 2018) {
+    for (int i = 0; i <= 40; i++) {
+      tdcid = i;
+      if (i == 2 || i == 6 || i == 10 || i == 14) tch += 16;
+      else if (i == 1 || i == 2 || i == 5 || i == 6 || i == 9 || i == 10 || i == 13 || i == 14)
+        tch += 16;
+      else
+        tch += 48;
+      if (tch > ch) break;
+    }
+  } else if (_run->getGeometry() == 2023) {
+    tdcid = ch / 32;
+  } else {
+    tdcid = ch / 48;
+  }
+  return tdcid;
 }
 
 TString PrtTools::rand_str(int len) {
@@ -1067,6 +1152,10 @@ void PrtTools::print_canvas(TPad *c, TString name, TString path, int what) {
   if (what > 0) c->Print(path + "/" + name + ".C");
   if (what > 1) c->Print(path + "/" + name + ".pdf");
   if (what > 2) c->Print(path + "/" + name + ".eps");
+}
+
+TString PrtTools::dir(TString path) {
+  return path.Remove(path.Last('/'));
 }
 
 TString PrtTools::create_dir(TString inpath) {

@@ -40,13 +40,14 @@
 
 #include "../prtdirc/src/PrtHit.h"
 #include "../prtdirc/src/PrtEvent.h"
+#include "PrtTools.h"
 
 const Int_t kMaxHits = 50000;
 
 class TTSelector : public TSelector {
 public :
   TFile*          fFile;
-  TTree          *fTree;
+  TTree          *fTree,*fRunTree;
   PrtEvent       *fEvent;
    
   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
@@ -135,6 +136,13 @@ public :
   virtual TList  *GetOutputList() const { return fOutput; }
   virtual void    Terminate();
 
+  bool isPion(double tof, int mom);
+  bool isProton(double tof, int mom);
+  double getTotWalk(double tot,int ch, int type=0);
+
+  PrtTools t;
+  PrtRun *run;
+  
   ClassDef(TTSelector,0);
 };
 

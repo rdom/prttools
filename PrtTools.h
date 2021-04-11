@@ -73,12 +73,16 @@ class PrtTools {
   int get_pid(int pdg);
   bool read_db(TString in = "data_db.dat");
   PrtRun *set_run();
-  PrtRun *get_run(TString in);  
+  PrtRun *get_run(TString in);
+  std::vector<PrtRun *> get_runs(int study);  
   PrtRun *find_run(int sid, int fid = 0);
-  void fill_digi(int mcp, int pix);
+  PrtRun *find_run(TString path);
+  void fill_digi(int pmt, int pix);
   
   void set_palette(int p = 1);
   void create_maps(int setupid = 2019);
+  int get_channel(int tdc, int tdcch);
+  int get_tdcid(int ch);
   TString rand_str(int len = 10);
   TVector3 fit(TH1 *h, double range = 3, double threshold = 20, double limit = 2,
                int peakSearch = 1, int bkg = 0, TString opt = "MQ");
@@ -92,6 +96,7 @@ class PrtTools {
   TGraph *smooth(TGraph *g, int smoothness = 1);
   int shift_hist(TH1 *hist, double double_shift);
 
+  TString dir(TString path);
   TString create_dir(TString inpath = "");
   void write_info(TString filename);
   void write_string(TString filename, TString str);
@@ -136,6 +141,7 @@ class PrtTools {
   void set_path(TString v) { _savepath = v; }
 
   array<int, 10000> map_pmt{}, map_pix{}, map_row{}, map_col{}, map_tdc{};
+  array<array<int, 50>, 1000> map_pmtpix{};
 
  private:
   TChain *_chain;
@@ -183,41 +189,7 @@ class PrtTools {
 // int prt_ntdc = prt_ntdcm;
 // int prt_maxch = prt_ntdc*48;
 
-// int prt_getChannelNumber(int tdc, int tdcChannel){
-//   int ch = -1;
-//   if(prt_geometry==2018){
-//     ch=0;
-//     for(int i=0; i<=tdc; i++){
-//       if(i==tdc && (i==2 || i==6 || i==10 || i==14)) ch += tdcChannel-32;
-//       else if(i==tdc) ch += tdcChannel;
-//       else if(i==1 || i==2 || i==5 || i==6 || i==9 || i==10 || i==13 || i==14) ch += 16;
-//       else ch += 48;
-//     }
-//   }else if(prt_geometry==2023){
-//     ch = 32*tdc+tdcChannel;
-//   }else{
-//     ch = 48*tdc+tdcChannel;
-//   }
-//   return ch;
-// }
 
-// int prt_getTdcId(int ch){
-//   int tch=0, tdcid=0;
-//   if(prt_geometry==2018){
-//     for(int i=0; i<=prt_ntdc; i++){
-//       tdcid=i;
-//       if(i==2 || i==6 || i==10 || i==14) tch += 16;
-//       else if(i==1 || i==2 || i==5 || i==6 || i==9 || i==10 || i==13 || i==14) tch += 16;
-//       else tch += 48;
-//       if(tch>ch) break;
-//     }
-//   }else if(prt_geometry==2023){
-//     tdcid=ch/32;
-//   }else{
-//     tdcid=ch/48;
-//   }
-//   return tdcid;
-// }
 
 // TString prt_getTdcName(int ch){
 //   return prt_tdcsid[prt_getTdcId(ch)];
@@ -239,14 +211,6 @@ class PrtTools {
 //     tdcc=ch%48+1;
 //   }
 //   return tdcc;
-// }
-
-// int prt_removeRefChannels(int ch, int tdcSeqId){
-//   return ch - tdcSeqId;
-// }
-
-// int prt_addRefChannels(int ch,int tdcSeqId){
-//   return ch + tdcSeqId;
 // }
 
 // int prt_getColorId(int ind, int style =0){

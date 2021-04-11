@@ -149,7 +149,7 @@ else
     fi
     
     if [ "$threads" -gt 0 ]; then
-	str=$(root -l -q -b loadprtlibs.C nentries.C"(\"$inFile\")")
+	str=$(root -l -q -b loadlib.C nentries.C"(\"$inFile\")")
 	echo $str
 	str=$(echo $str |tr -d '\040\n\r')
 	total=$(echo $str | sed -r 's/.*[^0-9]([0-9]+)$/\1/')
@@ -163,7 +163,7 @@ else
 	printf "\r$statusline .."
 	start_time=$(date +%s)
 	
-	root -l -q loadprtlibs.C tcalibration.C++'("","","","", 0,0,0,0,1)'  > /dev/null 2>/dev/null
+	root -l -q loadlib.C tcalibration.C++'("","","","", 0,0,0,0,1)'  > /dev/null 2>/dev/null
 	
 	for ((i=0;i<$threads;i++)); do
 	    startEvent=$(echo "$step*$i" |bc)
@@ -171,7 +171,7 @@ else
 	    if (( $i == $threads-1 )); then 
 		endEvent=$total 
 	    fi
-	    root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"$outDir${fileId}${suf}${i}j.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode,0,$setupid)" > /dev/null  2>/dev/null &
+	    root -l -q loadlib.C tcalibration.C+"(\"$inFile\",\"$outDir${fileId}${suf}${i}j.root\",\"$cFile\", \"$tFile\", $refChannel,$startEvent,$endEvent,$mode,0,$setupid)" > /dev/null  2>/dev/null &
 	done
 	
 	waitForMe
@@ -184,7 +184,7 @@ else
 	finish_time=$(date +%s)
 	printf "\r$statusline done [$((finish_time - start_time)) s]\n"
     else
-	root -l -q loadprtlibs.C tcalibration.C+"(\"$inFile\",\"${outDir}${fileId}${suf}.root\",\"$cFile\", \"$tFile\", $refChannel,0,$events,$mode,0,$setupid)"
+	root -l -q loadlib.C tcalibration.C+"(\"$inFile\",\"${outDir}${fileId}${suf}.root\",\"$cFile\", \"$tFile\", $refChannel,0,$events,$mode,0,$setupid)"
     fi
     cd -> /dev/null
 fi
