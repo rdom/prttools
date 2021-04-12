@@ -81,6 +81,9 @@ class PrtTools {
   
   void set_palette(int p = 1);
   void create_maps(int setupid = 2019);
+  TString get_inpath();
+  TString get_outpath();
+  TString get_lutpath();  
   int get_channel(int tdc, int tdcch);
   int get_tdcid(int ch);
   TString rand_str(int len = 10);
@@ -141,12 +144,12 @@ class PrtTools {
   void set_path(TString v) { _savepath = v; }
 
   array<int, 10000> map_pmt{}, map_pix{}, map_row{}, map_col{}, map_tdc{};
-  array<array<int, 50>, 1000> map_pmtpix{};
+  array<array<int, 1000>, 100> map_pmtpix{};
 
  private:
   TChain *_chain;
   PrtEvent *_event;
-  TString _savepath;
+  TString _dbpath, _savepath;
   TString _info;
   array<int, 5> _pdg = {11, 13, 211, 321, 2212};
   array<double, 5> _mass = {0.000511, 0.1056584, 0.139570, 0.49368, 0.9382723};

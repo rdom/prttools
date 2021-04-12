@@ -11,6 +11,7 @@ PrtTools::PrtTools(PrtRun *run) {
   _maxdircch = _npmt * _npix;
   _pmtlayout = run->getPmtLayout();
   _info += run->getInfo();
+  _run = run;
 }
 
 PrtTools::PrtTools(TString in) {
@@ -45,6 +46,8 @@ void PrtTools::init() {
   } else {
     read_db("../../prttools/data_db.dat");
   }
+  _dbpath = "~/data/jul18/";
+  gSystem->ExpandPathName(_dbpath);
 }
 
 bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
@@ -97,6 +100,18 @@ void PrtTools::init_digi() {
       _hdigi[m]->GetYaxis()->SetAxisColor(15);
     }
   }
+}
+
+TString PrtTools::get_inpath(){
+  return _dbpath + Form("%d/%sC.root",_run->getStudy(),_run->getName().Data());
+}
+
+TString PrtTools::get_lutpath(){
+  return _dbpath + Form("%d/%sS.lut.cs_avr.root",_run->getStudy(),_run->getName().Data());
+}
+
+TString PrtTools::get_outpath(){
+  return _dbpath + Form("%d/%sC.rec.root",_run->getStudy(),_run->getName().Data());
 }
 
 void PrtTools::fill_digi(int pmt, int pix){  
@@ -546,6 +561,7 @@ PrtRun *PrtTools::get_run(TString in) {
   else {
     std::cout << "No header found in " << in << std::endl;
   }
+  _run = r; 
   return r;
 }
 
@@ -657,12 +673,12 @@ void PrtTools::create_maps(int pmtlayout) {
   }
   
   for (int ch = 0; ch < _maxch; ch++) {
-   
     int pmt = ch / _npix;
     int pix = ch % _npix;
+    map_pmtpix[pmt][pix] = ch;
+    
     int col = pix / 2 - 8 * (pix / 16);
     int row = pix % 2 + 2 * (pix / 16);
-    map_pmtpix[pmt][pix] = ch;
     pix = col + sqrt(_npix) * row;
       
     map_pmt[ch] = pmt;

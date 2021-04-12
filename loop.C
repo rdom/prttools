@@ -13,7 +13,7 @@ void wait(int n) {
 void loop(int study = 409, int level = 0, int fid = -1) {
   PrtTools t;
   int threads = 25;
-  int events = 5000;
+  int events = 45000;
   int nfiles = 0;
   int eventsj = events / threads;
 
@@ -28,10 +28,10 @@ void loop(int study = 409, int level = 0, int fid = -1) {
 
     sim = Form("-r 0 -o %sS.root -study %d -fid %d -e %d ", nid.Data(), study, id, events);
     lut = Form("-r 1 -o %sS.lut.root -study %d -fid %d -e 10000000 ", nid.Data(), study, id);
-    rec = Form("-r 2 -i %sS.root -o %sR.root -u %s.lut.cs_avr.root -e 2000 -tr 0.5 ", nid.Data(),
+    rec = Form("-r 2 -i %sS.root -o %s.rec.root -u %s.lut.cs_avr.root -e 2000 -tr 0.5 ", nid.Data(),
                nid.Data(), nid.Data());
 
-    rlist += nid + "R.root ";
+    rlist += nid + ".rec.root ";
 
     lut += end + Form(" && cd ~/dirc/prtdirc/macro > /dev/null && root -q -b loadlib.C "
                       "lutmean_cs.C'(\"%sS.lut.root\")'",
@@ -54,6 +54,6 @@ void loop(int study = 409, int level = 0, int fid = -1) {
   wait(0);
 
   if (level == 2) {
-    gSystem->Exec(Form("hadd -f %sres_%d.root ", path.Data(), study) + rlist);
+    gSystem->Exec(Form("hadd -f %srec_%d.root ", path.Data(), study) + rlist);
   }
 }
