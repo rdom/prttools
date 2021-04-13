@@ -28,7 +28,7 @@ void loop(int study = 409, int level = 0, int fid = -1) {
 
     sim = Form("-r 0 -o %sS.root -study %d -fid %d -e %d ", nid.Data(), study, id, events);
     lut = Form("-r 1 -o %sS.lut.root -study %d -fid %d -e 10000000 ", nid.Data(), study, id);
-    rec = Form("-r 2 -i %sS.root -o %s.rec.root -u %s.lut.cs_avr.root -e 2000 -tr 0.5 ", nid.Data(),
+    rec = Form("-r 2 -i %sS.root -o %s.rec.root -u %sS.lut.cs_avr.root -e 2000 -tr 0.5 ", nid.Data(),
                nid.Data(), nid.Data());
 
     rlist += nid + ".rec.root ";

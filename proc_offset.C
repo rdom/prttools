@@ -1,6 +1,6 @@
 #include "PrtTools.h"
 
-void proc_offset(TString in = "", int corrected = 1) {
+void proc_offset(TString in = "", int corrected = 0) {
 
   PrtTools t(in);
   int m = t.run()->getMomentum() + 0.1;
@@ -37,10 +37,10 @@ void proc_offset(TString in = "", int corrected = 1) {
   PrtTools ts(in.ReplaceAll("C.root","S.root"));    
   while (ts.next() && ts.i() < 1000000) {
     if (ts.event()->getPid() != 2) continue;
-    for (auto hit : t.event()->getHits()) {
-      if (hit.getChannel() < t.maxdircch()) {
+    for (auto hit : ts.event()->getHits()) {
+      if (hit.getChannel() < ts.maxdircch()) {
         double time = hit.getLeadTime();
-	time += gRandom->Gaus(0, 0.38);
+	time += gRandom->Gaus(0, 0.0);
         hLeS->Fill(time);
       }
     }
