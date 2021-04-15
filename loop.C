@@ -10,7 +10,7 @@ void wait(int n) {
   }
 }
 
-void loop(int study = 409, int level = 0, int fid = -1) {
+void loop(int study = 409, int level = 0, int mc = 0, int fid = -1) {
   PrtTools t;
   int threads = 25;
   int events = 45000;
@@ -19,41 +19,51 @@ void loop(int study = 409, int level = 0, int fid = -1) {
 
   TString path = Form("$HOME/data/jul18/%d/", study);
   TString exe = "../prtdirc/build/prtdirc ";
-  TString lut, sim, simj, rec, rlist = "";
+  TString smc[2] = {"C", "S"};
+  TString lut, sim, simj, rec, pdf;
 
-  for (auto run : t.get_runs(study)) {
-    TString nid = path + run->getName();
-    int id = run->getId();
-    TString end = Form("-b 1 -v 1 > %s.%d.log", nid.Data(),level);
+  for (int imc = 0; imc < 2; imc++) {
+    if (imc == 0 && level < 2) continue;
+    if (mc == 0 && imc == 1) continue;
+    if (mc == 1 && imc == 0) continue;
 
-    sim = Form("-r 0 -o %sS.root -study %d -fid %d -e %d ", nid.Data(), study, id, events);
-    lut = Form("-r 1 -o %sS.lut.root -study %d -fid %d -e 10000000 ", nid.Data(), study, id);
-    rec = Form("-r 2 -i %sS.root -o %s.rec.root -u %sS.lut.cs_avr.root -e 2000 -tr 0.5 ", nid.Data(),
-               nid.Data(), nid.Data());
+    TString  rlist = "";
+    for (auto run : t.get_runs(study)) {
+      int id = run->getId();
+      if (fid > -1 && id != fid) continue;
+      TString nid = path + run->getName() + smc[imc];
+      TString end = Form("-b 1 -v 1 > %s.%d.log", nid.Data(), level);
 
-    rlist += nid + ".rec.root ";
+      sim = Form("-r 0 -o %s.root -study %d -fid %d -e %d ", nid.Data(), study, id, events);
+      lut = Form("-r 1 -o %s.lut.root -study %d -fid %d -e 10000000 ", nid.Data(), study, id);
+      rec = Form("-r 2 -i %s.root -o %s.rec.root -e 2000 -tr 0.5 ", nid.Data(), nid.Data());
+      pdf = Form("-r 4 -i %s.root -o %s.rec.root -e 2000 -tr 0.5 ", nid.Data(), nid.Data());
 
-    lut += end + Form(" && cd ~/dirc/prtdirc/macro > /dev/null && root -q -b loadlib.C "
-                      "lutmean_cs.C'(\"%sS.lut.root\")'",
-                      nid.Data());
+      rlist += nid + ".rec.root ";
 
-    if (level == 0) {
-      for (int i = 0; i < threads; i++) {
-        simj = sim + Form(" -o %sSJ%d.root -e %d -seed %d ", nid.Data(), i, eventsj, i);
-        if (level == 0) gSystem->Exec(exe + simj + end + "&");
+      lut += end + Form(" && cd ~/dirc/prtdirc/macro > /dev/null && root -q -b loadlib.C "
+                        "lutmean_cs.C'(\"%s.lut.root\")'",
+                        nid.Data());
+
+      if (level == 0) {
+        for (int i = 0; i < threads; i++) {
+          simj = sim + Form(" -o %sJ%d.root -e %d -seed %d ", nid.Data(), i, eventsj, i);
+          if (level == 0) gSystem->Exec(exe + simj + end + "&");
+        }
+
+        wait(0);
+        gSystem->Exec(Form("hadd -f %s.root %sJ*.root ", nid.Data(), nid.Data()));
+        gSystem->Exec(Form("rm %sJ*.root ", nid.Data()));
       }
-
-      wait(0);
-      gSystem->Exec(Form("hadd -f %sS.root %sSJ*.root ", nid.Data(), nid.Data()));
-      gSystem->Exec(Form("rm %sSJ*.root ", nid.Data()));
+      if (level == 1) gSystem->Exec(exe + lut + "&");
+      if (level == 2) gSystem->Exec(exe + rec + end + "&");
+      if (level == 4) gSystem->Exec(exe + pdf + end + "&");
     }
-    if (level == 1) gSystem->Exec(exe + lut + "&");
-    if (level == 2) gSystem->Exec(exe + rec + end + "&");
-  }
 
-  wait(0);
+    wait(0);
 
-  if (level == 2) {
-    gSystem->Exec(Form("hadd -f %srec_%d.root ", path.Data(), study) + rlist);
+    if (level == 2) {
+      gSystem->Exec(Form("hadd -f %srec_%d%s.root ", path.Data(), study, smc[imc].Data()) + rlist);
+    }
   }
 }

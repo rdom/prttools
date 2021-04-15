@@ -72,9 +72,11 @@ class PrtTools {
   bool is_bad_channel(int ch);
   int get_pid(int pdg);
   bool read_db(TString in = "data_db.dat");
+  bool write_db(TString in = "data_db.dat");
   PrtRun *set_run();
   PrtRun *get_run(TString in);
-  std::vector<PrtRun *> get_runs(int study);  
+  std::vector<PrtRun *> get_runs(int study);
+  void modify_run(PrtRun *run);
   PrtRun *find_run(int sid, int fid = 0);
   PrtRun *find_run(TString path);
   void fill_digi(int pmt, int pix);

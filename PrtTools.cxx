@@ -490,7 +490,7 @@ bool PrtTools::read_db(TString in) {
       }
     } else {
       if (iss >> s1 >> s2 >> s3 >> s4 >> s5 >> s6 >> s7 >> s8 >> s9 >> s10 >> s11 >> s12 >> s13 >>
-          s14 >> s15) {
+          s14) {
         name = s1.c_str();
         fileid = atoi(s2.c_str());
         geometry = atoi(s3.c_str());
@@ -505,7 +505,7 @@ bool PrtTools::read_db(TString in) {
         sy = atof(s12.c_str());
         mom = atof(s13.c_str());
         beamsize = atof(s14.c_str());
-        simo = atof(s15.c_str());
+	// simo = atof(s15.c_str());
 
         PrtRun *r = set_run();
         r->setInfo(info);
@@ -535,6 +535,33 @@ bool PrtTools::read_db(TString in) {
 
   std::cout << "=== Parsed " << _runs.size() << " runs" << std::endl;
 
+  return 1;
+}
+
+bool PrtTools::write_db(TString out) {
+  TString s = "";
+  int last = 0;
+  for (auto r : _runs) {
+    if (r->getStudy() != last && last > 0) s += "\n";
+    if (r->getStudy() != last) s += "S" + r->getShortInfo() + "\n";
+    last = r->getStudy();
+    s += Form("%-20s", r->getName().Data());
+    s += Form("%-3d", r->getId());
+    s += Form("%-8d", r->getGeometry());
+    s += Form("%-8d", r->getPmtLayout());
+    s += Form("%-3d", r->getRadiator());
+    s += Form("%-3d", r->getLens());
+    s += Form("%-8.2f", r->getTheta());
+    s += Form("%-8.2f", r->getPhi());
+    s += Form("%-8.2f", r->getBeamZ());
+    s += Form("%-8.2f", r->getBeamX());
+    s += Form("%-8.2f", r->getPrismStepX());
+    s += Form("%-8.2f", r->getPrismStepY());
+    s += Form("%-8.2f", r->getMomentum());
+    s += Form("%-8.2f", r->getBeamSize());
+    s += "\n";
+  }
+  write_string(out, s);
   return 1;
 }
 
@@ -574,6 +601,15 @@ std::vector<PrtRun *> PrtTools::get_runs(int study) {
     }
   }
   return runs;
+}
+
+void PrtTools::modify_run(PrtRun *run) {
+  for (size_t i = 0; i < _runs.size(); i++) {
+    if (_runs[i]->getStudy() == run->getStudy() && _runs[i]->getId() == run->getId()) {
+      _runs[i] = run;
+      break;
+    }
+  }
 }
 
 PrtRun *PrtTools::find_run(int sid, int fid) {
@@ -818,6 +854,11 @@ TVector3 PrtTools::fit(TH1 *h, double range, double threshold, double limit, int
 
     if (peakSearch == 2) {
       mean2 = (nfound == 1) ? _fgaus->GetParameter(1) : _fgaus->GetParameter(4);
+      if (mean1 > mean2) {
+        double t = mean1;
+        mean1 = mean2;
+        mean2 = t;
+      }
     }
   }
   delete _fgaus;

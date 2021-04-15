@@ -23,12 +23,10 @@ mkdir -p ${rpath}
 for f in $dpath/beam_436_*C.root; do
     spath=$rpath/${f##*/}
     mkdir -p $spath
-    lut="${f/C.root/S.cs_avr.root}"
-    lut="${lut/beam/lut_beam}"
     for theta in `LANG=en_us seq -0.015 0.001 0.015`; do
 	for phi in `LANG=en_us seq -0.015 0.001 0.015`; do
 	    echo $theta $phi
-	    $prtdirc -s 2 -i $f -u $lut -o $spath/b_r.$theta.$phi.root -f 0 -e 2000 -tr 0.5 -t1 $theta -t2 $phi -v 0 -b 1 >/dev/null 2> /dev/null &
+	    $prtdirc -s 2 -i $f -o $spath/b_r.$theta.$phi.root -f 0 -e 2000 -tr 0.5 -t1 $theta -t2 $phi -v 0 -b 1 >/dev/null 2> /dev/null &
 	    waitForMe $threads
 	done
     done

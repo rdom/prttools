@@ -40,7 +40,7 @@ void proc_offset(TString in = "", int corrected = 0) {
     for (auto hit : ts.event()->getHits()) {
       if (hit.getChannel() < ts.maxdircch()) {
         double time = hit.getLeadTime();
-	time += gRandom->Gaus(0, 0.0);
+	time += gRandom->Gaus(0, 0.4);
         hLeS->Fill(time);
       }
     }
@@ -69,10 +69,10 @@ void proc_offset(TString in = "", int corrected = 0) {
     // double xmax1 = prt_fit(hLeD,0.5,50,1).X();
     // double xmax2 = prt_fit(hLeS,0.5,50,1).X();
 
-    double threshold = hLeD->GetMaximum() * 0.3;
+    double threshold = hLeD->GetMaximum() * 0.6;
     int firstbin = hLeD->FindFirstBinAbove(threshold);
     double xmax1 = hLeD->GetXaxis()->GetBinCenter(firstbin);
-    threshold = hLeS->GetMaximum() * 0.3;
+    threshold = hLeS->GetMaximum() * 0.6;
     firstbin = hLeS->FindFirstBinAbove(threshold);
     double xmax2 = hLeS->GetXaxis()->GetBinCenter(firstbin);
 
