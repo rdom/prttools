@@ -3,14 +3,18 @@
 void wait(int n) {
   TString c = "ps aux | grep \"[r]oot.exe\\|[p]rtdirc\" | wc -l";
   while (true) {
-    gSystem->Sleep(1000);
     int active = atoi(gSystem->GetFromPipe(c)) - 1;
     if (active <= n) break;
+    else gSystem->Sleep(1000);
     std::cout << "A " << active << std::endl;
   }
 }
 
-void loop(int study = 409, int level = 0, int mc = 0, int fid = -1) {
+// 0 simulation
+// 1 create lut
+// 2 reconstruction
+
+void loop(int study = 409, int level = 0, int mc = 2, int fid = -1) {
   PrtTools t;
   int threads = 25;
   int events = 45000;
@@ -36,8 +40,8 @@ void loop(int study = 409, int level = 0, int mc = 0, int fid = -1) {
 
       sim = Form("-r 0 -o %s.root -study %d -fid %d -e %d ", nid.Data(), study, id, events);
       lut = Form("-r 1 -o %s.lut.root -study %d -fid %d -e 10000000 ", nid.Data(), study, id);
-      rec = Form("-r 2 -i %s.root -o %s.rec.root -e 2000 -tr 0.5 ", nid.Data(), nid.Data());
-      pdf = Form("-r 4 -i %s.root -o %s.rec.root -e 2000 -tr 0.5 ", nid.Data(), nid.Data());
+      rec = Form("-r 2 -i %s.root -o %s.rec.root -e 1500 -tr 0.5 ", nid.Data(), nid.Data());
+      pdf = Form("-r 4 -i %s.root -o %s.rec.root -e 1500 -tr 0.5 ", nid.Data(), nid.Data());
 
       rlist += nid + ".rec.root ";
 

@@ -40,12 +40,11 @@ void proc_offset(TString in = "", int corrected = 0) {
     for (auto hit : ts.event()->getHits()) {
       if (hit.getChannel() < ts.maxdircch()) {
         double time = hit.getLeadTime();
-	time += gRandom->Gaus(0, 0.4);
+	time += gRandom->Gaus(0, 0.45);
         hLeS->Fill(time);
       }
     }
   }
-
   
   t.add_canvas("offset", 800, 400);
 

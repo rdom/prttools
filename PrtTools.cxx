@@ -110,8 +110,11 @@ TString PrtTools::get_lutpath(){
   return _dbpath + Form("%d/%sS.lut.cs_avr.root",_run->getStudy(),_run->getName().Data());
 }
 
-TString PrtTools::get_outpath(){
-  return _dbpath + Form("%d/%sC.rec.root",_run->getStudy(),_run->getName().Data());
+TString PrtTools::get_outpath() {
+  if (_run->getMc())
+    return _dbpath + Form("%d/%sS.rec.root", _run->getStudy(), _run->getName().Data());
+  else
+    return _dbpath + Form("%d/%sC.rec.root", _run->getStudy(), _run->getName().Data());
 }
 
 void PrtTools::fill_digi(int pmt, int pix){  
