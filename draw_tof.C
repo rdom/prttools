@@ -71,10 +71,16 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
   if (study < 400) {
     tof1ch = 1392;
     tof2ch = 1398;
-    le1 = 30;
-    le2 = 34;
-    l1 = 30;
-    l2 = 34;
+    // le1 = 30;
+    // le2 = 34;    
+    // l1 = 30;
+    // l2 = 34;
+
+    le1 = 70;
+    le2 = 74;    
+    l1 = 70;
+    l2 = 74;
+
   }
 
   c1y = fr11[m];
@@ -303,5 +309,7 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
   leg->Draw();
 
   gStyle->SetOptTitle(0);
-  t.save_canvas("data/draw_tof",0);
+  TString datapath = t.get_dbpath()+Form("%d/%da/%d",t.run()->getStudy(),t.run()->getStudy(),t.run()->getId());
+  // datapath = "data/draw_tof";
+  t.save_canvas(datapath,0);
 }

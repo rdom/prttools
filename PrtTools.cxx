@@ -65,7 +65,6 @@ void PrtTools::init(int study) {
 
 bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
 
-  
   if (in == "" || gSystem->AccessPathName(in)) {
     std::cout << "file not found " << in << std::endl;
     return false;
@@ -77,7 +76,9 @@ bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
   _maxdircch = _npmt * _npix;
   _pmtlayout = _run->getPmtLayout();
   _info += _run->getInfo();
-
+  
+  if (_run->getStudy() < 400)  _dbpath = "~/data/aug17/";
+   
   if (savepath != "") _savepath = savepath;
   TGaxis::SetMaxDigits(4);
   set_palette(1);
@@ -1286,6 +1287,7 @@ TString PrtTools::create_dir(TString inpath) {
     finalpath = dir + "/" + path;
     _savepath = finalpath;
   } else {
+    gSystem->ExpandPathName(_savepath);
     gSystem->mkdir(_savepath, kTRUE);
   }
 

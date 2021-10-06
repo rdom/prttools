@@ -88,7 +88,8 @@ class PrtTools {
   TString get_inpath();
   TString get_outpath();
   TString get_lutpath();
-  TString get_pdfpath();  
+  TString get_pdfpath();
+  TString get_dbpath() { return _dbpath; }
   int get_channel(int tdc, int tdcch);
   int get_tdcid(int ch);
   TString rand_str(int len = 10);
