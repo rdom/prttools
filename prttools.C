@@ -66,8 +66,8 @@ DataInfo prt_data_info;
 const int prt_nmcp = 4 * 7;
 const int prt_npix = 16 * 16;
 #else
-const int prt_nmcp = 24;// 12;      // 12;
-const int prt_npix = 16 * 16; // 64
+const int prt_nmcp = 12;
+const int prt_npix = 64; // 16 * 16; // 64
 #endif
 
 // const int prt_ntdc=16;
@@ -117,7 +117,7 @@ const int prt_maxnametdc=10000;
 
 TRandom  prt_rand;
 TChain*  prt_ch = 0;
-int    prt_entries(0),prt_particle(0),prt_geometry(2023),prt_beamx(0),prt_beamz(0);
+int    prt_entries(0),prt_particle(0),prt_geometry(2017),prt_beamx(0),prt_beamz(0);
 int    prt_last_layoutId,prt_last_max,prt_last_maxz,prt_last_minz;
 double prt_theta(0), prt_test1(0),prt_test2(0),prt_mom(0),prt_phi(0);
 TString  prt_savepath(""),prt_info("");
@@ -452,7 +452,7 @@ TCanvas *prt_drawDigi(int layoutId = 0, double maxz = 0, double minz = 0, TCanva
   if(layoutId ==2030) {nrow=4; ncol=6;}
   if(layoutId ==2032) {nrow=4; ncol=7;}
   if(layoutId ==2031) {nrow=3; ncol=4;}
-  
+
   if(layoutId > 1){
     float tbw(0.02), tbh(0.01), shift(0),shiftw(0.02),shifth(0),margin(0.01);
     int padi(0);
@@ -527,10 +527,10 @@ TCanvas *prt_drawDigi(int layoutId = 0, double maxz = 0, double minz = 0, TCanva
       }
     }
   }
-
+  
   int np;
   double max=0;
-
+  
   {
     double tmax;
     if(maxz==0){
@@ -579,6 +579,7 @@ TCanvas *prt_drawDigi(int layoutId = 0, double maxz = 0, double minz = 0, TCanva
 
   prt_last_max = max;
   int nnmax(0);
+  
   for(int p=0; p<nrow*ncol;p++){
     if(layoutId == 1 || layoutId == 4)  np =p%nrow*ncol + p/3;
     else np = p;
@@ -892,7 +893,7 @@ bool prt_init(TString inFile="../build/hits.root", int bdigi=0, TString savepath
 
 void prt_nextEvent(int ievent, int printstep){
   prt_ch->GetEntry(ievent);
-  if(ievent%printstep==0 && ievent!=0) std::cout<<"Event # "<<ievent<< " # hits "<<prt_event->GetHitSize()<<std::endl;
+  if(ievent%printstep==0 && ievent!=0) std::cout<<"Event # "<<ievent<< " # hits X"<<std::endl;
   if(ievent == 0){
     if(gROOT->GetApplication()){
       TIter next(gROOT->GetApplication()->InputFiles());
@@ -902,20 +903,20 @@ void prt_nextEvent(int ievent, int printstep){
       }
       prt_info += "\n";
     }
-    prt_info += prt_event->PrintInfo();
-    prt_mom = prt_event->GetMomentum().Mag() +0.01;
-    prt_theta = prt_event->GetAngle();
-    prt_phi = prt_event->GetPhi();
-    prt_geometry= prt_event->GetGeometry();
-    prt_beamx= prt_event->GetBeamX();
-    prt_beamz= prt_event->GetBeamZ();    
-    prt_test1 = prt_event->GetTest1();
-    prt_test2 = prt_event->GetTest2();
+    // prt_info += prt_event->PrintInfo();
+    // prt_mom = prt_event->GetMomentum().Mag() +0.01;
+    // prt_theta = prt_event->GetAngle();
+    // prt_phi = prt_event->GetPhi();
+    // prt_geometry= prt_event->GetGeometry();
+    // prt_beamx= prt_event->GetBeamX();
+    // prt_beamz= prt_event->GetBeamZ();    
+    // prt_test1 = prt_event->GetTest1();
+    // prt_test2 = prt_event->GetTest2();
   }
-  prt_particle =  prt_event->GetParticle();
-  if(prt_event->GetParticle()<3000 && prt_event->GetParticle()>0){
-    prt_pid=prt_particleArray[prt_event->GetParticle()];
-  }
+  // prt_particle =  prt_event->GetParticle();
+  // if(prt_event->GetParticle()<3000 && prt_event->GetParticle()>0){
+  //   prt_pid=prt_particleArray[prt_event->GetParticle()];
+  // }
 }
 #endif
 
@@ -940,13 +941,6 @@ bool prt_init(TString inFile="../build/hits.root", int bdigi=0, TString savepath
   // prt_ch->SetBranchStatus("fHitArray.fMomentum", 0);
   // prt_ch->SetBranchStatus("fHitArray.fPosition", 0);
   
-  prt_ch->SetBranchStatus("fHitArray.fParentParticleId", 0);
-  prt_ch->SetBranchStatus("fHitArray.fNreflectionsInPrizm", 0);
-  prt_ch->SetBranchStatus("fHitArray.fPathInPrizm", 0);
-  prt_ch->SetBranchStatus("fHitArray.fCherenkovMC", 0);
-
-  prt_ch->SetBranchStatus("fPosition", 0);
-
   prt_entries = prt_ch->GetEntries();
   std::cout<<"Entries in chain: "<<prt_entries <<std::endl;
   if(bdigi) prt_initDigi(bdigi);
@@ -955,31 +949,31 @@ bool prt_init(TString inFile="../build/hits.root", int bdigi=0, TString savepath
 
 void prt_nextEvent(int ievent, int printstep){
   prt_ch->GetEntry(ievent);
-  if(ievent%printstep==0 && ievent!=0) cout<<"Event # "<<ievent<< " # hits "<<prt_event->GetHitSize()<<endl;
-  if(ievent == 0){
-    if(gROOT->GetApplication()){
-      prt_info += "beam test";
-      TIter next(gROOT->GetApplication()->InputFiles());
-      TObjString *os=0;
-      while((os = (TObjString*)next())){
-	prt_info += os->GetString()+" ";
-      }
-      prt_info += "\n";
-    }
-    prt_info += prt_event->PrintInfo();
-    prt_mom = prt_event->GetMomentum().Mag() +0.01;
-    prt_theta = prt_event->GetAngle();
-    prt_phi = prt_event->GetPhi();
-    prt_geometry= prt_event->GetGeometry();
-    prt_beamx= prt_event->GetBeamX();
-    prt_beamz= prt_event->GetBeamZ();
-    prt_test1 = prt_event->GetTest1();
-    prt_test2 = prt_event->GetTest2();
-  }
-  prt_particle =  prt_event->GetParticle();
-  if(prt_event->GetParticle()<3000 && prt_event->GetParticle()>0){
-    prt_pid=prt_particleArray[prt_event->GetParticle()];
-  }
+  // if(ievent%printstep==0 && ievent!=0) cout<<"Event # "<<ievent<< " # hits "<<prt_event->GetHitSize()<<endl;
+  // if(ievent == 0){
+  //   if(gROOT->GetApplication()){
+  //     prt_info += "beam test";
+  //     TIter next(gROOT->GetApplication()->InputFiles());
+  //     TObjString *os=0;
+  //     while((os = (TObjString*)next())){
+  // 	prt_info += os->GetString()+" ";
+  //     }
+  //     prt_info += "\n";
+  //   }
+  //   prt_info += prt_event->PrintInfo();
+  //   prt_mom = prt_event->GetMomentum().Mag() +0.01;
+  //   prt_theta = prt_event->GetAngle();
+  //   prt_phi = prt_event->GetPhi();
+  //   prt_geometry= prt_event->GetGeometry();
+  //   prt_beamx= prt_event->GetBeamX();
+  //   prt_beamz= prt_event->GetBeamZ();
+  //   prt_test1 = prt_event->GetTest1();
+  //   prt_test2 = prt_event->GetTest2();
+  // }
+  // prt_particle =  prt_event->GetParticle();
+  // if(prt_event->GetParticle()<3000 && prt_event->GetParticle()>0){
+  //   prt_pid=prt_particleArray[prt_event->GetParticle()];
+  // }
 }
 #endif
 

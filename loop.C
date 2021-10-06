@@ -21,8 +21,9 @@ void loop(int study = 409, int level = 0, int mc = 2, int fid = -1) {
   int nfiles = 0;
   int eventsj = events / threads;
 
-  TString path = Form("$HOME/data/jul18/%d/", study);
+  TString path = Form("$HOME/data/aug17/%d/", study);
   TString exe = "../prtdirc/build/prtdirc ";
+  
   TString smc[2] = {"C", "S"};
   TString lut, sim, simj, rec, pdf;
 

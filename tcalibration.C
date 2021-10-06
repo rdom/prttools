@@ -48,6 +48,9 @@ double tofp2[] = {0, 0, 47.50, 41.50, 39.20, 38.20, 37.60, 37.20, 37.00, 37.00, 
 int gg_nevents(0);
 
 bool TTSelector::isPion(double tof, int mom) {
+  // std::cout<<"tof1le "<<tof1le<<std::endl;
+  // std::cout<<"tof2le "<<tof2le<<std::endl;
+
   return tof1le - 5 * 0.2 < tof && tof < 0.5 * (tof1le + tof2le);
 }
 
@@ -127,10 +130,11 @@ void TTSelector::Begin(TTree *) {
     while ((key = (TKey *)nextkey())) {
       TGraph *gr = (TGraph *)key->ReadObj();
       TString name = gr->GetName();
-      
+
       double x, y;
       if (name.Contains("tof_")) {
         name.Remove(0, 4);
+
         if (ginFile.Contains(name)) {
           gr->GetPoint(0, tof1le, tof2le);
           gr->GetPoint(1, tof1tot, tof2tot);
@@ -178,6 +182,8 @@ void TTSelector::Begin(TTree *) {
           // std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
         }
       } else if (ch == 10003) { // read LE offsets 1
+	std::cout<<"t.maxdircch() "<<t.maxdircch()<<std::endl;
+	
         for (int i = 0; i < t.maxdircch(); i++) {
           gr->GetPoint(i, gLeOffArr[i], y);
         }
@@ -209,13 +215,6 @@ bool TTSelector::Process(Long64_t entry) {
   if (entry % 10000 == 0) std::cout << "event # " << entry << std::endl;
   GetEntry(entry);
 
-  // int trigT1(816);
-  // int trigT2(817);
-  // int trigT3h(818);
-  // int trigT3v(819);
-  // int trigTof1(1392);
-  // int trigTof2(1398);
-
   int trigT1(520);
   int trigT2(513);
   int trigT3h(514);
@@ -227,6 +226,16 @@ bool TTSelector::Process(Long64_t entry) {
   int trigStl1(1142);
   int trigStr2(1144);
   int trigStl2(1146);
+
+  if (gSetup == 2017) {
+    trigT1 = 816;
+    trigT2 = 817;
+    trigT3h = 818;
+    trigT3v = 819;
+    trigTof1 = 1392;
+    trigTof2 = 1398;
+    simOffset += 15;
+  }
 
   fEvent = new PrtEvent();
   if (gMode == 5) {
@@ -299,15 +308,16 @@ bool TTSelector::Process(Long64_t entry) {
     totstl2(0);
 
   if (gMode == 5) {
-    if (multT1 < 1 || multTof1 < 1 || multTof2 < 1 || multT3h < 1 ||
-        multT3v < 1) { //  || mult2!=1 || mult5!=1
-      // if(multT1<1 || multTof1<1 || multTof2<1 || multStr1<1 ||  multStl1<1|| multStr2<1 ||
-      // multStl2<1 || multT3h<1 || multT3v<1){ if(multT1<1 || multTof1<1 || multTof2<1){ //  ||
-      // mult2!=1 || mult5!=1
-      fEvent->Clear();
-      delete fEvent;
-      return kTRUE;
-    }
+    if (gSetup == 2018)
+      if (multT1 < 1 || multTof1 < 1 || multTof2 < 1 || multT3h < 1 ||
+          multT3v < 1) { //  || mult2!=1 || mult5!=1
+        // if(multT1<1 || multTof1<1 || multTof2<1 || multStr1<1 ||  multStl1<1|| multStr2<1 ||
+        // multStl2<1 || multT3h<1 || multT3v<1){ if(multT1<1 || multTof1<1 || multTof2<1){ //  ||
+        // mult2!=1 || mult5!=1
+        fEvent->Clear();
+        delete fEvent;
+        return kTRUE;
+      }
 
     for (int i = 0; i < Hits_ && i < 10000; i++) {
       if (Hits_nTdcErrCode[i] != 0) continue;
@@ -355,10 +365,9 @@ bool TTSelector::Process(Long64_t entry) {
 
       toftime = time;
       int m = (double)(mom + 0.1);
-
       if (isPion(time, m)) {
         tofpid = 2; // 211;
-          mass = 0.13957018;
+        mass = 0.13957018;
       } else if (isProton(time, m)) {
         tofpid = 4; // 2212;
         mass = 0.938272046;
@@ -523,7 +532,7 @@ void tcalibration(TString inFile = "../../data/cj.hld.root", TString outFile = "
   gMode = mode;
   gSetup = setupid;
   if (gMode == 5) gTrigger = 1136;
-
+  if (setupid == 2017) gTrigger = 1392;
   TChain *ch = new TChain("T");
   ch->Add(ginFile);
 

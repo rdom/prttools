@@ -65,8 +65,18 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
     l2 = 85;
   }
   std::cout<<"m "<<m<<std::endl;
-  
-  
+
+  int tof1ch = 1136;
+  int tof2ch = 1138;
+  if (study < 400) {
+    tof1ch = 1392;
+    tof2ch = 1398;
+    le1 = 30;
+    le2 = 34;
+    l1 = 30;
+    l2 = 34;
+  }
+
   c1y = fr11[m];
   c2y = fr21[m];
   c1x = fr12[m];
@@ -118,13 +128,13 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
         mult2++;
       }
 
-      if (hit.getChannel() == 1136 && tof1 == 0) { // tof1
+      if (hit.getChannel() == tof1ch && tof1 == 0) { // tof1
         btof1 = true;
         tof1 = hit.getLeadTime();
         tot1 = hit.getTotTime();
         mult3++;
       }
-      if (hit.getChannel() == 1138 && tof2 == 0) { // tof2
+      if (hit.getChannel() == tof2ch && tof2 == 0) { // tof2
         btof2 = true;
         tof2 = hit.getLeadTime();
         tot2 = hit.getTotTime();
@@ -165,7 +175,7 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
       }
     }
 
-    if (!(btrig && btof1 && btof2)) continue;
+    // if (!(btrig && btof1 && btof2)) continue;
     if (!(btof1 && btof2)) continue;
 
     // //    if(!(str1b && stl1b && str2b && stl2b)) continue;

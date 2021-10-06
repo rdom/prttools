@@ -54,7 +54,7 @@ while getopts "h?r:le:c:a:y:j:" opt; do
 done
 refChannel=${refChannel:-0}
 mode=${mode:-0}
-setupid=${setupid:-2019}
+setupid=${setupid:-2017}
 events=${events:-0}
 threads=${threads:-4}
 shift $((OPTIND-1))

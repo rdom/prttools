@@ -6,6 +6,7 @@
 #include "../prtdirc/src/PrtLutNode.h"
 #define prt__beam
 #include "cdisplay.h"
+
 #include "prttools.C"
 
 class PrtHit;
@@ -20,7 +21,7 @@ TCanvas *cTime;
 TCanvas *cDigi;
 
 const Int_t maxMult = 30;
-Int_t mult[prt_maxchm]={0},gComboId(0), gTrigger(0), gSetup(2019) ,gMode(0), gWorkers(4), gEntries(0); //3for2015
+Int_t mult[prt_maxchm]={0}, gComboId(0), gTrigger(0), gSetup(2019) ,gMode(0), gWorkers(4), gEntries(0); //3for2015
 Double_t gTimeCutMin(-10000),gTimeCutMax(10000),gTofMin(0),gTofMax(0);
 Double_t gMultCutMin(0),gMultCutMax(0),gTimeCuts[prt_nmcp][prt_npix][2], gTotMean[prt_nmcp][prt_npix];
 TString ginFile(""), gPath(""), gInfo(""),gsTimeCuts("0"), gsTotMean("0");
@@ -40,7 +41,7 @@ void PrintStressProgress(Long64_t total, Long64_t processed, Float_t, Long64_t){
 }
 
 void init(){
-  if(!prt_init(ginFile,1,"",gSetup)) return;
+  if(!prt_init(ginFile,0,"",gSetup)) return;
   
   TString insim =  ginFile;
   insim.ReplaceAll("C.root","S.root");
@@ -203,9 +204,7 @@ void MSelector::SlaveBegin(TTree *){
 
 Bool_t MSelector::Process(Long64_t entry){
   GetEntry(entry);
-  Int_t particleId=prt_event->GetParticle();
-  //if(prt_event->GetParticle()!=2212) return kTRUE;
-  //if(prt_event->GetParticle()!=211) return kTRUE; 
+  Int_t particleId=prt_event->getPid();
 
   Double_t timeres(0);
   TString fileid("");
@@ -223,7 +222,7 @@ Bool_t MSelector::Process(Long64_t entry){
 	  TString soffset = ((TObjString *) sarr->At(1))->GetName();
 	  offset = soffset.Atof()/600.;
 	}
-      }else offset = prt_event->GetTest1();
+      }//else offset = prt_event->GetTest1();
     }
     if(gMode==100 || gMode==101){
       fileid = current_file_name;
@@ -235,38 +234,34 @@ Bool_t MSelector::Process(Long64_t entry){
   }
  
   Double_t le,tot, triggerLe(0),toftime(0), tof(0), tof1(0),tof2(0);
-  PrtHit hit;
   Int_t mcp,pix,col,row,ch,chMultiplicity(0);
   Int_t thitCount1(0), thitCount2(0), hitCount1(0), hitCount2(0);
   memset(mult, 0, sizeof(mult));
 
-  Int_t nhits = prt_event->GetHitSize();
+  Int_t nhits = prt_event->getHits().size();
   if(gTrigger>-1){
-    for(Int_t h=0; h<nhits; h++){
-      hit = prt_event->GetHit(h);
-      toftime = prt_event->GetTest1();
-      ch  = hit.GetChannel();
+    for( auto hit : prt_event->getHits()){
+      // toftime = prt_event->GetTest1();
+      ch  = hit.getChannel();
       mult[ch]++;
 
-      if(hit.GetMcpId()>14) thitCount1++;
+      if(hit.getPmt()>14) thitCount1++;
       else  thitCount2++;
       
-      if(ch == gTrigger && gTrigger>0) triggerLe = hit.GetLeadTime();
-      if(ch==1136 && tof1==0) tof1 = hit.GetLeadTime();
-      if(ch==1138 && tof2==0) tof2 = hit.GetLeadTime();
+      if(ch == gTrigger && gTrigger>0) triggerLe = hit.getLeadTime();
+      if(ch==1136 && tof1==0) tof1 = hit.getLeadTime();
+      if(ch==1138 && tof2==0) tof2 = hit.getLeadTime();
     }
   }
   if(tof1!=0 && tof2!=0) {    
     tof = tof2-tof1;
     if(gTofMin==gTofMax || (tof>gTofMin && tof<gTofMax)) hTof->Fill(tof);
   }
+  for( auto hit : prt_event->getHits()){
+    ch  = hit.getChannel();
+    mcp = hit.getPmt();
+    // if (ch == -1) ch = map_mpc[mcp][hit.getPixel()];
 
-  for(Int_t h=0; h<nhits; h++){
-    hit = prt_event->GetHit(h);
-    ch  = hit.GetChannel();
-    mcp = hit.GetMcpId();
-    if(ch==-1) ch = map_mpc[mcp][ hit.GetPixelId()-1];
-    
     if(!bsim){
       hCh->Fill(ch);
       chMultiplicity = mult[ch];
@@ -281,13 +276,13 @@ Bool_t MSelector::Process(Long64_t entry){
     if(gMultCutMin!=gMultCutMax && (thitCount2<gMultCutMin || thitCount2>gMultCutMax)) continue;
     if(gTofMin != gTofMax && (tof<gTofMin || tof>gTofMax)) continue; 
 
-    pix = hit.GetPixelId()-1;
+    pix = hit.getPixel();
     row = pix/8;
     col = pix%8;
     
-    le = hit.GetLeadTime();
+    le = hit.getLeadTime();
     if(timeres>0) le += prt_rand.Gaus(0,timeres);
-    tot = hit.GetTotTime();   
+    tot = hit.getTotTime();   
 
     if(prt_isBadChannel(ch)) continue;
 

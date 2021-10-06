@@ -82,9 +82,11 @@ void TTSelector::SlaveBegin(TTree *){
     if(!gTrigger) gTrigger=820;
     if(prt_geometry==2018) gTrigger=520;
     leb=2000; le1=-40; le2=0;
-    leb = 2000; le1=55; le2=85;
+    // leb = 2000; le1=50; le2=85;
+    leb = 2000; le1=45; le2=75;
     // leb = 2000; le1=75; le2=100;    
     totb=240; totl=0; toth=12;
+    // totl=60; toth=80;
     if(prt_geometry==2023){
       gTrigger=648;
       leb=2000; le1=-60; le2=0;
@@ -595,7 +597,7 @@ void Calibrate(){
   gTotPeaks = new TGraph();
 
   if(gMode==5) for(Int_t i=0; i<prt_nmcp; i++) prt_hdigi[i]->Reset();	
-  
+
   for(Int_t j=0; j<nfiles; j++){
     for(Int_t c=0; c<prt_maxch; c++){
       TString title = Form("%s  %d", hFine[j][c]->GetTitle(), (Int_t)hFine[j][c]->GetEntries());
@@ -603,7 +605,7 @@ void Calibrate(){
       if(gMode==4 && j==0) title = Form("All beam  %d", (Int_t)hFine[j][c]->GetEntries());
       if(gMode==4 && j==1) title = Form("All pilas  %d", (Int_t)hFine[j][c]->GetEntries());
       hFine[j][c]->SetLineColor(prt_getColorId(j));
-
+      
       gGr[j][c] = getGarph(hFine[j][c]);
       gGr[j][c]->SetName(Form("gCalib_%d_ch%d",j,c));
       gGr[j][c]->SetTitle(title);
@@ -634,7 +636,7 @@ void Calibrate(){
   }
 
   for(Int_t c=0; c<prt_maxdircch; c++){
-    if(hTot[0][c]->Integral()>100){
+    if(hTot[0][c]->Integral()>100){      
       Int_t nfound = spect->Search(hTot[0][c],3,"",0.1);
       std::cout<<"nfound  "<<nfound <<std::endl;
       Double_t peak(0);

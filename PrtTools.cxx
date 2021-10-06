@@ -4,8 +4,12 @@ PrtTools::PrtTools() {
   init();
 }
 
+PrtTools::PrtTools(int study) {
+  init(study);
+}
+
 PrtTools::PrtTools(PrtRun *run) {
-  init();
+  init(run->getStudy());
   _npmt = run->getNpmt();
   _npix = run->getNpix();
   _maxdircch = _npmt * _npix;
@@ -20,18 +24,28 @@ PrtTools::PrtTools(TString in) {
 }
 
 
-void PrtTools::init() {
+void PrtTools::init(int study) {
+
+  _pmtlayout = 2018;
   _maxch = 5000;
   _npix = 64;
   _npmt = 8;
+  _dbpath = "~/data/jul18/";
+
+  if (study < 400){
+    _pmtlayout = 2017;
+    _dbpath = "~/data/aug17/";
+    _npmt = 12;
+  }
+  
   _maxdircch = _npmt * _npix;
-  _pmtlayout = 2018;
+
   
   _canvaslist = new TList();
-  _event = new PrtEvent();
+   _event = new PrtEvent();
   _spectrum = new TSpectrum(2);
   _info = "";
-
+ 
   if (gROOT->GetApplication()) {
     TIter next(gROOT->GetApplication()->InputFiles());
     TObjString *os = 0;
@@ -46,7 +60,6 @@ void PrtTools::init() {
   } else {
     read_db("../../prttools/data_db.dat");
   }
-  _dbpath = "~/data/jul18/";
   gSystem->ExpandPathName(_dbpath);
 }
 
@@ -110,6 +123,10 @@ TString PrtTools::get_lutpath(){
   return _dbpath + Form("%d/%sS.lut.cs_avr.root",_run->getStudy(),_run->getName().Data());
 }
 
+TString PrtTools::get_pdfpath(){
+  return _dbpath + Form("%d/%sS.pdf1.root",_run->getStudy(),_run->getName().Data());
+}
+
 TString PrtTools::get_outpath() {
   if (_run->getMc())
     return _dbpath + Form("%d/%sS.rec.root", _run->getStudy(), _run->getName().Data());
@@ -133,6 +150,7 @@ void PrtTools::fill_digi(int pmt, int pix){
 // _pmtlayout == 2030 - EIC DIRC beam test
 // _pmtlayout == 2031 - EIC DIRC prism
 // _pmtlayout == 2032 - EIC DIRC focusing prism
+// _pmtlayout == 3000 - GlueX 
 TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
   
   _last_maxz = maxz;
@@ -163,6 +181,8 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
     toppad = new TPad(sid, "T", 0.04, 0.025, 0.91, 0.975);
   else if (_pmtlayout == 2030)
     toppad = new TPad(sid, "T", 0.12, 0.01, 0.80, 0.99);
+  else if (_pmtlayout == 3000)
+    toppad = new TPad(sid, "T", 0.005, 0.07, 0.95, 0.93);
   else
     toppad = new TPad(sid, "T", 0.04, 0.04, 0.96, 0.96);
 
@@ -189,6 +209,10 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
   if (_pmtlayout == 2031) {
     nrow = 4;
     ncol = 6;
+  }
+  if (_pmtlayout == 3000) {
+    nrow = 6;
+    ncol = 18;
   }
 
   if (_pmtlayout > 1) {
@@ -268,14 +292,37 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
           tbh = 0.001;
           padi = i * nrow + j;
         }
+        if (_pmtlayout == 3000) {
+          margin = 0.1;
+          shift = 0;
+          shiftw = 0.01;
+          tbw = 0.001;
+          tbh = 0.005;
+          padi = i * nrow + j;
+        }
 
         pads[padi] = new TPad(
-          sid + Form("P%d", i * 10 + j), "T", i / (ncol + 2 * margin) + tbw + shift + shiftw,
+          sid + Form("P%d", padi), "T", i / (ncol + 2 * margin) + tbw + shift + shiftw,
           j / (double)nrow + tbh + shifth, (i + 1) / (ncol + 2 * margin) - tbw + shift + shiftw,
           (1 + j) / (double)nrow - tbh + shifth, 21);
-        pads[padi]->SetFillColor(kCyan - 8);
+	
+        // glx_hpads[padi] = new TPad(
+        //   Form("P%d", padi), "T", i / (Double_t)ncol + bw, 1 - ((j + 1) / (Double_t)nrow - bh),
+        //   (i + 1) / (Double_t)ncol - bw, 1 - (j / (Double_t)nrow + bh), 21);
+
+        auto b =
+          new TBox(i / (ncol + 2 * margin) + tbw + shift + shiftw, j / (double)nrow + tbh + shifth,
+                   (i + 1) / (ncol + 2 * margin) - tbw + shift + shiftw,
+                   (1 + j) / (double)nrow - tbh + shifth);
+	b->SetLineColor(kGray+1);
+	b->SetLineWidth(2);
+	b->SetFillStyle(0);
+        b->Draw("l");
+
+        pads[padi]->SetFillColor(kCyan - 10);
         pads[padi]->SetMargin(0.055, 0.055, 0.055, 0.055);
         pads[padi]->Draw();
+
         padi++;
       }
     }
@@ -385,7 +432,7 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
 }
 
 TString PrtTools::pix_digi(TString s) {
-  int nrow = 3, ncol = 5, np, nmax = 0, npix = 8;
+  int nrow = 3, ncol = 5, np, npix = 8;
   if (_pmtlayout == 2016) ncol = 3;
   if (_pmtlayout == 2017) ncol = 4;
   if (_pmtlayout == 2018 || _pmtlayout == 2023) {
@@ -425,7 +472,7 @@ TString PrtTools::pix_digi(TString s) {
     _hdigi[p]->SetMinimum(_last_minz);
     for (int i = 1; i <= npix; i++) {
       for (int j = 1; j <= npix; j++) {
-        double weight = (double)(_hdigi[p]->GetBinContent(i, j)) / (double)_last_max * 255;
+        double weight = (double)(_hdigi[p]->GetBinContent(j, i)) / (double)_last_max * 255;
         if (weight > 255) weight = 255;
         if (weight > 0) s += Form("%d,%d,%d\n", np, (i - 1) * npix + j - 1, (int)weight);
       }
@@ -472,11 +519,11 @@ bool PrtTools::read_db(TString in) {
   std::cout << "=== Parsing DB: " << in << std::endl;
 
   std::ifstream ins(in);
-  double dx = 0, vx = 0, dy = 0, vy = 0;
+  // double dx = 0, vx = 0, dy = 0, vy = 0;
   TString info, name;
   std::string line, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15;
   int study = 0, fileid = 0, radiatorid = 0, lensid = 0, geometry = 0, pmtlayout = 0;
-  double theta = 0, phi = 0, z = 0, x = 0, sx = 0, sy = 0, mom = 0, beamsize = 0, simo = 0;
+  double theta = 0, phi = 0, z = 0, x = 0, sx = 0, sy = 0, mom = 0, beamsize = 0;
 
   while (std::getline(ins, line)) {
     std::istringstream iss(line);

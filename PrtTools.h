@@ -58,10 +58,11 @@ class PrtTools {
 
  public:
   PrtTools();
+  PrtTools(int study);
   PrtTools(TString in);
   PrtTools(PrtRun *run);
   ~PrtTools() {}
-  void init();
+  void init(int study = 400);
 
   bool init_run(TString in = "", int bdigi = 0, TString savepath = "", int setupid = 2019);
   void init_digi();
@@ -82,10 +83,12 @@ class PrtTools {
   void fill_digi(int pmt, int pix);
   
   void set_palette(int p = 1);
+  void set_pmtlayout(int v) { _pmtlayout = v; }
   void create_maps(int setupid = 2019);
   TString get_inpath();
   TString get_outpath();
-  TString get_lutpath();  
+  TString get_lutpath();
+  TString get_pdfpath();  
   int get_channel(int tdc, int tdcch);
   int get_tdcid(int ch);
   TString rand_str(int len = 10);
@@ -131,6 +134,7 @@ class PrtTools {
   // accessors
   PrtEvent *event() const { return _event; }
   PrtRun *run() { return _run; }
+  TChain *chain() { return _chain; }
   int pdg(int v) { return _pdg[v]; }
   int pid() { return _pid; }
   int i( ) { return _iter; }

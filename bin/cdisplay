@@ -98,6 +98,6 @@ else
     if [ $quite ]; then
 	flags="-l -q"
     fi
-    root  $flags loadprtlibs.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\", $events, $threads, $setupid)"
+    root  $flags loadlib.C cdisplay.C+"(\"$inFile\",$refChannel,$mode,\"$path\",\"$info\", $events, $threads, $setupid)"
     cd -
 fi
