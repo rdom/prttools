@@ -39,7 +39,6 @@ void PrtTools::init(int study) {
   }
   
   _maxdircch = _npmt * _npix;
-
   
   _canvaslist = new TList();
    _event = new PrtEvent();
@@ -80,7 +79,7 @@ bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
   if (_run->getStudy() < 400)  _dbpath = "~/data/aug17/";
    
   if (savepath != "") _savepath = savepath;
-  TGaxis::SetMaxDigits(4);
+  TGaxis::SetMaxDigits(3);
   set_palette(1);
   create_maps(setupid);
 
@@ -95,8 +94,7 @@ bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
 }
 
 void PrtTools::init_digi() {
-  int nrow = sqrt(_npix);
-
+  int nrow = sqrt(_npix); 
   for (int m = 0; m < _npmt; m++) {
     if (_hdigi[m]) {
       _hdigi[m]->Reset("M");
@@ -164,7 +162,7 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
 
   TPad *pads[28];// _nmaxpmt
   TPad *toppad;
-  
+
   if (_pmtlayout == 2015 || _pmtlayout == 5) toppad = new TPad(sid, "T", 0.04, 0.04, 0.88, 0.96);
   else if (_pmtlayout == 2021)
     toppad = new TPad(sid, "T", 0.12, 0.02, 0.78, 0.98);
@@ -395,7 +393,7 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
       }
     }
   }
-
+ 
   _last_max = max;
   int nnmax(0);
   for (int p = 0; p < nrow * ncol; p++) {
@@ -413,7 +411,7 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
     _hdigi[np]->SetMaximum(max);
     _hdigi[np]->SetMinimum(minz);
   }
-
+ 
   cdigi->cd();
   TPaletteAxis *palette;
   if (_pmtlayout == 2018 || _pmtlayout == 2023)
@@ -577,9 +575,12 @@ bool PrtTools::read_db(TString in) {
         r->setMomentum(mom);
         r->setBeamSize(beamsize);
 	
+	if(pmtlayout == 2017) r->setNpmt(12);
+	if(pmtlayout == 2018) r->setNpmt(8);
+	
         _runs.push_back(r);
       } else {
-        // std::cout<<"Error parsing data_db: "<<line<<std::endl;
+        //  std::cout<<"Error parsing data_db: "<<line<<std::endl;
       }
     }
   }
@@ -687,6 +688,9 @@ PrtRun *PrtTools::find_run(TString path) {
       r = run;
       break;
     }
+  }
+  if(r->getPmtLayout() == 2017) {
+    _maxdircch = 12 * 64;
   }
   if (r->getStudy() == 0) {
     std::cout << "Run not found " << path << std::endl;

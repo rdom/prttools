@@ -1,7 +1,7 @@
 #include "PrtTools.h"
 
-void wait(int n) {
-  TString c = "ps aux | grep \"[r]oot.exe\\|[p]rtdirc\" | wc -l";
+void wait(int n, int id) {
+  TString c = Form("ps aux | grep \"[r]oot.exe\\|[p]rtdirc\" | grep %d | wc -l", id);
   while (true) {
     int active = atoi(gSystem->GetFromPipe(c)) - 1;
     if (active <= n) break;
@@ -21,9 +21,10 @@ void loop(int study = 409, int level = 0, int mc = 2, int fid = -1) {
   int nfiles = 0;
   int eventsj = events / threads;
 
-  TString path = Form("$HOME/data/aug17/%d/", study);
+  TString path = Form("$HOME/data/jul18/%d/", study);
+  if (study < 400) path = Form("$HOME/data/aug17/%d/", study);
   TString exe = "../prtdirc/build/prtdirc ";
-  
+
   TString smc[2] = {"C", "S"};
   TString lut, sim, simj, rec, pdf;
 
@@ -56,7 +57,7 @@ void loop(int study = 409, int level = 0, int mc = 2, int fid = -1) {
           if (level == 0) gSystem->Exec(exe + simj + end + "&");
         }
 
-        wait(0);
+        wait(0,study);
         gSystem->Exec(Form("hadd -f %s.root %sJ*.root ", nid.Data(), nid.Data()));
         gSystem->Exec(Form("rm %sJ*.root ", nid.Data()));
       }
@@ -65,7 +66,7 @@ void loop(int study = 409, int level = 0, int mc = 2, int fid = -1) {
       if (level == 4) gSystem->Exec(exe + pdf + end + "&");
     }
 
-    wait(0);
+    wait(0,study);
 
     if (level == 2) {
       gSystem->Exec(Form("hadd -f %srec_%d%s.root ", path.Data(), study, smc[imc].Data()) + rlist);

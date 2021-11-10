@@ -121,7 +121,7 @@ void TTSelector::Begin(TTree *) {
   fRunTree = new TTree("header", "run info");
   fRunTree->Branch("PrtRun", "PrtRun", &run, 64000, 2);
   fRunTree->Fill();
-			   
+  
   if (gcFile != "0") {
     TFile f(gcFile);
     TIter nextkey(f.GetListOfKeys());

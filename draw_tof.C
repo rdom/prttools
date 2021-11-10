@@ -71,15 +71,15 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
   if (study < 400) {
     tof1ch = 1392;
     tof2ch = 1398;
-    // le1 = 30;
-    // le2 = 34;    
-    // l1 = 30;
-    // l2 = 34;
+    le1 = 30;
+    le2 = 34;    
 
-    le1 = 70;
-    le2 = 74;    
-    l1 = 70;
-    l2 = 74;
+    // // 310
+    // le1 = 70;
+    // le2 = 74;    
+
+    l1 = le1;
+    l2 = le2;
 
   }
 
