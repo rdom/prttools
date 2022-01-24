@@ -1354,11 +1354,11 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h) : TGMainFrame(p,
     fEdit2->SetText("200 5 15");
   }
   
-  if(prt_geometry==2018){
+  if(prt_geometry==2018 ||  prt_geometry==2017){
     if(ginFile.Contains("pilas")) fEdit1->SetText("200 28 33");
     fEdit2->SetText("100 0 8");
   }
-  
+
   fEdit3->SetText("0 0");
   fEdit4->SetText("0 0");
   fEdit5->SetText("0 0");

@@ -74,9 +74,9 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
     le1 = 30;
     le2 = 34;    
 
-    // // 310
-    // le1 = 70;
-    // le2 = 74;    
+    // 310
+    le1 = 70;
+    le2 = 74;    
 
     l1 = le1;
     l2 = le2;

@@ -98,6 +98,8 @@ void TTSelector::Begin(TTree *) {
 
   t.read_db("data_db.dat");
   run = t.find_run(ginFile);
+  std::cout << "gSetup " << gSetup << std::endl;
+  
   t.create_maps(gSetup);
 
   int study = run->getStudy();
@@ -249,8 +251,15 @@ bool TTSelector::Process(Long64_t entry) {
       // if(fEvent->GetLens()==6) lenw = 12;
       // if(fEvent->GetLens()==3) lenw = 15;
       // if(fEvent->GetLens()==2) lenw = 14.4;
-      double rad = TMath::Pi() / 180.0, zrot = 155, xrot = 98, prtangle = run->getTheta(),
-             z = run->getBeamZ(), b = xrot * tan(0.5 * (prtangle - 90) * rad),
+      double zrot = 155, xrot = 98;
+
+      if (study < 400) {
+	zrot = 146;
+	xrot = 97.8;
+      }
+
+      double rad = TMath::Pi() / 180.0, prtangle = run->getTheta(), z = run->getBeamZ(),
+             b = xrot * tan(0.5 * (prtangle - 90) * rad),
              lenz = (z - zrot + b) / cos((prtangle - 90) * rad) + b + zrot;
 
       fEvent->setPosition(TVector3(0, 0, lenz));
@@ -258,7 +267,7 @@ bool TTSelector::Process(Long64_t entry) {
   }
 
   int tdc_trig = t.get_tdcid(gTrigger);
- 
+
   for (int i = 0; i < Hits_ && i < 10000; i++) {
     
     tdc = t.map_tdc[Hits_nTrbAddress[i]];
@@ -531,8 +540,9 @@ void tcalibration(TString inFile = "../../data/cj.hld.root", TString outFile = "
   gTrigger = trigger;
   gMode = mode;
   gSetup = setupid;
+  
   if (gMode == 5) gTrigger = 1136;
-  if (setupid == 2017) gTrigger = 1392;
+  if (setupid == 2017 && gTrigger != 820) gTrigger = 1392;
   TChain *ch = new TChain("T");
   ch->Add(ginFile);
 

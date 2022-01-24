@@ -689,12 +689,16 @@ PrtRun *PrtTools::find_run(TString path) {
       break;
     }
   }
-  if(r->getPmtLayout() == 2017) {
-    _maxdircch = 12 * 64;
-  }
+
   if (r->getStudy() == 0) {
     std::cout << "Run not found " << path << std::endl;
-  }  
+    if(path.Contains("aug17")) r->setPmtLayout(2017);
+  }
+  
+  if (r->getPmtLayout() == 2017) {
+    _npmt = 12;
+    _maxdircch = 12 * 64;
+  }
   _run = r;
   return r;
 }
