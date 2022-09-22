@@ -31,7 +31,8 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
 		    "#Delta#varphi [rad]",
 		    "y step [mm]", 
 		    "x step [mm]",
-		    "z [mm]"};
+		    "z [mm]",
+		    "laser photons [#]"};
 
   TChain ch("reco");
   ch.Add(in);
@@ -42,10 +43,11 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   ch.SetBranchAddress("time_res", &xx[3]);
   if (ix == 4 || ix == 6) ch.SetBranchAddress("test1", &xx[ix]);
   if (ix == 5 || ix == 7) ch.SetBranchAddress("test2", &xx[ix]);
+  if (ix == 9) ch.SetBranchAddress("test3", &xx[ix]);
   ch.SetBranchAddress("beamz", &xx[8]);
 
-  ch.SetBranchAddress("nph_pi", &var[0]);
-  ch.SetBranchAddress("nph_pi_err", &evar[0]);
+  ch.SetBranchAddress("nph_pi_ti", &var[0]);
+  ch.SetBranchAddress("nph_pi_ti_err", &evar[0]);
   ch.SetBranchAddress("sep_gr", &var[1]);
   ch.SetBranchAddress("sep_gr_err", &evar[1]);
   ch.SetBranchAddress("sep_ti", &var[2]);
@@ -72,7 +74,8 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
     // if(xx[0]<26 && sim) var[4] = 7.755733;
     // if(xx[0]<21) var[4] = 7.292785;
     // if(xx[0]<21 && sim) var[4] = 7.344798;
-
+    if(in.Contains("460C")) xx[ix] = 50;
+      
     evar[1] = sqrt(evar[1] * evar[1] + 0.2 * 0.2);
     evar[2] = sqrt(evar[2] * evar[2] + 0.2 * 0.2);
     evar[4] = gRandom->Uniform(0.6, 0.8);
@@ -97,8 +100,9 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   if (ix == 6) gg->GetXaxis()->SetLimits(59.5, 73.5);
   if (ix == 7) gg->GetXaxis()->SetLimits(11, 24.5);
   if (ix == 8) gg->GetXaxis()->SetLimits(150, 950);
+  if (ix == 9) gg->GetXaxis()->SetLimits(-100, 2100);
 
-  if (iy == 0) gg->GetYaxis()->SetRangeUser(0, 90);                                     // 75 or 160
+  if (iy == 0) gg->GetYaxis()->SetRangeUser(0, 110);                                     // 75 or 160
   if (iy == 1 || iy == 2) gg->GetYaxis()->SetRangeUser(0, 6.0);                         // 5.5
   if (in.Contains("415") && (iy == 1 || iy == 2)) gg->GetYaxis()->SetRangeUser(0, 5.5); // 5.5
   if (iy == 3) gg->GetYaxis()->SetRangeUser(0.822, 0.828);

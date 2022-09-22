@@ -80,7 +80,7 @@ class PrtTools {
   void modify_run(PrtRun *run);
   PrtRun *find_run(int sid, int fid = 0);
   PrtRun *find_run(TString path);
-  void fill_digi(int pmt, int pix);
+  void fill_digi(int pmt, int pix, double w = 1);
   
   void set_palette(int p = 1);
   void set_pmtlayout(int v) { _pmtlayout = v; }

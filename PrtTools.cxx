@@ -133,10 +133,10 @@ TString PrtTools::get_outpath() {
     return _dbpath + Form("%d/%sC.rec.root", _run->getStudy(), _run->getName().Data());
 }
 
-void PrtTools::fill_digi(int pmt, int pix){  
+void PrtTools::fill_digi(int pmt, int pix, double w){
 
-  int n = sqrt(_npix);  
-  if (pmt < _npmt) _hdigi[pmt]->Fill(pix % n, pix / n);
+  int n = sqrt(_npix);
+  if (pmt < _npmt) _hdigi[pmt]->Fill(pix % n, pix / n, w);
 }
 
 // _pmtlayout == 5    - 5 row's design for the PANDA Barrel DIRC
@@ -147,6 +147,7 @@ void PrtTools::fill_digi(int pmt, int pix){
 // _pmtlayout == 2021 - new 3.6 row's design for the PANDA Barrel DIRC
 // _pmtlayout == 2023 - new 2x4 layout for the PANDA Barrel DIRC
 // _pmtlayout == 2030 - EIC DIRC beam test
+// _pmtlayout == 2038 - EIC DIRC beam test with 8x8 mcp
 // _pmtlayout == 2031 - EIC DIRC prism
 // _pmtlayout == 2032 - EIC DIRC focusing prism
 // _pmtlayout == 3000 - GlueX 
@@ -178,7 +179,7 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
     toppad = new TPad(sid, "T", 0.10, 0.025, 0.82, 0.975);
   else if (_pmtlayout == 2032)
     toppad = new TPad(sid, "T", 0.04, 0.025, 0.91, 0.975);
-  else if (_pmtlayout == 2030)
+  else if (_pmtlayout == 2030 || _pmtlayout == 2038)
     toppad = new TPad(sid, "T", 0.12, 0.01, 0.80, 0.99);
   else if (_pmtlayout == 3000)
     toppad = new TPad(sid, "T", 0.005, 0.07, 0.95, 0.93);
@@ -197,7 +198,7 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
     ncol = 4;
   }
   if (_pmtlayout == 2021) ncol = 4;
-  if (_pmtlayout == 2030) {
+  if (_pmtlayout == 2030 || _pmtlayout == 2038) {
     nrow = 3;
     ncol = 4;
   }
@@ -283,7 +284,7 @@ TCanvas *PrtTools::draw_digi(double maxz, double minz, TCanvas *cdigi) {
           tbh = 0.001;
           padi = j * ncol + i;
         }
-        if (_pmtlayout == 2030) {
+        if (_pmtlayout == 2030 || _pmtlayout == 2038) {
           margin = 0.1;
           shift = 0;
           shiftw = 0.01;
@@ -453,6 +454,11 @@ TString PrtTools::pix_digi(TString s) {
     nrow = 3;
     ncol = 4;
     npix = 16;
+  }
+  if (_pmtlayout == 2038) {
+    nrow = 3;
+    ncol = 4;
+    npix = 8;
   }
 
   int nnmax(0);

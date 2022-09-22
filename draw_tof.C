@@ -47,10 +47,10 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
   // double le1(31), le2(36), l1(30), l2(35);
   // double t11(42), t12(70), t21(45), t22(52);
 
-  // double le1(34), le2(40), l1(34), l2(40);
-  // double t11(36), t12(45), t21(36), t22(45);
-  double le1(32), le2(36), l1(32), l2(36);
-  double t11(43), t12(55), t21(45), t22(55);
+  double le1(34), le2(40), l1(34), l2(40);
+  double t11(36), t12(45), t21(36), t22(45);
+  // double le1(32), le2(36), l1(32), l2(36);
+  // double t11(43), t12(55), t21(45), t22(55);
 
   // // SiTil
   // double le1(32), le2(36),l1(32), l2(36);
@@ -72,15 +72,18 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
     tof1ch = 1392;
     tof2ch = 1398;
     le1 = 30;
-    le2 = 34;    
+    le2 = 34;
+    t11 = 43;
+    t12 = 55;
+    t21 = 43;
+    t22 = 55;
 
-    // 310
-    le1 = 70;
-    le2 = 74;    
+    // // 310
+    // le1 = 70;
+    // le2 = 74;    
 
     l1 = le1;
     l2 = le2;
-
   }
 
   c1y = fr11[m];
@@ -192,7 +195,7 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
     // tot1=str1t;
     // tot2=str3t;
 
-    // if(fabs(tot1-tof1tot)>0.5 ||fabs(tot2-tof2tot)>0.5 )  continue;
+    // if(fabs(tot1-tof1tot)>0.5 || fabs(tot2-tof2tot)>0.5 )  continue;
 
     hMult[0]->Fill(mult1);
     hMult[1]->Fill(mult2);
@@ -222,19 +225,25 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
       // time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
       // time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
 
-      if (gcFile != "0") {
-        if (tof1tot < 55) time += (tot1 - tof1tot) * tan(-3 * TMath::DegToRad());
-        if (tof2tot < 55) time += (tot2 - tof2tot) * tan(2 * TMath::DegToRad());
+      if (!gcFile.EqualTo("0")) {
+	if (tof1tot < 55) time += (tot1 - tof1tot) * tan(-4 * TMath::DegToRad());
+        // if (tof2tot < 55) time += (tot2 - tof2tot) * tan(2 * TMath::DegToRad());
       }
 
-      hTofC->Fill(time);
+      // // if (insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) &&
+      // //     insideOfEllipce(time, tot2, tof1le, tof2tot, c1y, c1x)) {
+      //   hLeTotC->Fill(time, tot1);
+      //   hLeTotC2->Fill(time, tot2);
+      // // } else if (insideOfEllipce(time, tot1, tof2le, tof1tot, c2y, c2x) &&
+      // //            insideOfEllipce(time, tot2, tof2le, tof2tot, c2y, c2x)) {
+      //   hLeTotC->Fill(time, tot1);
+      //   hLeTotC2->Fill(time, tot2);
+      // // }
 
-      // if(insideOfEllipce(time, tot1, tof1le, tof1tot, c1y, c1x) && insideOfEllipce(time, tot2,
-      // tof1le, tof2tot, c1y, c1x)){
-      hLeTotC->Fill(time, tot1);
-      hLeTotC2->Fill(time, tot2);
-      // }else if(insideOfEllipce(time, tot1, tof2le, tof1tot, c2y, c2x) && insideOfEllipce(time,
-      // tot2, tof2le, tof2tot, c2y, c2x)){ 	hLeTotC->Fill(time,tot1); 	hLeTotC2->Fill(time,tot2);
+      // if (fabs(tof1tot - tot1) < 1.0 && fabs(tof2tot - tot2) < 1.0) {
+        hLeTotC->Fill(time, tot1);
+        hLeTotC2->Fill(time, tot2);
+        hTofC->Fill(time);
       // }
 
       hLeTot1->Fill(tof2 - tof1, tot1);

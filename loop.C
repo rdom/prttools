@@ -40,6 +40,9 @@ void loop(int study = 409, int level = 0, int mc = 2, int fid = -1) {
       TString nid = path + run->getName() + smc[imc];
       TString end = Form("-b 1 -v 1 > %s.%d.log", nid.Data(), level);
 
+      int theta = run->getTheta() + 0.1;
+      // if (theta % 5 == 0 && theta % 10 != 0) continue;
+
       sim = Form("-r 0 -o %s.root -study %d -fid %d -e %d ", nid.Data(), study, id, events);
       lut = Form("-r 1 -o %s.lut.root -study %d -fid %d -e 10000000 ", nid.Data(), study, id);
       rec = Form("-r 2 -i %s.root -o %s.rec.root -e 1500 -tr 0.5 ", nid.Data(), nid.Data());

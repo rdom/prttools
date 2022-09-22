@@ -317,7 +317,7 @@ bool TTSelector::Process(Long64_t entry) {
     totstl2(0);
 
   if (gMode == 5) {
-    if (gSetup == 2018)
+    if (gSetup == 2018) {
       if (multT1 < 1 || multTof1 < 1 || multTof2 < 1 || multT3h < 1 ||
           multT3v < 1) { //  || mult2!=1 || mult5!=1
         // if(multT1<1 || multTof1<1 || multTof2<1 || multStr1<1 ||  multStl1<1|| multStr2<1 ||
@@ -327,6 +327,15 @@ bool TTSelector::Process(Long64_t entry) {
         delete fEvent;
         return kTRUE;
       }
+    }
+    // if (gSetup == 2018) {
+    //   if (multT1 < 1 || multTof1 < 1 || multTof2 < 1 || multT3h < 1 ||
+    //       multT3v < 1) {
+    //     fEvent->Clear();
+    //     delete fEvent;
+    //     return kTRUE;
+    //   }
+    // }
 
     for (int i = 0; i < Hits_ && i < 10000; i++) {
       if (Hits_nTdcErrCode[i] != 0) continue;
@@ -366,11 +375,15 @@ bool TTSelector::Process(Long64_t entry) {
       // time += (tot1-tof1tot)*tan(walktheta);
       // time += (tot2-tof2tot)*tan(-walktheta);
 
-      if (tof1tot < 55 && tof1tot > 10) time += (tot1 - tof1tot) * tan(-3 * TMath::DegToRad());
-      if (tof2tot < 55 && tof2tot > 10) time += (tot2 - tof2tot) * tan(2 * TMath::DegToRad());
+      if (tof1tot < 55 && tof1tot > 10)  time += (tot1 - tof1tot) * tan(-4 * TMath::DegToRad());
+      // if (tof2tot < 55 && tof2tot > 10) time += (tot2 - tof2tot) * tan(2 * TMath::DegToRad());
 
-      // time += (tot1-41.32)*tan(-4*TMath::Pi()/180.);
-      // time += (tot2-40.75)*tan(2*TMath::Pi()/180.);
+      // cut on TOT of TOF
+      if (tof1tot > 10 && (fabs(tot1 - tof1tot) > 1.0 || fabs(tot2 - tof2tot) > 1.0)) {
+        fEvent->Clear();
+        delete fEvent;
+        return kTRUE;
+      };
 
       toftime = time;
       int m = (double)(mom + 0.1);
@@ -450,6 +463,9 @@ bool TTSelector::Process(Long64_t entry) {
 
         if (gTrigger == trigTof2 && fabs(tot2 - tof2tot) < 1.2)
           timeLe += (tot2 - tof2tot) * tan(2 * TMath::Pi() / 180.); // 7.1;
+        // if (gTrigger == trigTof1 && fabs(tot1 - tof1tot) < 1.2)
+        //   timeLe += (tot2 - tof2tot) * tan(-2 * TMath::Pi() / 180.);
+
         if (timeTot > 0.5 && timeTot < 9 && gWalk[ch]) timeLe -= gWalk[ch]->Eval(timeTot);
         timeLe -= (gLeOffArr[ch] - gPilasOffset[ch]);
 
@@ -542,7 +558,7 @@ void tcalibration(TString inFile = "../../data/cj.hld.root", TString outFile = "
   gSetup = setupid;
   
   if (gMode == 5) gTrigger = 1136;
-  if (setupid == 2017 && gTrigger != 820) gTrigger = 1392;
+  if (setupid == 2017 && gTrigger != 820) gTrigger = 1392; // 1392
   TChain *ch = new TChain("T");
   ch->Add(ginFile);
 
