@@ -94,7 +94,7 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
 
   gg->GetXaxis()->SetTitle(xnid[ix]);
   gg->GetYaxis()->SetTitle(ynid[iy]);
-  if (ix == 0) gg->GetXaxis()->SetLimits(15, 155);
+  if (ix == 0) gg->GetXaxis()->SetLimits(15, 165);
   if (ix == 3) gg->GetXaxis()->SetLimits(-0.1, 2.1);
   if (ix == 4 || ix == 5) gg->GetXaxis()->SetLimits(-0.03, 0.03);
   if (ix == 6) gg->GetXaxis()->SetLimits(59.5, 73.5);
