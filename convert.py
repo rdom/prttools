@@ -5,8 +5,7 @@ import numpy as np
 ROOT.gInterpreter.ProcessLine('#include "../../prttools/PrtTools.h"')
 ROOT.gSystem.Load('../../prttools/PrtTools_cxx.so')
 
-t = ROOT.PrtTools("/home/drc/data/jul18/403/beam_18215163732S.root") #  ../../prttools/hits.root
-# t = ROOT.PrtTools("/home/drc/data/jul18/403/beam_18215164946S.root")
+t = ROOT.PrtTools("beam_18215163732S.root")
 
 stat = int(sys.argv[1])
 ne_train = stat
