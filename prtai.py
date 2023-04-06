@@ -29,7 +29,7 @@ def load_data(path="data.npz"):
 
 
 # (x_train, y_train), (x_test, y_test) = load_data("../../../dirc/prtdirc/macro/data_20_8_64_notime.npz")
-(x_train, y_train), (x_test, y_test) = load_data("../../../dirc/prtdirc/macro/data_stat_40000.npz")
+(x_train, y_train), (x_test, y_test) = load_data("../prtdirc/macro/data_stat_40000_notime.npz")
 # x_train, x_test = x_train / 30.0, x_test / 30.0
 
 x_train = x_train[:stat]
@@ -98,7 +98,7 @@ def test_step(images, labels):
 
 faccuracy = 0
   
-EPOCHS = 50
+EPOCHS = 10
 
 for epoch in range(EPOCHS):
   # Reset the metrics at the start of the next epoch
@@ -125,7 +125,7 @@ for epoch in range(EPOCHS):
 tf.keras.utils.plot_model(model, show_shapes=True, rankdir="LR")
 
 model.summary()
-
+model.save('models/prtai')
 
 
 print("Accuracy = ", faccuracy)

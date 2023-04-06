@@ -104,7 +104,8 @@ class PrtTools {
   void normalize_to(TH1F *hists[], int size, double max = 1);
   TGraph *smooth(TGraph *g, int smoothness = 1);
   int shift_hist(TH1 *hist, double double_shift);
-
+  double calculate_efficiency(TH1F *h1, TH1F *h2);
+  
   TString dir(TString path);
   TString create_dir(TString inpath = "");
   void write_info(TString filename);
@@ -175,7 +176,7 @@ class PrtTools {
 
   std::vector<PrtRun *> _runs;
   PrtRun* _run;
-  array<TH2F *, 21> _hdigi{};
+  array<TH2F *, 28> _hdigi{};
   int _entries;
   int _iter = -1;
   int _printstep = 1000;

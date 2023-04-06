@@ -1075,6 +1075,18 @@ int PrtTools::shift_hist(TH1 *hist, double double_shift) {
   return 1;
 }
 
+double PrtTools::calculate_efficiency(TH1F *h1, TH1F *h2){
+  double eff = 0;
+  double left = h1->GetXaxis()->GetBinCenter(1);
+  double right = h1->GetXaxis()->GetBinCenter(h1->GetNbinsX());
+
+  double tozero = integral(h1, left, 0);
+  double total = integral(h1, left, right);
+  if (total > 0) eff = tozero / total;
+
+  return eff;
+}
+
 void PrtTools::save_canvas(int what, int style, bool rm){
   TIter next(_canvaslist);
   TCanvas *c=0;
