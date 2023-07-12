@@ -115,11 +115,22 @@ class PrtTools {
   void set_style(TCanvas *c);
   void save(TPad *c= NULL,TString path="", int what=0, int style=0);
 
-
-  void add_canvas(TString name="c",int w=800, int h=400);
+  double theta_to_eta(double t) { return -TMath::Log((tan(0.5 * TMath::DegToRad() * t))); }
+  double eta_to_theta(double eta) { return 2.0 * atan(exp(-eta)) * TMath::RadToDeg(); }
+  double sep_to_eff(double e) {
+    // separation must be in [0-7] range
+    return 49.8311 + 20.6735 * e - 0.529054 * e * e - 0.901989 * e * e * e +
+           0.153188 * e * e * e * e - 0.00755448 * e * e * e * e * e;
+  }
+  double eff_to_sep(double x) {
+    // efficiency must be in [50-100] range
+    return (-11.6144 + 0.479442 * x - 0.00670473 * TMath::Sq(x) + 3.48145e-05 * pow(x, 3)) +
+           exp(-91.3792 + 0.920405 * x) + exp(-1952.88 + 19.5344 * x);
+  }
+  void add_canvas(TString name = "c", int w = 800, int h = 400);
   void add_canvas(TCanvas *c);
-  TCanvas *get_canvas(TString name="c");
-  void del_canvas(TString name="c");
+  TCanvas *get_canvas(TString name = "c");
+  void del_canvas(TString name = "c");
 
   // style = 0 - for web blog
   // style = 1 - for talk

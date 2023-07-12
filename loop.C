@@ -1,11 +1,16 @@
+#include "draw_scan.C"
+#if defined(__ACLIC__)
 #include "PrtTools.h"
+#else
+R__LOAD_LIBRARY(../prtdirc/build/libPrt.so)
+#endif
 
 void wait(int n, int id) {
   TString c = Form("ps aux | grep \"[r]oot.exe\\|[p]rtdirc\" | grep %d | wc -l", id);
   while (true) {
     int active = atoi(gSystem->GetFromPipe(c)) - 1;
     if (active <= n) break;
-    else gSystem->Sleep(1000);
+    else gSystem->Sleep(3000);
     std::cout << "A " << active << std::endl;
   }
 }
