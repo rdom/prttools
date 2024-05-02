@@ -533,6 +533,7 @@ bool PrtTools::read_db(TString in) {
   while (std::getline(ins, line)) {
     std::istringstream iss(line);
 
+    if (line.rfind("#", 0) == 0)  continue;
     if (line.rfind("S", 0) == 0) { // parse header
       line.erase(0, 1);
       std::istringstream issh(line);
@@ -1175,16 +1176,17 @@ void PrtTools::set_style(TCanvas *c) {
       hh->GetXaxis()->SetTitleOffset(0.85);
       hh->GetYaxis()->SetTitleOffset(0.76);
 
-      if(c->GetWindowHeight()>700){
-	hh->GetXaxis()->SetTitleSize(0.045);
-	hh->GetYaxis()->SetTitleSize(0.045);
+      if (c->GetWindowHeight() > 700) {
+        hh->GetXaxis()->SetTitleSize(0.045);
+        hh->GetYaxis()->SetTitleSize(0.045);
 
-	hh->GetXaxis()->SetLabelSize(0.035);
-	hh->GetYaxis()->SetLabelSize(0.035);
+        hh->GetXaxis()->SetLabelSize(0.035);
+        hh->GetYaxis()->SetLabelSize(0.035);
 
-	hh->GetXaxis()->SetTitleOffset(0.85);
-	hh->GetYaxis()->SetTitleOffset(0.98);
-	c->SetRightMargin(0.12);
+        hh->GetXaxis()->SetTitleOffset(0.85);
+        hh->GetYaxis()->SetTitleOffset(0.98);
+        c->SetRightMargin(0.12);
+        if (obj->InheritsFrom("TH2")) c->SetRightMargin(0.18);
       }
 
       if(c->GetWindowWidth()<=600){

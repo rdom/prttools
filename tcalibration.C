@@ -471,9 +471,17 @@ bool TTSelector::Process(Long64_t entry) {
 
         if (!laser && gMode == 5) {
           double rad = TMath::Pi() / 180., zrot = 155, xrot = 98, prtangle = run->getTheta(),
-                 z = run->getBeamZ(),
-                 rot_dist =
-                   ((z - zrot) - xrot / cos(prtangle * rad)) * tan((90 - prtangle) * rad) / 1000.;
+                 z = run->getBeamZ();
+	  double tof2d = 4.151;
+	  
+          if (gSetup == 2017) {
+	    xrot = 97.8;
+	    zrot = 146.3;
+	    tof2d = 4.014;
+	  }
+	  
+          double rot_dist =
+            ((z - zrot) - xrot / cos(prtangle * rad)) * tan((90 - prtangle) * rad) / 1000.;
 
           if (gTrigger == trigT1)
             timeLe -= (2.719 + rot_dist) / ((mom / sqrt(mass * mass + mom * mom) * 299792458)) *
@@ -485,10 +493,10 @@ bool TTSelector::Process(Long64_t entry) {
             timeLe -= (24.490 + 0.030 + rot_dist) /
                       ((mom / sqrt(mass * mass + mom * mom) * 299792458)) * 1E9; // tof1
           if (gTrigger == trigTof2)
-            timeLe += (4.151 - rot_dist) / ((mom / sqrt(mass * mass + mom * mom) * 299792458)) *
+            timeLe += (tof2d - rot_dist) / ((mom / sqrt(mass * mass + mom * mom) * 299792458)) *
                       1E9; // tof2
           if (gTrigger == 1144)
-            timeLe += (4.151 - rot_dist) / ((mom / sqrt(mass * mass + mom * mom) * 299792458)) *
+            timeLe += (tof2d - rot_dist) / ((mom / sqrt(mass * mass + mom * mom) * 299792458)) *
                       1E9; // scitil2
 
           timeLe += simOffset;
@@ -558,7 +566,7 @@ void tcalibration(TString inFile = "../../data/cj.hld.root", TString outFile = "
   gSetup = setupid;
   
   if (gMode == 5) gTrigger = 1136;
-  if (setupid == 2017 && gTrigger != 820) gTrigger = 1392; // 1392
+  if (setupid == 2017 && gTrigger != 820) gTrigger = 1398; // 1392
   TChain *ch = new TChain("T");
   ch->Add(ginFile);
 

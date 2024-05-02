@@ -46,8 +46,8 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   if (ix == 9) ch.SetBranchAddress("test3", &xx[ix]);
   ch.SetBranchAddress("beamz", &xx[8]);
 
-  ch.SetBranchAddress("nph", &var[0]);
-  ch.SetBranchAddress("nph_err", &evar[0]);
+  ch.SetBranchAddress("nph_pi_ti", &var[0]);
+  ch.SetBranchAddress("nph_ti_err", &evar[0]);
 
   // ch.SetBranchAddress("nph_pi_ti", &var[0]);
   // ch.SetBranchAddress("nph_pi_ti_err", &evar[0]);
@@ -103,7 +103,7 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
 
   gg->GetXaxis()->SetTitle(xnid[ix]);
   gg->GetYaxis()->SetTitle(ynid[iy]);
-  if (ix == 0) gg->GetXaxis()->SetLimits(15, 145);
+  if (ix == 0) gg->GetXaxis()->SetLimits(15, 155);
   if (ix == 1) gg->GetXaxis()->SetLimits(-1, 16);
   if (ix == 3) gg->GetXaxis()->SetLimits(-0.1, 2.1);
   if (ix == 4 || ix == 5) gg->GetXaxis()->SetLimits(-0.03, 0.03);
@@ -112,8 +112,8 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   if (ix == 8) gg->GetXaxis()->SetLimits(150, 950);
   if (ix == 9) gg->GetXaxis()->SetLimits(-100, 2100);
 
-  if (iy == 0) gg->GetYaxis()->SetRangeUser(0, 80);                                     // 75 or 160
-  if (iy == 1 || iy == 2) gg->GetYaxis()->SetRangeUser(0, 5.5);                         // 5.5
+  if (iy == 0) gg->GetYaxis()->SetRangeUser(0, 120);                                    // 75 or 160
+  if (iy == 1 || iy == 2) gg->GetYaxis()->SetRangeUser(0, 6.0);                         // 5.5
   if (in.Contains("415") && (iy == 1 || iy == 2)) gg->GetYaxis()->SetRangeUser(0, 5.5); // 5.5
   if (iy == 3) gg->GetYaxis()->SetRangeUser(0.822, 0.828);
   if (iy == 4) gg->GetYaxis()->SetRangeUser(0, 22);
