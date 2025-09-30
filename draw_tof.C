@@ -42,7 +42,8 @@ void draw_tof(TString infile = "hits.root", TString gcFile = "0") {
   
   int m = t.run()->getMomentum()+0.1;
   int study = t.run()->getStudy();
-
+std::cout << "study " << study << std::endl;
+ 
   // MCP-TOF
   // double le1(31), le2(36), l1(30), l2(35);
   // double t11(42), t12(70), t21(45), t22(52);

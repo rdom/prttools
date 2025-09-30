@@ -1,7 +1,7 @@
 #include "PrtTools.h"
 
 PrtTools::PrtTools() {
-  init();
+  init(0);
 }
 
 PrtTools::PrtTools(int study) {
@@ -30,11 +30,11 @@ void PrtTools::init(int study) {
   _maxch = 5000;
   _npix = 64;
   _npmt = 8;
-  _dbpath = "~/data/jul18/";
+  _dbpath = "/d/proc/jul18/";
 
   if (study < 400){
     _pmtlayout = 2017;
-    _dbpath = "~/data/aug17/";
+    _dbpath = "/d/proc/aug17/";
     _npmt = 12;
   }
   
@@ -44,7 +44,9 @@ void PrtTools::init(int study) {
    _event = new PrtEvent();
   _spectrum = new TSpectrum(2);
   _info = "";
- 
+  _chain = new TChain("data");
+  _chain->SetBranchAddress("PrtEvent", &_event);
+   
   if (gROOT->GetApplication()) {
     TIter next(gROOT->GetApplication()->InputFiles());
     TObjString *os = 0;
@@ -54,11 +56,14 @@ void PrtTools::init(int study) {
     _info += "\n";
   }
 
-  if (!gSystem->AccessPathName("data_db.dat")) {
-    read_db("data_db.dat");
-  } else {
-    read_db("../../prttools/data_db.dat");
+  if (study) {
+    if (!gSystem->AccessPathName("data_db.dat")) {
+      read_db("data_db.dat");
+    } else {
+      read_db("../../prttools/data_db.dat");
+    }
   }
+
   gSystem->ExpandPathName(_dbpath);
 }
 
@@ -83,10 +88,7 @@ bool PrtTools::init_run(TString in, int bdigi, TString savepath, int setupid) {
   set_palette(1);
   create_maps(setupid);
 
-  _chain = new TChain("data");
   _chain->Add(in);
-  _chain->SetBranchAddress("PrtEvent", &_event);
-
   _entries = _chain->GetEntries();
   std::cout << "Entries in chain:  " << _entries << std::endl;
   if (bdigi) init_digi();

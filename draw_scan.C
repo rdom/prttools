@@ -43,11 +43,13 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   ch.SetBranchAddress("time_res", &xx[3]);
   if (ix == 4 || ix == 6) ch.SetBranchAddress("test1", &xx[ix]);
   if (ix == 5 || ix == 7) ch.SetBranchAddress("test2", &xx[ix]);
-  if (ix == 9) ch.SetBranchAddress("test3", &xx[ix]);
-  ch.SetBranchAddress("beamz", &xx[8]);
 
-  ch.SetBranchAddress("nph_pi_ti", &var[0]);
-  ch.SetBranchAddress("nph_ti_err", &evar[0]);
+  if (in.Contains("ar_w100") && ix == 9) ch.SetBranchAddress("test1", &xx[ix]);
+  else if (ix == 9) ch.SetBranchAddress("test3", &xx[ix]);
+
+  ch.SetBranchAddress("beamz", &xx[8]);  
+  ch.SetBranchAddress("nph_pi", &var[0]);
+  ch.SetBranchAddress("nph_pi_err", &evar[0]);
 
   // ch.SetBranchAddress("nph_pi_ti", &var[0]);
   // ch.SetBranchAddress("nph_pi_ti_err", &evar[0]);
@@ -70,7 +72,7 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
     ch.GetEvent(elist->GetEntry(i));
     if (xx[2] < 2.5) continue;
     is++;
-
+ 
     if (ix == 1) {
       if (fabs(xx[ix] - 0) < 1) xx[ix] = 0;
       if (fabs(xx[ix] - 2.5) < 1) xx[ix] = 2.5;
@@ -84,18 +86,19 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
     // if(xx[0]<21) var[4] = 7.292785;
     // if(xx[0]<21 && sim) var[4] = 7.344798;
     if(in.Contains("460C")) xx[ix] = 50;
-      
+
     evar[1] = sqrt(evar[1] * evar[1] + 0.2 * 0.2);
     evar[2] = sqrt(evar[2] * evar[2] + 0.2 * 0.2);
     evar[4] = gRandom->Uniform(0.6, 0.8);
     // evar[0]=fabs(theta-90)/30+0.5*sqrt(var[0]);
     evar[0] = sqrt(evar[0] * evar[0] + 2.5 * 2.5);
 
+    if(in.Contains("ar_w100")) xx[ix] -= 65; // for laser study
     gg->SetPoint(is, xx[ix], var[iy]);
     gg->SetPointEYhigh(is, evar[iy]);
     gg->SetPointEYlow(is, evar[iy]);
   }
-
+  gg->SetName(t.rand_str(5));
   gg->Sort();
 
   gg->SetMarkerStyle(20);
@@ -110,13 +113,13 @@ TGraph *draw_scan(TString in = "~/sim4/d/proc/jul18/403/reco*R.root", TString na
   if (ix == 6) gg->GetXaxis()->SetLimits(59.5, 73.5);
   if (ix == 7) gg->GetXaxis()->SetLimits(11, 24.5);
   if (ix == 8) gg->GetXaxis()->SetLimits(150, 950);
-  if (ix == 9) gg->GetXaxis()->SetLimits(-100, 2100);
+  if (ix == 9) gg->GetXaxis()->SetLimits(-20, 270);
 
-  if (iy == 0) gg->GetYaxis()->SetRangeUser(0, 120);                                    // 75 or 160
-  if (iy == 1 || iy == 2) gg->GetYaxis()->SetRangeUser(0, 6.0);                         // 5.5
+  if (iy == 0) gg->GetYaxis()->SetRangeUser(0, 110);                                    // 75 or 160
+  if (iy == 1 || iy == 2) gg->GetYaxis()->SetRangeUser(0, 5.5);                         // 5.5
   if (in.Contains("415") && (iy == 1 || iy == 2)) gg->GetYaxis()->SetRangeUser(0, 5.5); // 5.5
   if (iy == 3) gg->GetYaxis()->SetRangeUser(0.822, 0.828);
-  if (iy == 4) gg->GetYaxis()->SetRangeUser(0, 22);
+  if (iy == 4) gg->GetYaxis()->SetRangeUser(0, 14);
 
   if (draw) {
     t.add_canvas(nid[iy], 800, 400);

@@ -26,13 +26,13 @@ void wait(int n, int id) {
 // 2 process both
 
 void loop(int study = 409, int level = 0, int mc = 2, int fid = -1) {
-  PrtTools t;
+  PrtTools t(1);
   int threads = 25;
   int events = 20000;
   int nfiles = 0;
   int eventsj = events / threads;
 
-  TString path = Form("$HOME/data/jul18/%d/", study);
+  TString path = Form("/d/proc/jul18/%d/", study);
   if (study < 400) path = Form("$HOME/data/aug17/%d/", study);
   TString exe = "../prtdirc/build/prtdirc ";
 
@@ -47,16 +47,16 @@ void loop(int study = 409, int level = 0, int mc = 2, int fid = -1) {
     TString  rlist = "";
     for (auto run : t.get_runs(study)) {
       int id = run->getId();
-      if (fid > -1 && id != fid) continue;
+      if (fid > -1 && id != fid) continue;      
       TString nid = path + run->getName() + smc[imc];
       TString end = Form("-b 1 -v 1 > %s.%d.log", nid.Data(), level);
-
+      
       int theta = run->getTheta() + 0.1;
       // if (theta % 5 == 0 && theta % 10 != 0) continue;
 
       sim = Form("-r 0 -o %s.root -study %d -fid %d -e %d ", nid.Data(), study, id, events);
       lut = Form("-r 1 -o %s.lut.root -study %d -fid %d -e 10000000 ", nid.Data(), study, id);
-      rec = Form("-r 2 -i %s.root -o %s.rec.root -e 0 -tr 0.5 ", nid.Data(), nid.Data());
+      rec = Form("-r 2 -i %s.root -o %s.rec.root -e 1500 -tr 0.5 ", nid.Data(), nid.Data());
       pdf = Form("-r 4 -i %s.root -o %s.rec.root -e 1500 -tr 0.5 ", nid.Data(), nid.Data());
 
       rlist += nid + ".rec.root ";
