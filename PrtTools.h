@@ -150,6 +150,8 @@ class PrtTools {
   TChain *chain() { return _chain; }
   int pdg(int v) { return _pdg[v]; }
   int pid() { return _pid; }
+  int npix() { return _npix; }
+  int npmt() { return _npmt; }
   int i( ) { return _iter; }
   int entries(){ return _entries;}
   double mass(int v) { return _mass[v]; }
