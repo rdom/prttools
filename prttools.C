@@ -112,6 +112,13 @@ TString prt_tdcsid_jul2019[] ={"2014","2015","2016","2017","2000","2001","2002",
 			       "2006","2007","2008","2009","200a","200b","200c","200d","200e","200f",
 			       "2010"};
 
+
+//jul2032
+const int prt_ntdc_jul2023 = 21;
+TString prt_tdcsid_jul2023[] ={"2017","2018","2019","2020","2021","2022","2023","2024","2004","2005",
+			       "2006","2007","2008","2009","200a","200b","200c","200d","200e","200f",
+			       "2010"};
+
 const int prt_maxdircch = prt_nmcp*prt_npix;
 const int prt_maxnametdc=10000;
 
@@ -268,6 +275,7 @@ void prt_createMap(int setupid = 2019){
   if(prt_geometry==2017) prt_ntdc = prt_ntdc_jul2018;
   if(prt_geometry==2018) prt_ntdc = prt_ntdc_jul2018;
   if(prt_geometry==2019) prt_ntdc = prt_ntdc_jul2019;
+  if(prt_geometry==2023) prt_ntdc = prt_ntdc_jul2023;
 	
   for(int i=0; i<prt_ntdc; i++){
     if(prt_geometry==2015) prt_tdcsid[i] = prt_tdcsid_jun2015[i];
@@ -275,6 +283,7 @@ void prt_createMap(int setupid = 2019){
     if(prt_geometry==2017) prt_tdcsid[i] = prt_tdcsid_jul2018[i];
     if(prt_geometry==2018) prt_tdcsid[i] = prt_tdcsid_jul2018[i];
     if(prt_geometry==2019) prt_tdcsid[i] = prt_tdcsid_jul2019[i];    
+    if(prt_geometry==2023) prt_tdcsid[i] = prt_tdcsid_jul2023[i];    
   }  
   
   TGaxis::SetMaxDigits(4);
