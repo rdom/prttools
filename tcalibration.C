@@ -7,7 +7,7 @@
 TString ginFile(""), goutFile(""), gcFile("");
 
 const int maxch = 2000;
-int gTrigger(0), gSetup(2019), gMode(0), gComboId(0), gMaxIn[maxch];
+int gTrigger(0), gSetup(2023), gMode(0), gComboId(0), gMaxIn[maxch];
 double tdcRefTime[maxch], gTotO[maxch], gTotP[maxch][10], gLeOffArr[maxch],
   gEvtOffset(0), gPilasOffset[maxch];
 TGraph *gGrIn[maxch], *gWalk[maxch], *gGrDiff[maxch];
@@ -98,10 +98,10 @@ void TTSelector::Begin(TTree *) {
 
   t.read_db("data_db.dat");
   run = t.find_run(ginFile);
-  std::cout << "gSetup " << gSetup << std::endl;
-  
+  t.set_pmtlayout(gSetup);
   t.create_maps(gSetup);
 
+ 
   int study = run->getStudy();
   int fileid = run->getId();
 
@@ -183,9 +183,7 @@ void TTSelector::Begin(TTree *) {
           gTotP[i / 10][i % 10] = y;
           // std::cout<<"ch  "<<i/10<< " peak "<< i%10<< " = " <<y<<std::endl;
         }
-      } else if (ch == 10003) { // read LE offsets 1
-	std::cout<<"t.maxdircch() "<<t.maxdircch()<<std::endl;
-	
+      } else if (ch == 10003) { // read LE offsets 1	
         for (int i = 0; i < t.maxdircch(); i++) {
           gr->GetPoint(i, gLeOffArr[i], y);
         }
@@ -273,8 +271,8 @@ bool TTSelector::Process(Long64_t entry) {
     tdc = t.map_tdc[Hits_nTrbAddress[i]];
     if (tdc < 0) continue;
     ch = t.get_channel(tdc, Hits_nTdcChannel[i]) - 1;
-    
     time[i] = 5 * (Hits_nEpochCounter[i] * pow(2.0, 11) + Hits_nCoarseTime[i]); // coarsetime    
+
     if (gcFile != "0") {
       int rch = ch + 1 + tdc;
       
@@ -290,8 +288,12 @@ bool TTSelector::Process(Long64_t entry) {
     } // else time[i] -= (Hits_nFineTime[i]-31)*0.0102;
 
     if (Hits_nSignalEdge[i] == 1) {
-      if (ch == gTrigger && grTime1 == 0) grTime1 = time[i];
-      if (Hits_nTdcChannel[i] == 0) { // ref channel
+      
+      if (ch == gTrigger && grTime1 == 0) {
+	grTime1 = time[i];
+	// std::cout << "ch " << ch <<  " gTrigger " << gTrigger<<" "<<grTime1 << std::endl;
+      }
+      if (Hits_nTdcChannel[i] == 0) { // ref channel	
         tdcRefTime[tdc] = time[i];
         if (tdc_trig == tdc) grTime0 = time[i];
       }
@@ -426,7 +428,6 @@ bool TTSelector::Process(Long64_t entry) {
 
   PrtHit hit;
   int nrhits = 0;
-
   if ((grTime0 > 0 && grTime1 > 0) || gTrigger == 0) {
     if (gTrigger != 0) {
       triggerLe = grTime1 - grTime0;
@@ -436,6 +437,7 @@ bool TTSelector::Process(Long64_t entry) {
     }
 
     for (int i = 0; i < Hits_ && i < 10000; i++) {
+      
       // if(Hits_nTdcErrCode[i]!=0) continue;
       if (Hits_nTdcChannel[i] == 0) continue; // ref channel
       if (Hits_nSignalEdge[i] == 0) continue; // tailing edge
@@ -517,10 +519,11 @@ bool TTSelector::Process(Long64_t entry) {
       }
 
       if (gMode != 5 || tofpid != 0) {
-
         if (run->getGeometry() == 2023) {
-          if (timeTot < 0 || timeTot > 20) continue;
-          if (timeLe < -100 || timeLe > 100) continue;
+	  std::cout << "timeTot " << timeTot << std::endl;
+	  
+          // if (timeTot < 0 || timeTot > 20) continue;
+          // if (timeLe < -100 || timeLe > 100) continue;
         }
 
         hit.setChannel(ch);
@@ -567,6 +570,8 @@ void tcalibration(TString inFile = "../../data/cj.hld.root", TString outFile = "
   
   if (gMode == 5) gTrigger = 1136;
   if (setupid == 2017 && gTrigger != 820) gTrigger = 1398; // 1392
+  if (setupid == 2023) gTrigger = 652; // 1392
+  
   TChain *ch = new TChain("T");
   ch->Add(ginFile);
 

@@ -84,6 +84,7 @@ class PrtTools {
   
   void set_palette(int p = 1);
   void set_pmtlayout(int v) { _pmtlayout = v; }
+  void set_maxdircch(int v) { _maxdircch = v; }
   void create_maps(int setupid = 2019);
   TString get_inpath();
   TString get_outpath();
@@ -183,6 +184,10 @@ class PrtTools {
 
   array<TString, 21> _tdcsid_jul2019 = {"2014", "2015", "2016", "2017", "2000", "2001", "2002",
                                         "2003", "2004", "2005", "2006", "2007", "2008", "2009",
+                                        "200a", "200b", "200c", "200d", "200e", "200f", "2010"};
+
+  array<TString, 21> _tdcsid_jul2023 = {"2017", "2018", "2019", "2020", "2021", "2022", "2023",
+                                        "2024", "2004", "2005", "2006", "2007", "2008", "2009",
                                         "200a", "200b", "200c", "200d", "200e", "200f", "2010"};
 
   std::vector<PrtRun *> _runs;

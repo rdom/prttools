@@ -26,7 +26,7 @@ PrtTools::PrtTools(TString in) {
 
 void PrtTools::init(int study) {
 
-  _pmtlayout = 2018;
+  _pmtlayout = 2023;
   _maxch = 5000;
   _npix = 64;
   _npmt = 8;
@@ -708,6 +708,10 @@ PrtRun *PrtTools::find_run(TString path) {
     _npmt = 12;
     _maxdircch = 12 * 64;
   }
+  if (r->getPmtLayout() == 2023) {
+    _npmt = 8;
+    _maxdircch = 8 * 64;
+  }
   _run = r;
   return r;
 }
@@ -762,12 +766,19 @@ void PrtTools::set_palette(int pal) {
 }
 
 void PrtTools::create_maps(int pmtlayout) {
-  
+std::cout << "pmtlayout ========  " << pmtlayout << std::endl;
+ 
   if (pmtlayout == 2019) {
     for (size_t i = 0; i < _tdcsid_jul2019.size(); i++) {
       size_t dec = TString::BaseConvert(_tdcsid_jul2019[i], 16, 10).Atoi();
-      if(dec < map_tdc.size()) map_tdc[dec] = i;
-      else std::cout<<"tdc id is outside of range: "<<dec<<std::endl;      
+      if (dec < map_tdc.size()) map_tdc[dec] = i;
+      else std::cout << "tdc id is outside of range: " << dec << std::endl;
+    }
+  } else if (pmtlayout == 2023) {
+    for (size_t i = 0; i < _tdcsid_jul2023.size(); i++) {
+      size_t dec = TString::BaseConvert(_tdcsid_jul2023[i], 16, 10).Atoi();
+      if (dec < map_tdc.size()) map_tdc[dec] = i;
+      else std::cout << "tdc id is outside of range: " << dec << std::endl;
     }
   } else {
     for (size_t i = 0; i < _tdcsid_jul2018.size(); i++) {
@@ -775,7 +786,7 @@ void PrtTools::create_maps(int pmtlayout) {
       map_tdc[dec] = i;
     }
   }
-  
+
   for (int ch = 0; ch < _maxch; ch++) {
     int pmt = ch / _npix;
     int pix = ch % _npix;
@@ -794,6 +805,7 @@ void PrtTools::create_maps(int pmtlayout) {
 
 int PrtTools::get_channel(int tdc, int tdcch) {
   int ch = -1;
+  
   if (_run->getGeometry() == 2018) {
     ch = 0;
     for (int i = 0; i <= tdc; i++) {
@@ -805,7 +817,7 @@ int PrtTools::get_channel(int tdc, int tdcch) {
       else
         ch += 48;
     }
-  } else if (_run->getGeometry() == 2023) {
+  } else if (_pmtlayout == 2023) {
     ch = 32 * tdc + tdcch;
   } else {
     ch = 48 * tdc + tdcch;
@@ -825,7 +837,7 @@ int PrtTools::get_tdcid(int ch) {
         tch += 48;
       if (tch > ch) break;
     }
-  } else if (_run->getGeometry() == 2023) {
+  } else if (_pmtlayout  == 2023) {
     tdcid = ch / 32;
   } else {
     tdcid = ch / 48;

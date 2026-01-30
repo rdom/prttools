@@ -113,7 +113,7 @@ TString prt_tdcsid_jul2019[] ={"2014","2015","2016","2017","2000","2001","2002",
 			       "2010"};
 
 
-//jul2032
+//jul2023
 const int prt_ntdc_jul2023 = 21;
 TString prt_tdcsid_jul2023[] ={"2017","2018","2019","2020","2021","2022","2023","2024","2004","2005",
 			       "2006","2007","2008","2009","200a","200b","200c","200d","200e","200f",
@@ -293,20 +293,43 @@ void prt_createMap(int setupid = 2019){
     map_tdc[dec]=i;
   }
   
-  //  for(int ch=0; ch<prt_maxdircch; ch++){
-  for(int ch=0; ch<prt_maxch; ch++){
-    int mcp = ch/prt_npix;
-    int pix = ch%prt_npix;
-    int col = pix/2 - 8*(pix/16);
-    int row = pix%2 + 2*(pix/16);
-    // pix = col+sqrt(prt_npix)*row;
+  // for (int ch = 0; ch < prt_maxdircch; ch++) {
+  //   int mcp = ch/prt_npix;
+  //   int pix = ch%prt_npix;
+  //   int col = pix/2 - 8*(pix/16);
+  //   int row = pix%2 + 2*(pix/16);
+  //   // pix = col+sqrt(prt_npix)*row;
 
-    map_mpc[mcp][pix]=ch;
-    map_mcp[ch] = mcp;
-    map_pix[ch] = pix;
-    map_row[ch] = row;
-    map_col[ch] = col;
-  } 
+  //   map_mpc[mcp][pix]=ch;
+  //   map_mcp[ch] = mcp;
+  //   map_pix[ch] = pix;
+  //   map_row[ch] = row;
+  //   map_col[ch] = col;
+  // }
+
+  for (int ch = 0; ch < prt_maxdircch; ch++) {
+    if (prt_geometry == 2023) {
+
+      int mcp = ch / prt_npix;
+      int pix =  ch % prt_npix;
+      int col = pix / 8;
+      int row = pix % 8;
+ 
+      row = pix/2 - 8*(pix/16);
+      col = pix%2 + 2*(pix/16);
+
+      row = 7 - row;
+      
+      pix = row * 8 + col;
+      int c = mcp * 64 + pix;
+
+      map_mpc[mcp][pix] = ch;
+      map_mcp[ch] = mcp;
+      map_pix[ch] = pix;
+      map_row[ch] = row;
+      map_col[ch] = col;
+    }
+  }
 
   for(int i=0; i<5; i++){
     prt_particleArray[prt_pdg[i]]=i;
