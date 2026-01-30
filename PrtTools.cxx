@@ -138,14 +138,13 @@ TString PrtTools::get_outpath() {
 void PrtTools::fill_digi(int pmt, int pix, double w){
 
   int n = sqrt(_npix);
-  // if (pmt < _npmt) _hdigi[pmt]->Fill(pix % n, pix / n, w);
-  if (_pmtlayout == 2023) {
 
-    // int ch = pmt*64 + pix; //map_pmtpix[pmt][pix];
+  if (_pmtlayout == 2023) {
     int col = map_col[pix];
     int row = map_row[pix];
-    
     _hdigi[pmt]->Fill(col, row, w);
+  } else {
+    if (pmt < _npmt) _hdigi[pmt]->Fill(pix % n, pix / n, w);
   }
 }
 
