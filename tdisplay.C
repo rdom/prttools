@@ -99,7 +99,7 @@ void TTSelector::SlaveBegin(TTree *) {
     toth = 12;
     // totl=60; toth=80;
     if (prt_geometry == 2023) {
-      gTrigger = 972;
+      gTrigger = 652;
       leb = 2000;
       le1 = 0; // -60
       le2 = 100; // 0
@@ -328,7 +328,7 @@ Bool_t TTSelector::Process(Long64_t entry) {
           }
 
           if (mcp < prt_nmcp) {
-            prt_hdigi[mcp]->Fill(map_row[ch], map_col[ch]);
+            prt_hdigi[mcp]->Fill(map_col[ch], map_row[ch]);
 
             TString tdchex = TString::BaseConvert(Form("%d", Hits_nTrbAddress[i]), 10, 16);
             hFine[fileid][ch]->SetTitle(
@@ -913,6 +913,7 @@ void tdisplay(TString inFile = "file.hld.root", Int_t trigger = 0, Int_t mode = 
   gMode = mode;
   gSetup = setupid;
   if (gSetup == 2018) gTrigger = 1136;
+  if (gSetup == 2023) gTrigger = 652;
   gWorkers = workers;
 
   new MyMainFrame(gClient->GetRoot(), 800, 800);
