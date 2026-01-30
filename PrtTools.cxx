@@ -138,7 +138,15 @@ TString PrtTools::get_outpath() {
 void PrtTools::fill_digi(int pmt, int pix, double w){
 
   int n = sqrt(_npix);
-  if (pmt < _npmt) _hdigi[pmt]->Fill(pix % n, pix / n, w);
+  // if (pmt < _npmt) _hdigi[pmt]->Fill(pix % n, pix / n, w);
+  if (_pmtlayout == 2023) {
+
+    // int ch = pmt*64 + pix; //map_pmtpix[pmt][pix];
+    int col = map_col[pix];
+    int row = map_row[pix];
+    
+    _hdigi[pmt]->Fill(col, row, w);
+  }
 }
 
 // _pmtlayout == 5    - 5 row's design for the PANDA Barrel DIRC
@@ -788,18 +796,39 @@ std::cout << "pmtlayout ========  " << pmtlayout << std::endl;
   }
 
   for (int ch = 0; ch < _maxch; ch++) {
-    int pmt = ch / _npix;
-    int pix = ch % _npix;
-    map_pmtpix[pmt][pix] = ch;
-    
-    int col = pix / 2 - 8 * (pix / 16);
-    int row = pix % 2 + 2 * (pix / 16);
-    pix = col + sqrt(_npix) * row;
-      
-    map_pmt[ch] = pmt;
-    map_pix[ch] = pix;
-    map_row[ch] = row;
-    map_col[ch] = col;
+    if (_pmtlayout == 2023) {
+      int mcp = ch / _npix;
+      int pix = ch % _npix;
+      int col = pix / 8;
+      int row = pix % 8;
+
+      row = pix / 2 - 8 * (pix / 16);
+      col = pix % 2 + 2 * (pix / 16);
+
+      row = 7 - row;
+
+      // pix = row * 8 + col;
+      int c = mcp * 64 + pix;
+
+      map_pmtpix[mcp][pix] = ch;
+      map_pmt[ch] = mcp;
+      map_pix[ch] = pix;
+      map_row[ch] = row;
+      map_col[ch] = col;
+    } else {
+      int pmt = ch / _npix;
+      int pix = ch % _npix;
+      map_pmtpix[pmt][pix] = ch;
+
+      int col = pix / 2 - 8 * (pix / 16);
+      int row = pix % 2 + 2 * (pix / 16);
+      pix = col + sqrt(_npix) * row;
+
+      map_pmt[ch] = pmt;
+      map_pix[ch] = pix;
+      map_row[ch] = row;
+      map_col[ch] = col;
+    }
   }
 }
 

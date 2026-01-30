@@ -113,6 +113,11 @@ void TTSelector::Begin(TTree *) {
   run->setRadiatorW(radiatorW);
   run->setRadiatorH(radiatorH);
 
+  if (gSetup == 2023){
+    run->setPmtLayout(2023);
+    run->setGeometry(2023);
+  }
+
   TString filedir = ginFile;
   filedir.Remove(filedir.Last('.') - 4);
   fFile = new TFile(goutFile, "RECREATE");
@@ -236,7 +241,7 @@ bool TTSelector::Process(Long64_t entry) {
     trigTof2 = 1398;
     simOffset += 15;
   }
-
+  
   fEvent = new PrtEvent();
   if (gMode == 5) {
     int study = run->getStudy();
@@ -520,8 +525,6 @@ bool TTSelector::Process(Long64_t entry) {
 
       if (gMode != 5 || tofpid != 0) {
         if (run->getGeometry() == 2023) {
-	  std::cout << "timeTot " << timeTot << std::endl;
-	  
           // if (timeTot < 0 || timeTot > 20) continue;
           // if (timeLe < -100 || timeLe > 100) continue;
         }
