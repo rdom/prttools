@@ -773,7 +773,7 @@ void PrtTools::set_palette(int pal) {
 }
 
 void PrtTools::create_maps(int pmtlayout) {
-std::cout << "pmtlayout ========  " << pmtlayout << std::endl;
+  std::cout << "pmtlayout ========  " << pmtlayout << std::endl;
  
   if (pmtlayout == 2019) {
     for (size_t i = 0; i < _tdcsid_jul2019.size(); i++) {
@@ -782,6 +782,7 @@ std::cout << "pmtlayout ========  " << pmtlayout << std::endl;
       else std::cout << "tdc id is outside of range: " << dec << std::endl;
     }
   } else if (pmtlayout == 2023) {
+    for (size_t i = 0; i < map_tdc.size(); i++) map_tdc[i] = -1;
     for (size_t i = 0; i < _tdcsid_jul2023.size(); i++) {
       size_t dec = TString::BaseConvert(_tdcsid_jul2023[i], 16, 10).Atoi();
       if (dec < map_tdc.size()) map_tdc[dec] = i;
@@ -806,7 +807,7 @@ std::cout << "pmtlayout ========  " << pmtlayout << std::endl;
 
       row = 7 - row;
 
-      // pix = row * 8 + col;
+      pix = row * 8 + col;
       int c = mcp * 64 + pix;
 
       map_pmtpix[mcp][pix] = ch;
